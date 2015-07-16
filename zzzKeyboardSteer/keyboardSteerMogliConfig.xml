@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<KSMGlobals>
+	<cameraRotFactor     type="float" value="1.0"/>
+	<cameraRotFactorRev  type="float" value="0.5"/>
+	<cameraRotTimeMax    type="float" value="0.01"/>
+	<cameraRotTimeInc    type="float" value="0.1"/>
+  <speedFxInc  	       type="float" value="0.5"/>     
+  <timer4Reverse       type="int"   value="500"/>     
+  <minSpeed4Fx	       type="float" value="0"/>     
+	<speedFxPoint1       type="float" value="5"/>
+	<speedFxPoint2       type="float" value="15"/>
+	<speedFxPoint3       type="float" value="40"/>
+  <maxSpeed4Fx	       type="float" value="80"/>     
+	<autoRotateBackFx0   type="float" value="0.2"/>
+	<autoRotateBackFx1   type="float" value="0.8"/>
+	<autoRotateBackFx2   type="float" value="1.0"/>
+	<autoRotateBackFx3   type="float" value="0.9"/>
+	<autoRotateBackFxMax type="float" value="0.7"/>
+	<axisSideFx0         type="float" value="1.5"/>
+	<axisSideFx1         type="float" value="1.2"/>
+	<axisSideFx2         type="float" value="0.85"/>
+	<axisSideFx3         type="float" value="0.65"/>
+	<axisSideFxMax       type="float" value="0.5"/>
+	<maxRotTimeFx0       type="float" value="1.0"/>
+	<maxRotTimeFx1       type="float" value="1.0"/>
+	<maxRotTimeFx2       type="float" value="0.9"/>
+	<maxRotTimeFx3       type="float" value="0.7"/>
+	<maxRotTimeFxMax     type="float" value="0.5"/>
+	<axisForwardSmooth   type="float" value="0.0005"/> 
+	<enableAnalogCtrl    type="bool"  value="false"/>
+	<!-- defaults -->
+	<ksmSteeringIsOn     type="bool"  value="true"/>
+	<ksmCameraIsOn       type="bool"  value="true"/>
+	<ksmReverseIsOn      type="bool"  value="true"/>
+	<ksmDrawIsOn         type="bool"  value="false"/>
+</KSMGlobals>

@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<modDesc descVersion="21">
+	<author>mogli</author>
+	<title>
+		<en>keyboardSteer</en>
+		<de>keyboardSteer</de> 
+	</title>
+	<description>
+		<en>
+			<![CDATA[Adds the specialization for adaptive keyboard steering]]>
+		</en>
+		<de>
+			<![CDATA[Fügt allen Fahrzeugen eine adaptive Lenkung hinzu]]>
+		</de>
+	</description>
+	<multiplayer supported="true"/>   
+	<iconFilename>store.dds</iconFilename>
+	<version>1.8.9.2</version>
+	<l10n>
+		<text name="ksmVERSION"><de>keyboardSteer v1.9b2</de><en>keyboardSteer v1.9b2</en></text>
+		<text name="ksmENABLE"><de>keyboardSteerMogli</de><en>keyboardSteerMogli</en></text>
+		<text name="ksmENABLE_ON"><de>Lenkung [adaptiv]</de><en>steering [adaptive]</en></text>
+		<text name="ksmENABLE_OFF"><de>Lenkung [normal]</de><en>steering [normal]</en></text>
+		<text name="ksmCAMERA"><de>keyboardSteerMogli</de><en>keyboardSteerMogli</en></text>
+		<text name="ksmCAMERA_ON"><de>Kamerabewegung [an]</de><en>camera movement [on]</en></text>
+		<text name="ksmCAMERA_OFF"><de>Kamerabewegung [aus]</de><en>camera movement [off]</en></text>
+		<text name="ksmREVERSE"><de>keyboardSteerMogli</de><en>keyboardSteerMogli</en></text>
+		<text name="ksmANALOG"><de>keyboardSteerMogli</de><en>keyboardSteerMogli</en></text>
+		<text name="ksmANALOG_ON"><de>Analog Controller [an]</de><en>analogue controller [on]</en></text>
+		<text name="ksmANALOG_OFF"><de>Analog Controller [aus]</de><en>analogue controller [off]</en></text>
+		<text name="ksmUP"   ><de>keyboardSteerMogli</de><en>keyboardSteerMogli</en></text>
+		<text name="ksmDOWN" ><de>keyboardSteerMogli</de><en>keyboardSteerMogli</en></text>
+		<text name="ksmLEFT" ><de>keyboardSteerMogli</de><en>keyboardSteerMogli</en></text>
+		<text name="ksmRIGHT"><de>keyboardSteerMogli</de><en>keyboardSteerMogli</en></text>
+		<text name="ksmREVERSE_ON"><de>Zurückblicken [an]</de><en>look backwards [on]</en></text>
+		<text name="ksmREVERSE_OFF"><de>Zurückblicken [aus]</de><en>look backwards [off]</en></text>
+		<text name="ksmPLUS"><de>Geschwindigkeitsabh. +</de><en>speed sensitivity +</en></text>
+		<text name="ksmMINUS"><de>Geschwindigkeitsabh. -</de><en>speed sensitivity -</en></text>
+	</l10n>
+	<inputBindings>
+		<input name="ksmENABLE"  key1="KEY_lshift KEY_e" button="" category="VEHICLE" />
+		<input name="ksmCAMERA"  key1="KEY_lshift KEY_c" button="" category="VEHICLE" />
+		<input name="ksmREVERSE" key1="KEY_lshift KEY_r" button="" category="VEHICLE" />
+		<input name="ksmANALOG"  key1="KEY_lshift KEY_a" button="" category="VEHICLE" />
+		<input name="ksmPLUS"    key1="KEY_lctrl KEY_e"  button="" category="VEHICLE" />
+		<input name="ksmMINUS"   key1="KEY_lctrl KEY_c"  button="" category="VEHICLE" />
+		<input name="ksmUP"      key1="KEY_rshift KEY_up"  button="" category="VEHICLE" />
+		<input name="ksmDOWN"    key1="KEY_rshift KEY_down"  button="" category="VEHICLE" />
+		<input name="ksmLEFT"    key1="KEY_rshift KEY_left"  button="" category="VEHICLE" />
+		<input name="ksmRIGHT"   key1="KEY_rshift KEY_right"  button="" category="VEHICLE" />
+	</inputBindings>
+	<extraSourceFiles>
+		<sourceFile filename="register.lua" />
+	</extraSourceFiles>    
+</modDesc>
