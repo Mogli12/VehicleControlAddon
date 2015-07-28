@@ -3,8 +3,10 @@
 -- This is the specialization for keyboardSteerMogli
 --
 
-source(Utils.getFilename("mogliBase20.lua", g_currentModDirectory))
-mogliBase20.newClass( "keyboardSteerMogli" )
+--***************************************************************
+source(Utils.getFilename("mogliBase.lua", g_currentModDirectory))
+_G[g_currentModName..".mogliBase"].newClass( "keyboardSteerMogli" )
+--***************************************************************
 
 function keyboardSteerMogli.globalsReset( createIfMissing )
 	KSMGlobals                   = {}

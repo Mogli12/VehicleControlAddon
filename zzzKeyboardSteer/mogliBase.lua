@@ -2,28 +2,86 @@
 -- mogliBasics
 -- This is the specialization for mogliBasics
 --
-local mogliBaseVersion = 2.04
-
 -- change log
 -- 2.01 initial 2.0 version 
--- 2.02 bug fix .../mogliBase20.lua:326: attempt to index field 'mbConfigHandler20' (a nil value) 
+-- 2.02 bug fix .../mogliBase30.lua:326: attempt to index field 'mbConfigHandler20' (a nil value) 
 -- 2.03 bug fix forgot to rename mogliBase201Event 
 -- 2.04 getText with default text
+-- 3.01 initial 3.0 version: use g_currentModDirectory as part of the class name
+-- 3.02 bug fix local functions / use local class instead
+-- 3.03 input binding: check if shift/alt/crtl is pressed
 
-if mogliBase20 == nil or mogliBase20.version == nil or mogliBase20.version < mogliBaseVersion then
-	mogliBase20 = {}
+-- Usage:  source(Utils.getFilename("mogliBase.lua", g_currentModDirectory));
+--         _G[g_currentModDirectory.."mogliBase"].newClass( "AutoCombine", "acParameters" )
 
-	mogliBase20.version = mogliBaseVersion
+local mogliBaseVersion = 3.03
+local mogliBaseClass     = g_currentModName..".mogliBase"
+local mogliEventClass    = g_currentModName..".mogliEvent"
+--local mogliEventClass_mt = g_currentModDirectory.."mogliEvent_mt"
+
+if _G[mogliBaseClass] ~= nil and _G[mogliBaseClass].version ~= nil and _G[mogliBaseClass].version >= mogliBaseVersion then
+	print("Factory class "..tostring(mogliBaseClass).." already exists in version "..tostring(_G[mogliBaseClass].version))
+else
+	local mogliBase30 = {}
+
+	mogliBase30.version = mogliBaseVersion
 	
-	print("mogliBase.lua version "..tostring(mogliBase20.version).." located in "..g_currentModDirectory)
+	--print(mogliBaseClass..", version "..tostring(mogliBase30.version)..", located in "..g_currentModDirectory)
 
 --=======================================================================================
--- mogliBase20.newclass
+-- class mogliBase30Event
+--=======================================================================================	
+	local mogliBase30Event = {} 
+	local mogliBase30Event_mt = Class(mogliBase30Event, Event) 
+
+	InitEventClass(mogliBase30Event, mogliEventClass) 
+
 --=======================================================================================
-	function mogliBase20.newClass( _globalClassName_, _level0_ )
+-- mogliBase30Event:emptyNew
+--=======================================================================================
+	mogliBase30Event.emptyNew = function(self)
+		local self = Event:new(mogliBase30Event_mt) 
+	--self.className = mogliEventClass
+		return self 
+	end 
+	
+--=======================================================================================
+-- mogliBase30Event:new
+--=======================================================================================
+	mogliBase30Event.new = function(self, className, object, level1, value)
+		local self = mogliBase30Event:emptyNew() 
+		self.className = className
+		self.object    = object 
+		self.level1    = level1 
+		self.value     = value 
+		return self 
+	end 
+	
+	function mogliBase30.checkForKeyModifiers( keys )
+		local modifiers = {}
+		for keyId,bool in pairs( Input.keyIdIsModifier ) do
+			modifiers[keyId] = true
+		end
+		for _, keyId in pairs(keys) do
+			modifiers[keyId] = false
+		end
+		for keyId,bool in pairs(modifiers) do
+			if bool and Input.isKeyPressed( keyId ) then
+			--print("Modifier is pressed: "..tostring(Input.keyIdToIdName[keyId]))
+				return false
+			end
+		end
+		return true
+	end
+	
+	
+--=======================================================================================
+-- mogliBase30.newclass
+--=======================================================================================
+	function mogliBase30.newClass( _globalClassName_, _level0_ )
 		local _newClass_ = {}
 		
-		print("Creating new global class in "..g_currentModDirectory.." with name ".._globalClassName_..". Prefix is: "..tostring(_level0_))
+		--print("Creating new global class in "..g_currentModDirectory.." with name ".._globalClassName_..". Prefix is: "..tostring(_level0_))
 
 		_newClass_.baseDirectory = g_currentModDirectory
 		_newClass_.modsDirectory = g_modsDirectory.."/"
@@ -106,7 +164,16 @@ if mogliBase20 == nil or mogliBase20.version == nil or mogliBase20.version < mog
 				end
 				return false
 			end
-			return InputBinding.hasEvent(InputBinding[name])		
+			if InputBinding.hasEvent(InputBinding[name]) then
+				if InputBinding.areKeysPressed( InputBinding.actions[InputBinding[name]].keys1 ) then
+				  return mogliBase30.checkForKeyModifiers( InputBinding.actions[InputBinding[name]].keys1 )
+				end
+				if InputBinding.areKeysPressed( InputBinding.actions[InputBinding[name]].keys2 ) then
+				  return mogliBase30.checkForKeyModifiers( InputBinding.actions[InputBinding[name]].keys2 )
+				end
+				return true
+			end
+			return false
 		end
 
 	--**********************************************************************************************************	
@@ -195,13 +262,78 @@ if mogliBase20 == nil or mogliBase20.version == nil or mogliBase20.version < mog
 	--********************************
 		function _newClass_:getSaveAttributesAndNodes(nodeIdent)
 			local attributes = ""
-			return attributes
+			local nodes      = ""
+			
+			if self[_globalClassName_.."StateHandler"] ~= nil then			
+				for level1,state in pairs( self[_globalClassName_.."StateHandler"] ) do
+					if state.save then
+						local value = _newClass_.mbGetState( self, level1 )
+						
+						if value ~= nil and ( state.default == nil or not mogliBase30.compare( state.default, value ) ) then
+							local vType  = mogliBase30.getValueType( value )
+							local xValue = nil
+							if     vType == "string"  then 
+								xValue = value
+							elseif vType == "int8"    
+									or vType == "int32"   
+									or vType == "float32" 
+									or vType == "number"  then 
+								xValue = tostring(value)
+							elseif vType == "boolean" then 
+								xValue = tostring(value)
+							end
+							if xValue ~= nil then
+								if nodes == "" then
+									nodes = nodeIdent..'<'.._globalClassName_..'>'
+								end
+								nodes = nodes .. '\n'..nodeIdent..'  <state name="'..level1..'" type="'..vType..'" value="'..xValue..'"/>'
+							end
+						end
+					end
+				end
+				
+				if nodes ~= "" then
+					nodes = nodes .. '\n'..nodeIdent..'</'.._globalClassName_..'>'
+				end
+			end
+						
+			return attributes, nodes
 		end;
 
 	--********************************
 	-- loadFromAttributesAndNodes
 	--********************************
 		function _newClass_:loadFromAttributesAndNodes(xmlFile, key, resetVehicles)
+			local i = 0
+			while true do
+				local xmlKey = string.format("%s.%s.state(%d)", key, _globalClassName_, i)
+				i = i + 1
+				local level1 = getXMLString(xmlFile, xmlKey.."#name")
+				if level1 == nil then
+					break
+				end
+				local vType = getXMLString(xmlFile, xmlKey.."#type")
+				local value = nil
+				if     vType == nil then
+				elseif vType == "string"  then 
+					value = getXMLString(xmlFile, xmlKey.."#value")
+				elseif vType == "int8"    
+						or vType == "int32" then 
+					value = getXMLInt(xmlFile, xmlKey.."#value")
+				elseif vType == "float32" 
+						or vType == "number"  then 
+					value = getXMLFloat(xmlFile, xmlKey.."#value")
+				elseif vType == "boolean" then 
+					value = getXMLBool(xmlFile, xmlKey.."#value")
+				end
+				
+			--print(tostring(xmlKey).." "..tostring(level1).." "..tostring(vType).." "..tostring(value))
+				
+				if value ~= nil then
+					_newClass_.mbSetState( self, level1, value, true)
+				end
+			end
+			
 			return BaseMission.VEHICLE_LOAD_OK;
 		end
 
@@ -212,20 +344,14 @@ if mogliBase20 == nil or mogliBase20.version == nil or mogliBase20.version < mog
 			if self == nil then
 				_newClass_:debugEvent( "initStateHandling" )
 			end
-			if self.mbConfigHandler20 == nil then
-				self.mbConfigHandler20 = {}
+			if self[_globalClassName_.."ConfigHandler"] == nil then
+				self[_globalClassName_.."ConfigHandler"] = {}
 			end
-			if self.mbConfigHandler20[_globalClassName_] == nil then
-				self.mbConfigHandler20[_globalClassName_] = {}
-			end
-			if self.mbStateHandler20 == nil then
-				self.mbStateHandler20 = {}
-			end
-			if self.mbStateHandler20[_globalClassName_] == nil then
-				self.mbStateHandler20[_globalClassName_] = {}
+			if self[_globalClassName_.."StateHandler"] == nil then
+				self[_globalClassName_.."StateHandler"] = {}
 			end
 			if self.isServer then
-				self.mbClientInitDone20 = true
+				self.mbClientInitDone30 = true
 			end
 			if _level0_ ~= nil and _level0_ ~= "" and self[_level0_] == nil then
 				self[_level0_] = {}
@@ -236,7 +362,7 @@ if mogliBase20 == nil or mogliBase20.version == nil or mogliBase20.version < mog
 	-- getValueType
 	--********************************
 		function _newClass_.getValueType( value )
-			return mogliBase20.getValueType( value )
+			return mogliBase30.getValueType( value )
 		end
 
 	--********************************
@@ -258,7 +384,7 @@ if mogliBase20 == nil or mogliBase20.version == nil or mogliBase20.version < mog
 	--********************************
 		function _newClass_:registerServerField( level1 )
 			_newClass_.initStateHandling( self )
-			self.mbConfigHandler20[_globalClassName_][level1] = true
+			self[_globalClassName_.."ConfigHandler"][level1] = true
 		end
 		
 	--********************************
@@ -277,15 +403,17 @@ if mogliBase20 == nil or mogliBase20.version == nil or mogliBase20.version < mog
 	--********************************
 	-- registerState
 	--********************************
-		function _newClass_:registerState( level1, default, handler )
+		function _newClass_:registerState( level1, default, handler, saveAttribute )
 			_newClass_.initStateHandling( self )
+			self[_globalClassName_.."StateHandler"][level1] = {}
 			if default ~= nil then
+				self[_globalClassName_.."StateHandler"][level1].default = default 
 				_newClass_.mbSetStateInternal(self,level1,default)
 			end
-			self.mbStateHandler20[_globalClassName_][level1] = {}
 			if handler ~= nil then
-				self.mbStateHandler20[_globalClassName_][level1].handler = handler
+				self[_globalClassName_.."StateHandler"][level1].handler = handler
 			end
+			self[_globalClassName_.."StateHandler"][level1].save = saveAttribute
 		end
 		
 	--********************************
@@ -294,27 +422,28 @@ if mogliBase20 == nil or mogliBase20.version == nil or mogliBase20.version < mog
 		function _newClass_:mbSetState(level1, value, noEventSend)
 			_newClass_.initStateHandling( self )
 			
-			if self.mbStateHandler20[_globalClassName_][level1] == nil then
+			if self[_globalClassName_.."StateHandler"][level1] == nil then
 				_newClass_.registerState( self, level1 )
 			end
 			
 			local old = _newClass_.mbGetState( self, level1 )
-			if     old == nil or not ( mogliBase20.compare( old, value ) ) then
+			if     old == nil or not ( mogliBase30.compare( old, value ) ) then
 				if noEventSend == nil or noEventSend == false then
+					local eventObject = mogliBase30Event:new(_globalClassName_, self, level1, value)
 					if g_server ~= nil then 
-						g_server:broadcastEvent(mogliBase204Event:new(_globalClassName_, self, level1, value)) 
+						g_server:broadcastEvent( eventObject ) 
 					else
-						g_client:getServerConnection():sendEvent(mogliBase204Event:new(_globalClassName_, self, level1, value)) 
+						g_client:getServerConnection():sendEvent( eventObject ) 
 					end 
 				end 						
 			
-				if self.mbStateHandler20[_globalClassName_][level1].handler ~= nil then
+				if self[_globalClassName_.."StateHandler"][level1].handler ~= nil then
 					local noEventSend2 = true 
 					if self.isServer then
 						noEventSend2 = noEventSend 
 					end 
 					
-					local state, message = pcall( self.mbStateHandler20[_globalClassName_][level1].handler, self, old, value, noEventSend2 )
+					local state, message = pcall( self[_globalClassName_.."StateHandler"][level1].handler, self, old, value, noEventSend2 )
 					if not state then
 						print("Error: "..tostring(message)) 
 						_newClass_.debugEvent( self, self[level1], value, noEventSend ) 
@@ -332,18 +461,16 @@ if mogliBase20 == nil or mogliBase20.version == nil or mogliBase20.version < mog
 		function _newClass_:toMbDocument()
 			local mbDocument  = {}		
 
-			if     self.mbConfigHandler20                    == nil 
-					or self.mbConfigHandler20[_globalClassName_] == nil then		
+			if self[_globalClassName_.."ConfigHandler"] ~= nil then		
 				mbDocument.config = {}
-				for level1,state in pairs( self.mbConfigHandler20[_globalClassName_] ) do
+				for level1,state in pairs( self[_globalClassName_.."ConfigHandler"] ) do
 					mbDocument.config[level1] = _newClass_.mbGetState( self, level1 )
 				end
 			end
 
-			if     self.mbStateHandler20                     == nil
-					or self.mbStateHandler20[_globalClassName_]  == nil then			
+			if self[_globalClassName_.."StateHandler"] ~= nil then			
 				mbDocument.state  = {}
-				for level1,state in pairs( self.mbStateHandler20[_globalClassName_] ) do
+				for level1,state in pairs( self[_globalClassName_.."StateHandler"] ) do
 					mbDocument.state[level1] = _newClass_.mbGetState( self, level1 )
 				end
 			end
@@ -379,7 +506,7 @@ if mogliBase20 == nil or mogliBase20.version == nil or mogliBase20.version < mog
 			if     mode == "nil"  then
 				mbDocument = {}
 			elseif mode ~= "json" then
-				err, mbDocument = mogliBase20.readStreamEx( streamId )
+				err, mbDocument = mogliBase30.readStreamEx( streamId )
 				if err ~= _globalClassName_ then
 					print("Error: '".._globalClassName_.."' expected")
 					mbDocument = {}
@@ -395,7 +522,7 @@ if mogliBase20 == nil or mogliBase20.version == nil or mogliBase20.version < mog
 			end
 			
 			_newClass_.fromMbDocument( self, mbDocument )
-			self.mbClientInitDone20 = true
+			self.mbClientInitDone30 = true
 		end 
 		 
 	--********************************
@@ -403,10 +530,8 @@ if mogliBase20 == nil or mogliBase20.version == nil or mogliBase20.version < mog
 	--********************************
 		function _newClass_:writeStream(streamId, connection)
 
-			if      ( self.mbConfigHandler20                    == nil 
-					   or self.mbConfigHandler20[_globalClassName_] == nil )
-					and ( self.mbStateHandler20                     == nil
-					   or self.mbStateHandler20[_globalClassName_]  == nil ) then
+			if      self[_globalClassName_.."ConfigHandler"] == nil
+					and self[_globalClassName_.."StateHandler"]  == nil then
 				streamWriteString( streamId, "nil" )
 			else
 			  local mbDocument = _newClass_.toMbDocument( self )
@@ -414,7 +539,7 @@ if mogliBase20 == nil or mogliBase20.version == nil or mogliBase20.version < mog
 			--if json == nil then
 			--	print("writeStream using writeStreamEx")
 				streamWriteString( streamId, "no json" )
-				mogliBase20.writeStreamEx( streamId, _globalClassName_, mbDocument )
+				mogliBase30.writeStreamEx( streamId, _globalClassName_, mbDocument )
 			--else
 			--	print("writeStream using dkjson.lua")
 			--	streamWriteString( streamId, "json" )
@@ -446,13 +571,13 @@ if mogliBase20 == nil or mogliBase20.version == nil or mogliBase20.version < mog
 	--********************************
 	-- mogliBase20TestStream
 	--********************************
-		function _newClass_:mogliBase20TestStream( )
+		function _newClass_:mogliBaseTestStream( )
 			local streamId = createStream()
 			_newClass_.writeStream( self, streamId )
 			local mode = streamReadString( streamId )
 			print("readStream using mode: "..tostring(mode))
 			print("Bytes: "..tostring(math.ceil(0.125*streamGetNumOfUnreadBits(streamId))))
-			name, value = mogliBase20.readStreamEx( streamId, true )
+			name, value = mogliBase30.readStreamEx( streamId, true )
 			print("Name of document received: "..tostring(name))
 		end	
 		
@@ -461,9 +586,9 @@ if mogliBase20 == nil or mogliBase20.version == nil or mogliBase20.version < mog
 	end
 		
 --=======================================================================================
--- mogliBase20.writeStreamTypedValue
+-- mogliBase30.writeStreamTypedValue
 --=======================================================================================
-	function mogliBase20.writeStreamTypedValue( streamId, valueType, value )
+	function mogliBase30.writeStreamTypedValue( streamId, valueType, value )
 		if     valueType == "string"  then
 			streamWriteString(streamId, value) 
 		elseif valueType == "int32"   then
@@ -481,9 +606,9 @@ if mogliBase20 == nil or mogliBase20.version == nil or mogliBase20.version < mog
 	end
 
 --=======================================================================================
--- mogliBase20.readStreamTypedValue
+-- mogliBase30.readStreamTypedValue
 --=======================================================================================
-	function mogliBase20.readStreamTypedValue( streamId, valueType )
+	function mogliBase30.readStreamTypedValue( streamId, valueType )
 		local value = nil
 		if     valueType == "string"  then
 			value = streamReadString(streamId) 
@@ -503,9 +628,9 @@ if mogliBase20 == nil or mogliBase20.version == nil or mogliBase20.version < mog
 	end 
 	
 --=======================================================================================
--- mogliBase20.writeStreamType
+-- mogliBase30.writeStreamType
 --=======================================================================================
-	function mogliBase20.writeStreamType( streamId, valueType )
+	function mogliBase30.writeStreamType( streamId, valueType )
 		local uint2
 		if     valueType == "nil"     then uint2 = 1
 		elseif valueType == "string"  then uint2 = 2 
@@ -525,9 +650,9 @@ if mogliBase20 == nil or mogliBase20.version == nil or mogliBase20.version < mog
 	end
 	
 --=======================================================================================
--- mogliBase20.readStreamType
+-- mogliBase30.readStreamType
 --=======================================================================================
-	function mogliBase20.readStreamType( streamId, debugPrint )
+	function mogliBase30.readStreamType( streamId, debugPrint )
 		local uint2 = streamReadUInt8( streamId ) 
 		if     uint2 == 1 then valueType = "nil"     
 		elseif uint2 == 2 then valueType = "string"  
@@ -548,10 +673,10 @@ if mogliBase20 == nil or mogliBase20.version == nil or mogliBase20.version < mog
 	end
 	
 --=======================================================================================
--- mogliBase20.writeStreamEx
+-- mogliBase30.writeStreamEx
 --=======================================================================================
-	function mogliBase20.writeStreamEx( streamId, name, value )
-		local nameType  = mogliBase20.getValueType( name )
+	function mogliBase30.writeStreamEx( streamId, name, value )
+		local nameType  = mogliBase30.getValueType( name )
 		
 		if      nameType ~= "string"
 				and nameType ~= "int8"
@@ -562,7 +687,7 @@ if mogliBase20 == nil or mogliBase20.version == nil or mogliBase20.version < mog
 			return false
 		end 
 		
-		local valueType = mogliBase20.getValueType( value )
+		local valueType = mogliBase30.getValueType( value )
 		
 		if      valueType ~= "nil"
 				and valueType ~= "string"
@@ -575,15 +700,15 @@ if mogliBase20 == nil or mogliBase20.version == nil or mogliBase20.version < mog
 			return false			
 		end
 		
-		mogliBase20.writeStreamType( streamId, nameType ) 
-		mogliBase20.writeStreamType( streamId, valueType ) 
-		mogliBase20.writeStreamTypedValue( streamId, nameType, name )
+		mogliBase30.writeStreamType( streamId, nameType ) 
+		mogliBase30.writeStreamType( streamId, valueType ) 
+		mogliBase30.writeStreamTypedValue( streamId, nameType, name )
 		
 		--print("MP-INFO: Writing server field "..tostring(name).."("..nameType..") of type "..valueType..":")
 		
 		if     valueType == "nil"   then
 		elseif valueType ~= "table" then
-			mogliBase20.writeStreamTypedValue( streamId, valueType, value )
+			mogliBase30.writeStreamTypedValue( streamId, valueType, value )
 			--print("MP-INFO: ...and value "..tostring(value))
 		else			
 			local tableGetn = 0
@@ -594,7 +719,7 @@ if mogliBase20 == nil or mogliBase20.version == nil or mogliBase20.version < mog
 			--print("MP-INFO: ...and "..tostring( tableGetn ).." elements")
 			if tableGetn > 0 then
 				for n,v in pairs( value ) do
-					mogliBase20.writeStreamEx( streamId, n, v )
+					mogliBase30.writeStreamEx( streamId, n, v )
 				end
 			end
 		end 
@@ -603,12 +728,12 @@ if mogliBase20 == nil or mogliBase20.version == nil or mogliBase20.version < mog
 	end
 	
 --=======================================================================================
--- mogliBase20.readStreamEx
+-- mogliBase30.readStreamEx
 --=======================================================================================
-	function mogliBase20.readStreamEx( streamId, debugPrint )
-		local nameType  = mogliBase20.readStreamType( streamId, debugPrint )		
-		local valueType = mogliBase20.readStreamType( streamId, debugPrint )
-		local name      = mogliBase20.readStreamTypedValue( streamId, nameType )
+	function mogliBase30.readStreamEx( streamId, debugPrint )
+		local nameType  = mogliBase30.readStreamType( streamId, debugPrint )		
+		local valueType = mogliBase30.readStreamType( streamId, debugPrint )
+		local name      = mogliBase30.readStreamTypedValue( streamId, nameType )
 			
 		if debugPrint then
 			print("MP-INFO: Reading server field "..tostring(name).."("..nameType..") of type "..valueType..":")
@@ -618,7 +743,7 @@ if mogliBase20 == nil or mogliBase20.version == nil or mogliBase20.version < mog
 		if     valueType == "nil"   then
 			value = nil
 		elseif valueType ~= "table" then
-			value = mogliBase20.readStreamTypedValue( streamId, valueType )
+			value = mogliBase30.readStreamTypedValue( streamId, valueType )
 			if debugPrint then
 				print("MP-INFO: ...and value "..tostring(value))
 			end
@@ -629,7 +754,7 @@ if mogliBase20 == nil or mogliBase20.version == nil or mogliBase20.version < mog
 				print("MP-INFO: ...and "..tostring(tableGetn).." elements")
 			end
 			for i=1,tableGetn do
-				n,v = mogliBase20.readStreamEx( streamId, debugPrint )
+				n,v = mogliBase30.readStreamEx( streamId, debugPrint )
 				value[n] = v
 			end
 		end
@@ -638,9 +763,9 @@ if mogliBase20 == nil or mogliBase20.version == nil or mogliBase20.version < mog
 	end
 			
 --=======================================================================================
--- mogliBase20.getValueType
+-- mogliBase30.getValueType
 --=======================================================================================
-	function mogliBase20.getValueType( value )
+	function mogliBase30.getValueType( value )
 
 		if value == nil then
 			return "string"
@@ -667,23 +792,23 @@ if mogliBase20 == nil or mogliBase20.version == nil or mogliBase20.version < mog
 	end
 
 --=======================================================================================
--- mogliBase20.compare
+-- mogliBase30.compare
 --=======================================================================================
-	function mogliBase20.compare( value1, value2 )
+	function mogliBase30.compare( value1, value2 )
 		if ( value1 == nil and value2 ~= nil ) or ( value1 ~= nil and value2 == nil ) then
 			return false
 		end
 		if value1 == nil and value2 == nil then
 			return true
 		end
-		local vt1 = mogliBase20.getValueType( value1 ) 
-		local vt2 = mogliBase20.getValueType( value2 )
+		local vt1 = mogliBase30.getValueType( value1 ) 
+		local vt2 = mogliBase30.getValueType( value2 )
 		if vt1 == "table" and vt2 == "table" then
 			local c1 = 0
 			local c2 = 0
 			for n,v in pairs( value1 ) do
 				c1 = c1 + 1
-				if not ( mogliBase20.compare( v, value2[n] ) ) then 
+				if not ( mogliBase30.compare( v, value2[n] ) ) then 
 					return false
 				end
 			end
@@ -716,44 +841,17 @@ if mogliBase20 == nil or mogliBase20.version == nil or mogliBase20.version < mog
 		return false
 	end
 	
---=======================================================================================
--- class mogliBase204Event
---=======================================================================================	
-	mogliBase204Event = {} 
-	mogliBase204Event_mt = Class(mogliBase204Event, Event) 
-
-	InitEventClass(mogliBase204Event, "mogliBase204Event") 
-
---=======================================================================================
--- emptyNew
---=======================================================================================
-	function mogliBase204Event:emptyNew()
-		local self = Event:new(mogliBase204Event_mt) 
-		self.className="mogliBase204Event" 
-		return self 
-	end 
-
---=======================================================================================
--- new
---=======================================================================================
-	function mogliBase204Event:new(className, object, level1, value)
-		local self = mogliBase204Event:emptyNew() 
-		self.className = className
-		self.object    = object 
-		self.level1    = level1 
-		self.value     = value 
-		return self 
-	end 
-
+	_G[mogliBaseClass] = mogliBase30
+	
 --=======================================================================================
 -- readStream
 --=======================================================================================
-	function mogliBase204Event:readStream(streamId, connection)
+	mogliBase30Event.readStream = function(self, streamId, connection)
 		--both clients and server can receive this event
 		self.className = streamReadString(streamId)
 		local id       = streamReadInt32(streamId) 
 		self.object    = networkGetObject(id) 
-		self.level1, self.value = mogliBase20.readStreamEx( streamId )
+		self.level1, self.value = _G[mogliBaseClass].readStreamEx( streamId )
 		
 		if self.object == nil then
 			print("Error reading network ID: "..tostring(id).." ("..tostring(self.className))
@@ -761,25 +859,25 @@ if mogliBase20 == nil or mogliBase20.version == nil or mogliBase20.version < mog
 			self:run(connection) 
 		end
 	end 
-
+	
 --=======================================================================================
 -- writeStream
 --=======================================================================================
-	function mogliBase204Event:writeStream(streamId, connection)
+	mogliBase30Event.writeStream = function(self, streamId, connection)
 		--both clients and server can send this event
 		streamWriteString(streamId, self.className)
 		streamWriteInt32(streamId, networkGetObjectId(self.object)) 
-		mogliBase20.writeStreamEx( streamId, self.level1, self.value )
+		_G[mogliBaseClass].writeStreamEx( streamId, self.level1, self.value )
 	end 
-
+	
 --=======================================================================================
 -- run
 --=======================================================================================
-	function mogliBase204Event:run(connection)
+	mogliBase30Event.run = function(self, connection)
 		----both clients and server can "run" this event (after reading it)	
 		_G[self.className].mbSetState(self.object, self.level1, self.value, true) 
 		if not connection:getIsServer() then  
-			g_server:broadcastEvent(mogliBase204Event:new(self.className, self.object, self.level1, self.value), nil, connection, self.object) 
+			g_server:broadcastEvent(mogliBase30Event:new(self.className, self.object, self.level1, self.value), nil, connection, self.object) 
 		end 
 	end 
 end
