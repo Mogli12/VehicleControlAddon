@@ -103,7 +103,7 @@ function keyboardSteerMogli:load(xmlFile)
 	keyboardSteerMogli.registerState( self, "ksmCameraIsOn"  , false, keyboardSteerMogli.ksmOnSetCamera )
 	keyboardSteerMogli.registerState( self, "ksmReverseIsOn" , false, keyboardSteerMogli.ksmOnSetReverse )
 	keyboardSteerMogli.registerState( self, "ksmCamFwd"      , true , keyboardSteerMogli.ksmOnSetCamFwd )
-	keyboardSteerMogli.registerState( self, "ksmExponent"    , 0    , keyboardSteerMogli.ksmOnSetFactor )
+	keyboardSteerMogli.registerState( self, "ksmExponent"    , 1    , keyboardSteerMogli.ksmOnSetFactor )
 	keyboardSteerMogli.registerState( self, "ksmWarningText" , ""   , keyboardSteerMogli.ksmOnSetWarningText )
 	
 	self.ksmSpeedFx       = 0
@@ -389,16 +389,19 @@ function keyboardSteerMogli:getSaveAttributesAndNodes(nodeIdent)
 	if self.ksmSteeringIsOn ~= nil and self.ksmSteeringIsOn ~= KSMGlobals.ksmSteeringIsOn then
 		attributes = attributes.." ksmSteeringIsOn=\""  .. tostring(self.ksmSteeringIsOn) .. "\""
 	end
+	if self.ksmCameraDefaultOn ~= nil and self.ksmCameraDefaultOn ~= KSMGlobals.ksmCameraIsOn then
+		attributes = attributes.." ksmCameraIsOn=\""  .. tostring(self.ksmCameraDefaultOn) .. "\""
+	end
 	if self.ksmAnalogIsOn ~= nil and self.ksmAnalogIsOn ~= KSMGlobals.enableAnalogCtrl then
 		attributes = attributes.." ksmAnalogIsOn=\""  .. tostring(self.ksmAnalogIsOn) .. "\""
 	end
 	
 	for i,b in pairs(self.ksmCameras) do
 		if b.rotation ~= self.ksmCameraDefaultOn then
-			attributes = attributes.." ksmCameraIsOn_"..tostring(i).."=\""  .. tostring(b) .. "\""
+			attributes = attributes.." ksmCameraIsOn_"..tostring(i).."=\""  .. tostring(b.rotation) .. "\""
 		end
 		if b.rev ~= self.ksmReverseDefaultOn then
-			attributes = attributes.." ksmReverseIsOn_"..tostring(i).."=\""  .. tostring(b) .. "\""
+			attributes = attributes.." ksmReverseIsOn_"..tostring(i).."=\""  .. tostring(b.rev) .. "\""
 		end
 	end
 	if self.ksmExponent ~= nil and math.abs( self.ksmExponent - 1 ) > 1E-3 then
@@ -416,6 +419,10 @@ function keyboardSteerMogli:loadFromAttributesAndNodes(xmlFile, key, resetVehicl
 	b = getXMLBool(xmlFile, key .. "#ksmCameraIsOn" )
 	if b ~= nil then
 		self.ksmCameraDefaultOn = b
+	end
+	b = getXMLBool(xmlFile, key .. "#ksmAnalogIsOn" )
+	if b ~= nil then
+		self.ksmAnalogIsOn = b
 	end
 	
 	if self.ksmCameras == nil then
