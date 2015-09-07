@@ -93,6 +93,31 @@ end
 
 keyboardSteerMogli.globalsReset(false)
 
+function keyboardSteerMogli:isValidCam( index, createIfMissing )
+	local i = Utils.getNoNil( index, self.camIndex )
+	
+	if      self.cameras ~= nil 
+			and i ~= nil 
+			and self.cameras[i] ~= nil 
+			and self.cameras[i].vehicle == self
+			and self.cameras[i].isRotatable then
+		if self.ksmCameras[i] == nil then
+			if createIfMissing then
+				self.ksmCameras[i] = { rotation = KSMGlobals.ksmCameraIsOn,
+															 rev      = KSMGlobals.ksmReverseIsOn,
+															 zero     = self.cameras[i].rotY,
+															 last     = self.cameras[i].rotY,
+															 smooth   = self.cameras[i].rotY }
+			else
+				return false
+			end
+		end
+		return true
+	end
+	
+	return false
+end
+
 function keyboardSteerMogli:load(xmlFile)
 	self.ksmScaleFx       = keyboardSteerMogli.scaleFx
 	self.ksmSetState      = keyboardSteerMogli.mbSetState
@@ -105,6 +130,9 @@ function keyboardSteerMogli:load(xmlFile)
 	keyboardSteerMogli.registerState( self, "ksmCamFwd"      , true , keyboardSteerMogli.ksmOnSetCamFwd )
 	keyboardSteerMogli.registerState( self, "ksmExponent"    , 1    , keyboardSteerMogli.ksmOnSetFactor )
 	keyboardSteerMogli.registerState( self, "ksmWarningText" , ""   , keyboardSteerMogli.ksmOnSetWarningText )
+	keyboardSteerMogli.registerState( self, "ksmWarningText" , ""   , keyboardSteerMogli.ksmOnSetWarningText )
+	keyboardSteerMogli.registerState( self, "ksmLCtrlPressed", false )
+	keyboardSteerMogli.registerState( self, "ksmLShiftPressed", false )
 	
 	self.ksmSpeedFx       = 0
 	self.ksmFactor        = 1
@@ -131,18 +159,11 @@ function keyboardSteerMogli:load(xmlFile)
 	self.ksmCameras       = {}
 	
 	for i,c in pairs(self.cameras) do
-		local revDefault = KSMGlobals.ksmReverseIsOn
-		local camDefault = KSMGlobals.ksmCameraIsOn
-
-		if c.isInside and SpecializationUtil.hasSpecialization(Combine, self.specializations) then
-			revDefault = false
+		if keyboardSteerMogli.isValidCam( self, i, true ) then
+			if c.isInside and SpecializationUtil.hasSpecialization(Combine, self.specializations) then
+				self.ksmCameras[i].rev = false
+			end
 		end
-		
-		self.ksmCameras[i] = { rotation = camInside,
-													 rev      = revDefault,
-													 zero     = c.rotY,
-													 last     = c.rotY,
-													 smooth   = c.rotY }
 	end
 	
 	self.ksmCameraDefaultOn  = KSMGlobals.ksmCameraIsOn
@@ -185,11 +206,9 @@ function keyboardSteerMogli:update(dt)
 		elseif InputBinding.hasEvent(InputBinding.ksmRIGHT) then
 			newRot = -0.3*math.pi
 		end
+		
 		if      newRot ~= nil 
-				and self.cameras ~= nil 
-				and self.camIndex ~= nil 
-				and self.cameras[self.camIndex] ~= nil 
-				and self.cameras[self.camIndex].isRotatable then
+				and keyboardSteerMogli.isValidCam( self ) then
 			local diff = self.cameras[self.camIndex].rotY - self.ksmCameras[self.camIndex].last
 			self.cameras[self.camIndex].rotY = keyboardSteerMogli.normalizeAngle( self.cameras[self.camIndex].origRotY + newRot )
 			if self.ksmCameraIsOn then
@@ -272,10 +291,7 @@ function keyboardSteerMogli:update(dt)
 	if      self:getIsActive() 
 			and self.steeringEnabled
 			and self.ksmCameraIsOn 
-			and self.cameras ~= nil 
-			and self.camIndex ~= nil 
-			and self.cameras[self.camIndex] ~= nil 
-			and self.cameras[self.camIndex].isRotatable then
+			and keyboardSteerMogli.isValidCam( self ) then
 		
 		local diff = self.cameras[self.camIndex].rotY - self.ksmCameras[self.camIndex].last
 		self.ksmCameras[self.camIndex].zero   = self.ksmCameras[self.camIndex].zero   + diff
@@ -340,15 +356,11 @@ function keyboardSteerMogli:writeStream(streamId, connection)
 end
 
 function keyboardSteerMogli:keyEvent(unicode, sym, modifier, isDown)
-	if isDown and sym == Input.KEY_lctrl then
-		self.ksmLCtrlPressed = true
-	else
-		self.ksmLCtrlPressed = false
+	if sym == Input.KEY_lctrl then
+		self:ksmSetState( "ksmLCtrlPressed", isDown )
 	end
-	if isDown and sym == Input.KEY_lshift then
-		self.ksmLShiftPressed = true
-	else
-		self.ksmLShiftPressed = false
+	if sym == Input.KEY_lshift then
+		self:ksmSetState( "ksmLShiftPressed", isDown )
 	end
 end
 
@@ -363,20 +375,23 @@ function keyboardSteerMogli:draw()
 		else
 			g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("ksmENABLE_OFF"), InputBinding.ksmENABLE)
 		end
-		if self.ksmCameraIsOn then
-			g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("ksmCAMERA_ON"),  InputBinding.ksmCAMERA)
-		else
-			g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("ksmCAMERA_OFF"), InputBinding.ksmCAMERA)
-		end
-		if self.ksmReverseIsOn then
-			g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("ksmREVERSE_ON"),  InputBinding.ksmREVERSE)
-		else
-			g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("ksmREVERSE_OFF"), InputBinding.ksmREVERSE)
-		end
 		if self.ksmAnalogIsOn then
 			g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("ksmANALOG_ON"),  InputBinding.ksmANALOG)
 		else
 			g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("ksmANALOG_OFF"), InputBinding.ksmANALOG)
+		end
+		
+		if keyboardSteerMogli.isValidCam( self ) then
+			if self.ksmCameraIsOn then
+				g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("ksmCAMERA_ON"),  InputBinding.ksmCAMERA)
+			else
+				g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("ksmCAMERA_OFF"), InputBinding.ksmCAMERA)
+			end
+			if self.ksmReverseIsOn then
+				g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("ksmREVERSE_ON"),  InputBinding.ksmREVERSE)
+			else
+				g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("ksmREVERSE_OFF"), InputBinding.ksmREVERSE)
+			end
 		end
 	end
 	if self.ksmWarningText ~= "" then
@@ -430,18 +445,12 @@ function keyboardSteerMogli:loadFromAttributesAndNodes(xmlFile, key, resetVehicl
 	end
 	
 	for i,c in pairs(self.cameras) do
-		local b1 = Utils.getNoNil( getXMLBool(xmlFile, key .. "#ksmCameraIsOn_"..tostring(i) ), self.ksmCameraDefaultOn )
-		local b2 = Utils.getNoNil( getXMLBool(xmlFile, key .. "#ksmReverseIsOn_"..tostring(i) ), self.ksmReverseDefaultOn )
-		
-		if self.ksmCameras[i] == nil then
-			self.ksmCameras[i]          = {}
-			self.ksmCameras[i].zero     = c.rotY
-			self.ksmCameras[i].last     = c.rotY
-			self.ksmCameras[i].smooth   = c.rotY
+		if keyboardSteerMogli.isValidCam( self, i, true ) then
+			local b1 = Utils.getNoNil( getXMLBool(xmlFile, key .. "#ksmCameraIsOn_"..tostring(i) ), self.ksmCameraDefaultOn )
+			local b2 = Utils.getNoNil( getXMLBool(xmlFile, key .. "#ksmReverseIsOn_"..tostring(i) ), self.ksmReverseDefaultOn )			
+			self.ksmCameras[i].rotation = b1
+			self.ksmCameras[i].rev      = b2
 		end
-		
-		self.ksmCameras[i].rotation = b1
-		self.ksmCameras[i].rev      = b2
 	end
 	
 	local i = getXMLInt(xmlFile, key .. "#ksmExponent" )
@@ -511,6 +520,10 @@ function keyboardSteerMogli:newUpdateVehiclePhysics( superFunc, axisForward, axi
 			end
 		end
 		
+		if self.ksmLShiftPressed and axisForwardIsAnalog then
+			axisForward = 0.75 * axisForward
+		end
+			
 		if limit then
 			if self.ksmWandtedMovingDir * axisForward < 0 then
 				axisForward = math.max( axisForward, self.ksmLastAxisFwd - self.ksmWandtedMovingDir * KSMGlobals.axisForwardSmooth * dt )
@@ -518,6 +531,14 @@ function keyboardSteerMogli:newUpdateVehiclePhysics( superFunc, axisForward, axi
 		end
 		
 		self.ksmLastAxisFwd = axisForward
+		axisForwardIsAnalog = true
+	elseif  self.ksmSteeringIsOn 
+			and not ( axisForwardIsAnalog )
+			and self.ksmLShiftPressed 
+			and self.mrGbMS ~= nil 
+			and self.mrGbMS.IsOn then
+		axisForward = 0.75 * axisForward
+		axisForwardIsAnalog = true
 	end
 	
 	local state, result = pcall( superFunc, self, axisForward, axisForwardIsAnalog, axisSide, axisSideIsAnalog, dt )
@@ -532,19 +553,23 @@ end
 
 function keyboardSteerMogli:ksmOnSetCamera( old, new, noEventSend ) 
 	self.ksmCameraIsOn = new
-	if self.ksmLastCamIndex > 0 then
+	if      self.ksmLastCamIndex ~= nil
+			and keyboardSteerMogli.isValidCam( self, self.ksmLastCamIndex ) then
 		self.ksmCameras[self.ksmLastCamIndex].rotation = new
 	end
 	for i,c in pairs(self.cameras) do
-		self.ksmCameras[i].zero = c.rotY
-		self.ksmCameras[i].last = c.rotY
-		self.ksmCameras[i].smooth = c.rotY
+		if keyboardSteerMogli.isValidCam( self, i ) then
+			self.ksmCameras[i].zero = c.rotY
+			self.ksmCameras[i].last = c.rotY
+			self.ksmCameras[i].smooth = c.rotY
+		end
 	end
 end
 
 function keyboardSteerMogli:ksmOnSetReverse( old, new, noEventSend ) 
 	self.ksmReverseIsOn = new
-	if self.ksmLastCamIndex > 0 then
+	if      self.ksmLastCamIndex ~= nil
+			and keyboardSteerMogli.isValidCam( self, self.ksmLastCamIndex ) then
 		self.ksmCameras[self.ksmLastCamIndex].rev = new
 	end
 end
@@ -559,9 +584,8 @@ end
 function keyboardSteerMogli:ksmSetCameraFwd( camFwd ) 
 	if      self.steeringEnabled
 			and camFwd                             ~= nil
-			and self.cameras                       ~= nil 
 			and self.ksmLastCamIndex               ~= nil 
-			and self.cameras[self.ksmLastCamIndex] ~= nil then
+			and keyboardSteerMogli.isValidCam( self, self.ksmLastCamIndex ) then
 		local pi2 = math.pi / 2
 		local i   = self.ksmLastCamIndex
 		local rev = self.ksmReverseDefaultOn 
@@ -597,14 +621,7 @@ function keyboardSteerMogli:ksmOnSetCamIndex( old, new, noEventSend )
 	self.ksmLastCamIndex = new
 	if      self.cameras ~= nil 
 			and new ~= nil 
-			and self.cameras[new] ~= nil then
-		if self.ksmCameras[new] == nil then
-			self.ksmCameras[i] = { rotation = KSMGlobals.ksmCameraIsOn,
-														 rev      = KSMGlobals.ksmReverseIsOn,
-														 zero     = self.cameras[new].rotY,
-														 last     = self.cameras[new].rotY,
-														 smooth   = self.cameras[new].rotY }
-		end
+			and keyboardSteerMogli.isValidCam( self, new, true ) then
 		keyboardSteerMogli.ksmSetCameraFwd( self, self.ksmCamFwd )
 		if self.ksmCameras[new].rotation ~= self.ksmCameraIsOn then
 			self:ksmSetState( "ksmCameraIsOn", self.ksmCameras[new].rotation, true )
