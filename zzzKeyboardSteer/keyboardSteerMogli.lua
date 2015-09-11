@@ -364,6 +364,10 @@ function keyboardSteerMogli:keyEvent(unicode, sym, modifier, isDown)
 	end
 end
 
+function keyboardSteerMogli:onLeave()
+	self:ksmSetState( "ksmLCtrlPressed", false )
+	self:ksmSetState( "ksmLShiftPressed", false )
+end
 
 function keyboardSteerMogli:draw()		
 	if self.ksmLCtrlPressed then

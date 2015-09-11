@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<l10n>
+	<!-- Note that 'description' is only here for easier translations. It needs to be manually copied to ModDesc.XML later. -->
+	<description><![CDATA[Adds the specialization for adaptive keyboard steering]]></description>
+
+	<texts>
+		<text name="ksmENABLE_ON"   text="steering [adaptive]"/>
+		<text name="ksmENABLE_OFF"  text="steering [normal]"/>
+		<text name="ksmCAMERA_ON"   text="camera movement [on]"/>
+		<text name="ksmCAMERA_OFF"  text="camera movement [off]"/>
+		<text name="ksmANALOG_ON"   text="analogue controller [on]"/>
+		<text name="ksmANALOG_OFF"  text="analogue controller [off]"/>
+		<text name="ksmREVERSE_ON"  text="look backwards [on]"/>
+		<text name="ksmREVERSE_OFF" text="look backwards [off]"/>
+		<text name="ksmPLUS"        text="speed sensitivity +"/>
+		<text name="ksmMINUS"       text="speed sensitivity -"/>
+
+		<text name="ksmENABLE"      text="keyboardSteerMogli: steering"/>
+		<text name="ksmCAMERA"      text="keyboardSteerMogli: camera movement"/>
+		<text name="ksmREVERSE"     text="keyboardSteerMogli: look backwards"/>
+		<text name="ksmANALOG"      text="keyboardSteerMogli: analogue controller"/>
+
+		<text name="ksmUP"          text="keyboardSteerMogli: look fwd"/>
+		<text name="ksmDOWN"        text="keyboardSteerMogli: look back"/>
+		<text name="ksmLEFT"        text="keyboardSteerMogli: look left"/>
+		<text name="ksmRIGHT"       text="keyboardSteerMogli: look right"/>
+	</texts>
+</l10n>

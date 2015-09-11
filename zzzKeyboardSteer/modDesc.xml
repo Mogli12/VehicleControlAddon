@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="no" ?>
-<modDesc descVersion="21">
+<modDesc descVersion="23">
 	<author>mogli</author>
 	<title>
 		<en>keyboardSteer</en>
@@ -15,27 +15,12 @@
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>store.dds</iconFilename>
-	<version>1.8.9.2</version>
-	<l10n>
-		<text name="ksmVERSION"><de>keyboardSteer v1.9b2</de><en>keyboardSteer v1.9b2</en></text>
-		<text name="ksmENABLE"><de>keyboardSteerMogli</de><en>keyboardSteerMogli</en></text>
-		<text name="ksmENABLE_ON"><de>Lenkung [adaptiv]</de><en>steering [adaptive]</en></text>
-		<text name="ksmENABLE_OFF"><de>Lenkung [normal]</de><en>steering [normal]</en></text>
-		<text name="ksmCAMERA"><de>keyboardSteerMogli</de><en>keyboardSteerMogli</en></text>
-		<text name="ksmCAMERA_ON"><de>Kamerabewegung [an]</de><en>camera movement [on]</en></text>
-		<text name="ksmCAMERA_OFF"><de>Kamerabewegung [aus]</de><en>camera movement [off]</en></text>
-		<text name="ksmREVERSE"><de>keyboardSteerMogli</de><en>keyboardSteerMogli</en></text>
-		<text name="ksmANALOG"><de>keyboardSteerMogli</de><en>keyboardSteerMogli</en></text>
-		<text name="ksmANALOG_ON"><de>Analog Controller [an]</de><en>analogue controller [on]</en></text>
-		<text name="ksmANALOG_OFF"><de>Analog Controller [aus]</de><en>analogue controller [off]</en></text>
-		<text name="ksmUP"   ><de>keyboardSteerMogli</de><en>keyboardSteerMogli</en></text>
-		<text name="ksmDOWN" ><de>keyboardSteerMogli</de><en>keyboardSteerMogli</en></text>
-		<text name="ksmLEFT" ><de>keyboardSteerMogli</de><en>keyboardSteerMogli</en></text>
-		<text name="ksmRIGHT"><de>keyboardSteerMogli</de><en>keyboardSteerMogli</en></text>
-		<text name="ksmREVERSE_ON"><de>Zurückblicken [an]</de><en>look backwards [on]</en></text>
-		<text name="ksmREVERSE_OFF"><de>Zurückblicken [aus]</de><en>look backwards [off]</en></text>
-		<text name="ksmPLUS"><de>Geschwindigkeitsabh. +</de><en>speed sensitivity +</en></text>
-		<text name="ksmMINUS"><de>Geschwindigkeitsabh. -</de><en>speed sensitivity -</en></text>
+	<version>1.8.9.3</version>
+	<l10n filenamePrefix="modDesc_l10n">
+		<text name="ksmVERSION">
+			<de>keyboardSteer v1.9b3</de>
+			<en>keyboardSteer v1.9b3</en>
+		</text>
 	</l10n>
 	<inputBindings>
 		<input name="ksmENABLE"  key1="KEY_lshift KEY_e" button="" category="VEHICLE" />

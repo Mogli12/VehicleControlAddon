@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<l10n>
+	<!-- Note that 'description' is only here for easier translations. It needs to be manually copied to ModDesc.XML later. -->
+	<description><![CDATA[Fügt allen Fahrzeugen eine adaptive Lenkung hinzu]]></description>
+
+	<texts>
+		<text name="ksmENABLE_ON"   text="Lenkung [adaptiv]"/>
+		<text name="ksmENABLE_OFF"  text="Lenkung [normal]"/>
+		<text name="ksmCAMERA_ON"   text="Kamerabewegung [an]"/>
+		<text name="ksmCAMERA_OFF"  text="Kamerabewegung [aus]"/>
+		<text name="ksmANALOG_ON"   text="Analog Controller [an]"/>
+		<text name="ksmANALOG_OFF"  text="Analog Controller [aus]"/>
+		<text name="ksmREVERSE_ON"  text="Zurückblicken [an]"/>
+		<text name="ksmREVERSE_OFF" text="Zurückblicken [aus]"/>
+		<text name="ksmPLUS"        text="Geschwindigkeitsabh. +"/>
+		<text name="ksmMINUS"       text="Geschwindigkeitsabh. -"/>
+
+		<text name="ksmENABLE"      text="keyboardSteerMogli: Lenkung"/>
+		<text name="ksmCAMERA"      text="keyboardSteerMogli: Kamerabewegung"/>
+		<text name="ksmREVERSE"     text="keyboardSteerMogli: Zurückblicken"/>
+		<text name="ksmANALOG"      text="keyboardSteerMogli: Analog Controller"/>
+
+		<text name="ksmUP"          text="keyboardSteerMogli: Nach vorne schauen"/>
+		<text name="ksmDOWN"        text="keyboardSteerMogli: Nach hinten schauen"/>
+		<text name="ksmLEFT"        text="keyboardSteerMogli: Nach links schauen"/>
+		<text name="ksmRIGHT"       text="keyboardSteerMogli: Nach rechts schauen"/>
+	</texts>
+</l10n>
