@@ -477,8 +477,10 @@ function keyboardSteerMogli:newUpdateVehiclePhysics( superFunc, axisForward, axi
 		
 		if self.lastSpeed < 0.000278 then
 			self.autoRotateBackSpeed = 0
-		else
-			self.autoRotateBackSpeed = self:ksmScaleFx( KSMGlobals.autoRotateBackFx:get( self.ksmSpeedFx ), 0.1, 3 ) * arbs
+		elseif self.rotatedTime >= 0 then
+			self.autoRotateBackSpeed = ( 0.2 + 0.8 * self.rotatedTime / self.maxRotTime ) * self:ksmScaleFx( KSMGlobals.autoRotateBackFx:get( self.ksmSpeedFx ), 0.1, 3 ) * arbs
+		else                                                      
+			self.autoRotateBackSpeed = ( 0.2 + 0.8 * self.rotatedTime / self.minRotTime ) * self:ksmScaleFx( KSMGlobals.autoRotateBackFx:get( self.ksmSpeedFx ), 0.1, 3 ) * arbs
 		end
 		
 		local f = self:ksmScaleFx( KSMGlobals.maxRotTimeFx:get( self.ksmSpeedFx ), 0, 1 )
