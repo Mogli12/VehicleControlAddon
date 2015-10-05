@@ -14,11 +14,14 @@
 		<text name="ksmREVERSE_OFF" text="look backwards [off]"/>
 		<text name="ksmPLUS"        text="speed sensitivity +"/>
 		<text name="ksmMINUS"       text="speed sensitivity -"/>
+		<text name="ksmMIRROR_ON"   text="mirrors [on]"/>
+		<text name="ksmMIRROR_OFF"  text="mirrors [off]"/>
 
 		<text name="ksmENABLE"      text="keyboardSteerMogli: steering"/>
 		<text name="ksmCAMERA"      text="keyboardSteerMogli: camera movement"/>
 		<text name="ksmREVERSE"     text="keyboardSteerMogli: look backwards"/>
 		<text name="ksmANALOG"      text="keyboardSteerMogli: analogue controller"/>
+		<text name="ksmMIRROR"      text="keyboardSteerMogli: mirrors"/>
 
 		<text name="ksmUP"          text="keyboardSteerMogli: look fwd"/>
 		<text name="ksmDOWN"        text="keyboardSteerMogli: look back"/>

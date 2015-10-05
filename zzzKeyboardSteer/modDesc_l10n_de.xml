@@ -14,12 +14,15 @@
 		<text name="ksmREVERSE_OFF" text="Zurückblicken [aus]"/>
 		<text name="ksmPLUS"        text="Geschwindigkeitsabh. +"/>
 		<text name="ksmMINUS"       text="Geschwindigkeitsabh. -"/>
-
+		<text name="ksmMIRROR_ON"   text="Spiegel [an]"/>
+		<text name="ksmMIRROR_OFF"  text="Spiegel [aus]"/>
+		
 		<text name="ksmENABLE"      text="keyboardSteerMogli: Lenkung"/>
 		<text name="ksmCAMERA"      text="keyboardSteerMogli: Kamerabewegung"/>
 		<text name="ksmREVERSE"     text="keyboardSteerMogli: Zurückblicken"/>
 		<text name="ksmANALOG"      text="keyboardSteerMogli: Analog Controller"/>
-
+		<text name="ksmMIRROR"      text="keyboardSteerMogli: Spiegel"/>
+		
 		<text name="ksmUP"          text="keyboardSteerMogli: Nach vorne schauen"/>
 		<text name="ksmDOWN"        text="keyboardSteerMogli: Nach hinten schauen"/>
 		<text name="ksmLEFT"        text="keyboardSteerMogli: Nach links schauen"/>
