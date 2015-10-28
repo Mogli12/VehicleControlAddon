@@ -11,11 +11,12 @@
 -- 3.02 bug fix local functions / use local class instead
 -- 3.03 input binding: check if shift/alt/crtl is pressed
 -- 3.04 hide warnings of missing input bindings
+-- 3.05 string support in globalsLoad
 
 -- Usage:  source(Utils.getFilename("mogliBase.lua", g_currentModDirectory));
 --         _G[g_currentModDirectory.."mogliBase"].newClass( "AutoCombine", "acParameters" )
 
-local mogliBaseVersion = 3.04
+local mogliBaseVersion   = 3.05
 local mogliBaseClass     = g_currentModName..".mogliBase"
 local mogliEventClass    = g_currentModName..".mogliEvent"
 --local mogliEventClass_mt = g_currentModDirectory.."mogliEvent_mt"
@@ -125,6 +126,10 @@ else
 				elseif tp == "int" then
 					local int = getXMLInt( xmlFile, rootTag.."." .. name .. "#value" )
 					if int ~= nil then globals[name] = int end
+		--			print(file..": "..name.." = "..tostring(globals[name]))
+				elseif tp == "string" then
+					local str = getXMLString( xmlFile, rootTag.."." .. name .. "#value" )
+					if str ~= nil then globals[name] = str end
 		--			print(file..": "..name.." = "..tostring(globals[name]))
 				else
 					print(file..": "..name..": invalid XML type : "..tp)
