@@ -148,11 +148,11 @@ function keyboardSteerMogli:load(xmlFile)
 	self.ksmDirChangeTimer= 0
 	self.ksmChangeDir     = false
 	self.ksmAddMirror     = true
-	if g_settingsRearMirrors and g_rearMirrorsAvailable then
-		self.ksmAddMirror   = false
-	else
+--if g_settingsRearMirrors and g_rearMirrorsAvailable then
+--	self.ksmAddMirror   = false
+--else
 		self.mirrorAvailable = self.ksmMirror
-	end
+--end
 	
 --self:ksmSetState( "ksmSteeringIsOn", KSMGlobals.ksmSteeringIsOn,true )
 	if KSMGlobals.ksmSteeringIsOn then
