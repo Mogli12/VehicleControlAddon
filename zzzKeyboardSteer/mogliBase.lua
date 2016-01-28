@@ -12,11 +12,12 @@
 -- 3.03 input binding: check if shift/alt/crtl is pressed
 -- 3.04 hide warnings of missing input bindings
 -- 3.05 string support in globalsLoad
+-- 3.06 degrees support in globalsLoad
 
 -- Usage:  source(Utils.getFilename("mogliBase.lua", g_currentModDirectory));
 --         _G[g_currentModDirectory.."mogliBase"].newClass( "AutoCombine", "acParameters" )
 
-local mogliBaseVersion   = 3.05
+local mogliBaseVersion   = 3.06
 local mogliBaseClass     = g_currentModName..".mogliBase"
 local mogliEventClass    = g_currentModName..".mogliEvent"
 --local mogliEventClass_mt = g_currentModDirectory.."mogliEvent_mt"
@@ -122,6 +123,10 @@ else
 				elseif tp == "float" then
 					local float = getXMLFloat( xmlFile, rootTag.."." .. name .. "#value" )
 					if float ~= nil then globals[name] = float end
+		--			print(file..": "..name.." = "..tostring(globals[name]))
+				elseif tp == "degree" then
+					local float = getXMLFloat( xmlFile, rootTag.."." .. name .. "#value" )
+					if float ~= nil then globals[name] = math.rad( float ) end
 		--			print(file..": "..name.." = "..tostring(globals[name]))
 				elseif tp == "int" then
 					local int = getXMLInt( xmlFile, rootTag.."." .. name .. "#value" )

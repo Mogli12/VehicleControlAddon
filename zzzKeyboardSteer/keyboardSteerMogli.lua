@@ -549,8 +549,8 @@ function keyboardSteerMogli:newUpdateVehiclePhysics( superFunc, axisForward, axi
 			end
 		end
 		
-		if self.ksmLShiftPressed and axisForwardIsAnalog then
-			axisForward = 0.75 * axisForward
+		if self.ksmLShiftPressed then
+			axisForward = Utils.clamp( axisForward, -0.75, 0.75 )
 		end
 			
 		if limit then
@@ -559,14 +559,22 @@ function keyboardSteerMogli:newUpdateVehiclePhysics( superFunc, axisForward, axi
 			end
 		end
 		
-		self.ksmLastAxisFwd = axisForward
+		self.ksmLastAxisFwd = math.min( axisForward, self.ksmLastAxisFwd + self.ksmWandtedMovingDir * KSMGlobals.axisForwardSmooth * dt )
 		axisForwardIsAnalog = true
 	elseif  self.ksmSteeringIsOn 
-			and not ( axisForwardIsAnalog )
-			and self.ksmLShiftPressed 
+			and ( self.ksmAnalogIsOn or not ( axisForwardIsAnalog ) )
 			and self.mrGbMS ~= nil 
 			and self.mrGbMS.IsOn then
-		axisForward = 0.75 * axisForward
+
+		if self.ksmLShiftPressed then
+			axisForward = Utils.clamp( axisForward, -0.75, 0.75 )
+		end
+		
+		if axisForward < 0 then
+			axisForward = math.max( axisForward, self.ksmLastAxisFwd - KSMGlobals.axisForwardSmooth * dt )
+		end
+		
+		self.ksmLastAxisFwd = math.min( axisForward, self.ksmLastAxisFwd + KSMGlobals.axisForwardSmooth * dt )
 		axisForwardIsAnalog = true
 	end
 	
@@ -607,6 +615,7 @@ function keyboardSteerMogli:ksmOnSetCamFwd( old, new, noEventSend )
 	self.ksmCamFwd = new
 	if new ~= old then
 		keyboardSteerMogli.ksmSetCameraFwd( self, new )
+		self.ksmLastAxisFwd = 0
 	end
 end
 
