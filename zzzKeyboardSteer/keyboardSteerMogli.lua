@@ -551,16 +551,17 @@ function keyboardSteerMogli:newUpdateVehiclePhysics( superFunc, axisForward, axi
 		
 		if self.ksmLShiftPressed then
 			axisForward = Utils.clamp( axisForward, -0.75, 0.75 )
+			axisForwardIsAnalog = true
 		end
 			
 		if limit then
 			if self.ksmWandtedMovingDir * axisForward < 0 then
 				axisForward = math.max( axisForward, self.ksmLastAxisFwd - self.ksmWandtedMovingDir * KSMGlobals.axisForwardSmooth * dt )
+				axisForwardIsAnalog = true
 			end
 		end
 		
 		self.ksmLastAxisFwd = math.min( axisForward, self.ksmLastAxisFwd + self.ksmWandtedMovingDir * KSMGlobals.axisForwardSmooth * dt )
-		axisForwardIsAnalog = true
 	elseif  self.ksmSteeringIsOn 
 			and ( self.ksmAnalogIsOn or not ( axisForwardIsAnalog ) )
 			and self.mrGbMS ~= nil 
@@ -568,14 +569,15 @@ function keyboardSteerMogli:newUpdateVehiclePhysics( superFunc, axisForward, axi
 
 		if self.ksmLShiftPressed then
 			axisForward = Utils.clamp( axisForward, -0.75, 0.75 )
+			axisForwardIsAnalog = true
 		end
 		
 		if axisForward < 0 then
 			axisForward = math.max( axisForward, self.ksmLastAxisFwd - KSMGlobals.axisForwardSmooth * dt )
+			axisForwardIsAnalog = true
 		end
 		
 		self.ksmLastAxisFwd = math.min( axisForward, self.ksmLastAxisFwd + KSMGlobals.axisForwardSmooth * dt )
-		axisForwardIsAnalog = true
 	end
 	
 	local state, result = pcall( superFunc, self, axisForward, axisForwardIsAnalog, axisSide, axisSideIsAnalog, dt )

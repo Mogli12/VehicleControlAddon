@@ -6,7 +6,7 @@
 	<cameraRotTimeInc    type="float" value="0.1"/>
   <speedFxInc  	       type="float" value="0.5"/>     
   <timer4Reverse       type="int"   value="500"/>     
-	<axisForwardSmooth   type="float" value="0.001"/> 
+	<axisForwardSmooth   type="float" value="0.002"/> 
 	<enableAnalogCtrl    type="bool"  value="false"/>
 	
  <!-- parameters -->
