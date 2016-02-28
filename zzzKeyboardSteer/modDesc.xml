@@ -15,11 +15,11 @@
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>store.dds</iconFilename>
-	<version>1.8.9.9</version>
+	<version>1.9.0.1</version>
 	<l10n filenamePrefix="modDesc_l10n">
 		<text name="ksmVERSION">
-			<de>keyboardSteer v1.9b9</de>
-			<en>keyboardSteer v1.9b9</en>
+			<de>keyboardSteer v1.9 rc1</de>
+			<en>keyboardSteer v1.9 rc1</en>
 		</text>
 	</l10n>
 	<inputBindings>

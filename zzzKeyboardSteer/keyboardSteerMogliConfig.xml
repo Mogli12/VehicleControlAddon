@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <KSMGlobals>
-	<cameraRotFactor     type="float" value="1.0"/>
+	<cameraRotFactor     type="float" value="1.25"/>
 	<cameraRotFactorRev  type="float" value="0.5"/>
 	<cameraRotTimeMax    type="float" value="0.01"/>
 	<cameraRotTimeInc    type="float" value="0.1"/>
@@ -8,6 +8,7 @@
   <timer4Reverse       type="int"   value="500"/>     
 	<axisForwardSmooth   type="float" value="0.002"/> 
 	<enableAnalogCtrl    type="bool"  value="false"/>
+	<axisForwardGearbox  type="bool"  value="false"/>
 	
  <!-- parameters -->
  <minSpeed4Fx type="float" value="0"/>
@@ -33,7 +34,8 @@
 	
 	<!-- defaults -->
 	<ksmSteeringIsOn     type="bool"  value="true"/>
-	<ksmCameraIsOn       type="bool"  value="true"/>
+	<ksmCameraIsOn       type="bool"  value="false"/>
+	<ksmCamInsideIsOn    type="bool"  value="true"/>
 	<ksmReverseIsOn      type="bool"  value="true"/>
 	<ksmDrawIsOn         type="bool"  value="false"/>
 </KSMGlobals>
