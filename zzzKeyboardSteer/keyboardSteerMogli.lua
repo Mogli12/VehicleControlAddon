@@ -127,7 +127,7 @@ function keyboardSteerMogli:isValidCam( index, createIfMissing )
 	return false
 end
 
-function keyboardSteerMogli:load(xmlFile)
+function keyboardSteerMogli:load(savegame)
 	self.ksmScaleFx       = keyboardSteerMogli.scaleFx
 	self.ksmSetState      = keyboardSteerMogli.mbSetState
 	self.ksmIsValidCam    = keyboardSteerMogli.isValidCam
@@ -140,7 +140,6 @@ function keyboardSteerMogli:load(xmlFile)
 	keyboardSteerMogli.registerState( self, "ksmCamFwd"      , true , keyboardSteerMogli.ksmOnSetCamFwd )
 	keyboardSteerMogli.registerState( self, "ksmExponent"    , 1    , keyboardSteerMogli.ksmOnSetFactor )
 	keyboardSteerMogli.registerState( self, "ksmWarningText" , ""   , keyboardSteerMogli.ksmOnSetWarningText )
-	keyboardSteerMogli.registerState( self, "ksmMirror"      , true , keyboardSteerMogli.ksmOnSetMirror )
 	keyboardSteerMogli.registerState( self, "ksmLCtrlPressed", false )
 	keyboardSteerMogli.registerState( self, "ksmLShiftPressed", false )
 	
@@ -157,8 +156,6 @@ function keyboardSteerMogli:load(xmlFile)
 	self.ksmLastAxisFwd   = 0
 	self.ksmDirChangeTimer= 0
 	self.ksmChangeDir     = false
-	self.ksmAddMirror     = true
-	self.mirrorAvailable  = self.ksmMirror
 
 	if KSMGlobals.ksmSteeringIsOn then
 		self:ksmSetState( "ksmSteeringIsOn", true, true )
@@ -190,8 +187,6 @@ function keyboardSteerMogli:update(dt)
 		elseif InputBinding.hasEvent(InputBinding.ksmMINUS) then
 			self:ksmSetState( "ksmExponent", self.ksmExponent -1 )
 			self:ksmSetState( "ksmWarningText", string.format("Sensitivity %3.0f %%", 100 * self.ksmFactor, true ) )
-		elseif self.ksmAddMirror and InputBinding.hasEvent(InputBinding.ksmMIRROR) then		
-			self:ksmSetState( "ksmMirror", not self.ksmMirror )
 		elseif InputBinding.hasEvent(InputBinding.ksmENABLE) then		
 			self:ksmSetState( "ksmSteeringIsOn", not self.ksmSteeringIsOn )
 		elseif InputBinding.hasEvent(InputBinding.ksmCAMERA) then
@@ -377,26 +372,22 @@ end
 
 function keyboardSteerMogli:draw()		
 	if self.ksmLCtrlPressed then
-		g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("ksmPLUS"),  InputBinding.ksmPLUS)
-		g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("ksmMINUS"), InputBinding.ksmMINUS)
-		
-		if self.ksmAddMirror then
-			if self.ksmMirror then
-				g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("ksmMIRROR_ON"),  InputBinding.ksmMIRROR)
+		if self.ksmLShiftPressed then
+			if self.ksmAnalogIsOn then
+				g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("ksmANALOG_ON"),  InputBinding.ksmANALOG)
 			else
-				g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("ksmMIRROR_OFF"), InputBinding.ksmMIRROR)
+				g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("ksmANALOG_OFF"), InputBinding.ksmANALOG)
 			end
+		else
+			g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("input_ksmPLUS"),  InputBinding.ksmPLUS)
+			g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("input_ksmMINUS"), InputBinding.ksmMINUS)
 		end
+		
 	elseif KSMGlobals.ksmDrawIsOn or self.ksmLShiftPressed then
 		if self.ksmSteeringIsOn then
 			g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("ksmENABLE_ON"),  InputBinding.ksmENABLE)
 		else
 			g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("ksmENABLE_OFF"), InputBinding.ksmENABLE)
-		end
-		if self.ksmAnalogIsOn then
-			g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("ksmANALOG_ON"),  InputBinding.ksmANALOG)
-		else
-			g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("ksmANALOG_OFF"), InputBinding.ksmANALOG)
 		end
 		
 		if self:ksmIsValidCam() then
@@ -466,9 +457,6 @@ function keyboardSteerMogli:getSaveAttributesAndNodes(nodeIdent)
 	if self.ksmAnalogIsOn ~= nil and self.ksmAnalogIsOn ~= KSMGlobals.enableAnalogCtrl then
 		attributes = attributes.." ksmAnalogIsOn=\""  .. tostring(self.ksmAnalogIsOn) .. "\""
 	end
-	if self.ksmMirror ~= nil and self.ksmMirror ~= true then
-		attributes = attributes.." ksmMirror=\""  .. tostring(self.ksmMirror) .. "\""
-	end
 	
 	for i,b in pairs(self.ksmCameras) do
 		if b.rotation ~= keyboardSteerMogli.getDefaultRotation( self, i ) then
@@ -493,10 +481,6 @@ function keyboardSteerMogli:loadFromAttributesAndNodes(xmlFile, key, resetVehicl
 	b = getXMLBool(xmlFile, key .. "#ksmAnalogIsOn" )
 	if b ~= nil then
 		self.ksmAnalogIsOn = b
-	end
-	b = getXMLBool(xmlFile, key .. "#ksmMirror" )
-	if b ~= nil then
-		self:ksmSetState( "ksmMirror", b, true )
 	end
 	
 	if self.ksmCameras == nil then
@@ -528,7 +512,7 @@ function keyboardSteerMogli:scaleFx( fx, mi, ma )
 	return Utils.clamp( 1 + self.ksmFactor * ( fx - 1 ), mi, ma )
 end
 
-function keyboardSteerMogli:newUpdateVehiclePhysics( superFunc, axisForward, axisForwardIsAnalog, axisSide, axisSideIsAnalog, dt)
+function keyboardSteerMogli:newUpdateVehiclePhysics( superFunc, axisForward, axisForwardIsAnalog, axisSide, axisSideIsAnalog, doHandbrake, dt, ... )
 	local backup1 = self.autoRotateBackSpeed
 	local backup2 = self.minRotTime
 	local backup3 = self.maxRotTime
@@ -618,7 +602,7 @@ function keyboardSteerMogli:newUpdateVehiclePhysics( superFunc, axisForward, axi
 		self.ksmLastAxisFwd = math.min( axisForward, self.ksmLastAxisFwd + KSMGlobals.axisForwardSmooth * dt )
 	end
 	
-	local state, result = pcall( superFunc, self, axisForward, axisForwardIsAnalog, axisSide, axisSideIsAnalog, dt )
+	local state, result = pcall( superFunc, self, axisForward, axisForwardIsAnalog, axisSide, axisSideIsAnalog, doHandbrake, dt, ... )
 	if not ( state ) then
 		print("Error in updateVehiclePhysics :"..tostring(result))
 	end
@@ -681,17 +665,6 @@ function keyboardSteerMogli:ksmSetCameraFwd( camFwd )
 					self.cameras[i].rotY = keyboardSteerMogli.normalizeAngle( self.cameras[i].rotY + math.pi )
 				end
 			end
-		end
-	end
-end
-
-function keyboardSteerMogli:ksmOnSetMirror( old, new, noEventSend )
-	self.ksmMirror = new
-	
-	if self.ksmAddMirror then
-		self.mirrorAvailable = new
-		if self.cameras[self.camIndex].useMirror then
-			self.setMirrorVisible(self, new)
 		end
 	end
 end

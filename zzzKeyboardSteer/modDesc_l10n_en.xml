@@ -12,20 +12,16 @@
 		<text name="ksmANALOG_OFF"  text="analogue controller [off]"/>
 		<text name="ksmREVERSE_ON"  text="look backwards [on]"/>
 		<text name="ksmREVERSE_OFF" text="look backwards [off]"/>
-		<text name="ksmPLUS"        text="speed sensitivity +"/>
-		<text name="ksmMINUS"       text="speed sensitivity -"/>
-		<text name="ksmMIRROR_ON"   text="mirrors [on]"/>
-		<text name="ksmMIRROR_OFF"  text="mirrors [off]"/>
 
-		<text name="ksmENABLE"      text="keyboardSteerMogli: steering"/>
-		<text name="ksmCAMERA"      text="keyboardSteerMogli: camera movement"/>
-		<text name="ksmREVERSE"     text="keyboardSteerMogli: look backwards"/>
-		<text name="ksmANALOG"      text="keyboardSteerMogli: analogue controller"/>
-		<text name="ksmMIRROR"      text="keyboardSteerMogli: mirrors"/>
-
-		<text name="ksmUP"          text="keyboardSteerMogli: look fwd"/>
-		<text name="ksmDOWN"        text="keyboardSteerMogli: look back"/>
-		<text name="ksmLEFT"        text="keyboardSteerMogli: look left"/>
-		<text name="ksmRIGHT"       text="keyboardSteerMogli: look right"/>
+		<text name="input_ksmENABLE"  text="keyboardSteerMogli: steering"/>
+		<text name="input_ksmCAMERA"  text="keyboardSteerMogli: camera movement"/>
+		<text name="input_ksmREVERSE" text="keyboardSteerMogli: look backwards"/>
+		<text name="input_ksmANALOG"  text="keyboardSteerMogli: analogue controller"/>
+		<text name="input_ksmPLUS"    text="speed sensitivity +"/>
+		<text name="input_ksmMINUS"   text="speed sensitivity -"/>
+		<text name="input_ksmUP"      text="keyboardSteerMogli: look fwd"/>
+		<text name="input_ksmDOWN"    text="keyboardSteerMogli: look back"/>
+		<text name="input_ksmLEFT"    text="keyboardSteerMogli: look left"/>
+		<text name="input_ksmRIGHT"   text="keyboardSteerMogli: look right"/>
 	</texts>
 </l10n>

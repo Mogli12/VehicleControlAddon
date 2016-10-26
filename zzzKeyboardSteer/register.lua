@@ -36,10 +36,8 @@ function keyboardSteerMogli_Register:loadMap(name)
 		g_i18n.globalI18N.texts["ksmREVERSE_OFF"] = g_i18n:getText("ksmREVERSE_OFF");		
 		g_i18n.globalI18N.texts["ksmANALOG_ON"]   = g_i18n:getText("ksmANALOG_ON");		
 		g_i18n.globalI18N.texts["ksmANALOG_OFF"]  = g_i18n:getText("ksmANALOG_OFF");		
-		g_i18n.globalI18N.texts["ksmPLUS"]        = g_i18n:getText("ksmPLUS");		
-		g_i18n.globalI18N.texts["ksmMINUS"]       = g_i18n:getText("ksmMINUS");		
-		g_i18n.globalI18N.texts["ksmMIRROR_ON"]   = g_i18n:getText("ksmMIRROR_ON");		
-		g_i18n.globalI18N.texts["ksmMIRROR_OFF"]  = g_i18n:getText("ksmMIRROR_OFF");		
+		g_i18n.globalI18N.texts["input_ksmPLUS"]  = g_i18n:getText("input_ksmPLUS");		
+		g_i18n.globalI18N.texts["input_ksmMINUS"] = g_i18n:getText("input_ksmMINUS");		
 	end;
 end;
 

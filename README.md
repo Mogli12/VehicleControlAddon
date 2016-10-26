@@ -1,4 +1,4 @@
-# KeyboardSteer for Farming Simulator 2015
+# KeyboardSteer for Farming Simulator 2017
 
 ## Motivation
 Although I have a steering wheel, but almost always play with the keyboard. On winding roads, I am again and again landed in the ditch in front of nights or power poles.

@@ -13,11 +13,12 @@
 -- 3.04 hide warnings of missing input bindings
 -- 3.05 string support in globalsLoad
 -- 3.06 degrees support in globalsLoad
+-- 3.10 FS17 version
 
 -- Usage:  source(Utils.getFilename("mogliBase.lua", g_currentModDirectory));
 --         _G[g_currentModDirectory.."mogliBase"].newClass( "AutoCombine", "acParameters" )
 
-local mogliBaseVersion   = 3.06
+local mogliBaseVersion   = 3.10
 local mogliBaseClass     = g_currentModName..".mogliBase"
 local mogliEventClass    = g_currentModName..".mogliEvent"
 --local mogliEventClass_mt = g_currentModDirectory.."mogliEvent_mt"
@@ -231,7 +232,7 @@ else
 	--********************************
 	-- load
 	--********************************
-		function _newClass_:load(xmlFile)
+		function _newClass_:load(savegame)
 		-- should always be overwritten
 			_newClass_.registerState( self, "mogliBasicsDummy", false, _newClass_.debugEvent )
 		end

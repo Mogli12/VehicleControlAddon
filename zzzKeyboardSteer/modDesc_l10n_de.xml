@@ -12,20 +12,16 @@
 		<text name="ksmANALOG_OFF"  text="Analog Controller [aus]"/>
 		<text name="ksmREVERSE_ON"  text="Zurückblicken [an]"/>
 		<text name="ksmREVERSE_OFF" text="Zurückblicken [aus]"/>
-		<text name="ksmPLUS"        text="Geschwindigkeitsabh. +"/>
-		<text name="ksmMINUS"       text="Geschwindigkeitsabh. -"/>
-		<text name="ksmMIRROR_ON"   text="Spiegel [an]"/>
-		<text name="ksmMIRROR_OFF"  text="Spiegel [aus]"/>
 		
-		<text name="ksmENABLE"      text="keyboardSteerMogli: Lenkung"/>
-		<text name="ksmCAMERA"      text="keyboardSteerMogli: Kamerabewegung"/>
-		<text name="ksmREVERSE"     text="keyboardSteerMogli: Zurückblicken"/>
-		<text name="ksmANALOG"      text="keyboardSteerMogli: Analog Controller"/>
-		<text name="ksmMIRROR"      text="keyboardSteerMogli: Spiegel"/>
-		
-		<text name="ksmUP"          text="keyboardSteerMogli: Nach vorne schauen"/>
-		<text name="ksmDOWN"        text="keyboardSteerMogli: Nach hinten schauen"/>
-		<text name="ksmLEFT"        text="keyboardSteerMogli: Nach links schauen"/>
-		<text name="ksmRIGHT"       text="keyboardSteerMogli: Nach rechts schauen"/>
+		<text name="input_ksmENABLE"  text="keyboardSteerMogli: Lenkung"/>
+		<text name="input_ksmCAMERA"  text="keyboardSteerMogli: Kamerabewegung"/>
+		<text name="input_ksmREVERSE" text="keyboardSteerMogli: Zurückblicken"/>
+		<text name="input_ksmANALOG"  text="keyboardSteerMogli: Analog Controller"/>
+		<text name="input_ksmPLUS"    text="Geschwindigkeitsabh. +"/>
+		<text name="input_ksmMINUS"   text="Geschwindigkeitsabh. -"/>
+		<text name="input_ksmUP"      text="keyboardSteerMogli: Nach vorne schauen"/>
+		<text name="input_ksmDOWN"    text="keyboardSteerMogli: Nach hinten schauen"/>
+		<text name="input_ksmLEFT"    text="keyboardSteerMogli: Nach links schauen"/>
+		<text name="input_ksmRIGHT"   text="keyboardSteerMogli: Nach rechts schauen"/>
 	</texts>
 </l10n>
