@@ -212,16 +212,16 @@ function keyboardSteerMogli:update(dt)
 				and self:ksmIsValidCam() then
 			local diff = self.cameras[self.camIndex].rotY - self.ksmCameras[self.camIndex].last
 			self.cameras[self.camIndex].rotY = keyboardSteerMogli.normalizeAngle( self.cameras[self.camIndex].origRotY + newRot )
-			if self.ksmCameraIsOn then
-				self.ksmCameras[self.camIndex].zero = self.cameras[self.camIndex].rotY
-				if newRot > 0.55 * math.pi then
-					self.cameras[self.camIndex].rotY = self.cameras[self.camIndex].rotY - self:ksmScaleFx( KSMGlobals.cameraRotFactor, 0.1, 3 ) * self.rotatedTime			
-				else
-					self.cameras[self.camIndex].rotY = self.cameras[self.camIndex].rotY + self:ksmScaleFx( KSMGlobals.cameraRotFactor, 0.1, 3 ) * self.rotatedTime			
-				end
-				self.ksmCameras[self.camIndex].last   = self.cameras[self.camIndex].rotY
-				self.ksmCameras[self.camIndex].smooth = self.cameras[self.camIndex].rotY
-			end
+		--if self.ksmCameraIsOn then
+		--	self.ksmCameras[self.camIndex].zero = self.cameras[self.camIndex].rotY
+		--	if newRot > 0.55 * math.pi then
+		--		self.cameras[self.camIndex].rotY = self.cameras[self.camIndex].rotY - self:ksmScaleFx( KSMGlobals.cameraRotFactor, 0.1, 3 ) * self.rotatedTime			
+		--	else
+		--		self.cameras[self.camIndex].rotY = self.cameras[self.camIndex].rotY + self:ksmScaleFx( KSMGlobals.cameraRotFactor, 0.1, 3 ) * self.rotatedTime			
+		--	end
+		--	self.ksmCameras[self.camIndex].last   = self.cameras[self.camIndex].rotY
+		--	self.ksmCameras[self.camIndex].smooth = self.cameras[self.camIndex].rotY
+		--end
 		end
 	end
 
@@ -233,25 +233,11 @@ function keyboardSteerMogli:update(dt)
 		if      self.mrGbMS ~= nil
 				and self.mrGbMS.IsOn then
 			local rev = self.mrGbMS.ReverseActive
-			if self.isReverseDriving then rev = not ( rev ) end
 				
 			self:ksmSetState( "ksmCamFwd", not ( rev ) )
 			if     rev then 
 				self.ksmMovingDir = -1
 			elseif self.mrGbMS.NeutralActive then
-				self.ksmMovingDir = 0 
-			else 
-				self.ksmMovingDir = 1
-			end
-			self.ksmShuttleControl = true
-		elseif  self.mrGbMIsOn then
-			local rev = self.mrGbMReverseActive
-			if self.isReverseDriving then rev = not ( rev ) end
-
-			self:ksmSetState( "ksmCamFwd", not ( rev ) )
-			if     rev then 
-				self.ksmMovingDir = -1
-			elseif self.mrGbMNeutralActive then
 				self.ksmMovingDir = 0 
 			else 
 				self.ksmMovingDir = 1
@@ -636,8 +622,8 @@ function keyboardSteerMogli:ksmOnSetReverse( old, new, noEventSend )
 end
 
 function keyboardSteerMogli:ksmOnSetCamFwd( old, new, noEventSend ) 
-	self.ksmCamFwd = new
-	if new ~= old then
+	if self.ksmCamFwd ~= new then
+		self.ksmCamFwd = new
 		keyboardSteerMogli.ksmSetCameraFwd( self, new )
 		self.ksmLastAxisFwd = 0
 	end
@@ -658,11 +644,11 @@ function keyboardSteerMogli:ksmSetCameraFwd( camFwd )
 			local diff = math.abs( keyboardSteerMogli.normalizeAngle( self.cameras[i].rotY - self.cameras[i].origRotY ) )
 			if camFwd then
 				if diff > pi2 then
-					self.cameras[i].rotY = keyboardSteerMogli.normalizeAngle( self.cameras[i].rotY + math.pi )
+					self.cameras[i].rotY    = keyboardSteerMogli.normalizeAngle( self.cameras[i].rotY + math.pi )
 				end
 			else
 				if diff < pi2 then
-					self.cameras[i].rotY = keyboardSteerMogli.normalizeAngle( self.cameras[i].rotY + math.pi )
+					self.cameras[i].rotY    = keyboardSteerMogli.normalizeAngle( self.cameras[i].rotY + math.pi )
 				end
 			end
 		end
