@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <KSMGlobals>
-	<cameraRotFactor     type="float" value="1.25"/>
-	<cameraRotFactorRev  type="float" value="0.5"/>
-	<cameraRotTimeMax    type="float" value="0.01"/>
-	<cameraRotTimeInc    type="float" value="0.1"/>
+	<cameraRotFactor     type="float" value="0.7"/>
+	<cameraRotFactorRev  type="float" value="0.4"/>
+	<cameraRotTime       type="float" value="0.001"/>
   <speedFxInc  	       type="float" value="0.5"/>     
   <timer4Reverse       type="int"   value="500"/>     
 	<axisForwardSmooth   type="float" value="0.002"/> 
@@ -25,12 +24,12 @@
  <axisSideFx1 type="float" value="1.2"/>
  <axisSideFx2 type="float" value="0.9"/>
  <axisSideFx3 type="float" value="0.6"/>
- <axisSideFxMax type="float" value="0.16"/>
+ <axisSideFxMax type="float" value="0.3"/>
  <maxRotTimeFx0 type="float" value="1"/>
  <maxRotTimeFx1 type="float" value="1"/>
- <maxRotTimeFx2 type="float" value="0.95"/>
- <maxRotTimeFx3 type="float" value="0.75"/>
- <maxRotTimeFxMax type="float" value="0.2"/>
+ <maxRotTimeFx2 type="float" value="0.96"/>
+ <maxRotTimeFx3 type="float" value="0.82"/>
+ <maxRotTimeFxMax type="float" value="0.5"/>
 	
 	<!-- defaults -->
 	<ksmSteeringIsOn     type="bool"  value="true"/>

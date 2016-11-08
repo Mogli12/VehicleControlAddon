@@ -14,11 +14,12 @@
 -- 3.05 string support in globalsLoad
 -- 3.06 degrees support in globalsLoad
 -- 3.10 FS17 version
+-- 3.11 postLoad to load old savegame
 
 -- Usage:  source(Utils.getFilename("mogliBase.lua", g_currentModDirectory));
 --         _G[g_currentModDirectory.."mogliBase"].newClass( "AutoCombine", "acParameters" )
 
-local mogliBaseVersion   = 3.10
+local mogliBaseVersion   = 3.11
 local mogliBaseClass     = g_currentModName..".mogliBase"
 local mogliEventClass    = g_currentModName..".mogliEvent"
 --local mogliEventClass_mt = g_currentModDirectory.."mogliEvent_mt"
@@ -235,6 +236,15 @@ else
 		function _newClass_:load(savegame)
 		-- should always be overwritten
 			_newClass_.registerState( self, "mogliBasicsDummy", false, _newClass_.debugEvent )
+		end
+
+	--********************************
+	-- postLoad
+	--********************************
+		function _newClass_:postLoad(savegame)
+			if savegame ~= nil and type( _newClass_.loadFromAttributesAndNodes ) == "function" then
+				_newClass_.loadFromAttributesAndNodes( self, savegame.xmlFile, savegame.key, savegame.resetVehicles )
+			end
 		end
 
 	--********************************

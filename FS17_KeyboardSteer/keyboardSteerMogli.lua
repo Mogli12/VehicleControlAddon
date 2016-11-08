@@ -12,9 +12,7 @@ function keyboardSteerMogli.globalsReset( createIfMissing )
 	KSMGlobals                   = {}
 	KSMGlobals.cameraRotFactor     = 0
 	KSMGlobals.cameraRotFactorRev  = 0
-	KSMGlobals.cameraRotTime       = 0 --deprecated
-	KSMGlobals.cameraRotTimeMax    = 0
-	KSMGlobals.cameraRotTimeInc    = 0
+	KSMGlobals.cameraRotTime       = 0
 	KSMGlobals.speedFxPoint1       = 0
 	KSMGlobals.speedFxPoint2       = 0
 	KSMGlobals.speedFxPoint3       = 0
@@ -37,9 +35,7 @@ function keyboardSteerMogli.globalsReset( createIfMissing )
   KSMGlobals.timer4Reverse       = 0
   KSMGlobals.minSpeed4Fx	       = 0
   KSMGlobals.speedFxInc          = 0
-  KSMGlobals.axisForwardSmooth   = 0
 	KSMGlobals.enableAnalogCtrl    = false
-	KSMGlobals.axisForwardGearbox  = false
 	KSMGlobals.debugPrint          = false
 	
 -- defaults	
@@ -62,11 +58,6 @@ function keyboardSteerMogli.globalsReset( createIfMissing )
 		keyboardSteerMogli.globalsLoad( file, "KSMGlobals", KSMGlobals )	
 	elseif createIfMissing then
 		keyboardSteerMogli.globalsCreate()
-	end
-	
--- compatibility	
-	if KSMGlobals.cameraRotTimeMax == 0 and KSMGlobals.cameraRotTime > 0 then
-		KSMGlobals.cameraRotTimeMax = KSMGlobals.cameraRotTime * 33
 	end
 	
 	KSMGlobals.autoRotateBackFx = AnimCurve:new(linearInterpolator1)
@@ -115,8 +106,7 @@ function keyboardSteerMogli:isValidCam( index, createIfMissing )
 				self.ksmCameras[i] = { rotation = keyboardSteerMogli.getDefaultRotation( self, i ),
 															 rev      = keyboardSteerMogli.getDefaultReverse( self, i ),
 															 zero     = self.cameras[i].rotY,
-															 last     = self.cameras[i].rotY,
-															 smooth   = self.cameras[i].rotY }
+															 last     = self.cameras[i].rotY }
 			else
 				return false
 			end
@@ -128,6 +118,7 @@ function keyboardSteerMogli:isValidCam( index, createIfMissing )
 end
 
 function keyboardSteerMogli:load(savegame)
+
 	self.ksmScaleFx       = keyboardSteerMogli.scaleFx
 	self.ksmSetState      = keyboardSteerMogli.mbSetState
 	self.ksmIsValidCam    = keyboardSteerMogli.isValidCam
@@ -147,15 +138,12 @@ function keyboardSteerMogli:load(savegame)
 	self.ksmFactor        = 1
 	self.ksmSpeedFxMin    = KSMGlobals.minSpeed4Fx / ( KSMGlobals.maxSpeed4Fx - KSMGlobals.minSpeed4Fx )
 	self.ksmSpeedFxFactor = 3600 / ( KSMGlobals.maxSpeed4Fx - KSMGlobals.minSpeed4Fx )
-	self.reverseTimer     = 1.5 / KSMGlobals.timer4Reverse
+	self.ksmReverseTimer  = 1.5 / KSMGlobals.timer4Reverse
 	self.ksmMovingDir     = 0
-	self.ksmWandtedMovingDir = 0
+	self.ksmLastFactor    = 0
 	self.ksmWarningTimer  = 0
 	self.ksmLCtrlPressed  = false
 	self.ksmLShiftPressed = false
-	self.ksmLastAxisFwd   = 0
-	self.ksmDirChangeTimer= 0
-	self.ksmChangeDir     = false
 
 	if KSMGlobals.ksmSteeringIsOn then
 		self:ksmSetState( "ksmSteeringIsOn", true, true )
@@ -212,103 +200,102 @@ function keyboardSteerMogli:update(dt)
 				and self:ksmIsValidCam() then
 			local diff = self.cameras[self.camIndex].rotY - self.ksmCameras[self.camIndex].last
 			self.cameras[self.camIndex].rotY = keyboardSteerMogli.normalizeAngle( self.cameras[self.camIndex].origRotY + newRot )
-		--if self.ksmCameraIsOn then
-		--	self.ksmCameras[self.camIndex].zero = self.cameras[self.camIndex].rotY
-		--	if newRot > 0.55 * math.pi then
-		--		self.cameras[self.camIndex].rotY = self.cameras[self.camIndex].rotY - self:ksmScaleFx( KSMGlobals.cameraRotFactor, 0.1, 3 ) * self.rotatedTime			
-		--	else
-		--		self.cameras[self.camIndex].rotY = self.cameras[self.camIndex].rotY + self:ksmScaleFx( KSMGlobals.cameraRotFactor, 0.1, 3 ) * self.rotatedTime			
-		--	end
-		--	self.ksmCameras[self.camIndex].last   = self.cameras[self.camIndex].rotY
-		--	self.ksmCameras[self.camIndex].smooth = self.cameras[self.camIndex].rotY
-		--end
 		end
 	end
 
 	if self:getIsActive() and self.isServer then
 		local deltaFx      = math.max( self.lastSpeed * self.ksmSpeedFxFactor - self.ksmSpeedFxMin, 0 )  - self.ksmSpeedFx
 		self.ksmSpeedFx    = math.min( self.ksmSpeedFx + KSMGlobals.speedFxInc * deltaFx, 1 )
-		
-		self.ksmChangeDir = false
+
 		if      self.mrGbMS ~= nil
 				and self.mrGbMS.IsOn then
-			local rev = self.mrGbMS.ReverseActive
-				
-			self:ksmSetState( "ksmCamFwd", not ( rev ) )
-			if     rev then 
+			if self.mrGbMS.ReverseActive then
 				self.ksmMovingDir = -1
-			elseif self.mrGbMS.NeutralActive then
-				self.ksmMovingDir = 0 
-			else 
+			else
 				self.ksmMovingDir = 1
 			end
-			self.ksmShuttleControl = true
-		elseif  g_currentMission.driveControl ~= nil
-				and g_currentMission.driveControl.useModules ~= nil
-				and g_currentMission.driveControl.useModules.shuttle 
-				and self.driveControl ~= nil 
+		elseif  self.dCcheckModule        ~=  nil 
+				and self.driveControl         ~= nil
+				and self:dCcheckModule("shuttle")
 				and self.driveControl.shuttle ~= nil 
+				and self.driveControl.shuttle.isActive 
 				and self.driveControl.shuttle.direction ~= nil 
 				and self.driveControl.shuttle.isActive then
-			if self.driveControl.shuttle.direction < 0 then
-				self:ksmSetState( "ksmCamFwd", false )
-			else
-				self:ksmSetState( "ksmCamFwd", true )
-			end
-			self.ksmMovingDir = self.driveControl.shuttle.direction
+			self.ksmMovingDir = self.driveControl.shuttle.direction * self.reverserDirection
 		else
-			self.ksmChangeDir = true
-			local movingDirection = self.movingDirection
+			local movingDirection = self.movingDirection * self.reverserDirection
 			if math.abs( self.lastSpeed ) < 0.00054 then
 				movingDirection = 0
 			end
-				
-			local maxDelta    = dt * self.reverseTimer
+					
+			local maxDelta    = dt * self.ksmReverseTimer
 			self.ksmMovingDir = self.ksmMovingDir + Utils.clamp( movingDirection - self.ksmMovingDir, -maxDelta, maxDelta )
-			
-			if math.abs( self.ksmMovingDir ) >  0.5 then
-				local newCamFwd = ( self.ksmMovingDir >= 0 )
-				if self.ksmCamFwd ~= newCamFwd then
-					self:ksmSetState( "ksmCamFwd", newCamFwd )
-				end
-			end
+		
 		end
+			
+		if     self.ksmMovingDir < -0.5 then
+			self:ksmSetState( "ksmCamFwd", false )
+		elseif self.ksmMovingDir >  0.5 then
+			self:ksmSetState( "ksmCamFwd", true )
+		else
+			fwd = self.ksmCamFwd
+		end		
 	end
 	
 	if      self:getIsActive() 
 			and self.steeringEnabled
 			and self.ksmCameraIsOn 
 			and self:ksmIsValidCam() then
-		
-		local diff = self.cameras[self.camIndex].rotY - self.ksmCameras[self.camIndex].last
-		self.ksmCameras[self.camIndex].zero   = self.ksmCameras[self.camIndex].zero   + diff
-		self.ksmCameras[self.camIndex].smooth = self.ksmCameras[self.camIndex].smooth + diff
+
+	--local _,oldRotY,_ = getRotation( self.cameras[self.camIndex].rotationNode )
+		oldRotY = self.cameras[self.camIndex].rotY
+		local diff = oldRotY - self.ksmCameras[self.camIndex].last
+		self.ksmCameras[self.camIndex].zero   = self.ksmCameras[self.camIndex].zero + diff
 			
 		local newRotY = self.ksmCameras[self.camIndex].zero
-		local diff = math.abs( keyboardSteerMogli.normalizeAngle( self.cameras[self.camIndex].rotY - self.cameras[self.camIndex].origRotY ) )
-		if     self.isReverseDriving and diff > 0.55* math.pi
-				or ( not ( self.isReverseDriving ) and diff <= 0.55* math.pi ) then
-			newRotY = newRotY + self:ksmScaleFx( KSMGlobals.cameraRotFactor, 0.1, 3 ) * self.rotatedTime			
-		else
-			newRotY = newRotY - self:ksmScaleFx( KSMGlobals.cameraRotFactorRev, 0.1, 3 ) * self.rotatedTime
-		end		
-	
-		if lastCamIndex ~= nil and lastCamIndex == self.ksmLastCamIndex then
-			diff = newRotY - self.ksmCameras[self.camIndex].smooth
-		--diff = Utils.clamp( diff, -KSMGlobals.cameraRotTime*dt, KSMGlobals.cameraRotTime*dt )
-
-			self.ksmCameras[self.camIndex].smooth = self.ksmCameras[self.camIndex].smooth + KSMGlobals.cameraRotTimeInc * diff
-			
-			diff = self.ksmCameras[self.camIndex].smooth - self.cameras[self.camIndex].rotY
-			diff = Utils.clamp( diff, -KSMGlobals.cameraRotTimeMax*dt, KSMGlobals.cameraRotTimeMax*dt )
-			
-			self.cameras[self.camIndex].rotY = self.cameras[self.camIndex].rotY + diff
-		else
-			self.cameras[self.camIndex].rotY      = newRotY
-			self.ksmCameras[self.camIndex].smooth = newRotY
+		diff = math.abs( keyboardSteerMogli.getAbsolutRotY( self, self.camIndex ) )
+		local isRev = false
+		if diff <  0.55* math.pi then
+			isRev = true
 		end
 		
+		local f = 0
+		if     self.rotatedTime > 0 then
+			f = self.rotatedTime / self.maxRotTime
+		elseif self.rotatedTime < 0 then
+			f = self.rotatedTime / self.minRotTime
+		end
+		if f < 0.1 then
+			f = 0
+		else
+			f = 1.2345679 * ( f - 0.1 ) ^2 / 0.81
+		--f = 1.1111111 * ( f - 0.1 )
+		end
+		if self.rotatedTime < 0 then
+			f = -f
+		end
+		
+		local g = self.ksmLastFactor
+		self.ksmLastFactor = self.ksmLastFactor + Utils.clamp( f - self.ksmLastFactor, -KSMGlobals.cameraRotTime*dt, KSMGlobals.cameraRotTime*dt )
+		if math.abs( self.ksmLastFactor - g ) > 0.01 then
+			f = self.ksmLastFactor
+		else
+			f = g
+		end
+		
+		if isRev then
+		--print("reverse")
+			newRotY = newRotY - self:ksmScaleFx( KSMGlobals.cameraRotFactorRev, 0.1, 3 ) * f
+		else
+		--print("forward")
+			newRotY = newRotY + self:ksmScaleFx( KSMGlobals.cameraRotFactor, 0.1, 3 ) * f
+		end		
+	
+		self.cameras[self.camIndex].rotY    = newRotY
 		self.ksmCameras[self.camIndex].last = self.cameras[self.camIndex].rotY
+		
+	else
+		self.ksmLastFactor = 0
 	end	
 
 	self.ksmWarningTimer = self.ksmWarningTimer - dt
@@ -460,6 +447,7 @@ function keyboardSteerMogli:getSaveAttributesAndNodes(nodeIdent)
 end;
 
 function keyboardSteerMogli:loadFromAttributesAndNodes(xmlFile, key, resetVehicles)
+
 	local b = getXMLBool(xmlFile, key .. "#ksmSteeringIsOn" )
 	if b ~= nil then
 		self:ksmSetState( "ksmSteeringIsOn", b,  true ) 
@@ -528,64 +516,10 @@ function keyboardSteerMogli:newUpdateVehiclePhysics( superFunc, axisForward, axi
 	end
 	
 	if      self.ksmSteeringIsOn 
-			and ( self.ksmAnalogIsOn or not ( axisForwardIsAnalog ) )
-			and ( self.mrGbMS == nil or not ( self.mrGbMS.IsOn ) ) then
-		local limit = true
-		if self.ksmWandtedMovingDir == 0 then
-			if self.ksmChangeDir then
-				if axisForward > 0 then
-					self.ksmWandtedMovingDir = -1
-				else
-					self.ksmWandtedMovingDir = 1
-				end
-				self.ksmMovingDir = self.ksmWandtedMovingDir
-			else
-				self.ksmWandtedMovingDir = self.ksmMovingDir
-			end
-		elseif self.ksmWandtedMovingDir * axisForward > 0 then
-			if math.abs( self.lastSpeed ) >= 0.00027 then
-				self.ksmDirChangeTimer = 500
-			else
-				axisForward = 0
-				limit       = false
-				if self.ksmDirChangeTimer > 0 then
-					self.ksmDirChangeTimer = self.ksmDirChangeTimer -dt
-				else
-					self.ksmWandtedMovingDir = 0
-				end
-			end
-		end
-		
-		if self.ksmLShiftPressed then
-			axisForward = Utils.clamp( axisForward, -0.75, 0.75 )
-			axisForwardIsAnalog = true
-		end
-			
-		if limit then
-			if self.ksmWandtedMovingDir * axisForward < 0 then
-				axisForward = math.max( axisForward, self.ksmLastAxisFwd - self.ksmWandtedMovingDir * KSMGlobals.axisForwardSmooth * dt )
-				axisForwardIsAnalog = true
-			end
-		end
-		
-		self.ksmLastAxisFwd = math.min( axisForward, self.ksmLastAxisFwd + self.ksmWandtedMovingDir * KSMGlobals.axisForwardSmooth * dt )
-	elseif  KSMGlobals.axisForwardGearbox
-			and self.ksmSteeringIsOn 
-			and ( self.ksmAnalogIsOn or not ( axisForwardIsAnalog ) )
-			and self.mrGbMS ~= nil 
-			and self.mrGbMS.IsOn then
-  
-		if self.ksmLShiftPressed then
-			axisForward = Utils.clamp( axisForward, -0.75, 0.75 )
-			axisForwardIsAnalog = true
-		end
-		
-		if axisForward < 0 then
-			axisForward = math.max( axisForward, self.ksmLastAxisFwd - KSMGlobals.axisForwardSmooth * dt )
-			axisForwardIsAnalog = true
-		end
-		
-		self.ksmLastAxisFwd = math.min( axisForward, self.ksmLastAxisFwd + KSMGlobals.axisForwardSmooth * dt )
+			and self.ksmLShiftPressed 
+			and ( self.ksmAnalogIsOn or not ( axisForwardIsAnalog ) ) then
+		axisForward = Utils.clamp( axisForward, -0.75, 0.75 )
+		axisForwardIsAnalog = true
 	end
 	
 	local state, result = pcall( superFunc, self, axisForward, axisForwardIsAnalog, axisSide, axisSideIsAnalog, doHandbrake, dt, ... )
@@ -604,11 +538,18 @@ function keyboardSteerMogli:ksmOnSetCamera( old, new, noEventSend )
 			and self:ksmIsValidCam( self.ksmLastCamIndex ) then
 		self.ksmCameras[self.ksmLastCamIndex].rotation = new
 	end
-	for i,c in pairs(self.cameras) do
-		if self:ksmIsValidCam( i ) then
-			self.ksmCameras[i].zero = c.rotY
-			self.ksmCameras[i].last = c.rotY
-			self.ksmCameras[i].smooth = c.rotY
+	if new and not ( old ) then
+		for i,c in pairs(self.cameras) do
+			if self:ksmIsValidCam( i ) then
+				self.ksmCameras[i].zero = c.rotY
+				self.ksmCameras[i].last = c.rotY
+			end
+		end
+	elseif old and not ( new ) then
+		for i=1,table.getn(self.cameras) do
+			if self:ksmIsValidCam( i ) and self.ksmCameras[i].zero ~= nil then
+				self.cameras[i].rotY = self.ksmCameras[i].zero
+			end
 		end
 	end
 end
@@ -625,7 +566,6 @@ function keyboardSteerMogli:ksmOnSetCamFwd( old, new, noEventSend )
 	if self.ksmCamFwd ~= new then
 		self.ksmCamFwd = new
 		keyboardSteerMogli.ksmSetCameraFwd( self, new )
-		self.ksmLastAxisFwd = 0
 	end
 end
 
@@ -641,19 +581,37 @@ function keyboardSteerMogli:ksmSetCameraFwd( camFwd )
 			rev = self.ksmCameras[i].rev
 		end
 		if self.cameras[i].isRotatable and rev then
-			local diff = math.abs( keyboardSteerMogli.normalizeAngle( self.cameras[i].rotY - self.cameras[i].origRotY ) )
+			local diff = math.abs( keyboardSteerMogli.getAbsolutRotY( self, i ) )
+			local inv  = false
 			if camFwd then
-				if diff > pi2 then
-					self.cameras[i].rotY    = keyboardSteerMogli.normalizeAngle( self.cameras[i].rotY + math.pi )
-				end
+				inv = diff < pi2
 			else
-				if diff < pi2 then
-					self.cameras[i].rotY    = keyboardSteerMogli.normalizeAngle( self.cameras[i].rotY + math.pi )
-				end
+				inv = diff > pi2
+			end
+			if inv then
+				self.cameras[i].rotY      = keyboardSteerMogli.normalizeAngle( self.cameras[i].rotY + math.pi )
+			--self.ksmCameras[i].last   = self.cameras[i].rotY
+			--if self.ksmCameras[i].zero ~= nil then
+			--	self.ksmCameras[i].zero = keyboardSteerMogli.normalizeAngle( self.ksmCameras[i].zero + math.pi )
+			--end
 			end
 		end
 	end
 end
+
+----********************************
+---- normalizeAngle
+----********************************
+--function keyboardSteerMogli.normalizeAngle( angle )
+--	local normalizedAngle = angle
+--	if angle >= math.pi+math.pi then
+--		normalizedAngle = angle - math.pi - math.pi
+--	elseif angle < 0 then
+--		normalizedAngle = angle + math.pi + math.pi
+--	end
+--	return normalizedAngle
+--end
+
 
 function keyboardSteerMogli:ksmOnSetFactor( old, new, noEventSend )
 	self.ksmExponent = new
@@ -669,7 +627,14 @@ function keyboardSteerMogli:ksmOnSetCamIndex( old, new, noEventSend )
 	self.ksmLastCamIndex = new
 	if      self.cameras ~= nil 
 			and new ~= nil 
+			and ( old == nil or old ~= new )
 			and self:ksmIsValidCam( new, true ) then
+		if old ~= nil then
+			if self:ksmIsValidCam( old ) and self.ksmCameras[old].zero ~= nil then
+				self.cameras[old].rotY = self.ksmCameras[old].zero
+			end
+		end
+		
 		keyboardSteerMogli.ksmSetCameraFwd( self, self.ksmCamFwd )
 		if self.ksmCameras[new].rotation ~= self.ksmCameraIsOn then
 			self:ksmSetState( "ksmCameraIsOn", self.ksmCameras[new].rotation, true )
@@ -678,6 +643,28 @@ function keyboardSteerMogli:ksmOnSetCamIndex( old, new, noEventSend )
 			self:ksmSetState( "ksmReverseIsOn", self.ksmCameras[new].rev, true )
 		end
 	end
+end
+
+function keyboardSteerMogli:getAbsolutRotY( camIndex )
+	if     self.cameras == nil
+			or self.cameras[camIndex] == nil then
+		return 0
+	end
+  return keyboardSteerMogli.getRelativeYRotation( self.cameras[camIndex].cameraNode, self.steeringCenterNode )
+end
+
+function keyboardSteerMogli.getRelativeYRotation(root,node)
+	if root == nil or node == nil then
+		return 0
+	end
+	local x, y, z = worldDirectionToLocal(node, localDirectionToWorld(root, 0, 0, 1))
+	local dot = z
+	dot = dot / Utils.vector2Length(x, z)
+	local angle = math.acos(dot)
+	if x < 0 then
+		angle = -angle
+	end
+	return angle
 end
 
 
