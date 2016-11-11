@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<l10n>
+	<!-- Note that 'description' is only here for easier translations. It needs to be manually copied to ModDesc.XML later. -->
+	<description><![CDATA[Ajoute la spécialisation pour la conduite adaptative au clavier]]></description>
+	<texts>
+		<text name="ksmENABLE_ON"     text="Conduite [adaptive]" />
+		<text name="ksmENABLE_OFF"    text="Conduite [normale]" />
+		<text name="ksmCAMERA_ON"     text="Mouvement de caméra [ON]" />
+		<text name="ksmCAMERA_OFF"    text="Mouvement de caméra [OFF]" />
+		<text name="ksmANALOG_ON"     text="Manette analogique [ON]" />
+		<text name="ksmANALOG_OFF"    text="Manette analogique [OFF]" />
+		<text name="ksmREVERSE_ON"    text="Caméra de recul [ON]" />
+		<text name="ksmREVERSE_OFF"   text="Caméra de recul [OFF]" />
+
+		<text name="input_ksmENABLE"  text="keyboardSteer : Direction" />
+		<text name="input_ksmCAMERA"  text="keyboardSteer : Mouvement de caméra" />
+		<text name="input_ksmREVERSE" text="keyboardSteer : Caméra de recul" />
+		<text name="input_ksmANALOG"  text="keyboardSteer : Manette analogique" />
+		<text name="input_ksmPLUS"    text="Sensibilité +" />
+		<text name="input_ksmMINUS"   text="Sensibilité -" />
+		<text name="input_ksmUP"      text="keyboardSteer : Devant" />
+		<text name="input_ksmDOWN"    text="keyboardSteer : Derrière" />
+		<text name="input_ksmLEFT"    text="keyboardSteer : Gauche" />
+		<text name="input_ksmRIGHT"   text="keyboardSteer : Droite" />
+	</texts>
+</l10n>
