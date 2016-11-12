@@ -12,7 +12,7 @@ function keyboardSteerMogli_Register:loadMap(name)
 				local allowInsertion = true;
 				for i = 1, table.maxn(v.specializations) do
 					local vs = v.specializations[i];
-					if vs ~= nil and vs == SpecializationUtil.getSpecialization("steerable") then
+					if vs ~= nil and vs == SpecializationUtil.getSpecialization("drivable") then
 						local v_name_string = v.name 
 						local point_location = string.find(v_name_string, ".", nil, true)
 						if point_location ~= nil then
