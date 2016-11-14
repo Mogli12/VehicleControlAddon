@@ -276,7 +276,8 @@ function keyboardSteerMogli:update(dt)
 				
 		--diff = math.abs( keyboardSteerMogli.getAbsolutRotY( self, i ) )
 			local isRev = false
-			if -pi2 < self.ksmCameras[i].zero and self.ksmCameras[i].zero < pi2 then
+			local aRotY = keyboardSteerMogli.normalizeAngle( keyboardSteerMogli.getAbsolutRotY( self, i ) - self.cameras[i].rotY + self.ksmCameras[i].zero )
+			if -pi2 < aRotY and aRotY < pi2 then
 				isRev = true
 			end
 			
@@ -328,19 +329,19 @@ function keyboardSteerMogli:update(dt)
 					newRotY = newRotY + self:ksmScaleFx( KSMGlobals.cameraRotFactor, 0.1, 3 ) * f
 				end	
 				
-				if self.ksmReverseIsOn then
-					newRotY = keyboardSteerMogli.normalizeAngle( newRotY )
-					
-					if isRev then
-						newRotY = math.min( math.max( newRotY, eps-pi2 ), pi2-eps )
-					elseif -pi2-eps < newRotY and newRotY < pi2+eps then
-						if newRotY < 0 then
-							newRotY = -pi2-eps
-						else
-							newRotY = pi2+eps
-						end
-					end
-				end
+			--if self.ksmReverseIsOn then
+			--	newRotY = keyboardSteerMogli.normalizeAngle( newRotY )
+			--	
+			--	if isRev then
+			--		newRotY = math.min( math.max( newRotY, eps-pi2 ), pi2-eps )
+			--	elseif -pi2-eps < newRotY and newRotY < pi2+eps then
+			--		if newRotY < 0 then
+			--			newRotY = -pi2-eps
+			--		else
+			--			newRotY = pi2+eps
+			--		end
+			--	end
+			--end
 			else
 				self.ksmLastFactor = 0
 			end

@@ -149,13 +149,11 @@ else
 	-- getUiScale
 	--********************************
 		function _newClass_.getUiScale()
-			if g_uiScale == nil then
-				return 1
-			elseif g_uiScale < 0.01 then
-				return 0.01
-			else
-				return g_uiScale 
+			local uiScale = 1.0
+			if g_gameSettings ~= nil and g_gameSettings.getValue ~= nil then
+					uiScale = Utils.getNoNil(g_gameSettings:getValue("uiScale"), 1.0)
 			end
+			return uiScale 
 		end
 		
 	--********************************
