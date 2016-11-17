@@ -5,6 +5,7 @@
 		<en>Keyboard Steer</en>
 		<de>Keyboard Steer</de> 
 		<fr>Keyboard Steer</fr> 
+		<es>Keyboard Steer</es> 
 	</title>
 	<description>
 		<en><![CDATA[
@@ -54,6 +55,7 @@ Toutes les fonctions peuvent également être éteint à nouveau, avec les touch
 
 [Maj + flèche droite du clavier]: Looking Forward, arrière, gauche, droite
 ]]></fr>
+		<es><![CDATA[Añade la capacidad de modular el volante en la conducción con el teclado]]></es>
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>store.dds</iconFilename>
@@ -63,6 +65,7 @@ Toutes les fonctions peuvent également être éteint à nouveau, avec les touch
 			<de>KeyboardSteer v2.1</de>
 			<en>KeyboardSteer v2.1</en>
 			<fr>KeyboardSteer v2.1</fr>
+			<es>KeyboardSteer v2.1</es>
 		</text>
 	</l10n>
 	<inputBindings>
