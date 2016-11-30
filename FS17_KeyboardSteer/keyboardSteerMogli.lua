@@ -31,10 +31,17 @@ function keyboardSteerMogli.globalsReset( createIfMissing )
 	KSMGlobals.maxRotTimeFx2       = 0
 	KSMGlobals.maxRotTimeFx3       = 0
 	KSMGlobals.maxRotTimeFxMax     = 0
+	KSMGlobals.waitTimeFx0	       = 0
+	KSMGlobals.waitTimeFx1	       = 0
+	KSMGlobals.waitTimeFx2	       = 0
+	KSMGlobals.waitTimeFx3	       = 0
+	KSMGlobals.waitTimeFxMax	     = 0
   KSMGlobals.maxSpeed4Fx	       = 0
   KSMGlobals.timer4Reverse       = 0
   KSMGlobals.minSpeed4Fx	       = 0
   KSMGlobals.speedFxInc          = 0
+  KSMGlobals.autoRotateBackWait  = 0	
+  KSMGlobals.axisSideWait        = 0	
 	KSMGlobals.enableAnalogCtrl    = false
 	KSMGlobals.debugPrint          = false
 	
@@ -63,6 +70,7 @@ function keyboardSteerMogli.globalsReset( createIfMissing )
 	KSMGlobals.autoRotateBackFx = AnimCurve:new(linearInterpolator1)
 	KSMGlobals.axisSideFx       = AnimCurve:new(linearInterpolator1)
 	KSMGlobals.maxRotTimeFx     = AnimCurve:new(linearInterpolator1)
+	KSMGlobals.waitTimeFx       = AnimCurve:new(linearInterpolator1)
 	
 	KSMGlobals.autoRotateBackFx:addKeyframe({v=KSMGlobals.autoRotateBackFx0, time = 0})
 	KSMGlobals.autoRotateBackFx:addKeyframe({v=KSMGlobals.autoRotateBackFx1, time = KSMGlobals.speedFxPoint1/KSMGlobals.maxSpeed4Fx})
@@ -81,6 +89,12 @@ function keyboardSteerMogli.globalsReset( createIfMissing )
 	KSMGlobals.maxRotTimeFx:addKeyframe({v=KSMGlobals.maxRotTimeFx2, time = KSMGlobals.speedFxPoint2/KSMGlobals.maxSpeed4Fx})
 	KSMGlobals.maxRotTimeFx:addKeyframe({v=KSMGlobals.maxRotTimeFx3, time = KSMGlobals.speedFxPoint3/KSMGlobals.maxSpeed4Fx})
 	KSMGlobals.maxRotTimeFx:addKeyframe({v=KSMGlobals.maxRotTimeFxMax, time = 1})
+		
+	KSMGlobals.waitTimeFx:addKeyframe({v=KSMGlobals.waitTimeFx0, time = 0})
+	KSMGlobals.waitTimeFx:addKeyframe({v=KSMGlobals.waitTimeFx1, time = KSMGlobals.speedFxPoint1/KSMGlobals.maxSpeed4Fx})
+	KSMGlobals.waitTimeFx:addKeyframe({v=KSMGlobals.waitTimeFx2, time = KSMGlobals.speedFxPoint2/KSMGlobals.maxSpeed4Fx})
+	KSMGlobals.waitTimeFx:addKeyframe({v=KSMGlobals.waitTimeFx3, time = KSMGlobals.speedFxPoint3/KSMGlobals.maxSpeed4Fx})
+	KSMGlobals.waitTimeFx:addKeyframe({v=KSMGlobals.waitTimeFxMax, time = 1})
 		
 	print("keyboardSteerMogli initialized");
 end
@@ -559,6 +573,42 @@ function keyboardSteerMogli:newUpdateVehiclePhysics( superFunc, axisForward, axi
 		
 		self.minRotTime = f * backup2
 		self.maxRotTime = f * backup3
+		
+		local w = 1000 * KSMGlobals.waitTimeFx:get( self.ksmSpeedFx )
+		if axisSideIsAnalog or w <= 0 or axisSide * self.rotatedTime > 0 then
+			self.ksmAxisSideTimer1 = nil
+			self.ksmAxisSideTimer2 = nil
+		else		
+			local t									
+			if math.abs( axisSide ) < 0.001 then
+				t = self.ksmAxisSideTimer2
+			else
+				t = self.ksmAxisSideTimer1
+			end
+			
+			if t == nil then
+				t = g_currentMission.time - dt
+			end
+			
+			local f = 1
+			if g_currentMission.time < t + w then
+				f = ( g_currentMission.time - t ) / w
+			end
+			
+			if math.abs( axisSide ) < 0.001 then
+				self.ksmAxisSideTimer1 = nil
+				self.ksmAxisSideTimer2 = t				
+				if f < 1 and KSMGlobals.autoRotateBackWait > 0 then
+					self.autoRotateBackSpeed = self.autoRotateBackSpeed * ( 1 - KSMGlobals.autoRotateBackWait + f * KSMGlobals.autoRotateBackWait )
+				end
+			else
+				self.ksmAxisSideTimer1 = t
+				self.ksmAxisSideTimer2 = nil
+				if f < 1 and KSMGlobals.axisSideWait > 0 then
+					axisSide = axisSide  * ( 1 - KSMGlobals.axisSideWait + f * KSMGlobals.axisSideWait )
+				end
+			end
+		end
 		
 		axisSide = self:ksmScaleFx( KSMGlobals.axisSideFx:get( self.ksmSpeedFx ), 0.1, 3 ) * axisSide
 		if axisSide > 0 and self.rotatedTime > 0 then

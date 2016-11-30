@@ -15,21 +15,29 @@
  <speedFxPoint2 type="float" value="25"/>
  <speedFxPoint3 type="float" value="50"/>
  <maxSpeed4Fx type="float" value="100"/>
- <autoRotateBackFx0 type="float" value="0.2"/>
- <autoRotateBackFx1 type="float" value="0.85"/>
- <autoRotateBackFx2 type="float" value="1.2"/>
- <autoRotateBackFx3 type="float" value="1.6"/>
- <autoRotateBackFxMax type="float" value="2"/>
+ <autoRotateBackFx0 type="float" value="0.1"/>
+ <autoRotateBackFx1 type="float" value="1"/>
+ <autoRotateBackFx2 type="float" value="2"/>
+ <autoRotateBackFx3 type="float" value="3"/>
+ <autoRotateBackFxMax type="float" value="4"/>
  <axisSideFx0 type="float" value="2"/>
  <axisSideFx1 type="float" value="1.2"/>
  <axisSideFx2 type="float" value="0.9"/>
  <axisSideFx3 type="float" value="0.6"/>
- <axisSideFxMax type="float" value="0.3"/>
+ <axisSideFxMax type="float" value="0.25"/>
  <maxRotTimeFx0 type="float" value="1"/>
  <maxRotTimeFx1 type="float" value="1"/>
- <maxRotTimeFx2 type="float" value="0.96"/>
- <maxRotTimeFx3 type="float" value="0.82"/>
- <maxRotTimeFxMax type="float" value="0.5"/>
+ <maxRotTimeFx2 type="float" value="1"/>
+ <maxRotTimeFx3 type="float" value="1"/>
+ <maxRotTimeFxMax type="float" value="0.7"/>
+ <waitTimeFx0 type="float" value="2"/>
+ <waitTimeFx1 type="float" value="2"/>
+ <waitTimeFx2 type="float" value="1.9"/>
+ <waitTimeFx3 type="float" value="1.6"/>
+ <waitTimeFxMax type="float" value="1"/>
+	
+	<autoRotateBackWait	type="float" value="0.75"/>
+	<axisSideWait       type="float" value="0.25"/>
 	
 	<!-- defaults -->
 	<ksmSteeringIsOn     type="bool"  value="true"/>
