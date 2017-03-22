@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="no" ?>
-    <l10n>
-    <description><![CDATA[Aggiunge la specializzazione per lo sterzo adattivo da tastiera]]>
-    </description>
+<l10n>
+    <description><![CDATA[Aggiunge la specializzazione per lo sterzo adattivo da tastiera]]></description>
     <texts>
         <text name="ksmENABLE_ON"     text="Sterzo [adattivo]" />
         <text name="ksmENABLE_OFF"    text="Sterzo [normale]" />
@@ -22,4 +21,4 @@
         <text name="input_ksmPLUS"    text="KeyboardSteerMogli: Sensibilità velocità +" />
         <text name="input_ksmMINUS"   text="KeyboardSteerMogli: Sensibilità velocità -" />
     </texts>
-    </l10n>
+</l10n>
