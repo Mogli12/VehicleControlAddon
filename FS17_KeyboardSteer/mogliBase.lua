@@ -17,11 +17,12 @@
 -- 3.11 postLoad to load old savegame
 -- 3.12 getUiScale
 -- 3.13 getUiScale (2)
+-- 3.14 printCallStack
 
 -- Usage:  source(Utils.getFilename("mogliBase.lua", g_currentModDirectory));
 --         _G[g_currentModDirectory.."mogliBase"].newClass( "AutoCombine", "acParameters" )
 
-local mogliBaseVersion   = 3.11
+local mogliBaseVersion   = 3.14
 local mogliBaseClass     = g_currentModName..".mogliBase"
 local mogliEventClass    = g_currentModName..".mogliEvent"
 --local mogliEventClass_mt = g_currentModDirectory.."mogliEvent_mt"
@@ -595,11 +596,15 @@ else
 	--********************************
 	-- debugEvent
 	--********************************
-		function _newClass_:debugEvent( old, new, noEventSend )
+		function _newClass_:printCallStack( depth )
 			local i = 2 
+			local d = 10
+			if type( depth ) == "number" and depth > 1 then
+				d = depth
+			end
 			local info 
 			print("------------------------------------------------------------------------") 
-			while i <= 10 do
+			while i <= d do
 				info = debug.getinfo(i) 
 				if info == nil then break end
 				print(string.format("%i: %s (%i): %s", i, info.short_src, Utils.getNoNil(info.currentline,0), Utils.getNoNil(info.name,"<???>"))) 
@@ -609,6 +614,13 @@ else
 				print("...") 
 			end
 			print("------------------------------------------------------------------------") 
+		end 
+
+	--********************************
+	-- debugEvent
+	--********************************
+		function _newClass_:debugEvent( old, new, noEventSend )
+			_newClass_.printCallStack( self )
 			print(tostring(old).." "..tostring(new).." "..tostring(noEventSend)) 
 		end 
 
