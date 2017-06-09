@@ -42,6 +42,7 @@ function keyboardSteerMogli.globalsReset( createIfMissing )
   KSMGlobals.speedFxInc          = 0
   KSMGlobals.autoRotateBackWait  = 0	
   KSMGlobals.axisSideWait        = 0	
+  KSMGlobals.limitThrottle       = 0	
 	KSMGlobals.enableAnalogCtrl    = false
 	KSMGlobals.debugPrint          = false
 	
@@ -146,6 +147,7 @@ function keyboardSteerMogli:load(savegame)
 	keyboardSteerMogli.registerState( self, "ksmWarningText" , ""   , keyboardSteerMogli.ksmOnSetWarningText )
 	keyboardSteerMogli.registerState( self, "ksmLCtrlPressed", false )
 	keyboardSteerMogli.registerState( self, "ksmLShiftPressed", false )
+	keyboardSteerMogli.registerState( self, "ksmLimitThrottle", KSMGlobals.limitThrottle )
 	
 	self.ksmSpeedFx       = 0
 	self.ksmFactor        = 1
@@ -185,6 +187,12 @@ function keyboardSteerMogli:update(dt)
 		elseif InputBinding.hasEvent(InputBinding.ksmMINUS) then
 			self:ksmSetState( "ksmExponent", self.ksmExponent -1 )
 			self:ksmSetState( "ksmWarningText", string.format("Sensitivity %3.0f %%", 100 * self.ksmFactor, true ) )
+		elseif InputBinding.hasEvent(InputBinding.ksmTPLUS) then		
+			self:ksmSetState( "ksmLimitThrottle", math.min( self.ksmLimitThrottle +1, 20 ) )
+			self:ksmSetState( "ksmWarningText", string.format("Gaspedal %3d%%/%3d%%", 45 + 5 * math.min( self.ksmLimitThrottle, 11 ), 150 - 5 * math.max( self.ksmLimitThrottle, 10 ) , true ) )
+		elseif InputBinding.hasEvent(InputBinding.ksmTMINUS) then
+			self:ksmSetState( "ksmLimitThrottle", math.max( self.ksmLimitThrottle -1, 1 ) )
+			self:ksmSetState( "ksmWarningText", string.format("Gaspedal %3d%%/%3d%%", 45 + 5 * math.min( self.ksmLimitThrottle, 11 ), 150 - 5 * math.max( self.ksmLimitThrottle, 10 ) , true ) )
 		elseif InputBinding.hasEvent(InputBinding.ksmENABLE) then		
 			self:ksmSetState( "ksmSteeringIsOn", not self.ksmSteeringIsOn )
 		elseif InputBinding.hasEvent(InputBinding.ksmCAMERA) then
@@ -379,11 +387,12 @@ end
 
 function keyboardSteerMogli:readStream(streamId, connection)
 
-  self.ksmSteeringIsOn = streamReadBool(streamId) 
-  self.ksmCameraIsOn   = streamReadBool(streamId) 
-  self.ksmReverseIsOn  = streamReadBool(streamId) 
-  self.ksmCamFwd       = streamReadBool(streamId) 
-	self.ksmExponent     = streamReadInt16(streamId)     
+  self.ksmSteeringIsOn  = streamReadBool(streamId) 
+  self.ksmCameraIsOn    = streamReadBool(streamId) 
+  self.ksmReverseIsOn   = streamReadBool(streamId) 
+  self.ksmCamFwd        = streamReadBool(streamId) 
+	self.ksmExponent      = streamReadInt16(streamId)     
+	self.ksmLimitThrottle = streamReadInt16(streamId)     
 	
 end
 
@@ -394,6 +403,7 @@ function keyboardSteerMogli:writeStream(streamId, connection)
 	streamWriteBool(streamId, self.ksmReverseIsOn )
 	streamWriteBool(streamId, self.ksmCamFwd )     
 	streamWriteInt16(streamId,self.ksmExponent )     
+	streamWriteInt16(streamId,self.ksmLimitThrottle )     
 
 end
 
@@ -510,6 +520,9 @@ function keyboardSteerMogli:getSaveAttributesAndNodes(nodeIdent)
 	if self.ksmExponent ~= nil and math.abs( self.ksmExponent - 1 ) > 1E-3 then
 		attributes = attributes.." ksmExponent=\""  .. tostring(self.ksmExponent) .. "\""
 	end
+	if self.ksmLimitThrottle ~= nil and math.abs( self.ksmLimitThrottle - 15 ) > 1E-3 then
+		attributes = attributes.." ksmLimitThrottle=\""  .. tostring(self.ksmLimitThrottle) .. "\""
+	end
 
 	return attributes
 end;
@@ -545,6 +558,11 @@ function keyboardSteerMogli:loadFromAttributesAndNodes(xmlFile, key, resetVehicl
 	local i = getXMLInt(xmlFile, key .. "#ksmExponent" )
 	if i ~= nil then
 		self:ksmSetState( "ksmExponent", i,  true ) 
+	end
+	
+	local i = getXMLInt(xmlFile, key .. "#ksmLimitThrottle" )
+	if i ~= nil then
+		self:ksmSetState( "ksmLimitThrottle", i,  true ) 
 	end
 	
 	return BaseMission.VEHICLE_LOAD_OK;
@@ -619,10 +637,20 @@ function keyboardSteerMogli:newUpdateVehiclePhysics( superFunc, axisForward, axi
 		end
 	end
 	
+	local limitThrottleRatio     = 0.75
+	local limitThrottleIfPressed = true
+	if self.ksmLimitThrottle < 11 then
+		limitThrottleIfPressed = false
+		limitThrottleRatio     = 0.45 + 0.05 * self.ksmLimitThrottle
+	else
+		limitThrottleIfPressed = true
+		limitThrottleRatio     = 1.5 - 0.05 * self.ksmLimitThrottle
+	end
+	
 	if      self.ksmSteeringIsOn 
-			and self.ksmLShiftPressed 
+			and ( self.ksmLShiftPressed == limitThrottleIfPressed )
 			and ( self.ksmAnalogIsOn or not ( axisForwardIsAnalog ) ) then
-		axisForward = Utils.clamp( axisForward, -0.75, 0.75 )
+		axisForward = Utils.clamp( axisForward, -limitThrottleRatio, limitThrottleRatio )
 		axisForwardIsAnalog = true
 	end
 	

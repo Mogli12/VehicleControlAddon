@@ -27,19 +27,26 @@ Changelog v2.1:
 ]]></en>
 		<de><![CDATA[
 Dieses Script variiert abhängig von der gefahrenen Geschwindigkeit die Lenkgeschwindigkeit, die Rückstellgeschwindigkeit und den maximalen Lenkeinschlag. 
-Außerdem dreht es die Kamera passend zum Lenkeinschlag und zur Fahrtrichtung. 
+Außerdem dreht es die Kamera passend zum Lenkeinschlag und zur Fahrtrichtung. Das digitale Gaspedal (Tasten A und W) wird nun auf 80% begrenzt. 
+Nur, wenn gleichzeitig die Taste Umschalt Links gedrückt wird, dann wird zu 100% Gas gegeben, bzw. gebremst. 
+Stellt man den Gasbegrenzer auf aber 100%, dann wird bei Umschalt Links nun Gaspedal und Bremse auf 75% begrenzt.
+
 Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tasten:
 
 [Umschalt Links + C]: Bewegliche Kamera an/aus, Default ist an
 [Umschalt Links + E]: Adaptive Lenkung an/aus, Default ist an
 [Umschalt Links + R]: Zurückblicken an/aus, Default ist an
-[Strg Links + E]: Empfindlichkeit erhöhen ksmMINUS [Strg Links + C]: Empfindlichkeit senken
+[Strg Links + E]: Empfindlichkeit erhöhen
+[Strg Links + C]: Empfindlichkeit senken
+[Strg Links + W]: Gaspedalberenzer erhöhen
+[Strg Links + A]: Gaspedalberenzer senken
 [Umschalt Rechts + Pfeiltaste]: Nach vorne, hinten, links, rechts blicken
 
 Änderungen v2.1:
 - Korrektur unendlliche Rotation in MP
 - Korrektur für Traktoren mit Rückfahrfunktion, z.B. Fendt 900 Vario oder Valtra
 - Bessere Parameter für mehr Kontrolle über 50 km/h
+- Gaspedalberenzer mit Default 80%
 		]]></de>
 		<fr><![CDATA[
 Ce script varie en fonction de la vitesse, la vitesse de direction, la vitesse et la restauration de l'angle de braquage maximal.
@@ -56,26 +63,28 @@ Toutes les fonctions peuvent également être éteint à nouveau, avec les touch
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>store.dds</iconFilename>
-	<version>2.1.1.1</version>
+	<version>2.1.1.2</version>
 	<l10n filenamePrefix="modDesc_l10n">
 		<text name="ksmVERSION">
-			<de>KeyboardSteer v2.2 beta 1</de>
-			<en>KeyboardSteer v2.2 beta 1</en>
-			<fr>KeyboardSteer v2.2 beta 1</fr>
-			<es>KeyboardSteer v2.2 beta 1</es>
+			<de>KeyboardSteer v2.2 beta 2</de>
+			<en>KeyboardSteer v2.2 beta 2</en>
+			<fr>KeyboardSteer v2.2 beta 2</fr>
+			<es>KeyboardSteer v2.2 beta 2</es>
 		</text>
 	</l10n>
 	<inputBindings>
-		<input name="ksmENABLE"  hidden="true" key1="KEY_lshift KEY_e" button="" category="VEHICLE" />
-		<input name="ksmCAMERA"  hidden="true" key1="KEY_lshift KEY_c" button="" category="VEHICLE" />
-		<input name="ksmREVERSE" hidden="true" key1="KEY_lshift KEY_r" button="" category="VEHICLE" />
-		<input name="ksmANALOG"  hidden="true" key1="KEY_lshift KEY_lctrl KEY_c" button="" category="VEHICLE" />
-		<input name="ksmPLUS"    hidden="true" key1="KEY_lctrl KEY_e"  button="" category="VEHICLE" />
-		<input name="ksmMINUS"   hidden="true" key1="KEY_lctrl KEY_c"  button="" category="VEHICLE" />
-		<input name="ksmUP"      hidden="true" key1="KEY_rshift KEY_up"  button="" category="VEHICLE" />
-		<input name="ksmDOWN"    hidden="true" key1="KEY_rshift KEY_down"  button="" category="VEHICLE" />
-		<input name="ksmLEFT"    hidden="true" key1="KEY_rshift KEY_left"  button="" category="VEHICLE" />
-		<input name="ksmRIGHT"   hidden="true" key1="KEY_rshift KEY_right"  button="" category="VEHICLE" />
+		<input name="ksmENABLE"  key1="KEY_lshift KEY_e" button="" category="VEHICLE" />
+		<input name="ksmCAMERA"  key1="KEY_lshift KEY_c" button="" category="VEHICLE" />
+		<input name="ksmREVERSE" key1="KEY_lshift KEY_r" button="" category="VEHICLE" />
+		<input name="ksmANALOG"  key1="KEY_lshift KEY_lctrl KEY_c" button="" category="VEHICLE" />
+		<input name="ksmPLUS"    key1="KEY_lctrl KEY_e"  button="" category="VEHICLE" />
+		<input name="ksmMINUS"   key1="KEY_lctrl KEY_c"  button="" category="VEHICLE" />
+		<input name="ksmTPLUS"   key1="KEY_lctrl KEY_w"  button="" category="VEHICLE" />
+		<input name="ksmTMINUS"  key1="KEY_lctrl KEY_s"  button="" category="VEHICLE" />
+		<input name="ksmUP"      key1="KEY_rshift KEY_up"  button="" category="VEHICLE" />
+		<input name="ksmDOWN"    key1="KEY_rshift KEY_down"  button="" category="VEHICLE" />
+		<input name="ksmLEFT"    key1="KEY_rshift KEY_left"  button="" category="VEHICLE" />
+		<input name="ksmRIGHT"   key1="KEY_rshift KEY_right"  button="" category="VEHICLE" />
 	</inputBindings>
 	<extraSourceFiles>
 		<sourceFile filename="register.lua" />
