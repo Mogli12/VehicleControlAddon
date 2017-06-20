@@ -650,7 +650,7 @@ function keyboardSteerMogli:newUpdateVehiclePhysics( superFunc, axisForward, axi
 	if      self.ksmSteeringIsOn 
 			and ( self.ksmLShiftPressed == limitThrottleIfPressed )
 			and ( self.ksmAnalogIsOn or not ( axisForwardIsAnalog ) ) then
-		axisForward = Utils.clamp( axisForward, -limitThrottleRatio, limitThrottleRatio )
+		axisForward = axisForward * limitThrottleRatio
 		axisForwardIsAnalog = true
 	end
 	

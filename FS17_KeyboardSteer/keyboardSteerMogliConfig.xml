@@ -38,7 +38,7 @@
 	
 	<autoRotateBackWait	type="float" value="0.75"/>
 	<axisSideWait       type="float" value="0.25"/>
-	<limitThrottle      type="int"   value="9"/> <!-- 90%/100% -->
+	<limitThrottle      type="int"   value="15"/> <!-- 9 => 90%/100% 15 => 100%/75% -->
 	
 	<!-- defaults -->
 	<ksmSteeringIsOn     type="bool"  value="true"/>
