@@ -637,21 +637,21 @@ function keyboardSteerMogli:newUpdateVehiclePhysics( superFunc, axisForward, axi
 		end
 	end
 	
-	local limitThrottleRatio     = 0.75
-	local limitThrottleIfPressed = true
-	if self.ksmLimitThrottle < 11 then
-		limitThrottleIfPressed = false
-		limitThrottleRatio     = 0.45 + 0.05 * self.ksmLimitThrottle
-	else
-		limitThrottleIfPressed = true
-		limitThrottleRatio     = 1.5 - 0.05 * self.ksmLimitThrottle
-	end
+	if self.ksmSteeringIsOn and ( self.ksmAnalogIsOn or not ( axisForwardIsAnalog ) ) then
+		local limitThrottleRatio     = 0.75
+		local limitThrottleIfPressed = true
+		if self.ksmLimitThrottle < 11 then
+			limitThrottleIfPressed = false
+			limitThrottleRatio     = 0.45 + 0.05 * self.ksmLimitThrottle
+		else
+			limitThrottleIfPressed = true
+			limitThrottleRatio     = 1.5 - 0.05 * self.ksmLimitThrottle
+		end
 	
-	if      self.ksmSteeringIsOn 
-			and ( self.ksmLShiftPressed == limitThrottleIfPressed )
-			and ( self.ksmAnalogIsOn or not ( axisForwardIsAnalog ) ) then
-		axisForward = axisForward * limitThrottleRatio
-		axisForwardIsAnalog = true
+		if self.ksmLShiftPressed == limitThrottleIfPressed then
+			axisForward = axisForward * limitThrottleRatio
+			axisForwardIsAnalog = true
+		end
 	end
 	
 	local state, result = pcall( superFunc, self, axisForward, axisForwardIsAnalog, axisSide, axisSideIsAnalog, doHandbrake, dt, ... )

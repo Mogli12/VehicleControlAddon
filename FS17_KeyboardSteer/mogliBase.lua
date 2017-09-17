@@ -18,11 +18,14 @@
 -- 3.12 getUiScale
 -- 3.13 getUiScale (2)
 -- 3.14 printCallStack
+-- 3.15 more robust event handling
+-- 3.16 show call stack if self.object is invalid
+-- 3.17 log output in globalsLoad 
 
 -- Usage:  source(Utils.getFilename("mogliBase.lua", g_currentModDirectory));
 --         _G[g_currentModDirectory.."mogliBase"].newClass( "AutoCombine", "acParameters" )
 
-local mogliBaseVersion   = 3.14
+local mogliBaseVersion   = 3.17
 local mogliBaseClass     = g_currentModName..".mogliBase"
 local mogliEventClass    = g_currentModName..".mogliEvent"
 --local mogliEventClass_mt = g_currentModDirectory.."mogliEvent_mt"
@@ -103,28 +106,28 @@ else
 	--********************************
 	-- globalsLoad
 	--********************************
-		function _newClass_.globalsLoad( file , rootTag, globals )	
+		function _newClass_.globalsLoad( file , rootTag, globals, writeLog )	
 
 			local xmlFile = loadXMLFile( "mogliBasics", file, rootTag )
-			_newClass_.globalsLoad2( xmlFile , rootTag, globals )	
+			_newClass_.globalsLoad2( xmlFile , rootTag, globals, writeLog )	
 		end
 		
 	--********************************
 	-- globalsLoad2
 	--********************************
-		function _newClass_.globalsLoad2( xmlFile , rootTag, globals )	
+		function _newClass_.globalsLoad2( xmlFile , rootTag, globals, writeLog )	
 
+			local wl = true
 			for name,value in pairs(globals) do
 				local tp = getXMLString(xmlFile, rootTag.."." .. name .. "#type")
+				local tm = 1
 				if     tp == nil then
-		--			print(file..": "..name.." = nil")
+					tm = 0
 				elseif tp == "bool" then
 					local bool = getXMLBool( xmlFile, rootTag.."." .. name .. "#value" )
 					if bool ~= nil then
-						--if bool then globals[name] = 1 else globals[name] = 0 end
 						globals[name] = bool
 					end
-		--			print(file..": "..name.." = "..tostring(globals[name]))
 				elseif tp == "float" then
 					local float = getXMLFloat( xmlFile, rootTag.."." .. name .. "#value" )
 					if float ~= nil then globals[name] = float end
@@ -142,7 +145,19 @@ else
 					if str ~= nil then globals[name] = str end
 		--			print(file..": "..name.." = "..tostring(globals[name]))
 				else
+					tm = 2
 					print(file..": "..name..": invalid XML type : "..tp)
+				end
+				if writeLog and tm > 0 then
+					if wl then
+						wl = false
+						print('Loading settings from "'..tostring(file)..'"')
+					end
+					if tm == 1 then
+						print('    <'..name..' type="'..tostring(tp)..'" value="'..tostring(globals[name])..'"/>')
+					else
+						print('    <'..name..' .../>: invalid XML type : '..tostring(tp))
+					end
 				end
 			end
 		end
@@ -594,26 +609,10 @@ else
 		end 
 
 	--********************************
-	-- debugEvent
+	-- printCallStack
 	--********************************
 		function _newClass_:printCallStack( depth )
-			local i = 2 
-			local d = 10
-			if type( depth ) == "number" and depth > 1 then
-				d = depth
-			end
-			local info 
-			print("------------------------------------------------------------------------") 
-			while i <= d do
-				info = debug.getinfo(i) 
-				if info == nil then break end
-				print(string.format("%i: %s (%i): %s", i, info.short_src, Utils.getNoNil(info.currentline,0), Utils.getNoNil(info.name,"<???>"))) 
-				i = i + 1 
-			end
-			if info ~= nil and info.name ~= nil and info.currentline ~= nil then
-				print("...") 
-			end
-			print("------------------------------------------------------------------------") 
+			mogliBase30.printCallStack( depth )
 		end 
 
 	--********************************
@@ -625,7 +624,7 @@ else
 		end 
 
 	--********************************
-	-- mogliBase20TestStream
+	-- mogliBaseTestStream
 	--********************************
 		function _newClass_:mogliBaseTestStream( )
 			local streamId = createStream()
@@ -640,6 +639,29 @@ else
 		
 		_G[_globalClassName_] = _newClass_ 
 	end
+		
+--=======================================================================================
+-- mogliBase30.printCallStack
+--=======================================================================================
+	function mogliBase30.printCallStack( depth )
+		local i = 2 
+		local d = 10
+		if type( depth ) == "number" and depth > 1 then
+			d = depth
+		end
+		local info 
+		print("------------------------------------------------------------------------") 
+		while i <= d do
+			info = debug.getinfo(i) 
+			if info == nil then break end
+			print(string.format("%i: %s (%i): %s", i, info.short_src, Utils.getNoNil(info.currentline,0), Utils.getNoNil(info.name,"<???>"))) 
+			i = i + 1 
+		end
+		if info ~= nil and info.name ~= nil and info.currentline ~= nil then
+			print("...") 
+		end
+		print("------------------------------------------------------------------------") 
+	end 
 		
 --=======================================================================================
 -- mogliBase30.writeStreamTypedValue
@@ -904,13 +926,18 @@ else
 --=======================================================================================
 	mogliBase30Event.readStream = function(self, streamId, connection)
 		--both clients and server can receive this event
-		self.className = streamReadString(streamId)
 		local id       = streamReadInt32(streamId) 
-		self.object    = networkGetObject(id) 
+		if id == 0 then
+			self.object  = nil
+			return 
+		end
+		
+		self.className = streamReadString(streamId)
 		self.level1, self.value = _G[mogliBaseClass].readStreamEx( streamId )
 		
+		self.object  = networkGetObject(id) 
 		if self.object == nil then
-			print("Error reading network ID: "..tostring(id).." ("..tostring(self.className))
+			print("Error reading network ID: "..tostring(id).." ("..tostring(self.className)..")")
 		else
 			self:run(connection) 
 		end
@@ -921,8 +948,22 @@ else
 --=======================================================================================
 	mogliBase30Event.writeStream = function(self, streamId, connection)
 		--both clients and server can send this event
-		streamWriteString(streamId, self.className)
-		streamWriteInt32(streamId, networkGetObjectId(self.object)) 
+		
+		local id = nil
+		
+		if self.object ~= nil and self.className ~= nil then
+			id = networkGetObjectId(self.object)
+		end
+		
+		if id == nil then
+			print("Error sending network ID: nil ("..tostring(self.className)..")")
+			mogliBase30.printCallStack()
+			streamWriteInt32(streamId, 0 )
+			return
+		end
+ 
+		streamWriteInt32(streamId, Utils.getNoNil( networkGetObjectId(self.object) ), 0 )
+		streamWriteString(streamId, Utils.getNoNil( self.className ), "" )
 		_G[mogliBaseClass].writeStreamEx( streamId, self.level1, self.value )
 	end 
 	
@@ -931,6 +972,11 @@ else
 --=======================================================================================
 	mogliBase30Event.run = function(self, connection)
 		----both clients and server can "run" this event (after reading it)	
+		if self.object == nil or self.className == nil or self.className == "" then
+			print("Error running event: nil ("..tostring(self.className)..")")
+			return 
+		end
+		
 		_G[self.className].mbSetState(self.object, self.level1, self.value, true) 
 		if not connection:getIsServer() then  
 			g_server:broadcastEvent(mogliBase30Event:new(self.className, self.object, self.level1, self.value), nil, connection, self.object) 

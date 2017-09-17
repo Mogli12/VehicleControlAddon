@@ -16,8 +16,10 @@
 		<text name="input_ksmCAMERA"  text="keyboardSteer : Mouvement de caméra" />
 		<text name="input_ksmREVERSE" text="keyboardSteer : Caméra de recul" />
 		<text name="input_ksmANALOG"  text="keyboardSteer : Manette analogique" />
-		<text name="input_ksmPLUS"    text="Sensibilité +" />
-		<text name="input_ksmMINUS"   text="Sensibilité -" />
+		<text name="input_ksmPLUS"    text="keyboardSteer : Sensibilité +" />
+		<text name="input_ksmMINUS"   text="keyboardSteer : Sensibilité -" />
+		<text name="input_ksmTPLUS"   text="keyboardSteer : throttle limiter +"/>
+		<text name="input_ksmTMINUS"  text="keyboardSteer : throttle limiter -"/>
 		<text name="input_ksmUP"      text="keyboardSteer : Devant" />
 		<text name="input_ksmDOWN"    text="keyboardSteer : Derrière" />
 		<text name="input_ksmLEFT"    text="keyboardSteer : Gauche" />

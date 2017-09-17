@@ -20,5 +20,7 @@
         <text name="input_ksmRIGHT"   text="KeyboardSteerMogli: Guarda destra" />
         <text name="input_ksmPLUS"    text="KeyboardSteerMogli: Sensibilità velocità +" />
         <text name="input_ksmMINUS"   text="KeyboardSteerMogli: Sensibilità velocità -" />
+				<text name="input_ksmTPLUS"   text="KeyboardSteerMogli: throttle limiter +"/>
+				<text name="input_ksmTMINUS"  text="KeyboardSteerMogli: throttle limiter -"/>
     </texts>
 </l10n>

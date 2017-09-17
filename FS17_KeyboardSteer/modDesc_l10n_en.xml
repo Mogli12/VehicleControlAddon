@@ -17,8 +17,10 @@
 		<text name="input_ksmCAMERA"  text="keyboardSteerMogli: camera movement"/>
 		<text name="input_ksmREVERSE" text="keyboardSteerMogli: look backwards"/>
 		<text name="input_ksmANALOG"  text="keyboardSteerMogli: analogue controller"/>
-		<text name="input_ksmPLUS"    text="speed sensitivity +"/>
-		<text name="input_ksmMINUS"   text="speed sensitivity -"/>
+		<text name="input_ksmPLUS"    text="keyboardSteerMogli: speed sensitivity +"/>
+		<text name="input_ksmMINUS"   text="keyboardSteerMogli: speed sensitivity -"/>
+		<text name="input_ksmTPLUS"   text="keyboardSteerMogli: throttle limiter +"/>
+		<text name="input_ksmTMINUS"  text="keyboardSteerMogli: throttle limiter -"/>
 		<text name="input_ksmUP"      text="keyboardSteerMogli: look fwd"/>
 		<text name="input_ksmDOWN"    text="keyboardSteerMogli: look back"/>
 		<text name="input_ksmLEFT"    text="keyboardSteerMogli: look left"/>
