@@ -181,18 +181,8 @@ function keyboardSteerMogli:update(dt)
 			
 
 	if self.isEntered and self.isClient and self:getIsActive() then
-		if     InputBinding.hasEvent(InputBinding.ksmPLUS) then
-			self:ksmSetState( "ksmExponent", self.ksmExponent +1 )
-			self:ksmSetState( "ksmWarningText", string.format("Sensitivity %3.0f %%", 100 * self.ksmFactor, true ) )
-		elseif InputBinding.hasEvent(InputBinding.ksmMINUS) then
-			self:ksmSetState( "ksmExponent", self.ksmExponent -1 )
-			self:ksmSetState( "ksmWarningText", string.format("Sensitivity %3.0f %%", 100 * self.ksmFactor, true ) )
-		elseif InputBinding.hasEvent(InputBinding.ksmTPLUS) then		
-			self:ksmSetState( "ksmLimitThrottle", math.min( self.ksmLimitThrottle +1, 20 ) )
-			self:ksmSetState( "ksmWarningText", string.format("Gaspedal %3d%%/%3d%%", 45 + 5 * math.min( self.ksmLimitThrottle, 11 ), 150 - 5 * math.max( self.ksmLimitThrottle, 10 ) , true ) )
-		elseif InputBinding.hasEvent(InputBinding.ksmTMINUS) then
-			self:ksmSetState( "ksmLimitThrottle", math.max( self.ksmLimitThrottle -1, 1 ) )
-			self:ksmSetState( "ksmWarningText", string.format("Gaspedal %3d%%/%3d%%", 45 + 5 * math.min( self.ksmLimitThrottle, 11 ), 150 - 5 * math.max( self.ksmLimitThrottle, 10 ) , true ) )
+		if     InputBinding.hasEvent(InputBinding.ksmSETTINGS) then		 
+			keyboardSteerMogli.showSettingsUI( self )
 		elseif InputBinding.hasEvent(InputBinding.ksmENABLE) then		
 			self:ksmSetState( "ksmSteeringIsOn", not self.ksmSteeringIsOn )
 		elseif InputBinding.hasEvent(InputBinding.ksmCAMERA) then
@@ -422,38 +412,39 @@ function keyboardSteerMogli:onLeave()
 end
 
 function keyboardSteerMogli:draw()		
-	if self.ksmLCtrlPressed then
-		if self.ksmLShiftPressed then
-			if self.ksmAnalogIsOn then
-				g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("ksmANALOG_ON"),  InputBinding.ksmANALOG)
-			else
-				g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("ksmANALOG_OFF"), InputBinding.ksmANALOG)
-			end
-		else
-			g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("input_ksmPLUS"),  InputBinding.ksmPLUS)
-			g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("input_ksmMINUS"), InputBinding.ksmMINUS)
-		end
-		
-	elseif KSMGlobals.ksmDrawIsOn or self.ksmLShiftPressed then
-		if self.ksmSteeringIsOn then
-			g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("ksmENABLE_ON"),  InputBinding.ksmENABLE)
-		else
-			g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("ksmENABLE_OFF"), InputBinding.ksmENABLE)
-		end
-		
-		if self:ksmIsValidCam() then
-			if self.ksmCameraIsOn then
-				g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("ksmCAMERA_ON"),  InputBinding.ksmCAMERA)
-			else
-				g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("ksmCAMERA_OFF"), InputBinding.ksmCAMERA)
-			end
-			if self.ksmReverseIsOn then
-				g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("ksmREVERSE_ON"),  InputBinding.ksmREVERSE)
-			else
-				g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("ksmREVERSE_OFF"), InputBinding.ksmREVERSE)
-			end
-		end
-	end
+--if self.ksmLCtrlPressed then
+--	if self.ksmLShiftPressed then
+--		if self.ksmAnalogIsOn then
+--			g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("ksmANALOG_ON"),  InputBinding.ksmANALOG)
+--		else
+--			g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("ksmANALOG_OFF"), InputBinding.ksmANALOG)
+--		end
+--	else
+--		g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("input_ksmPLUS"),  InputBinding.ksmPLUS)
+--		g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("input_ksmMINUS"), InputBinding.ksmMINUS)
+--	end
+--	
+--elseif KSMGlobals.ksmDrawIsOn or self.ksmLShiftPressed then
+--	if self.ksmSteeringIsOn then
+--		g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("ksmENABLE_ON"),  InputBinding.ksmENABLE)
+--	else
+--		g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("ksmENABLE_OFF"), InputBinding.ksmENABLE)
+--	end
+--	
+--	if self:ksmIsValidCam() then
+--		if self.ksmCameraIsOn then
+--			g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("ksmCAMERA_ON"),  InputBinding.ksmCAMERA)
+--		else
+--			g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("ksmCAMERA_OFF"), InputBinding.ksmCAMERA)
+--		end
+--		if self.ksmReverseIsOn then
+--			g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("ksmREVERSE_ON"),  InputBinding.ksmREVERSE)
+--		else
+--			g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("ksmREVERSE_OFF"), InputBinding.ksmREVERSE)
+--		end
+--	end
+--end
+	g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("ksmSETTINGS"),  InputBinding.ksmSETTINGS)
 	if self.ksmWarningText ~= "" then
 		g_currentMission:addExtraPrintText( self.ksmWarningText )
 	end
@@ -719,3 +710,33 @@ end
 
 Drivable.updateVehiclePhysics = Utils.overwrittenFunction( Drivable.updateVehiclePhysics, keyboardSteerMogli.newUpdateVehiclePhysics )
 
+
+function keyboardSteerMogli:showSettingsUI()
+	self.ksmUI = {}
+	self.ksmUI.ksmExponent_V = { -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5 }
+	self.ksmUI.ksmExponent = {}
+	for i,e in pairs( self.ksmUI.ksmExponent_V ) do
+		self.ksmUI.ksmExponent[i] = string.format("%3.0f %%", 100 * ( 1.1 ^ e ), true )
+	end
+	self.ksmUI.ksmLimitThrottle   = {}
+	for i=1,20 do
+	  self.ksmUI.ksmLimitThrottle[i] = string.format("%3d %% / %3d %%", 45 + 5 * math.min( i, 11 ), 150 - 5 * math.max( i, 10 ), true )
+	end
+	g_keyboardSteerMogliScreen:setVehicle( self )
+	g_gui:showGui( "keyboardSteerMogliScreen" )
+end
+
+function keyboardSteerMogli:ksmUIGetksmExponent()
+	for i,e in pairs( self.ksmUI.ksmExponent_V ) do
+		if math.abs( e - self.ksmExponent ) < 0.5 then
+			return i
+		end
+	end
+	return 7
+end
+
+function keyboardSteerMogli:ksmUISetksmExponent( value )
+	if self.ksmUI.ksmExponent_V[value] ~= nil then
+		self:ksmSetState( "ksmExponent", self.ksmUI.ksmExponent_V[value] )
+	end
+end

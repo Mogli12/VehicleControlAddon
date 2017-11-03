@@ -4,6 +4,15 @@
 	<description><![CDATA[Fügt allen Fahrzeugen eine adaptive Lenkung hinzu]]></description>
 
 	<texts>
+		<text name="ksmInputPrefix" text="keyboardSteerMogli: "/>
+		
+		<text name="ksmCAMERA"      text="Kamerabewegung"/>
+		<text name="ksmEXPONENT"    text="Geschwindigkeitsabhängigkeit"/>
+		<text name="ksmSTEERING"    text="Adaptive Lenkung"/>
+		<text name="ksmANALOG"      text="Analog Controller"/>
+		<text name="ksmREVERSE"     text="Zurückblicken"/>
+		<text name="ksmLIMIT"       text="Gaspedalbegrenzer"/>
+		
 		<text name="ksmENABLE_ON"   text="Lenkung [adaptiv]"/>
 		<text name="ksmENABLE_OFF"  text="Lenkung [normal]"/>
 		<text name="ksmCAMERA_ON"   text="Kamerabewegung [an]"/>
@@ -13,17 +22,24 @@
 		<text name="ksmREVERSE_ON"  text="Zurückblicken [an]"/>
 		<text name="ksmREVERSE_OFF" text="Zurückblicken [aus]"/>
 		
-		<text name="input_ksmENABLE"  text="keyboardSteerMogli: Lenkung"/>
-		<text name="input_ksmCAMERA"  text="keyboardSteerMogli: Kamerabewegung"/>
-		<text name="input_ksmREVERSE" text="keyboardSteerMogli: Zurückblicken"/>
-		<text name="input_ksmANALOG"  text="keyboardSteerMogli: Analog Controller"/>
-		<text name="input_ksmPLUS"    text="keyboardSteerMogli: Geschwindigkeitsabh. +"/>
-		<text name="input_ksmMINUS"   text="keyboardSteerMogli: Geschwindigkeitsabh. -"/>
-		<text name="input_ksmTPLUS"   text="keyboardSteerMogli: Gaspedalbegrenzer +"/>
-		<text name="input_ksmTMINUS"  text="keyboardSteerMogli: Gaspedalbegrenzer -"/>
-		<text name="input_ksmUP"      text="keyboardSteerMogli: Nach vorne schauen"/>
-		<text name="input_ksmDOWN"    text="keyboardSteerMogli: Nach hinten schauen"/>
-		<text name="input_ksmLEFT"    text="keyboardSteerMogli: Nach links schauen"/>
-		<text name="input_ksmRIGHT"   text="keyboardSteerMogli: Nach rechts schauen"/>
+		<text name="input_ksmENABLE"   text="keyboardSteerMogli: Lenkung"/>
+		<text name="input_ksmCAMERA"   text="keyboardSteerMogli: Kamerabewegung"/>
+		<text name="input_ksmREVERSE"  text="keyboardSteerMogli: Zurückblicken"/>
+		<text name="input_ksmSETTINGS" text="keyboardSteerMogli: Einstellungen"/>
+		<text name="input_ksmUP"       text="keyboardSteerMogli: Nach vorne schauen"/>
+		<text name="input_ksmDOWN"     text="keyboardSteerMogli: Nach hinten schauen"/>
+		<text name="input_ksmLEFT"     text="keyboardSteerMogli: Nach links schauen"/>
+		<text name="input_ksmRIGHT"    text="keyboardSteerMogli: Nach rechts schauen"/>
 	</texts>
+
+	<longTexts>
+		<longText name="ksm_Help_1">
+<![CDATA[Dieses Script variiert abhängig von der gefahrenen Geschwindigkeit die Lenkgeschwindigkeit, die Rückstellgeschwindigkeit und den maximalen Lenkeinschlag. 
+Außerdem dreht es die Kamera passend zum Lenkeinschlag und zur Fahrtrichtung. Das digitale Gaspedal (Tasten A und W) kann begrenzt werden
+Nur, wenn gleichzeitig die Taste Umschalt Links gedrückt wird, dann wird zu 100% Gas gegeben, bzw. gebremst. 
+Stellt man den Gasbegrenzer auf aber 100%, dann wird bei Umschalt Links nun Gaspedal und Bremse begrenzt.
+
+Alle Funktionen lassen sich auch wieder ausschalten.]]>
+		</longText>
+	</longTexts>
 </l10n>

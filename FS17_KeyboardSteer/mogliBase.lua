@@ -21,13 +21,17 @@
 -- 3.15 more robust event handling
 -- 3.16 show call stack if self.object is invalid
 -- 3.17 log output in globalsLoad 
+-- 3.18 sync events instead of readStream / writeStream  
+-- 3.19 missing syncs in SP and MP
 
 -- Usage:  source(Utils.getFilename("mogliBase.lua", g_currentModDirectory));
 --         _G[g_currentModDirectory.."mogliBase"].newClass( "AutoCombine", "acParameters" )
 
-local mogliBaseVersion   = 3.17
+local mogliBaseVersion   = 3.19
 local mogliBaseClass     = g_currentModName..".mogliBase"
 local mogliEventClass    = g_currentModName..".mogliEvent"
+local mogliSyncRequest   = g_currentModName..".mogliSyncRequest"
+local mogliSyncReply     = g_currentModName..".mogliSyncReply"
 --local mogliEventClass_mt = g_currentModDirectory.."mogliEvent_mt"
 
 if _G[mogliBaseClass] ~= nil and _G[mogliBaseClass].version ~= nil and _G[mogliBaseClass].version >= mogliBaseVersion then
@@ -43,31 +47,12 @@ else
 -- class mogliBase30Event
 --=======================================================================================	
 	local mogliBase30Event = {} 
-	local mogliBase30Event_mt = Class(mogliBase30Event, Event) 
-
-	InitEventClass(mogliBase30Event, mogliEventClass) 
-
---=======================================================================================
--- mogliBase30Event:emptyNew
---=======================================================================================
-	mogliBase30Event.emptyNew = function(self)
-		local self = Event:new(mogliBase30Event_mt) 
-	--self.className = mogliEventClass
-		return self 
-	end 
+	local mogliBase30Request = {}
+	local mogliBase30Reply = {}
 	
 --=======================================================================================
--- mogliBase30Event:new
+-- mogliBase30.checkForKeyModifiers
 --=======================================================================================
-	mogliBase30Event.new = function(self, className, object, level1, value)
-		local self = mogliBase30Event:emptyNew() 
-		self.className = className
-		self.object    = object 
-		self.level1    = level1 
-		self.value     = value 
-		return self 
-	end 
-	
 	function mogliBase30.checkForKeyModifiers( keys )
 		local modifiers = {}
 		for keyId,bool in pairs( Input.keyIdIsModifier ) do
@@ -84,8 +69,7 @@ else
 		end
 		return true
 	end
-	
-	
+		
 --=======================================================================================
 -- mogliBase30.newclass
 --=======================================================================================
@@ -410,9 +394,6 @@ else
 			if self[_globalClassName_.."StateHandler"] == nil then
 				self[_globalClassName_.."StateHandler"] = {}
 			end
-			if self.isServer then
-				self.mbClientInitDone30 = true
-			end
 			if _level0_ ~= nil and _level0_ ~= "" and self[_level0_] == nil then
 				self[_level0_] = {}
 			end
@@ -480,6 +461,7 @@ else
 	-- mbSetState
 	--********************************
 		function _newClass_:mbSetState(level1, value, noEventSend)
+		--if not _newClass_.mbIsSynced( self ) then return end
 			_newClass_.initStateHandling( self )
 			
 			if self[_globalClassName_.."StateHandler"][level1] == nil then
@@ -487,16 +469,7 @@ else
 			end
 			
 			local old = _newClass_.mbGetState( self, level1 )
-			if     old == nil or not ( mogliBase30.compare( old, value ) ) then
-				if noEventSend == nil or noEventSend == false then
-					local eventObject = mogliBase30Event:new(_globalClassName_, self, level1, value)
-					if g_server ~= nil then 
-						g_server:broadcastEvent( eventObject ) 
-					else
-						g_client:getServerConnection():sendEvent( eventObject ) 
-					end 
-				end 						
-			
+			if     old == nil or not ( mogliBase30.compare( old, value ) ) then			
 				if self[_globalClassName_.."StateHandler"][level1].handler ~= nil then
 					local noEventSend2 = true 
 					if self.isServer then
@@ -512,6 +485,16 @@ else
 				else
 					_newClass_.mbSetStateInternal(self, level1, value)
 				end 	
+				
+				if noEventSend == nil or noEventSend == false then
+					local eventObject = mogliBase30Event:new(_globalClassName_, self, level1, value)
+					if g_server ~= nil then 
+						g_server:broadcastEvent( eventObject ) 
+					else
+						_newClass_.mbSync( self )
+						g_client:getServerConnection():sendEvent( eventObject ) 
+					end 
+				end 										
 			end 	
 		end 
 
@@ -559,30 +542,23 @@ else
 	-- readStream
 	--********************************
 		function _newClass_:readStream(streamId, connection)
-		
+		--print(tostring(_globalClassName_).." / "..tostring(self.configFileName)..": synced via readStream")
 			local mbDocument, pos, err = "", 0, ""
 			local mode = streamReadString( streamId )
 			--print("readStream using mode: "..tostring(mode))
 			if     mode == "nil"  then
 				mbDocument = {}
-			elseif mode ~= "json" then
+			else
 				err, mbDocument = mogliBase30.readStreamEx( streamId )
 				if err ~= _globalClassName_ then
 					print("Error: '".._globalClassName_.."' expected")
 					mbDocument = {}
 				end
-			elseif json == nil then
-				print("no json to parse: "..streamReadString( streamId ))
-			else
-				mbDocument, pos, err = json.decode ( streamReadString( streamId ), 1, nil)	
-				if err then
-					print ("Error:", err)
-					mbDocument = {}
-				end
 			end
 			
 			_newClass_.fromMbDocument( self, mbDocument )
-			self.mbClientInitDone30 = true
+			self[_globalClassName_.."SyncRequested"] = true
+			self[_globalClassName_.."SyncReceived"]  = true
 		end 
 		 
 	--********************************
@@ -594,17 +570,8 @@ else
 					and self[_globalClassName_.."StateHandler"]  == nil then
 				streamWriteString( streamId, "nil" )
 			else
-			  local mbDocument = _newClass_.toMbDocument( self )
-			
-			--if json == nil then
-			--	print("writeStream using writeStreamEx")
 				streamWriteString( streamId, "no json" )
-				mogliBase30.writeStreamEx( streamId, _globalClassName_, mbDocument )
-			--else
-			--	print("writeStream using dkjson.lua")
-			--	streamWriteString( streamId, "json" )
-			--	streamWriteString( streamId, json.encode( mbDocument ) ) 	
-			--end
+				mogliBase30.writeStreamEx( streamId, _globalClassName_, _newClass_.toMbDocument( self ) )
 			end
 		end 
 
@@ -622,19 +589,62 @@ else
 			_newClass_.printCallStack( self )
 			print(tostring(old).." "..tostring(new).." "..tostring(noEventSend)) 
 		end 
-
 	--********************************
 	-- mogliBaseTestStream
 	--********************************
 		function _newClass_:mogliBaseTestStream( )
-			local streamId = createStream()
-			_newClass_.writeStream( self, streamId )
-			local mode = streamReadString( streamId )
-			print("readStream using mode: "..tostring(mode))
-			print("Bytes: "..tostring(math.ceil(0.125*streamGetNumOfUnreadBits(streamId))))
-			name, value = mogliBase30.readStreamEx( streamId, true )
-			print("Name of document received: "..tostring(name))
+			if      self[_globalClassName_.."ConfigHandler"] == nil
+					and self[_globalClassName_.."StateHandler"]  == nil then
+				return
+			end
+			if g_client ~= nil then
+				self[_globalClassName_.."SyncReceived"] = nil
+				g_client:getServerConnection():sendEvent(mogliBase30Request:new( _globalClassName_, self ),true)
+			end
 		end	
+		
+		function _newClass_:mbSync()
+			if self == nil then
+				print("Error: moglieBase.mbSync called with self == nil")
+				mogliBase30.printCallStack()
+				return 
+			end
+			if g_server ~= nil then
+				self[_globalClassName_.."SyncReceived"]  = true
+			end
+			if      self[_globalClassName_.."ConfigHandler"] == nil
+					and self[_globalClassName_.."StateHandler"]  == nil then
+				return
+			end
+			if self[_globalClassName_.."SyncConnections"] ~= nil then
+				local temp = self[_globalClassName_.."SyncConnections"]
+				self[_globalClassName_.."SyncConnections"] = nil
+				for connection,doit in pairs(temp) do
+					connection:sendEvent(mogliBase30Reply:new( _globalClassName_, self ),true)
+				end
+			end
+			if not ( self[_globalClassName_.."SyncRequested"] ) then
+				self[_globalClassName_.."SyncRequested"] = true
+				if g_server == nil then
+					g_client:getServerConnection():sendEvent(mogliBase30Request:new( _globalClassName_, self ),true)
+				end
+			end
+		end
+		
+		function _newClass_:mbIsSynced()
+			if g_server ~= nil then
+				return true
+			end
+			if self == nil then
+				print("Error: moglieBase.mbIsSynced called with self == nil")
+				mogliBase30.printCallStack()
+				return 
+			end
+			if self[_globalClassName_.."SyncReceived"] then
+				return true
+			end
+			return false
+		end
 		
 		
 		_G[_globalClassName_] = _newClass_ 
@@ -921,6 +931,30 @@ else
 	
 	_G[mogliBaseClass] = mogliBase30
 	
+	local mogliBase30Event_mt = Class(mogliBase30Event, Event) 
+	InitEventClass(mogliBase30Event, mogliEventClass) 
+
+--=======================================================================================
+-- mogliBase30Event:emptyNew
+--=======================================================================================
+	mogliBase30Event.emptyNew = function(self)
+		local self = Event:new(mogliBase30Event_mt) 
+		return self 
+	end 
+	
+--=======================================================================================
+-- mogliBase30Event:new
+--=======================================================================================
+	mogliBase30Event.new = function(self, className, object, level1, value)
+		local self = mogliBase30Event:emptyNew() 
+		self.className = className
+		self.object    = object 
+		self.level1    = level1 
+		self.value     = value 
+		return self 
+	end 
+	
+
 --=======================================================================================
 -- readStream
 --=======================================================================================
@@ -962,8 +996,8 @@ else
 			return
 		end
  
-		streamWriteInt32(streamId, Utils.getNoNil( networkGetObjectId(self.object) ), 0 )
-		streamWriteString(streamId, Utils.getNoNil( self.className ), "" )
+		streamWriteInt32(streamId, id )
+		streamWriteString(streamId, self.className )
 		_G[mogliBaseClass].writeStreamEx( streamId, self.level1, self.value )
 	end 
 	
@@ -982,4 +1016,119 @@ else
 			g_server:broadcastEvent(mogliBase30Event:new(self.className, self.object, self.level1, self.value), nil, connection, self.object) 
 		end 
 	end 
+	
+	
+	
+	
+	
+	
+	local mogliBase30Request_mt = Class(mogliBase30Request, Event)
+	InitEventClass(mogliBase30Request, mogliSyncRequest)
+	function mogliBase30Request:emptyNew()
+		local self = Event:new(mogliBase30Request_mt)
+		return self
+	end
+	function mogliBase30Request:new( className, object )
+		local self = mogliBase30Request:emptyNew()
+		self.className = className
+		self.object    = object 
+		return self
+	end
+	function mogliBase30Request:readStream(streamId, connection)
+		local id       = streamReadInt32(streamId) 
+		if id == 0 then
+			self.object  = nil
+			return 
+		end
+		
+		self.className = streamReadString(streamId)
+		
+		self.object  = networkGetObject(id) 
+		if self.object == nil then
+			print("Error reading network ID: "..tostring(id).." ("..tostring(self.className)..")")
+		else
+			self:run(connection) 
+		end
+	end
+	function mogliBase30Request:writeStream(streamId, connection)
+		local id = nil
+		
+		if self.object ~= nil and self.className ~= nil then
+			id = networkGetObjectId(self.object)
+		end
+		
+		if id == nil then
+			print("Error sending network ID: nil ("..tostring(self.className)..")")
+			mogliBase30.printCallStack()
+			streamWriteInt32(streamId, 0 )
+			return
+		end
+		
+		streamWriteInt32( streamId, id )
+		streamWriteString(streamId, self.className )
+	end
+	function mogliBase30Request:run(connection)
+		if self.object[self.className.."SyncConnections"] == nil then
+			self.object[self.className.."SyncConnections"] = {}
+		end
+		self.object[self.className.."SyncConnections"][connection] = true
+	end
+
+	
+	
+	
+	
+	local mogliBase30Reply_mt = Class(mogliBase30Reply, Event)
+	InitEventClass(mogliBase30Reply, mogliSyncReply)
+	function mogliBase30Reply:emptyNew()
+		local self = Event:new(mogliBase30Reply_mt)
+		return self
+	end
+	function mogliBase30Reply:new( className, object )
+		local self = mogliBase30Reply:emptyNew()
+		self.className = className
+		self.object    = object 
+		self.document  = _G[self.className].toMbDocument( self.object )
+		return self
+	end
+	function mogliBase30Reply:readStream(streamId, connection)
+		local id       = streamReadInt32(streamId) 
+		if id == 0 then
+			self.object  = nil
+			return 
+		end
+		local mbDocument
+		self.className, self.document = mogliBase30.readStreamEx( streamId )
+		
+		self.object  = networkGetObject(id) 
+		if self.object == nil then
+			print("Error reading network ID: "..tostring(id).." ("..tostring(self.className)..")")
+		else
+			self:run(connection) 
+		end
+	end
+	function mogliBase30Reply:writeStream(streamId, connection)
+		local id = nil
+		
+		if self.object ~= nil and self.className ~= nil then
+			id = networkGetObjectId(self.object)
+		end
+		
+		if id == nil then
+			print("Error sending network ID: nil ("..tostring(self.className)..")")
+			mogliBase30.printCallStack()
+			streamWriteInt32(streamId, 0 )
+			return
+		end
+		
+		streamWriteInt32(streamId, id )
+		mogliBase30.writeStreamEx( streamId, self.className, self.document )
+	end
+	function mogliBase30Reply:run(connection)
+	--print(tostring(self.className).." / "..tostring(self.object.configFileName)..": synced via event")
+		_G[self.className].fromMbDocument( self.object, self.document )
+		self.object[self.className.."SyncReceived"] = true
+	end
+	
+	
 end

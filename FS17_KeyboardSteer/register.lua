@@ -1,6 +1,9 @@
 SpecializationUtil.registerSpecialization("keyboardSteerMogli", "keyboardSteerMogli", g_currentModDirectory.."keyboardSteerMogli.lua")
 
+source(Utils.getFilename("keyboardSteerMogliScreen.lua", g_currentModDirectory))
+
 keyboardSteerMogli_Register = {};
+keyboardSteerMogli_Register.g_currentModDirectory = g_currentModDirectory
 
 function keyboardSteerMogli_Register:loadMap(name)
 	if self.firstRun == nil then
@@ -28,17 +31,62 @@ function keyboardSteerMogli_Register:loadMap(name)
 				end;
 			end;	
 		end;
-		g_i18n.globalI18N.texts["ksmENABLE_ON"]   = g_i18n:getText("ksmENABLE_ON");		
-		g_i18n.globalI18N.texts["ksmENABLE_OFF"]  = g_i18n:getText("ksmENABLE_OFF");		
-		g_i18n.globalI18N.texts["ksmCAMERA_ON"]   = g_i18n:getText("ksmCAMERA_ON");		
-		g_i18n.globalI18N.texts["ksmCAMERA_OFF"]  = g_i18n:getText("ksmCAMERA_OFF");		
-		g_i18n.globalI18N.texts["ksmREVERSE_ON"]  = g_i18n:getText("ksmREVERSE_ON");		
-		g_i18n.globalI18N.texts["ksmREVERSE_OFF"] = g_i18n:getText("ksmREVERSE_OFF");		
-		g_i18n.globalI18N.texts["ksmANALOG_ON"]   = g_i18n:getText("ksmANALOG_ON");		
-		g_i18n.globalI18N.texts["ksmANALOG_OFF"]  = g_i18n:getText("ksmANALOG_OFF");		
-		g_i18n.globalI18N.texts["input_ksmPLUS"]  = g_i18n:getText("input_ksmPLUS");		
-		g_i18n.globalI18N.texts["input_ksmMINUS"] = g_i18n:getText("input_ksmMINUS");		
-	end;
+	end
+	
+	-- make l10n global 
+	local prefix = g_i18n.texts.ksmInputPrefix
+	local prelen = 0
+	if prefix ~= nil and prefix ~= "" then
+		prelen = string.len( prefix )
+	end
+	for m,t in pairs( g_i18n.texts ) do
+		local n = nil
+		if     string.sub( m, 1, 9 ) == "input_ksm" then
+			n = string.sub( m, 7 )
+			if prelen > 0 and string.sub( t, 1, prelen ) == prefix then
+				t = string.sub( t, prelen+1, -1 )
+			end
+		elseif string.sub( m, 1, 3 ) == "ksm"       then
+			n = m
+		end
+		if n ~= nil and g_i18n.globalI18N.texts[n] == nil then
+			g_i18n.globalI18N.texts[n] = t
+		end
+	end
+	
+	local l10nFilenamePrefixFull = Utils.getFilename("modDesc_l10n", keyboardSteerMogli_Register.g_currentModDirectory);
+	local l10nXmlFile;
+	local l10nFilename
+	local langs = {g_languageShort, "en", "de"};
+	for _, lang in ipairs(langs) do
+		l10nFilename = l10nFilenamePrefixFull.."_"..lang..".xml";
+		if fileExists(l10nFilename) then
+			l10nXmlFile = loadXMLFile("TempConfig", l10nFilename);
+			break;
+		end
+	end
+	if l10nXmlFile ~= nil then
+		local textI = 0;
+		while true do
+			local key = string.format("l10n.longTexts.longText(%d)", textI);
+			if not hasXMLProperty(l10nXmlFile, key) then
+				break;
+			end;
+			local name = getXMLString(l10nXmlFile, key.."#name");
+			local text = getXMLString(l10nXmlFile, key);
+			if name ~= nil and text ~= nil then
+				g_i18n.globalI18N.texts[name] = text:gsub("\r\n", "\n")
+			end;
+			textI = textI+1;
+		end;
+		delete(l10nXmlFile);
+	end
+	
+	
+	g_keyboardSteerMogliScreen = keyboardSteerMogliScreen:new()
+	g_gui:loadGui(keyboardSteerMogli_Register.g_currentModDirectory .. "keyboardSteerMogliScreen.xml", "keyboardSteerMogliScreen", g_keyboardSteerMogliScreen)	
+	FocusManager:setGui("MPLoadingScreen")
+	
 end;
 
 function keyboardSteerMogli_Register:deleteMap()

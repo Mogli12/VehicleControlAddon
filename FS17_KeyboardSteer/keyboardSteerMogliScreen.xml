@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<GUI onOpen="onOpen" onClose="onClose" onCreate="onCreate">
+	<GuiElement type="bitmap" profile="backgroundImageIngame" />
+
+
+	<GuiElement type="bitmap" profile="uiElementBg">
+		<GuiElement type="bitmap" profile="uiElementMainBg" >
+			<GuiElement type="bitmap" profile="uiElementBaseHeader">
+				<GuiElement type="text" profile="headerText" text="$l10n_ksmVERSION" />
+			</GuiElement>
+
+			<GuiElement type="boxLayout" profile="settingsBox" position="20px 550px">			
+				<GuiElement type="toggleButton2" profile="multiTextOptionSettings" id="ksmCameraIsOn" toolTip="$l10n_ksmCAMERA"  onCreate="onCreateSubElement" 
+												focusId="11" focusChangeTop="101" focusChangeBottom="101">										
+					<GuiElement type="button" profile="multiTextOptionLeft" />
+					<GuiElement type="button" profile="multiTextOptionRight"/>
+					<GuiElement type="text" profile="multiTextOptionText" />
+					<GuiElement type="text" profile="multiTextOptionTitle" text="$l10n_ksmCAMERA"/>
+					<GuiElement type="bitmap" profile="multiTextOptionBg" />
+				</GuiElement>
+				
+				<GuiElement type="toggleButton2" profile="multiTextOptionSettings" id="ksmReverseIsOn" toolTip="$l10n_ksmREVERSE"  onCreate="onCreateSubElement" 
+												focusId="11" focusChangeTop="101" focusChangeBottom="101">										
+					<GuiElement type="button" profile="multiTextOptionLeft" />
+					<GuiElement type="button" profile="multiTextOptionRight"/>
+					<GuiElement type="text" profile="multiTextOptionText" />
+					<GuiElement type="text" profile="multiTextOptionTitle" text="$l10n_ksmREVERSE"/>
+					<GuiElement type="bitmap" profile="multiTextOptionBg" />
+				</GuiElement>
+				
+				<GuiElement type="toggleButton2" profile="multiTextOptionSettings" id="ksmSteeringIsOn" toolTip="$l10n_ksmSTEERING"  onCreate="onCreateSubElement" 
+												focusId="11" focusChangeTop="101" focusChangeBottom="101">										
+					<GuiElement type="button" profile="multiTextOptionLeft" />
+					<GuiElement type="button" profile="multiTextOptionRight"/>
+					<GuiElement type="text" profile="multiTextOptionText" />
+					<GuiElement type="text" profile="multiTextOptionTitle" text="$l10n_ksmSTEERING"/>
+					<GuiElement type="bitmap" profile="multiTextOptionBg" />
+				</GuiElement>
+				
+				<GuiElement type="toggleButton2" profile="multiTextOptionSettings" id="ksmAnalogIsOn" toolTip="$l10n_ksmANALOG" onCreate="onCreateSubElement" 
+												focusId="11" focusChangeTop="101" focusChangeBottom="101">										
+					<GuiElement type="button" profile="multiTextOptionLeft" />
+					<GuiElement type="button" profile="multiTextOptionRight"/>
+					<GuiElement type="text" profile="multiTextOptionText" />
+					<GuiElement type="text" profile="multiTextOptionTitle" text="$l10n_ksmANALOG"/>
+					<GuiElement type="bitmap" profile="multiTextOptionBg" />
+				</GuiElement>
+			</GuiElement>
+			
+			<GuiElement type="boxLayout" profile="settingsBox" position="347px 550px">
+				<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="ksmExponent" toolTip="$l10n_ksmEXPONENT" onCreate="onCreateSubElement" onCreateArgs="list"
+												focusId="21" focusChangeTop="102" focusChangeBottom="102">
+					<GuiElement type="button" profile="multiTextOptionLeft" />
+					<GuiElement type="button" profile="multiTextOptionRight"/>
+					<GuiElement type="text"   profile="multiTextOptionText" />
+					<GuiElement type="text"   profile="multiTextOptionTitle" text="$l10n_ksmEXPONENT"/>
+					<GuiElement type="bitmap" profile="multiTextOptionBg" />
+				</GuiElement>
+				
+				<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="ksmLimitThrottle" toolTip="$l10n_ksmLIMIT" onCreate="onCreateSubElement" onCreateArgs="list"
+												focusId="21" focusChangeTop="102" focusChangeBottom="102">
+					<GuiElement type="button" profile="multiTextOptionLeft" />
+					<GuiElement type="button" profile="multiTextOptionRight"/>
+					<GuiElement type="text"   profile="multiTextOptionText" />
+					<GuiElement type="text"   profile="multiTextOptionTitle" text="$l10n_ksmLIMIT"/>
+					<GuiElement type="bitmap" profile="multiTextOptionBg" />
+				</GuiElement>
+			</GuiElement>
+
+			<GuiElement type="text" profile="textDefault" screenAlign="topLeft" positionOrigin="topLeft" textAlignment="left" 
+											position="675px -95px" textWrapWidth="320px" text="$l10n_ksm_Help_1" />				
+
+			<GuiElement type="flowLayout" profile="buttonBox" id="buttonsPC" >
+				<GuiElement type="button" profile="buttonBack"   size="500px 40px" text="$l10n_button_back" onClick="onClickBack"  focusId="101" focusChangeTop="11" focusChangeBottom="102" />
+				<GuiElement type="button" profile="buttonSave"   size="500px 40px" text="$l10n_button_ok"   onClick="onClickOk"    focusId="102" focusChangeTop="21" focusChangeBottom="21" />
+			</GuiElement>
+
+		</GuiElement>
+	</GuiElement>
+</GUI>

@@ -63,28 +63,24 @@ Toutes les fonctions peuvent également être éteint à nouveau, avec les touch
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>store.dds</iconFilename>
-	<version>2.1.1.4</version>
+	<version>2.1.1.5</version>
 	<l10n filenamePrefix="modDesc_l10n">
 		<text name="ksmVERSION">
-			<de>KeyboardSteer v2.2 beta 4</de>
-			<en>KeyboardSteer v2.2 beta 4</en>
-			<fr>KeyboardSteer v2.2 beta 4</fr>
-			<es>KeyboardSteer v2.2 beta 4</es>
+			<de>KeyboardSteer v2.2 beta 5</de>
+			<en>KeyboardSteer v2.2 beta 5</en>
+			<fr>KeyboardSteer v2.2 beta 5</fr>
+			<es>KeyboardSteer v2.2 beta 5</es>
 		</text>
 	</l10n>
 	<inputBindings>
-		<input name="ksmENABLE"  key1="KEY_lshift KEY_e" button="" category="VEHICLE" />
-		<input name="ksmCAMERA"  key1="KEY_lshift KEY_c" button="" category="VEHICLE" />
-		<input name="ksmREVERSE" key1="KEY_lshift KEY_r" button="" category="VEHICLE" />
-		<input name="ksmANALOG"  key1="KEY_lshift KEY_lctrl KEY_c" button="" category="VEHICLE" />
-		<input name="ksmPLUS"    key1="KEY_lctrl KEY_e"  button="" category="VEHICLE" />
-		<input name="ksmMINUS"   key1="KEY_lctrl KEY_c"  button="" category="VEHICLE" />
-		<input name="ksmTPLUS"   key1="KEY_lctrl KEY_w"  button="" category="VEHICLE" />
-		<input name="ksmTMINUS"  key1="KEY_lctrl KEY_s"  button="" category="VEHICLE" />
-		<input name="ksmUP"      key1="KEY_rshift KEY_up"  button="" category="VEHICLE" />
-		<input name="ksmDOWN"    key1="KEY_rshift KEY_down"  button="" category="VEHICLE" />
-		<input name="ksmLEFT"    key1="KEY_rshift KEY_left"  button="" category="VEHICLE" />
-		<input name="ksmRIGHT"   key1="KEY_rshift KEY_right"  button="" category="VEHICLE" />
+		<input name="ksmENABLE"   key1="KEY_lshift KEY_e" button="" category="VEHICLE" />
+		<input name="ksmCAMERA"   key1="KEY_lshift KEY_c" button="" category="VEHICLE" />
+		<input name="ksmREVERSE"  key1="KEY_lshift KEY_r" button="" category="VEHICLE" />
+		<input name="ksmSETTINGS" key1="KEY_lctrl KEY_c"  button="" category="VEHICLE" />
+		<input name="ksmUP"       key1="KEY_rshift KEY_up"  button="" category="VEHICLE" />
+		<input name="ksmDOWN"     key1="KEY_rshift KEY_down"  button="" category="VEHICLE" />
+		<input name="ksmLEFT"     key1="KEY_rshift KEY_left"  button="" category="VEHICLE" />
+		<input name="ksmRIGHT"    key1="KEY_rshift KEY_right"  button="" category="VEHICLE" />
 	</inputBindings>
 	<extraSourceFiles>
 		<sourceFile filename="register.lua" />
