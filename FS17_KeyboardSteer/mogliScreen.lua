@@ -8,7 +8,7 @@
 -- Usage:  source(Utils.getFilename("mogliScreen.lua", g_currentModDirectory));
 --         _G[g_currentModDirectory.."mogliScreen"].newClass( "AutoCombine", "acParameters" )
 
-local mogliScreenVersion   = 1.01
+local mogliScreenVersion   = 1.02
 local mogliScreenClass     = g_currentModName..".mogliScreen"
 
 if _G[mogliScreenClass] ~= nil and _G[mogliScreenClass].version ~= nil and _G[mogliScreenClass].version >= mogliScreenVersion then
@@ -123,6 +123,7 @@ else
 	-- onOpen
 	--********************************
 		function _newClass_:onOpen()
+			_newClass_:superClass().onOpen(self)
 			g_currentMission.isPlayerFrozen = true
 			if self.vehicle == nil then
 				print("Error: vehicle is empty")
@@ -182,9 +183,10 @@ else
 			if self.pageStateBox ~= nil then
 				self:setPageStates()
 				self:updatePageState()
-			end	
+			end				
 			
-			_newClass_:superClass().onOpen(self)
+			self.mogliShowMouseCursor = InputBinding.getShowMouseCursor()
+			InputBinding.setShowMouseCursor(true)
 		end
 
 	--********************************
@@ -241,6 +243,7 @@ else
 	-- onClose
 	--********************************
 		function _newClass_:onClose()
+			InputBinding.setShowMouseCursor(self.mogliShowMouseCursor)
 			if type( _newClass_.mogliScreenOnClose ) == "function" then
 				_newClass_.mogliScreenOnClose( self )
 			end
