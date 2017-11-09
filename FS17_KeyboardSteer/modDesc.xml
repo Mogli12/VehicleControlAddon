@@ -63,13 +63,13 @@ Toutes les fonctions peuvent également être éteint à nouveau, avec les touch
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>store.dds</iconFilename>
-	<version>2.1.1.6</version>
+	<version>2.1.1.7</version>
 	<l10n filenamePrefix="modDesc_l10n">
 		<text name="ksmVERSION">
-			<de>KeyboardSteer v2.2 beta 6</de>
-			<en>KeyboardSteer v2.2 beta 6</en>
-			<fr>KeyboardSteer v2.2 beta 6</fr>
-			<es>KeyboardSteer v2.2 beta 6</es>
+			<de>KeyboardSteer v2.2 beta 7</de>
+			<en>KeyboardSteer v2.2 beta 7</en>
+			<fr>KeyboardSteer v2.2 beta 7</fr>
+			<es>KeyboardSteer v2.2 beta 7</es>
 		</text>
 	</l10n>
 	<inputBindings>
