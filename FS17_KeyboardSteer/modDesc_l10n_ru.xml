@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<l10n>
+	<!-- Note that 'description' is only here for easier translations. It needs to be manually copied to ModDesc.XML later. -->
+	<description><![CDATA[Добавляет специализацию для адаптивного рулевого управления с клавиатуры]]></description>
+
+	<texts>
+		<text name="ksmInputPrefix"   text="keyboardSteerMogli: "/>
+		
+		<text name="ksmCAMERA"        text="Подруливание камеры"/>
+		<text name="ksmEXPONENT"      text="Чувствительность к скорости"/>
+		<text name="ksmSTEERING"      text="Адаптивное рулевое управление"/>
+		<text name="ksmANALOG"        text="Аналоговый контролер"/>
+		<text name="ksmREVERSE"       text="Оглянуться назад"/>
+		<text name="ksmLIMIT"         text="Ограничитель педали акселератора"/>
+			
+		<text name="ksmENABLE_ON"     text="руление [адаптивное]"/>
+		<text name="ksmENABLE_OFF"    text="руление [обычное]"/>
+		<text name="ksmCAMERA_ON"     text="вращение камеры [вкл]"/>
+		<text name="ksmCAMERA_OFF"    text="вращение камеры [выкл]"/>
+		<text name="ksmANALOG_ON"     text="аналоговый контролер [вкл]"/>
+		<text name="ksmANALOG_OFF"    text="аналоговый контролер [выкл]"/>
+		<text name="ksmREVERSE_ON"    text="оборачиваться [вкл]"/>
+		<text name="ksmREVERSE_OFF"   text="оборачиваться [выкл]"/>
+
+		<text name="input_ksmENABLE"    text="keyboardSteerMogli: Руление"/>
+		<text name="input_ksmCAMERA"    text="keyboardSteerMogli: Вращение камеры"/>
+		<text name="input_ksmREVERSE"   text="keyboardSteerMogli: Оборачиваться"/>
+		<text name="input_ksmSETTINGS"  text="keyboardSteerMogli: Настройки keyboardSteer"/>
+		<text name="input_ksmUP"        text="keyboardSteerMogli: Посмотреть вперед"/>
+		<text name="input_ksmDOWN"      text="keyboardSteerMogli: Посмотреть назад"/>
+		<text name="input_ksmLEFT"      text="keyboardSteerMogli: Посмотреть налево"/>
+		<text name="input_ksmRIGHT"     text="keyboardSteerMogli: Посмотреть направо"/>
+	</texts>
+	
+	<longTexts>
+		<longText name="ksm_Help_1">
+<![CDATA[Этот скрипт меняет чувствительность рулевого управления, скорость автовозврата и максимальный угол поворота рулевого колеса в зависимости от скорости движения.
+Он также может поворачивать камеру в соответствии с углом поворота колес и направлением движения.
+Можно настроить ограничитель цифрового акселератора, при котором только нажав клавишу Left Shift одновременно с клавишей акселератора или тормоза, будет передается или тормозится 100% усилия.
+Если вы установите ограничитель педали акселератора на 100%, тогда Left Shift наоборот будет ограничивать действие педали акселератора или тормоза.
+
+Все функции по желанию могут быть отключены.]]>
+		</longText>
+	</longTexts>
+</l10n>
