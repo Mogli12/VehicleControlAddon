@@ -8,7 +8,7 @@
 -- Usage:  source(Utils.getFilename("mogliScreen.lua", g_currentModDirectory));
 --         _G[g_currentModDirectory.."mogliScreen"].newClass( "AutoCombine", "acParameters" )
 
-local mogliScreenVersion   = 1.05
+local mogliScreenVersion   = 1.06
 local mogliScreenClass     = g_currentModName..".mogliScreen"
 
 if _G[mogliScreenClass] ~= nil and _G[mogliScreenClass].version ~= nil and _G[mogliScreenClass].version >= mogliScreenVersion then
@@ -97,6 +97,11 @@ else
 		function _newClass_:update(dt)
 			_newClass_:superClass().update(self, dt)
 			
+			if not ( self.isOpen ) then
+			-- closed by MENU_CANCEL key (ESC)
+				return 
+			end
+			
 			if type( _newClass_.mogliScreenPreUpdate ) == "function" then
 				_newClass_.mogliScreenPreUpdate( self, dt )
 			end
@@ -117,7 +122,8 @@ else
 			if type( _newClass_.mogliScreenPostUpdate ) == "function" then
 				_newClass_.mogliScreenPostUpdate( self, dt )
 			end
-			InputBinding.setShowMouseCursor(true)
+			
+			InputBinding.setShowMouseCursor(true)			
 		end
 
 	--********************************
@@ -190,7 +196,7 @@ else
 	--********************************
 	-- onClickOk
 	--********************************
-		function _newClass_:onClickOk()
+		function _newClass_:onClickOk(...)
 			if self.vehicle == nil then
 				print("Error: vehicle is empty")
 			else
@@ -238,25 +244,14 @@ else
 		end
 
 	--********************************
-	-- onClickBack
-	--********************************
-		function _newClass_:onClickBack()
-			if type( _newClass_.mogliScreenOnClose ) == "function" then
-				_newClass_.mogliScreenOnClose( self )
-			end
-			self.vehicle = nil
-			_newClass_:superClass().onClickBack(self);
-		end
-
-	--********************************
 	-- onClose
 	--********************************
-		function _newClass_:onClose()
+		function _newClass_:onClose(...)
 			if type( _newClass_.mogliScreenOnClose ) == "function" then
 				_newClass_.mogliScreenOnClose( self )
 			end
 			self.vehicle = nil
-			_newClass_:superClass().onClose(self);
+			_newClass_:superClass().onClose(self, ...);
 		end
 
 	--********************************
