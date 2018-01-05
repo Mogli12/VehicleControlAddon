@@ -8,7 +8,7 @@
 -- Usage:  source(Utils.getFilename("mogliScreen.lua", g_currentModDirectory));
 --         _G[g_currentModDirectory.."mogliScreen"].newClass( "AutoCombine", "acParameters" )
 
-local mogliScreenVersion   = 1.04
+local mogliScreenVersion   = 1.05
 local mogliScreenClass     = g_currentModName..".mogliScreen"
 
 if _G[mogliScreenClass] ~= nil and _G[mogliScreenClass].version ~= nil and _G[mogliScreenClass].version >= mogliScreenVersion then
@@ -317,7 +317,7 @@ else
 				self.mogliScreenElements[element.id] = { element=element, parameter=parameter }
 			else	
 				print("Error inserting UI element with ID: "..tostring(element.id))
-			end
+			end			
 		end
 		
 	--********************************
@@ -406,8 +406,28 @@ else
 
 			self.pageSelector:setTexts(texts)
 		end
-	
+
 	--********************************
+	-- onLeaveSettingsBox()
+	--********************************
+		function _newClass_:mogliLeaveToolTip(element)
+			if self.mogliToolTipBox ~= nil then
+				self.mogliToolTipBoxText:setText("")
+				self.mogliToolTipBox:setVisible(false)
+			end
+		end
+
+	--********************************
+	-- onFocusSettingsBox()
+	--********************************
+		function _newClass_:mogliFocusToolTip(element)
+			if self.mogliToolTipBox ~= nil and element.toolTip ~= nil then
+				self.mogliToolTipBoxText:setText(element.toolTip)
+				self.mogliToolTipBox:setVisible(true)
+			end
+		end		
+
+		--********************************
 	-- mogliScreenGetPageTitle()
 	--********************************
 		function _newClass_:mogliScreenGetPageTitle(page)

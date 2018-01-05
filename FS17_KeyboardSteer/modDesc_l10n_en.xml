@@ -4,26 +4,28 @@
 	<description><![CDATA[Adds the specialization for adaptive keyboard steering]]></description>
 
 	<texts>
-		<text name="ksmENABLE_ON"   text="steering [adaptive]"/>
-		<text name="ksmENABLE_OFF"  text="steering [normal]"/>
-		<text name="ksmCAMERA_ON"   text="camera movement [on]"/>
-		<text name="ksmCAMERA_OFF"  text="camera movement [off]"/>
-		<text name="ksmANALOG_ON"   text="analogue controller [on]"/>
-		<text name="ksmANALOG_OFF"  text="analogue controller [off]"/>
-		<text name="ksmREVERSE_ON"  text="look backwards [on]"/>
-		<text name="ksmREVERSE_OFF" text="look backwards [off]"/>
-
-		<text name="input_ksmENABLE"  text="keyboardSteerMogli: steering"/>
-		<text name="input_ksmCAMERA"  text="keyboardSteerMogli: camera movement"/>
-		<text name="input_ksmREVERSE" text="keyboardSteerMogli: look backwards"/>
-		<text name="input_ksmANALOG"  text="keyboardSteerMogli: analogue controller"/>
-		<text name="input_ksmPLUS"    text="keyboardSteerMogli: speed sensitivity +"/>
-		<text name="input_ksmMINUS"   text="keyboardSteerMogli: speed sensitivity -"/>
-		<text name="input_ksmTPLUS"   text="keyboardSteerMogli: throttle limiter +"/>
-		<text name="input_ksmTMINUS"  text="keyboardSteerMogli: throttle limiter -"/>
-		<text name="input_ksmUP"      text="keyboardSteerMogli: look fwd"/>
-		<text name="input_ksmDOWN"    text="keyboardSteerMogli: look back"/>
-		<text name="input_ksmLEFT"    text="keyboardSteerMogli: look left"/>
-		<text name="input_ksmRIGHT"   text="keyboardSteerMogli: look right"/>
+		<text name="ksmCAMERA"         text="Camera Rotation"/>
+		<text name="ksmEXPONENT"       text="Sensitivity"/>
+		<text name="ksmSTEERING"       text="Adaptive Steering"/>
+		<text name="ksmANALOG"         text="Analogue Controller"/>
+		<text name="ksmREVERSE"        text="Look Backwards"/>
+		<text name="ksmLIMIT"          text="Throttle Limiter"/>
+		<text name="ksmSETTINGS"       text="FS17_KeyboardSteer: Settings"/>
+		                               
+		<text name="ksm_tip_CAMERA"    text="The camera rotates automatically according to the steering angle"/>
+		<text name="ksm_tip_EXPONENT"  text="Sensitivity of the adaptive steering with respect to ground speed"/>
+		<text name="ksm_tip_STEERING"  text="The adaptive steering adjust the automatic back rotation and the maximum steering angle"/>
+		<text name="ksm_tip_ANALOG"    text="Enable adaptive steering for analogue controllers"/>
+		<text name="ksm_tip_REVERSE"   text="If the verhicle changes direction the camera is rotated by 180°"/>
+		<text name="ksm_tip_LIMIT"     text="Limiter of the throttle without and with left shift key"/>
+		                               
+		<text name="input_ksmENABLE"   text="FS17_KeyboardSteer: adaptive steering"/>
+		<text name="input_ksmCAMERA"   text="FS17_KeyboardSteer: camera rotation"/>
+		<text name="input_ksmREVERSE"  text="FS17_KeyboardSteer: look backwards"/>
+		<text name="input_ksmSETTINGS" text="FS17_KeyboardSteer: settings"/>
+		<text name="input_ksmUP"       text="FS17_KeyboardSteer: look fwd"/>
+		<text name="input_ksmDOWN"     text="FS17_KeyboardSteer: look back"/>
+		<text name="input_ksmLEFT"     text="FS17_KeyboardSteer: look left"/>
+		<text name="input_ksmRIGHT"    text="FS17_KeyboardSteer: look right"/>
 	</texts>
 </l10n>

@@ -34,22 +34,8 @@ function keyboardSteerMogli_Register:loadMap(name)
 	end
 	
 	-- make l10n global 
-	local prefix = g_i18n.texts.ksmInputPrefix
-	local prelen = 0
-	if prefix ~= nil and prefix ~= "" then
-		prelen = string.len( prefix )
-	end
-	for m,t in pairs( g_i18n.texts ) do
-		local n = nil
-		if     string.sub( m, 1, 9 ) == "input_ksm" then
-			n = string.sub( m, 7 )
-			if prelen > 0 and string.sub( t, 1, prelen ) == prefix then
-				t = string.sub( t, prelen+1, -1 )
-			end
-		elseif string.sub( m, 1, 3 ) == "ksm"       then
-			n = m
-		end
-		if n ~= nil and g_i18n.globalI18N.texts[n] == nil then
+	for n,t in pairs( g_i18n.texts ) do
+		if string.sub( n, 1, 3 ) == "ksm" and g_i18n.globalI18N.texts[n] == nil then
 			g_i18n.globalI18N.texts[n] = t
 		end
 	end

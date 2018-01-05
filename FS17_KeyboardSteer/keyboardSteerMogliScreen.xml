@@ -10,8 +10,8 @@
 			</GuiElement>
 
 			<GuiElement type="boxLayout" profile="settingsBox" position="20px 550px">			
-				<GuiElement type="toggleButton2" profile="multiTextOptionSettings" id="ksmCameraIsOn" toolTip="$l10n_ksmCAMERA"  onCreate="onCreateSubElement" 
-												focusId="11" focusChangeTop="101" focusChangeBottom="101">										
+				<GuiElement type="toggleButton2" profile="multiTextOptionSettings" id="ksmCameraIsOn" toolTip="$l10n_ksm_tip_CAMERA"  onCreate="onCreateSubElement" 
+												onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="11" focusChangeTop="101" focusChangeBottom="101">										
 					<GuiElement type="button" profile="multiTextOptionLeft" />
 					<GuiElement type="button" profile="multiTextOptionRight"/>
 					<GuiElement type="text" profile="multiTextOptionText" />
@@ -19,8 +19,8 @@
 					<GuiElement type="bitmap" profile="multiTextOptionBg" />
 				</GuiElement>
 				
-				<GuiElement type="toggleButton2" profile="multiTextOptionSettings" id="ksmReverseIsOn" toolTip="$l10n_ksmREVERSE"  onCreate="onCreateSubElement" 
-												focusId="11" focusChangeTop="101" focusChangeBottom="101">										
+				<GuiElement type="toggleButton2" profile="multiTextOptionSettings" id="ksmReverseIsOn" toolTip="$l10n_ksmR_tip_EVERSE"  onCreate="onCreateSubElement" 
+												onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="12" focusChangeTop="11" focusChangeBottom="13">										
 					<GuiElement type="button" profile="multiTextOptionLeft" />
 					<GuiElement type="button" profile="multiTextOptionRight"/>
 					<GuiElement type="text" profile="multiTextOptionText" />
@@ -28,8 +28,8 @@
 					<GuiElement type="bitmap" profile="multiTextOptionBg" />
 				</GuiElement>
 				
-				<GuiElement type="toggleButton2" profile="multiTextOptionSettings" id="ksmSteeringIsOn" toolTip="$l10n_ksmSTEERING"  onCreate="onCreateSubElement" 
-												focusId="11" focusChangeTop="101" focusChangeBottom="101">										
+				<GuiElement type="toggleButton2" profile="multiTextOptionSettings" id="ksmSteeringIsOn" toolTip="$l10n_ksm_tip_STEERING"  onCreate="onCreateSubElement" 
+												onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="13" focusChangeTop="12" focusChangeBottom="14">										
 					<GuiElement type="button" profile="multiTextOptionLeft" />
 					<GuiElement type="button" profile="multiTextOptionRight"/>
 					<GuiElement type="text" profile="multiTextOptionText" />
@@ -37,8 +37,8 @@
 					<GuiElement type="bitmap" profile="multiTextOptionBg" />
 				</GuiElement>
 				
-				<GuiElement type="toggleButton2" profile="multiTextOptionSettings" id="ksmAnalogIsOn" toolTip="$l10n_ksmANALOG" onCreate="onCreateSubElement" 
-												focusId="11" focusChangeTop="101" focusChangeBottom="101">										
+				<GuiElement type="toggleButton2" profile="multiTextOptionSettings" id="ksmAnalogIsOn" toolTip="$l10n_ksm_tip_ANALOG" onCreate="onCreateSubElement" 
+												onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="14" focusChangeTop="13" focusChangeBottom="15">										
 					<GuiElement type="button" profile="multiTextOptionLeft" />
 					<GuiElement type="button" profile="multiTextOptionRight"/>
 					<GuiElement type="text" profile="multiTextOptionText" />
@@ -48,8 +48,8 @@
 			</GuiElement>
 			
 			<GuiElement type="boxLayout" profile="settingsBox" position="347px 550px">
-				<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="ksmExponent" toolTip="$l10n_ksmEXPONENT" onCreate="onCreateSubElement" onCreateArgs="list"
-												focusId="21" focusChangeTop="102" focusChangeBottom="102">
+				<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="ksmExponent" toolTip="$l10n_ksm_tip_EXPONENT" onCreate="onCreateSubElement" onCreateArgs="list"
+												onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="15" focusChangeTop="14" focusChangeBottom="16">
 					<GuiElement type="button" profile="multiTextOptionLeft" />
 					<GuiElement type="button" profile="multiTextOptionRight"/>
 					<GuiElement type="text"   profile="multiTextOptionText" />
@@ -57,8 +57,8 @@
 					<GuiElement type="bitmap" profile="multiTextOptionBg" />
 				</GuiElement>
 				
-				<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="ksmLimitThrottle" toolTip="$l10n_ksmLIMIT" onCreate="onCreateSubElement" onCreateArgs="list"
-												focusId="21" focusChangeTop="102" focusChangeBottom="102">
+				<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="ksmLimitThrottle" toolTip="$l10n_ksm_tip_LIMIT" onCreate="onCreateSubElement" onCreateArgs="list"
+												onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="16" focusChangeTop="15" focusChangeBottom="102">
 					<GuiElement type="button" profile="multiTextOptionLeft" />
 					<GuiElement type="button" profile="multiTextOptionRight"/>
 					<GuiElement type="text"   profile="multiTextOptionText" />
@@ -66,15 +66,19 @@
 					<GuiElement type="bitmap" profile="multiTextOptionBg" />
 				</GuiElement>
 			</GuiElement>
-
+			
 			<GuiElement type="text" profile="textDefault" screenAlign="topLeft" positionOrigin="topLeft" textAlignment="left" 
 											position="675px -95px" textWrapWidth="320px" text="$l10n_ksm_Help_1" />				
 
-			<GuiElement type="flowLayout" profile="buttonBox" id="buttonsPC" >
-				<GuiElement type="button" profile="buttonBack"   size="500px 40px" text="$l10n_button_back" onClick="onClickBack"  focusId="101" focusChangeTop="11" focusChangeBottom="102" />
-				<GuiElement type="button" profile="buttonSave"   size="500px 40px" text="$l10n_button_ok"   onClick="onClickOk"    focusId="102" focusChangeTop="21" focusChangeBottom="21" />
+			<GuiElement type="bitmap" profile="ingameMenuHelpRowBg" id="mogliToolTipBox" visible="false">
+				<GuiElement type="bitmap" profile="ingameMenuHelpRowIcon" />
+				<GuiElement type="text" profile="ingameMenuHelpRowText" id="mogliToolTipBoxText" text=""/>
 			</GuiElement>
 
+			<GuiElement type="flowLayout" profile="buttonBox" id="buttonsPC" >
+				<GuiElement type="button" profile="buttonBack"   size="500px 40px" text="$l10n_button_back" onClick="onClickBack"  focusId="101" focusChangeTop="11" focusChangeBottom="102" />
+				<GuiElement type="button" profile="buttonSave"   size="500px 40px" text="$l10n_button_ok"   onClick="onClickOk"    focusId="102" focusChangeTop="16" focusChangeBottom="11" />
+			</GuiElement>
 		</GuiElement>
 	</GuiElement>
 </GUI>

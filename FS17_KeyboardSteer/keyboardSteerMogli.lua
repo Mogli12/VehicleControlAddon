@@ -412,38 +412,6 @@ function keyboardSteerMogli:onLeave()
 end
 
 function keyboardSteerMogli:draw()		
---if self.ksmLCtrlPressed then
---	if self.ksmLShiftPressed then
---		if self.ksmAnalogIsOn then
---			g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("ksmANALOG_ON"),  InputBinding.ksmANALOG)
---		else
---			g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("ksmANALOG_OFF"), InputBinding.ksmANALOG)
---		end
---	else
---		g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("input_ksmPLUS"),  InputBinding.ksmPLUS)
---		g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("input_ksmMINUS"), InputBinding.ksmMINUS)
---	end
---	
---elseif KSMGlobals.ksmDrawIsOn or self.ksmLShiftPressed then
---	if self.ksmSteeringIsOn then
---		g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("ksmENABLE_ON"),  InputBinding.ksmENABLE)
---	else
---		g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("ksmENABLE_OFF"), InputBinding.ksmENABLE)
---	end
---	
---	if self:ksmIsValidCam() then
---		if self.ksmCameraIsOn then
---			g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("ksmCAMERA_ON"),  InputBinding.ksmCAMERA)
---		else
---			g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("ksmCAMERA_OFF"), InputBinding.ksmCAMERA)
---		end
---		if self.ksmReverseIsOn then
---			g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("ksmREVERSE_ON"),  InputBinding.ksmREVERSE)
---		else
---			g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("ksmREVERSE_OFF"), InputBinding.ksmREVERSE)
---		end
---	end
---end
 	g_currentMission:addHelpButtonText(keyboardSteerMogli.getText("ksmSETTINGS"),  InputBinding.ksmSETTINGS)
 	if self.ksmWarningText ~= "" then
 		g_currentMission:addExtraPrintText( self.ksmWarningText )
@@ -567,81 +535,84 @@ function keyboardSteerMogli:newUpdateVehiclePhysics( superFunc, axisForward, axi
 	local backup1 = self.autoRotateBackSpeed
 	local backup2 = self.minRotTime
 	local backup3 = self.maxRotTime
-	if self.ksmSteeringIsOn and ( self.ksmAnalogIsOn or not ( axisSideIsAnalog ) ) then
-		local arbs = backup1
-		
-		if self.lastSpeed < 0.000278 then
-			self.autoRotateBackSpeed = 0
-		elseif self.rotatedTime >= 0 then
-			self.autoRotateBackSpeed = ( 0.2 + 0.8 * self.rotatedTime / self.maxRotTime ) * self:ksmScaleFx( KSMGlobals.autoRotateBackFx:get( self.ksmSpeedFx ), 0.1, 3 ) * arbs
-		else                                                      
-			self.autoRotateBackSpeed = ( 0.2 + 0.8 * self.rotatedTime / self.minRotTime ) * self:ksmScaleFx( KSMGlobals.autoRotateBackFx:get( self.ksmSpeedFx ), 0.1, 3 ) * arbs
-		end
-		
-		local f = self:ksmScaleFx( KSMGlobals.maxRotTimeFx:get( self.ksmSpeedFx ), 0, 1 )
-		
-		self.minRotTime = f * backup2
-		self.maxRotTime = f * backup3
-		
-		local w = 1000 * KSMGlobals.waitTimeFx:get( self.ksmSpeedFx )
-		if axisSideIsAnalog or w <= 0 or axisSide * self.rotatedTime > 0 then
-			self.ksmAxisSideTimer1 = nil
-			self.ksmAxisSideTimer2 = nil
-		else		
-			local t									
-			if math.abs( axisSide ) < 0.001 then
-				t = self.ksmAxisSideTimer2
-			else
-				t = self.ksmAxisSideTimer1
+	
+	if not ( self.GPSisActiveSteering ) then
+		if self.ksmSteeringIsOn and ( self.ksmAnalogIsOn or not ( axisSideIsAnalog ) ) then
+			local arbs = backup1
+			
+			if self.lastSpeed < 0.000278 then
+				self.autoRotateBackSpeed = 0
+			elseif self.rotatedTime >= 0 then
+				self.autoRotateBackSpeed = ( 0.2 + 0.8 * self.rotatedTime / self.maxRotTime ) * self:ksmScaleFx( KSMGlobals.autoRotateBackFx:get( self.ksmSpeedFx ), 0.1, 3 ) * arbs
+			else                                                      
+				self.autoRotateBackSpeed = ( 0.2 + 0.8 * self.rotatedTime / self.minRotTime ) * self:ksmScaleFx( KSMGlobals.autoRotateBackFx:get( self.ksmSpeedFx ), 0.1, 3 ) * arbs
 			end
 			
-			if t == nil then
-				t = g_currentMission.time - dt
-			end
+			local f = self:ksmScaleFx( KSMGlobals.maxRotTimeFx:get( self.ksmSpeedFx ), 0, 1 )
 			
-			local f = 1
-			if g_currentMission.time < t + w then
-				f = ( g_currentMission.time - t ) / w
-			end
+			self.minRotTime = f * backup2
+			self.maxRotTime = f * backup3
 			
-			if math.abs( axisSide ) < 0.001 then
+			local w = 1000 * KSMGlobals.waitTimeFx:get( self.ksmSpeedFx )
+			if axisSideIsAnalog or w <= 0 or axisSide * self.rotatedTime > 0 then
 				self.ksmAxisSideTimer1 = nil
-				self.ksmAxisSideTimer2 = t				
-				if f < 1 and KSMGlobals.autoRotateBackWait > 0 then
-					self.autoRotateBackSpeed = self.autoRotateBackSpeed * ( 1 - KSMGlobals.autoRotateBackWait + f * KSMGlobals.autoRotateBackWait )
-				end
-			else
-				self.ksmAxisSideTimer1 = t
 				self.ksmAxisSideTimer2 = nil
-				if f < 1 and KSMGlobals.axisSideWait > 0 then
-					axisSide = axisSide  * ( 1 - KSMGlobals.axisSideWait + f * KSMGlobals.axisSideWait )
+			else		
+				local t									
+				if math.abs( axisSide ) < 0.001 then
+					t = self.ksmAxisSideTimer2
+				else
+					t = self.ksmAxisSideTimer1
 				end
+				
+				if t == nil then
+					t = g_currentMission.time - dt
+				end
+				
+				local f = 1
+				if g_currentMission.time < t + w then
+					f = ( g_currentMission.time - t ) / w
+				end
+				
+				if math.abs( axisSide ) < 0.001 then
+					self.ksmAxisSideTimer1 = nil
+					self.ksmAxisSideTimer2 = t				
+					if f < 1 and KSMGlobals.autoRotateBackWait > 0 then
+						self.autoRotateBackSpeed = self.autoRotateBackSpeed * ( 1 - KSMGlobals.autoRotateBackWait + f * KSMGlobals.autoRotateBackWait )
+					end
+				else
+					self.ksmAxisSideTimer1 = t
+					self.ksmAxisSideTimer2 = nil
+					if f < 1 and KSMGlobals.axisSideWait > 0 then
+						axisSide = axisSide  * ( 1 - KSMGlobals.axisSideWait + f * KSMGlobals.axisSideWait )
+					end
+				end
+			end
+			
+			axisSide = self:ksmScaleFx( KSMGlobals.axisSideFx:get( self.ksmSpeedFx ), 0.1, 3 ) * axisSide
+			if axisSide > 0 and self.rotatedTime > 0 then
+				axisSide = math.max( axisSide, self.autoRotateBackSpeed )
+			end
+			if axisSide < 0 and self.rotatedTime < 0 then
+				axisSide = math.min( axisSide, -self.autoRotateBackSpeed )
 			end
 		end
 		
-		axisSide = self:ksmScaleFx( KSMGlobals.axisSideFx:get( self.ksmSpeedFx ), 0.1, 3 ) * axisSide
-		if axisSide > 0 and self.rotatedTime > 0 then
-			axisSide = math.max( axisSide, self.autoRotateBackSpeed )
-		end
-		if axisSide < 0 and self.rotatedTime < 0 then
-			axisSide = math.min( axisSide, -self.autoRotateBackSpeed )
-		end
-	end
-	
-	if self.ksmSteeringIsOn and ( self.ksmAnalogIsOn or not ( axisForwardIsAnalog ) ) then
-		local limitThrottleRatio     = 0.75
-		local limitThrottleIfPressed = true
-		if self.ksmLimitThrottle < 11 then
-			limitThrottleIfPressed = false
-			limitThrottleRatio     = 0.45 + 0.05 * self.ksmLimitThrottle
-		else
-			limitThrottleIfPressed = true
-			limitThrottleRatio     = 1.5 - 0.05 * self.ksmLimitThrottle
-		end
-	
-		if self.ksmLShiftPressed == limitThrottleIfPressed then
-			axisForward = axisForward * limitThrottleRatio
-			axisForwardIsAnalog = true
+		if self.ksmSteeringIsOn and ( self.ksmAnalogIsOn or not ( axisForwardIsAnalog ) ) then
+			local limitThrottleRatio     = 0.75
+			local limitThrottleIfPressed = true
+			if self.ksmLimitThrottle < 11 then
+				limitThrottleIfPressed = false
+				limitThrottleRatio     = 0.45 + 0.05 * self.ksmLimitThrottle
+			else
+				limitThrottleIfPressed = true
+				limitThrottleRatio     = 1.5 - 0.05 * self.ksmLimitThrottle
+			end
+		
+			if self.ksmLShiftPressed == limitThrottleIfPressed then
+				axisForward = axisForward * limitThrottleRatio
+				axisForwardIsAnalog = true
+			end
 		end
 	end
 	
