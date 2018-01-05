@@ -24,6 +24,10 @@ Changelog v2.1:
 - Bugfix infinite rotation in MP
 - Bugfix tractor with reverse driving like Fendt 900 Vario or Valtra
 - Adjusted steering for better control above 50 km/h
+
+Changelog v2.2
+- New settings UI
+- Compatible with GPS mod
 ]]></en>
 		<de><![CDATA[
 Dieses Script variiert abhängig von der gefahrenen Geschwindigkeit die Lenkgeschwindigkeit, die Rückstellgeschwindigkeit und den maximalen Lenkeinschlag. 
@@ -47,6 +51,10 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 - Korrektur für Traktoren mit Rückfahrfunktion, z.B. Fendt 900 Vario oder Valtra
 - Bessere Parameter für mehr Kontrolle über 50 km/h
 - Gaspedalberenzer mit Default 80%
+
+Änderungen v2.2
+- Neuer Einstellungsdialog
+- Kompatiblität mit GPS Mod
 		]]></de>
 		<fr><![CDATA[
 Ce script varie en fonction de la vitesse, la vitesse de direction, la vitesse et la restauration de l'angle de braquage maximal.
@@ -87,13 +95,13 @@ Toutes les fonctions peuvent également être éteint à nouveau, avec les touch
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>store.dds</iconFilename>
-	<version>2.1.2.0</version>
+	<version>2.1.2.1</version>
 	<l10n filenamePrefix="modDesc_l10n">
 		<text name="ksmVERSION">
-			<de>KeyboardSteer v2.2 beta 10</de>
-			<en>KeyboardSteer v2.2 beta 10</en>
-			<fr>KeyboardSteer v2.2 beta 10</fr>
-			<es>KeyboardSteer v2.2 beta 10</es>
+			<de>KeyboardSteer v2.2 beta 11</de>
+			<en>KeyboardSteer v2.2 beta 11</en>
+			<fr>KeyboardSteer v2.2 beta 11</fr>
+			<es>KeyboardSteer v2.2 beta 11</es>
 		</text>
 	</l10n>
 	<inputBindings>
