@@ -19,7 +19,7 @@
 					<GuiElement type="bitmap" profile="multiTextOptionBg" />
 				</GuiElement>
 				
-				<GuiElement type="toggleButton2" profile="multiTextOptionSettings" id="ksmReverseIsOn" toolTip="$l10n_ksmR_tip_EVERSE"  onCreate="onCreateSubElement" 
+				<GuiElement type="toggleButton2" profile="multiTextOptionSettings" id="ksmReverseIsOn" toolTip="$l10n_ksm_tip_REVERSE"  onCreate="onCreateSubElement" 
 												onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="12" focusChangeTop="11" focusChangeBottom="13">										
 					<GuiElement type="button" profile="multiTextOptionLeft" />
 					<GuiElement type="button" profile="multiTextOptionRight"/>
