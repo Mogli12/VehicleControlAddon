@@ -1,26 +1,31 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <l10n>
+	
     <description><![CDATA[Aggiunge la specializzazione per lo sterzo adattivo da tastiera]]></description>
+	
     <texts>
-        <text name="ksmENABLE_ON"     text="Sterzo [adattivo]" />
-        <text name="ksmENABLE_OFF"    text="Sterzo [normale]" />
-        <text name="ksmCAMERA_ON"     text="Movimento telecamera [attivo]" />
-        <text name="ksmCAMERA_OFF"    text="Movimento telecamera [disattivo]" />
-        <text name="ksmANALOG_ON"     text="Controller analogico [attivo]" />
-        <text name="ksmANALOG_OFF"    text="Controller analogico [disattivo]" />
-        <text name="ksmREVERSE_ON"    text="Vista retromarcia [attivo]" />
-        <text name="ksmREVERSE_OFF"   text="Vista retromarcia [disattivo]" />
-        <text name="input_ksmENABLE"  text="KeyboardSteerMogli: Sterzo" />
-        <text name="input_ksmCAMERA"  text="KeyboardSteerMogli: Movimento telecamera" />
-        <text name="input_ksmANALOG"  text="KeyboardSteerMogli: Controller analogico" />
-        <text name="input_ksmREVERSE" text="KeyboardSteerMogli: Vista retromarcia" />
-        <text name="input_ksmUP"      text="KeyboardSteerMogli: Guarda avanti" />
-        <text name="input_ksmDOWN"    text="KeyboardSteerMogli: Guarda dietro" />
-        <text name="input_ksmLEFT"    text="KeyboardSteerMogli: Guarda sinistra" />
-        <text name="input_ksmRIGHT"   text="KeyboardSteerMogli: Guarda destra" />
-        <text name="input_ksmPLUS"    text="KeyboardSteerMogli: Sensibilità velocità +" />
-        <text name="input_ksmMINUS"   text="KeyboardSteerMogli: Sensibilità velocità -" />
-				<text name="input_ksmTPLUS"   text="KeyboardSteerMogli: throttle limiter +"/>
-				<text name="input_ksmTMINUS"  text="KeyboardSteerMogli: throttle limiter -"/>
+		<text name="ksmCAMERA"			text="Rotazione telecamera" />
+		<text name="ksmEXPONENT"       	text="Sensibilità"/>
+		<text name="ksmSTEERING"       	text="Sterzo adattivo"/>
+		<text name="ksmANALOG"     		text="Controller analogico" />
+		<text name="ksmREVERSE"    		text="Guarda all'indietro" />
+		<text name="ksmLIMIT"          	text="Limitatore di accelerazione"/>
+		<text name="ksmSETTINGS"       	text="KeyboardSteer: Impostazioni"/>
+
+		<text name="ksm_tip_CAMERA"    	text="La telecamera ruota automaticamente in base all'angolo di sterzata"/>
+		<text name="ksm_tip_EXPONENT"  	text="Sensibilità dello sterzo adattivo in base alla velocità sul terreno"/>
+		<text name="ksm_tip_STEERING"  	text="Lo sterzo adattivo regola la rotazione posteriore automatica e l'angolo di sterzata massimo"/>
+		<text name="ksm_tip_ANALOG"    	text="Abilita lo sterzo adattivo per i controller analogici"/>
+		<text name="ksm_tip_REVERSE"   	text="Se il veicolo cambia direzione la telecamera viene ruotata di 180°"/>
+		<text name="ksm_tip_LIMIT"     	text="Limiter dell'acceleratore con tasto shift sinistro"/>
+
+		<text name="input_ksmENABLE"  	text="KeyboardSteer: Sterzo adattivo" />
+		<text name="input_ksmCAMERA"  	text="KeyboardSteer: Rotazione telecamera" />
+		<text name="input_ksmREVERSE" 	text="KeyboardSteer: Guarda all'indietro" />
+		<text name="input_ksmSETTINGS" 	text="KeyboardSteer: Impostazioni"/>
+		<text name="input_ksmUP"      	text="KeyboardSteer: Guarda avanti" />
+		<text name="input_ksmDOWN"    	text="KeyboardSteer: Guarda dietro" />
+		<text name="input_ksmLEFT"    	text="KeyboardSteer: Guarda sinistra" />
+		<text name="input_ksmRIGHT"   	text="KeyboardSteer: Guarda destra" />
     </texts>
 </l10n>
