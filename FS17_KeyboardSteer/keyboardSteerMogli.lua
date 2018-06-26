@@ -42,7 +42,9 @@ function keyboardSteerMogli.globalsReset( createIfMissing )
   KSMGlobals.speedFxInc          = 0
   KSMGlobals.autoRotateBackWait  = 0	
   KSMGlobals.axisSideWait        = 0	
+  KSMGlobals.axisSideRAlt        = 0	
   KSMGlobals.limitThrottle       = 0	
+  KSMGlobals.rAltFactor          = 0	
 	KSMGlobals.enableAnalogCtrl    = false
 	KSMGlobals.debugPrint          = false
 	
@@ -146,8 +148,9 @@ function keyboardSteerMogli:load(savegame)
 	keyboardSteerMogli.registerState( self, "ksmExponent"    , 1    , keyboardSteerMogli.ksmOnSetFactor )
 	keyboardSteerMogli.registerState( self, "ksmWarningText" , ""   , keyboardSteerMogli.ksmOnSetWarningText )
 	keyboardSteerMogli.registerState( self, "ksmLCtrlPressed", false )
-	keyboardSteerMogli.registerState( self, "ksmLShiftPressed", false )
-	keyboardSteerMogli.registerState( self, "ksmLimitThrottle", KSMGlobals.limitThrottle )
+	keyboardSteerMogli.registerState( self, "ksmLShiftPressed",false )
+	keyboardSteerMogli.registerState( self, "ksmLRAltPressed", false )
+	keyboardSteerMogli.registerState( self, "ksmLimitThrottle",KSMGlobals.limitThrottle )
 	
 	self.ksmSpeedFx       = 0
 	self.ksmFactor        = 1
@@ -178,7 +181,7 @@ function keyboardSteerMogli:update(dt)
 
 	local newRotCursorKey = nil
 	local i               = self.camIndex
-			
+	local requestedBack   = nil
 
 	if self.isEntered and self.isClient and self:getIsActive() then
 		if     InputBinding.hasEvent(InputBinding.ksmSETTINGS) then		 
@@ -197,8 +200,10 @@ function keyboardSteerMogli:update(dt)
 			local newRot = nil
 			if     InputBinding.hasEvent(InputBinding.ksmUP)    then
 				newRotCursorKey = 0
+				requestedBack = false
 			elseif InputBinding.hasEvent(InputBinding.ksmDOWN)  then
 				newRotCursorKey = math.pi
+				requestedBack = true
 			elseif InputBinding.hasEvent(InputBinding.ksmLEFT)  then
 				newRotCursorKey = 0.3*math.pi
 			elseif InputBinding.hasEvent(InputBinding.ksmRIGHT) then
@@ -253,12 +258,8 @@ function keyboardSteerMogli:update(dt)
 	if      self:getIsActive() 
 			and self.isClient 
 			and self.steeringEnabled 
-			and self:ksmIsValidCam()
-			and not ( g_settingsIsHeadTrackingEnabled 
-						and isHeadTrackingAvailable() 
-						and self.cameras[i].isInside 
-						and self.cameras[i].headTrackingNode ~= nil ) then
-			
+			and self:ksmIsValidCam() then
+
 		if     self.ksmLastCamIndex == nil 
 				or self.ksmLastCamIndex ~= i then
 				
@@ -267,6 +268,53 @@ function keyboardSteerMogli:update(dt)
 			self.ksmLastCamIndex = self.camIndex
 			self.ksmCameras[i].zero       = self.cameras[i].rotY
 			self.ksmCameras[i].lastCamFwd = nil
+			
+		elseif  g_gameSettings:getValue("isHeadTrackingEnabled") 
+				and isHeadTrackingAvailable() 
+				and self.cameras[i].isInside 
+				and self.cameras[i].headTrackingNode ~= nil then
+				
+			if requestedBack ~= nil then 
+				self.ksmCamBack = requestedBack 
+			end 
+			
+			if self.ksmReverseIsOn or self.ksmCamBack ~= nil then			
+				if self.cameras[i].headTrackingMogliPF == nil then 
+					local p = getParent( self.cameras[i].headTrackingNode )
+					self.cameras[i].headTrackingMogliPF = createTransformGroup("headTrackingMogliPF")
+					link( p, self.cameras[i].headTrackingMogliPF )
+					link( self.cameras[i].headTrackingMogliPF, self.cameras[i].headTrackingNode )
+					setRotation( self.cameras[i].headTrackingMogliPF, 0, 0, 0 )
+					setTranslation( self.cameras[i].headTrackingMogliPF, 0, 0, 0 )
+					self.cameras[i].headTrackingMogliPR = false 
+				end 
+				
+				local targetBack = false 
+				if      self.ksmReverseIsOn
+						and not ( self.ksmCamFwd ) then 
+					targetBack = true 
+				end 
+				
+				if self.ksmCamBack ~= nil then 
+					if self.ksmCamBack == targetBack then 
+						self.ksmCamBack = nil 
+					else 
+						targetBack = self.ksmCamBack 
+					end 
+				end
+				
+				if targetBack then 
+					if not self.cameras[i].headTrackingMogliPR then 
+						self.cameras[i].headTrackingMogliPR = true 
+						setRotation( self.cameras[i].headTrackingMogliPF, 0, math.pi, 0 )
+					end 
+				else 
+					if self.cameras[i].headTrackingMogliPR then 
+						self.cameras[i].headTrackingMogliPR = false  
+						setRotation( self.cameras[i].headTrackingMogliPF, 0, 0, 0 )
+					end 
+				end 
+			end 
 			
 		elseif self.ksmCameraIsOn 
 				or self.ksmReverseIsOn then
@@ -341,26 +389,13 @@ function keyboardSteerMogli:update(dt)
 					newRotY = newRotY + self:ksmScaleFx( KSMGlobals.cameraRotFactor, 0.1, 3 ) * f
 				end	
 				
-			--if self.ksmReverseIsOn then
-			--	newRotY = keyboardSteerMogli.normalizeAngle( newRotY )
-			--	
-			--	if isRev then
-			--		newRotY = math.min( math.max( newRotY, eps-pi2 ), pi2-eps )
-			--	elseif -pi2-eps < newRotY and newRotY < pi2+eps then
-			--		if newRotY < 0 then
-			--			newRotY = -pi2-eps
-			--		else
-			--			newRotY = pi2+eps
-			--		end
-			--	end
-			--end
 			else
 				self.ksmLastFactor = 0
 			end
 
 			self.cameras[i].rotY = newRotY			
 		end
-	
+		
 		self.ksmCameras[i].last = self.cameras[i].rotY
 	end	
 
@@ -402,13 +437,17 @@ function keyboardSteerMogli:keyEvent(unicode, sym, modifier, isDown)
 		self:ksmSetState( "ksmLCtrlPressed", isDown )
 	end
 	if sym == Input.KEY_lshift then
-		self:ksmSetState( "ksmLShiftPressed", isDown )
+		self:ksmSetState( "ksmLShiftPressed",isDown )
+	end
+	if sym == Input.KEY_ralt then
+		self:ksmSetState( "ksmLRAltPressed", isDown )
 	end
 end
 
 function keyboardSteerMogli:onLeave()
-	self:ksmSetState( "ksmLCtrlPressed", false )
+	self:ksmSetState( "ksmLCtrlPressed",  false )
 	self:ksmSetState( "ksmLShiftPressed", false )
+	self:ksmSetState( "ksmLRAltPressed",  false )
 end
 
 function keyboardSteerMogli:draw()		
@@ -540,7 +579,10 @@ function keyboardSteerMogli:newUpdateVehiclePhysics( superFunc, axisForward, axi
 		if self.ksmSteeringIsOn and ( self.ksmAnalogIsOn or not ( axisSideIsAnalog ) ) then
 			local arbs = backup1
 			
-			if self.lastSpeed < 0.000278 then
+			if     self.ksmLRAltPressed then
+				self.autoRotateBackSpeed = 0
+				axisSide = axisSide * KSMGlobals.rAltFactor
+			elseif self.lastSpeed < 0.000278 then
 				self.autoRotateBackSpeed = 0
 			elseif self.rotatedTime >= 0 then
 				self.autoRotateBackSpeed = ( 0.2 + 0.8 * self.rotatedTime / self.maxRotTime ) * self:ksmScaleFx( KSMGlobals.autoRotateBackFx:get( self.ksmSpeedFx ), 0.1, 3 ) * arbs
