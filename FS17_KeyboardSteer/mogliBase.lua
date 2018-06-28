@@ -23,11 +23,12 @@
 -- 3.17 log output in globalsLoad 
 -- 3.18 sync events instead of readStream / writeStream  
 -- 3.19 missing syncs in SP and MP
+-- 3.20 WARNING: undefined input in gearboxMogli:  
 
 -- Usage:  source(Utils.getFilename("mogliBase.lua", g_currentModDirectory));
 --         _G[g_currentModDirectory.."mogliBase"].newClass( "AutoCombine", "acParameters" )
 
-local mogliBaseVersion   = 3.19
+local mogliBaseVersion   = 3.20
 local mogliBaseClass     = g_currentModName..".mogliBase"
 local mogliEventClass    = g_currentModName..".mogliEvent"
 local mogliSyncRequest   = g_currentModName..".mogliSyncRequest"
@@ -185,6 +186,9 @@ else
 	-- hasInputEvent
 	--**********************************************************************************************************	
 		function _newClass_.mbHasInputEvent( name, noWarning )
+			if name == nil or name == "" then
+				return false 
+			end 
 			if InputBinding[name] == nil then
 				if not ( noWarning or _newClass_.noInputWarning ) then
 					if _newClass_.mbUndefinedInputs == nil then
