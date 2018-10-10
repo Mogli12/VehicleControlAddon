@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="no" ?>
-<modDesc descVersion="32">
+<modDesc descVersion="39">
 	<author>mogli</author>
 	<title>
 		<en>Keyboard Steer</en>
@@ -16,14 +16,18 @@ All functions can also be off again, with the following keys:
 [Shift Left + C]: Moving Camera on / off, default is on
 [Shift Left + E]: Adaptive steering on / off, default is on
 [Shift Left + R]: Look backwards on / off, default is on
-[Ctrl + E Links]: increase sensitivity
-[Ctrl + C Links]: lower sensitivity
+[Ctrl Left + E]: increase sensitivity
+[Ctrl Left + C]: lower sensitivity
+[Ctrl Left + W]: increase thorttle limiter
+[Ctrl Left + A]: decrease thorttle limiter
+[Alt Left]: slower steering and no auto rotate back
 [Shift Right + Cursor]: look forward, backwards, left right
 
 Changelog v2.1:
 - Bugfix infinite rotation in MP
 - Bugfix tractor with reverse driving like Fendt 900 Vario or Valtra
 - Adjusted steering for better control above 50 km/h
+- Thorttle limiter with default 80%
 
 Changelog v2.2
 - New settings UI
@@ -44,6 +48,7 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 [Strg Links + C]: Empfindlichkeit senken
 [Strg Links + W]: Gaspedalberenzer erhöhen
 [Strg Links + A]: Gaspedalberenzer senken
+[Alt Links]: Langsame Lenkung ohne Zurückstellen
 [Umschalt Rechts + Pfeiltaste]: Nach vorne, hinten, links, rechts blicken
 
 Änderungen v2.1:
@@ -55,6 +60,7 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 Änderungen v2.2
 - Neuer Einstellungsdialog
 - Kompatiblität mit GPS Mod
+- Langsame Lenkung ohne Zurückstellen mit AltGR
 		]]></de>
 		<fr><![CDATA[
 Ce script varie en fonction de la vitesse, la vitesse de direction, la vitesse et la restauration de l'angle de braquage maximal.
@@ -95,13 +101,13 @@ Toutes les fonctions peuvent également être éteint à nouveau, avec les touch
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>store.dds</iconFilename>
-	<version>2.1.2.2</version>
+	<version>2.2.0.1</version>
 	<l10n filenamePrefix="modDesc_l10n">
 		<text name="ksmVERSION">
-			<de>KeyboardSteer v2.2 beta 12</de>
-			<en>KeyboardSteer v2.2 beta 12</en>
-			<fr>KeyboardSteer v2.2 beta 12</fr>
-			<es>KeyboardSteer v2.2 beta 12</es>
+			<de>KeyboardSteer v2.3 beta 1</de>
+			<en>KeyboardSteer v2.3 beta 1</en>
+			<fr>KeyboardSteer v2.3 beta 1</fr>
+			<es>KeyboardSteer v2.3 beta 1</es>
 		</text>
 	</l10n>
 	<inputBindings>

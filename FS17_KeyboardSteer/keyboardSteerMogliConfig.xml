@@ -38,8 +38,10 @@
 	
 	<autoRotateBackWait	type="float" value="0.75"/>
 	<axisSideWait       type="float" value="0.25"/>
-	<axisSideRAlt       type="float" value="0.25"/>
-	<rAltFactor         type="float" value="0.2"/>
+	<rAltFactorA        type="float" value="0.2"/>
+	<rAltFactor1        type="float" value="0.0"/>
+	<rAltFactor2        type="float" value="0.5"/>
+	<rAltFactorT        type="float" value="3000"/>
 	<limitThrottle      type="int"   value="15"/> <!-- 9 => 90%/100% 15 => 100%/75% -->
 	
 	<!-- defaults -->

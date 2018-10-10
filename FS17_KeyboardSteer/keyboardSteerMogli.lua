@@ -42,9 +42,11 @@ function keyboardSteerMogli.globalsReset( createIfMissing )
   KSMGlobals.speedFxInc          = 0
   KSMGlobals.autoRotateBackWait  = 0	
   KSMGlobals.axisSideWait        = 0	
-  KSMGlobals.axisSideRAlt        = 0	
   KSMGlobals.limitThrottle       = 0	
-  KSMGlobals.rAltFactor          = 0	
+  KSMGlobals.rAltFactorA         = 0	
+  KSMGlobals.rAltFactor1         = 0	
+  KSMGlobals.rAltFactor2         = 0	
+  KSMGlobals.rAltFactorT        = 0	
 	KSMGlobals.enableAnalogCtrl    = false
 	KSMGlobals.debugPrint          = false
 	
@@ -579,10 +581,17 @@ function keyboardSteerMogli:newUpdateVehiclePhysics( superFunc, axisForward, axi
 		if self.ksmSteeringIsOn and ( self.ksmAnalogIsOn or not ( axisSideIsAnalog ) ) then
 			local arbs = backup1
 			
-			if     self.ksmLRAltPressed then
-				self.autoRotateBackSpeed = 0
-				axisSide = axisSide * KSMGlobals.rAltFactor
-			elseif self.lastSpeed < 0.000278 then
+			if     axisSideIsAnalog then 
+				self.ksmRAltFactor = KSMGlobals.rAltFactorA
+			elseif self.ksmRAltFactor == nil then 
+				self.ksmRAltFactor = KSMGlobals.rAltFactor1
+			elseif self.ksmLRAltPressed and math.abs( axisSide ) > 1e-4 then 
+				self.ksmRAltFactor = math.min( self.ksmRAltFactor + ( KSMGlobals.rAltFactor2 - KSMGlobals.rAltFactor1 ) * dt / KSMGlobals.rAltFactorT, KSMGlobals.rAltFactor2 )
+			elseif self.ksmRAltFactor  > KSMGlobals.rAltFactor1 then 
+				self.ksmRAltFactor = math.max( self.ksmRAltFactor - ( KSMGlobals.rAltFactor2 - KSMGlobals.rAltFactor1 ) * dt / KSMGlobals.rAltFactorT, KSMGlobals.rAltFactor1 )
+			end 
+			
+			if     self.lastSpeed < 0.000278 then
 				self.autoRotateBackSpeed = 0
 			elseif self.rotatedTime >= 0 then
 				self.autoRotateBackSpeed = ( 0.2 + 0.8 * self.rotatedTime / self.maxRotTime ) * self:ksmScaleFx( KSMGlobals.autoRotateBackFx:get( self.ksmSpeedFx ), 0.1, 3 ) * arbs
@@ -596,10 +605,19 @@ function keyboardSteerMogli:newUpdateVehiclePhysics( superFunc, axisForward, axi
 			self.maxRotTime = f * backup3
 			
 			local w = 1000 * KSMGlobals.waitTimeFx:get( self.ksmSpeedFx )
-			if axisSideIsAnalog or w <= 0 or axisSide * self.rotatedTime > 0 then
+			if self.ksmLRAltPressed then 
+				self.ksmAxisSideTimer1 = nil
+				self.ksmAxisSideTimer2 = g_currentMission.time + 2000
+			--if     self.ksmRAltFactor <= KSMGlobals.rAltFactorA then 
+			--	self.autoRotateBackSpeed = 0
+			--elseif self.ksmRAltFactor <  KSMGlobals.rAltFactor2 then 
+			--	self.autoRotateBackSpeed = self.autoRotateBackSpeed * ( self.ksmRAltFactor - KSMGlobals.rAltFactorA ) / ( KSMGlobals.rAltFactor2 - KSMGlobals.rAltFactorA )
+			--end 
+				self.autoRotateBackSpeed = 0
+			elseif axisSideIsAnalog or w <= 0 or axisSide * self.rotatedTime > 0 then
 				self.ksmAxisSideTimer1 = nil
 				self.ksmAxisSideTimer2 = nil
-			else		
+			else
 				local t									
 				if math.abs( axisSide ) < 0.001 then
 					t = self.ksmAxisSideTimer2
@@ -618,9 +636,9 @@ function keyboardSteerMogli:newUpdateVehiclePhysics( superFunc, axisForward, axi
 				
 				if math.abs( axisSide ) < 0.001 then
 					self.ksmAxisSideTimer1 = nil
-					self.ksmAxisSideTimer2 = t				
+					self.ksmAxisSideTimer2 = t	
 					if f < 1 and KSMGlobals.autoRotateBackWait > 0 then
-						self.autoRotateBackSpeed = self.autoRotateBackSpeed * ( 1 - KSMGlobals.autoRotateBackWait + f * KSMGlobals.autoRotateBackWait )
+						self.autoRotateBackSpeed = self.autoRotateBackSpeed * math.max( 1 - KSMGlobals.autoRotateBackWait + f * KSMGlobals.autoRotateBackWait, 0 )
 					end
 				else
 					self.ksmAxisSideTimer1 = t
@@ -632,12 +650,16 @@ function keyboardSteerMogli:newUpdateVehiclePhysics( superFunc, axisForward, axi
 			end
 			
 			axisSide = self:ksmScaleFx( KSMGlobals.axisSideFx:get( self.ksmSpeedFx ), 0.1, 3 ) * axisSide
-			if axisSide > 0 and self.rotatedTime > 0 then
-				axisSide = math.max( axisSide, self.autoRotateBackSpeed )
-			end
-			if axisSide < 0 and self.rotatedTime < 0 then
-				axisSide = math.min( axisSide, -self.autoRotateBackSpeed )
-			end
+			if self.ksmLRAltPressed then 
+				axisSide = axisSide * self.ksmRAltFactor
+			else
+				if axisSide > 0 and self.rotatedTime > 0 then
+					axisSide = math.max( axisSide, self.autoRotateBackSpeed )
+				end
+				if axisSide < 0 and self.rotatedTime < 0 then
+					axisSide = math.min( axisSide, -self.autoRotateBackSpeed )
+				end
+			end 
 		end
 		
 		if self.ksmSteeringIsOn and ( self.ksmAnalogIsOn or not ( axisForwardIsAnalog ) ) then
