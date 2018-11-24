@@ -123,7 +123,7 @@ else
 				_newClass_.mogliScreenPostUpdate( self, dt )
 			end
 			
-			InputBinding.setShowMouseCursor(true)			
+			InputBinding:setShowMouseCursor(true)			
 		end
 
 	--********************************
@@ -160,13 +160,13 @@ else
 					else
 						local value = getter( self.vehicle )
 						
-						if     element:isa( ToggleButtonElement2 ) then
+						if     element.typeName == "toggleButton" then
 							local b = value
 							if s.parameter then
 								b = not b
 							end
 							element:setIsChecked( b )
-						elseif element:isa( MultiTextOptionElement ) then
+						elseif element.typeName == "multiTextOption" then
 							local i = 1
 							if     s.parameter == "percent10" then
 								i = math.floor( value * 10 + 0.5 ) + 1
@@ -216,14 +216,14 @@ else
 					
 					if     setter == nil then
 						print("Invalid UI element ID: "..tostring(name))
-					elseif element:isa( ToggleButtonElement2 ) then
+					elseif element.typeName == "toggleButton" then
 						local b = element:getIsChecked()
 						if s.parameter then
 							b = not b
 						end
 					--print("SET: "..tostring(name)..": '"..tostring(b).."'")
 						setter( self.vehicle, b )
-					elseif element:isa( MultiTextOptionElement ) then
+					elseif element.typeName == "multiTextOption" then
 						local i = element:getState()
 						local value = i
 						if     s.parameter == "percent10" then
@@ -258,20 +258,24 @@ else
 	-- onCreateSubElement
 	--********************************
 		function _newClass_:onCreateSubElement( element, parameter )
+			if element == nil or element.typeName == nil then 
+				print("Invalid element.typeName: <nil>")
+				return
+			end 
 			local checked = true
 			if element.id == nil then
 				checked = false
 			end
-			if     element:isa( ToggleButtonElement2 ) then
+			if     element.typeName == "toggleButton" then
 				if     parameter == nil then
 					parameter = false
 				elseif parameter == "inverted" then
 					parameter = true
 				else
-					print("Invalid ToggleButtonElement2 parameter: <nil>")
+					print("Invalid ToggleButtonElement parameter: <nil>")
 					checked = false
 				end
-			elseif element:isa( MultiTextOptionElement ) then
+			elseif element.typeName == "multiTextOption" then
 				if parameter == nil then
 					print("Invalid MultiTextOptionElement parameter: <nil>")			
 					checked = false

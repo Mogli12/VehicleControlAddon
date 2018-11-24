@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<KSMGlobals>
+	<cameraRotFactor     type="float" value="0.7"/>
+	<cameraRotFactorRev  type="float" value="0.4"/>
+	<cameraRotTime       type="float" value="0.001"/>
+  <timer4Reverse       type="int"   value="500"/>     
+			
+	<!-- defaults -->
+	<ksmCameraIsOn       type="bool"  value="false"/>
+	<ksmCamInsideIsOn    type="bool"  value="true"/>
+	<ksmReverseIsOn      type="bool"  value="true"/>
+	<ksmDrawIsOn         type="bool"  value="false"/>
+</KSMGlobals>
+
+
+

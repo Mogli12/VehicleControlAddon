@@ -10,7 +10,7 @@
 			</GuiElement>
 
 			<GuiElement type="boxLayout" profile="settingsBox" position="20px 550px">			
-				<GuiElement type="toggleButton2" profile="multiTextOptionSettings" id="ksmCameraIsOn" toolTip="$l10n_ksm_tip_CAMERA"  onCreate="onCreateSubElement" 
+				<GuiElement type="toggleButton" profile="multiTextOptionSettings" id="ksmCameraIsOn" toolTip="$l10n_ksm_tip_CAMERA"  onCreate="onCreateSubElement" 
 												onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="11" focusChangeTop="101" focusChangeBottom="101">										
 					<GuiElement type="button" profile="multiTextOptionLeft" />
 					<GuiElement type="button" profile="multiTextOptionRight"/>
@@ -19,7 +19,7 @@
 					<GuiElement type="bitmap" profile="multiTextOptionBg" />
 				</GuiElement>
 				
-				<GuiElement type="toggleButton2" profile="multiTextOptionSettings" id="ksmReverseIsOn" toolTip="$l10n_ksm_tip_REVERSE"  onCreate="onCreateSubElement" 
+				<GuiElement type="toggleButton" profile="multiTextOptionSettings" id="ksmReverseIsOn" toolTip="$l10n_ksm_tip_REVERSE"  onCreate="onCreateSubElement" 
 												onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="12" focusChangeTop="11" focusChangeBottom="13">										
 					<GuiElement type="button" profile="multiTextOptionLeft" />
 					<GuiElement type="button" profile="multiTextOptionRight"/>
@@ -28,7 +28,7 @@
 					<GuiElement type="bitmap" profile="multiTextOptionBg" />
 				</GuiElement>
 				
-				<GuiElement type="toggleButton2" profile="multiTextOptionSettings" id="ksmSteeringIsOn" toolTip="$l10n_ksm_tip_STEERING"  onCreate="onCreateSubElement" 
+				<GuiElement type="toggleButton" profile="multiTextOptionSettings" id="ksmSteeringIsOn" toolTip="$l10n_ksm_tip_STEERING"  onCreate="onCreateSubElement" 
 												onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="13" focusChangeTop="12" focusChangeBottom="14">										
 					<GuiElement type="button" profile="multiTextOptionLeft" />
 					<GuiElement type="button" profile="multiTextOptionRight"/>
@@ -37,7 +37,7 @@
 					<GuiElement type="bitmap" profile="multiTextOptionBg" />
 				</GuiElement>
 				
-				<GuiElement type="toggleButton2" profile="multiTextOptionSettings" id="ksmAnalogIsOn" toolTip="$l10n_ksm_tip_ANALOG" onCreate="onCreateSubElement" 
+				<GuiElement type="toggleButton" profile="multiTextOptionSettings" id="ksmAnalogIsOn" toolTip="$l10n_ksm_tip_ANALOG" onCreate="onCreateSubElement" 
 												onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="14" focusChangeTop="13" focusChangeBottom="15">										
 					<GuiElement type="button" profile="multiTextOptionLeft" />
 					<GuiElement type="button" profile="multiTextOptionRight"/>
@@ -55,16 +55,7 @@
 					<GuiElement type="text"   profile="multiTextOptionText" />
 					<GuiElement type="text"   profile="multiTextOptionTitle" text="$l10n_ksmEXPONENT"/>
 					<GuiElement type="bitmap" profile="multiTextOptionBg" />
-				</GuiElement>
-				
-				<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="ksmLimitThrottle" toolTip="$l10n_ksm_tip_LIMIT" onCreate="onCreateSubElement" onCreateArgs="list"
-												onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="16" focusChangeTop="15" focusChangeBottom="102">
-					<GuiElement type="button" profile="multiTextOptionLeft" />
-					<GuiElement type="button" profile="multiTextOptionRight"/>
-					<GuiElement type="text"   profile="multiTextOptionText" />
-					<GuiElement type="text"   profile="multiTextOptionTitle" text="$l10n_ksmLIMIT"/>
-					<GuiElement type="bitmap" profile="multiTextOptionBg" />
-				</GuiElement>
+				</GuiElement>				
 			</GuiElement>
 			
 			<GuiElement type="text" profile="textDefault" screenAlign="topLeft" positionOrigin="topLeft" textAlignment="left" 

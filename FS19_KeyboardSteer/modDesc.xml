@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="no" ?>
-<modDesc descVersion="39">
+<modDesc descVersion="41">
 	<author>mogli</author>
 	<title>
 		<en>Keyboard Steer</en>
@@ -16,22 +16,9 @@ All functions can also be off again, with the following keys:
 [Shift Left + C]: Moving Camera on / off, default is on
 [Shift Left + E]: Adaptive steering on / off, default is on
 [Shift Left + R]: Look backwards on / off, default is on
-[Ctrl Left + E]: increase sensitivity
-[Ctrl Left + C]: lower sensitivity
-[Ctrl Left + W]: increase thorttle limiter
-[Ctrl Left + A]: decrease thorttle limiter
+[Ctrl Left + C]: Settings
 [Alt Left]: slower steering and no auto rotate back
 [Shift Right + Cursor]: look forward, backwards, left right
-
-Changelog v2.1:
-- Bugfix infinite rotation in MP
-- Bugfix tractor with reverse driving like Fendt 900 Vario or Valtra
-- Adjusted steering for better control above 50 km/h
-- Thorttle limiter with default 80%
-
-Changelog v2.2
-- New settings UI
-- Compatible with GPS mod
 ]]></en>
 		<de><![CDATA[
 Dieses Script variiert abhängig von der gefahrenen Geschwindigkeit die Lenkgeschwindigkeit, die Rückstellgeschwindigkeit und den maximalen Lenkeinschlag. 
@@ -44,23 +31,9 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 [Umschalt Links + C]: Bewegliche Kamera an/aus, Default ist an
 [Umschalt Links + E]: Adaptive Lenkung an/aus, Default ist an
 [Umschalt Links + R]: Zurückblicken an/aus, Default ist an
-[Strg Links + E]: Empfindlichkeit erhöhen
-[Strg Links + C]: Empfindlichkeit senken
-[Strg Links + W]: Gaspedalberenzer erhöhen
-[Strg Links + A]: Gaspedalberenzer senken
+[Strg Links + C]: Einstellungen
 [Alt Links]: Langsame Lenkung ohne Zurückstellen
 [Umschalt Rechts + Pfeiltaste]: Nach vorne, hinten, links, rechts blicken
-
-Änderungen v2.1:
-- Korrektur unendlliche Rotation in MP
-- Korrektur für Traktoren mit Rückfahrfunktion, z.B. Fendt 900 Vario oder Valtra
-- Bessere Parameter für mehr Kontrolle über 50 km/h
-- Gaspedalberenzer mit Default 80%
-
-Änderungen v2.2
-- Neuer Einstellungsdialog
-- Kompatiblität mit GPS Mod
-- Langsame Lenkung ohne Zurückstellen mit AltGR
 		]]></de>
 		<fr><![CDATA[
 Ce script varie en fonction de la vitesse, la vitesse de direction, la vitesse et la restauration de l'angle de braquage maximal.
@@ -90,36 +63,20 @@ Toutes les fonctions peuvent également être éteint à nouveau, avec les touch
 [Left Ctrl + W]: увеличить педаль акселератора
 [Left Ctrl + A]: понизить педаль акселератора
 [Right Shift + стрелки]: смотреть вперед, назад, влево, вправо
-
-Изменения v2.1:
-- исправлено бесконечного вращения в MP
-- исправление для тракторов с функцией реверсирования, например. Fendt 900 Vario или Valtra
-- улучшены параметры для большего контроля при скорости более 50 км/ч
-- педаль акселератора по умолчанию 80%
 ]]></ru>
 		<es><![CDATA[Añade la capacidad de modular el volante en la conducción con el teclado]]></es>
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>store.dds</iconFilename>
-	<version>2.2.0.1</version>
+	<version>0.0.0.1</version>
 	<l10n filenamePrefix="modDesc_l10n">
 		<text name="ksmVERSION">
-			<de>KeyboardSteer v2.3 beta 1</de>
-			<en>KeyboardSteer v2.3 beta 1</en>
-			<fr>KeyboardSteer v2.3 beta 1</fr>
-			<es>KeyboardSteer v2.3 beta 1</es>
+			<de>KeyboardSteer v0.0.0.1</de>
+			<en>KeyboardSteer v0.0.0.1</en>
+			<fr>KeyboardSteer v0.0.0.1</fr>
+			<es>KeyboardSteer v0.0.0.1</es>
 		</text>
 	</l10n>
-	<inputBindings>
-		<input name="ksmENABLE"   key1="KEY_lshift KEY_e" button="" category="VEHICLE" />
-		<input name="ksmCAMERA"   key1="KEY_lshift KEY_c" button="" category="VEHICLE" />
-		<input name="ksmREVERSE"  key1="KEY_lshift KEY_r" button="" category="VEHICLE" />
-		<input name="ksmSETTINGS" key1="KEY_lctrl KEY_c"  button="" category="VEHICLE" />
-		<input name="ksmUP"       key1="KEY_rshift KEY_up"  button="" category="VEHICLE" />
-		<input name="ksmDOWN"     key1="KEY_rshift KEY_down"  button="" category="VEHICLE" />
-		<input name="ksmLEFT"     key1="KEY_rshift KEY_left"  button="" category="VEHICLE" />
-		<input name="ksmRIGHT"    key1="KEY_rshift KEY_right"  button="" category="VEHICLE" />
-	</inputBindings>
 	<extraSourceFiles>
 		<sourceFile filename="register.lua" />
 	</extraSourceFiles>    

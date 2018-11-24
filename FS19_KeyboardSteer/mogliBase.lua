@@ -24,11 +24,12 @@
 -- 3.18 sync events instead of readStream / writeStream  
 -- 3.19 missing syncs in SP and MP
 -- 3.20 WARNING: undefined input in gearboxMogli:  
+-- 4.00 FS19
 
 -- Usage:  source(Utils.getFilename("mogliBase.lua", g_currentModDirectory));
 --         _G[g_currentModDirectory.."mogliBase"].newClass( "AutoCombine", "acParameters" )
 
-local mogliBaseVersion   = 3.20
+local mogliBaseVersion   = 4.00
 local mogliBaseClass     = g_currentModName..".mogliBase"
 local mogliEventClass    = g_currentModName..".mogliEvent"
 local mogliSyncRequest   = g_currentModName..".mogliSyncRequest"
@@ -245,66 +246,6 @@ else
 			return normalizedAngle
 		end
 
-	--********************************
-	-- prerequisitesPresent
-	--********************************
-		function _newClass_.prerequisitesPresent(specializations)
-			return true
-		end
-
-	--********************************
-	-- load
-	--********************************
-		function _newClass_:load(savegame)
-		-- should always be overwritten
-			_newClass_.registerState( self, "mogliBasicsDummy", false, _newClass_.debugEvent )
-		end
-
-	--********************************
-	-- postLoad
-	--********************************
-		function _newClass_:postLoad(savegame)
-			if savegame ~= nil and type( _newClass_.loadFromAttributesAndNodes ) == "function" then
-				_newClass_.loadFromAttributesAndNodes( self, savegame.xmlFile, savegame.key, savegame.resetVehicles )
-			end
-		end
-
-	--********************************
-	-- delete
-	--********************************
-		function _newClass_:delete()
-		end
-
-	--********************************
-	-- mouseEvent
-	--********************************
-		function _newClass_:mouseEvent(posX, posY, isDown, isUp, button)
-		end
-
-	--********************************
-	-- keyEvent
-	--********************************
-		function _newClass_:keyEvent(unicode, sym, modifier, isDown)
-		end
-
-	--********************************
-	-- update
-	--********************************
-		function _newClass_:update(dt)
-		end
-
-	--********************************
-	-- updateTick
-	--********************************
-		function _newClass_:updateTick(dt)	
-		end
-
-	--********************************
-	-- draw
-	--********************************
-		function _newClass_:draw()	
-		end  
-					 
 	--********************************
 	-- getSaveAttributesAndNodes
 	--********************************
@@ -658,6 +599,7 @@ else
 -- mogliBase30.printCallStack
 --=======================================================================================
 	function mogliBase30.printCallStack( depth )
+		if debug == nil then return end 
 		local i = 2 
 		local d = 10
 		if type( depth ) == "number" and depth > 1 then
