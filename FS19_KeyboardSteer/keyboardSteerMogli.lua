@@ -466,7 +466,9 @@ function keyboardSteerMogli:ksmUpdateWheelsPhysics( superFunc, dt, currentSpeed,
 	local outAcc = acceleration
 	local brake  = doHandbrake
 	
-	if self.ksmShuttleIsOn and ( self.mrGbMS == nil or not ( self.mrGbMS.IsOn ) ) then 
+	if      self.ksmShuttleIsOn
+			and ( self.mrGbMS == nil or not ( self.mrGbMS.IsOn ) )
+			and self:getIsVehicleControlledByPlayer() then 
 		if self.ksmShuttleFwd then 
 			if self.movingDirection <= 0 and ( self.lastSpeed >= 0.0001 or acceleration < 0 ) then 
 				outAcc = 0 

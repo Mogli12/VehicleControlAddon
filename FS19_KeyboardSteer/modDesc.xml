@@ -13,11 +13,8 @@ This script varies depending on the speed, the steering speed, the return speed 
 It also rotates the camera to match the steering the moving direction.
 All functions can also be off again, with the following keys:
 
-[Shift Left + C]: Moving Camera on / off, default is on
-[Shift Left + E]: Adaptive steering on / off, default is on
-[Shift Left + R]: Look backwards on / off, default is on
-[Ctrl Left + C]: Settings
-[Alt Left]: slower steering and no auto rotate back
+[Shift Left + Up]: Moving Camera on / off, default is on
+[Shift Left + Down]: Look backwards on / off, default is on
 [Shift Right + Cursor]: look forward, backwards, left right
 ]]></en>
 		<de><![CDATA[
@@ -28,53 +25,18 @@ Stellt man den Gasbegrenzer auf aber 100%, dann wird bei Umschalt Links nun Gasp
 
 Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tasten:
 
-[Umschalt Links + C]: Bewegliche Kamera an/aus, Default ist an
-[Umschalt Links + E]: Adaptive Lenkung an/aus, Default ist an
-[Umschalt Links + R]: Zurückblicken an/aus, Default ist an
-[Strg Links + C]: Einstellungen
-[Alt Links]: Langsame Lenkung ohne Zurückstellen
+[Umschalt Links + Pfeil hoch]: Bewegliche Kamera an/aus, Default ist an
+[Umschalt Links + Pfeil runter]: Zurückblicken an/aus, Default ist an
 [Umschalt Rechts + Pfeiltaste]: Nach vorne, hinten, links, rechts blicken
 		]]></de>
-		<fr><![CDATA[
-Ce script varie en fonction de la vitesse, la vitesse de direction, la vitesse et la restauration de l'angle de braquage maximal.
-Il tourne aussi l'appareil pour correspondre à l'angle de braquage et la direction de Voyage.
-Toutes les fonctions peuvent également être éteint à nouveau, avec les touches suivantes:
-
-[Maj + Gauche C]: caméra portable on / off, par défaut est sur
-[Maj + Gauche E]: direction Adaptive marche / arrêt, par défaut est sur
-[Maj + Gauche R]: En regardant en arrière on / off, par défaut est sur
-[Ctrl + Gauche E]: augmenter la sensibilité ksmMINUS [Ctrl + Gauche C]: réduire la sensibilité
-[Maj + flèche droite du clavier]: Looking Forward, arrière, gauche, droite
-]]></fr>
-		<ru><![CDATA[
-		Этот скрипт меняет чувствительность рулевого управления, скорость возврата и максимальный угол поворота рулевого колеса в зависимости от скорости движения.
-Он также может поворачивать камеру в соответствии с углом поворота колес и направлением движения.
-Педаль цифрового акселератора теперь ограничена 80%.
-Теперь только при нажатии клавиши Left Shift, будете ускорятся или оттормаживтся на все 100% усилия.
-Если же вы установите ограничитель цифрового акселератора на 100%, тогда при зажатом Left Shift педаль акселератора или торможение будут ограничиваться на 75% .
-
-Все функции можно отключить/настроить следующими сочетаниями клавиш:
-
-[Left Shift + C]: включение/выключение камеры; по умолчанию включено
-[Left Shift + E]: включение/выключение адаптивного рулевого управления; по умолчанию включено
-[Left Shift + R]: оглянуться назад/выключить; по умолчанию включено
-[Left Ctrl + E]: увеличить чувствительность
-[Left Ctrl + C]: снизить чувствительность
-[Left Ctrl + W]: увеличить педаль акселератора
-[Left Ctrl + A]: понизить педаль акселератора
-[Right Shift + стрелки]: смотреть вперед, назад, влево, вправо
-]]></ru>
-		<es><![CDATA[Añade la capacidad de modular el volante en la conducción con el teclado]]></es>
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>store.dds</iconFilename>
-	<version>0.0.0.1</version>
+	<version>0.0.0.2</version>
 	<l10n filenamePrefix="modDesc_l10n">
 		<text name="ksmVERSION">
-			<de>KeyboardSteer v0.0.0.1</de>
-			<en>KeyboardSteer v0.0.0.1</en>
-			<fr>KeyboardSteer v0.0.0.1</fr>
-			<es>KeyboardSteer v0.0.0.1</es>
+			<de>KeyboardSteer v0.0.0.2</de>
+			<en>KeyboardSteer v0.0.0.2</en>
 		</text>
 	</l10n>
 	<extraSourceFiles>
