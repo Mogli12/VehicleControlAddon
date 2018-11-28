@@ -84,6 +84,9 @@ function keyboardSteerMogli:onLoad(savegame)
 	keyboardSteerMogli.registerState( self, "ksmShuttleIsOn",  true )
 	keyboardSteerMogli.registerState( self, "ksmShuttleFwd",   true )
 	keyboardSteerMogli.registerState( self, "ksmCamFwd"      , true )
+	keyboardSteerMogli.registerState( self, "ksmFixedRpm"    , 0 )
+	keyboardSteerMogli.registerState( self, "ksmFixedRatioF" , 0 )
+	keyboardSteerMogli.registerState( self, "ksmFixedRatioR" , 0 )
 	keyboardSteerMogli.registerState( self, "ksmCameraIsOn"  , false, keyboardSteerMogli.ksmOnSetCamera )
 	keyboardSteerMogli.registerState( self, "ksmReverseIsOn" , false, keyboardSteerMogli.ksmOnSetReverse )
 	keyboardSteerMogli.registerState( self, "ksmExponent"    , 1    , keyboardSteerMogli.ksmOnSetFactor )
@@ -148,23 +151,54 @@ function keyboardSteerMogli:onUpdate(dt)
 			elseif Input.isKeyPressed( Input.KEY_right ) then
 				self.ksmLastInput = 24
 			end
+		elseif Input.isKeyPressed( Input.KEY_lctrl ) then 
 		elseif Input.isKeyPressed( Input.KEY_rctrl ) then 
 			if     Input.isKeyPressed( Input.KEY_space ) then
+				self.ksmLastInput = 35
+			elseif Input.isKeyPressed( Input.KEY_leftbracket )    then
 				self.ksmLastInput = 31
+			elseif Input.isKeyPressed( Input.KEY_quote )  then
+				self.ksmLastInput = 32
+			elseif Input.isKeyPressed( Input.KEY_rightbracket )  then
+				self.ksmLastInput = 33
+			elseif Input.isKeyPressed( Input.KEY_backslash ) then
+				self.ksmLastInput = 34
 			end
-		elseif Input.isKeyPressed( Input.KEY_lctrl ) then 
-		elseif Input.isKeyPressed( Input.KEY_ralt ) then 
 		elseif Input.isKeyPressed( Input.KEY_lalt ) then 
+		elseif Input.isKeyPressed( Input.KEY_ralt ) then 
 		else 
 			if     Input.isKeyPressed( Input.KEY_space ) then
 				self.ksmLastInput = 1
+			elseif Input.isKeyPressed( Input.KEY_leftbracket )    then
+				self.ksmLastInput = 2
+			elseif Input.isKeyPressed( Input.KEY_quote )  then
+				self.ksmLastInput = 3
 			end
-		end 
+		end
 
+		attr = "ksmFixedRatioF"
+		if self.ksmShuttleIsOn and not ( self.ksmShuttleFwd ) then 
+			attr = "ksmFixedRatioR"
+		end 
+		
 		if     self.ksmLastInput == nil then 
+		elseif self.ksmLastInput == 31 then
+			self:ksmSetState( attr, math.max( 0, self[attr] + 0.00025 * dt ) )
+		elseif self.ksmLastInput == 32 then
+			self:ksmSetState( attr, math.min( 1, self[attr] - 0.00025 * dt ) )
+		elseif self.ksmLastInput == 33 then
+			self:ksmSetState( "ksmFixedRpm", math.min( 1, self.ksmFixedRpm + 0.00025 * dt ) )
+		elseif self.ksmLastInput == 34 then
+			self:ksmSetState( "ksmFixedRpm", math.max( 0, self.ksmFixedRpm - 0.00025 * dt ) )
 		elseif lastInput ~= nil and self.ksmLastInput == lastInput then 	
 		elseif self.ksmLastInput == 1 then
 			self:ksmSetState( "ksmShuttleFwd", not self.ksmShuttleFwd )
+		elseif self.ksmLastInput == 2 then
+			if self.ksmFixedRatioF < 2e-3 then selfksmFixedRatioF = 0.35012779664578 end 
+			if self.ksmFixedRatioR < 2e-3 then selfksmFixedRatioR = 0.35012779664578 end 
+			self:ksmSetState( attr, math.min( 1,   self[attr] * 1.3  ) )
+		elseif self.ksmLastInput == 3 then
+			self:ksmSetState( attr, math.max( 0.1, self[attr] / 1.3  ) )
 		elseif self.ksmLastInput == 11 then
 			self:ksmSetState( "ksmCameraIsOn", not self.ksmCameraIsOn )
 			g_currentMission:showBlinkingWarning( "Camera rotaion = "..tostring(self.ksmCameraIsOn)  , 2000 )
@@ -184,7 +218,7 @@ function keyboardSteerMogli:onUpdate(dt)
 			newRotCursorKey = 0.3*math.pi
 		elseif self.ksmLastInput == 24 then
 			newRotCursorKey = -0.3*math.pi
-		elseif self.ksmLastInput == 31 then
+		elseif self.ksmLastInput == 35 then
 		--keyboardSteerMogli.ksmShowSettingsUI( self )
 		end
 		
@@ -462,6 +496,9 @@ function keyboardSteerMogli:ksmScaleFx( fx, mi, ma )
 	return keyboardSteerMogli.ksmClamp( 1 + self.ksmFactor * ( fx - 1 ), mi, ma )
 end
 
+
+--******************************************************************************************************************************************
+-- shuttle control
 function keyboardSteerMogli:ksmUpdateWheelsPhysics( superFunc, dt, currentSpeed, acceleration, doHandbrake, requiredDriveMode )
 	local outAcc = acceleration
 	local brake  = doHandbrake
@@ -494,8 +531,51 @@ function keyboardSteerMogli:ksmUpdateWheelsPhysics( superFunc, dt, currentSpeed,
 	end 
 end 
 
-
 WheelsUtil.updateWheelsPhysics = Utils.overwrittenFunction( WheelsUtil.updateWheelsPhysics, keyboardSteerMogli.ksmUpdateWheelsPhysics )
+
+--******************************************************************************************************************************************
+-- fixed RPM
+function keyboardSteerMogli:getRequiredMotorRpmRange( superFunc, ... )
+	local minRpm, maxRpm = superFunc( self, ... )
+	
+--if self.vehicle.ksmFixedRpm > 1e-3 then 
+--	local r = minRpm + self.vehicle.ksmFixedRpm * ( maxRpm - minRpm )
+--	--print("RPM: "..tostring(self.vehicle.ksmFixedRpm).." => "..tostring(minRpm).." < "..tostring(r).." < "..tostring(maxRpm))
+--	return r, r 
+--end 
+
+	if self.vehicle.ksmShuttleIsOn and self.vehicle.lastSpeed > 5.56e-4 then 
+		minRpm = math.min( math.max( minRpm, 0.62*math.min( 2100, self.vehicle.spec_motorized.motor.maxRpm ) ), maxRpm )
+	end
+	
+	return minRpm, maxRpm 
+end 
+
+-- fixed gear ratio
+function keyboardSteerMogli:getMinMaxGearRatio( superFunc, ... )
+	local minRatio, maxRatio = superFunc( self, ... )
+	
+--attr = "ksmFixedRatioF"
+--if self.vehicle.ksmShuttleIsOn and not ( self.vehicle.ksmShuttleFwd ) then 
+--	attr = "ksmFixedRatioR"
+--end 
+--
+--if self.vehicle[attr] > 1e-3 then 
+--	local max1 = 1/minRatio
+--	local min1 = 1/maxRatio 
+--	local r1 = min1 + self.vehicle[attr] * ( max1 - min1 )
+--	local r = 1 / r1
+--	--print("Ratio: "..tostring(self.vehicle.ksmFixedRatio).." => "..tostring(minRatio).." < "..tostring(r).." < "..tostring(maxRatio))
+--	return r, r
+--end 
+	
+	return minRatio, maxRatio 
+end 
+
+VehicleMotor.getRequiredMotorRpmRange = Utils.overwrittenFunction( VehicleMotor.getRequiredMotorRpmRange, keyboardSteerMogli.getRequiredMotorRpmRange )
+VehicleMotor.getMinMaxGearRatio = Utils.overwrittenFunction( VehicleMotor.getMinMaxGearRatio, keyboardSteerMogli.getMinMaxGearRatio )
+
+--******************************************************************************************************************************************
 
 
 function keyboardSteerMogli:ksmOnSetCamera( old, new, noEventSend ) 

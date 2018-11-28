@@ -15,7 +15,9 @@ All functions can also be off again, with the following keys:
 
 [Shift Left + Up]: Moving Camera on / off, default is on
 [Shift Left + Down]: Look backwards on / off, default is on
+[Shift Left + Space]: Shuttle control backwards on / off, default is on
 [Shift Right + Cursor]: look forward, backwards, left right
+[Space]: Change direction (aka shuttle control)
 ]]></en>
 		<de><![CDATA[
 Dieses Script variiert abhängig von der gefahrenen Geschwindigkeit die Lenkgeschwindigkeit, die Rückstellgeschwindigkeit und den maximalen Lenkeinschlag. 
@@ -27,16 +29,18 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 
 [Umschalt Links + Pfeil hoch]: Bewegliche Kamera an/aus, Default ist an
 [Umschalt Links + Pfeil runter]: Zurückblicken an/aus, Default ist an
+[Umschalt Links + Leertaste]: Shuttle-Control an/aus, Default ist an
 [Umschalt Rechts + Pfeiltaste]: Nach vorne, hinten, links, rechts blicken
+[Leertaste]: Fahrtrichtung wechseln
 		]]></de>
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>store.dds</iconFilename>
-	<version>0.0.0.2</version>
+	<version>0.0.0.3</version>
 	<l10n filenamePrefix="modDesc_l10n">
 		<text name="ksmVERSION">
-			<de>KeyboardSteer v0.0.0.2</de>
-			<en>KeyboardSteer v0.0.0.2</en>
+			<de>KeyboardSteer v0.0.0.3</de>
+			<en>KeyboardSteer v0.0.0.3</en>
 		</text>
 	</l10n>
 	<extraSourceFiles>
