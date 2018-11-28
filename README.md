@@ -8,8 +8,8 @@ Now I have invented this script. It varies depending on the speed, the steering 
 the steering angle. Both functions can also be off again, with the following keys:
 * [LShift Left + Up]: Moving Camera on / off, default is on
 * [LShift Left + Down]: Look backwards on / off, default is on
-* [LShift Left + Down]: Shuttle control on / off, default is on
-* [RShift Right + Cursor]: look forward, backwards, left right
+* [LShift Left + Space]: Shuttle control on / off, default is on
+* [RShift Right + Up/Down/Left/Right]: look forward, backwards, left right
 * [Space]: Change direction (aka shuttle control)
 
 ## Developer version
