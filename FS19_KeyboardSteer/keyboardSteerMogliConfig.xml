@@ -6,6 +6,7 @@
   <timer4Reverse       type="int"   value="500"/>     
 			
 	<!-- defaults -->
+	<ksmSteeringIsOn     type="bool"  value="true"/>
 	<ksmCameraIsOn       type="bool"  value="false"/>
 	<ksmCamInsideIsOn    type="bool"  value="true"/>
 	<ksmReverseIsOn      type="bool"  value="true"/>

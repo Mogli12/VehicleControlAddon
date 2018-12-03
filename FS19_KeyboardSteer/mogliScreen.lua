@@ -47,6 +47,7 @@ else
 			self.returnScreenName = "";
 			self.vehicle = nil
 			self.mogliScreenElements = {}
+			self.mogliTexts = {}
 			if type(_newClass_.mogliScreenNew)=="function" then
 				_newClass_.mogliScreenNew(self) 
 			end			
@@ -75,6 +76,9 @@ else
 	--********************************
 		function _newClass_:setVehicle( vehicle )
 			self.vehicle       = vehicle 
+			
+			replaceTexts( self, self )
+			
 			if self.vehicle ~= nil then
 				for name,s in pairs( self.mogliScreenElements ) do
 					if s.parameter == "list" or s.parameter == "list0" then
@@ -174,6 +178,8 @@ else
 								i = math.floor( value * 20 + 0.5 ) + 1
 							elseif s.parameter == "list0" then
 								i = value + 1
+							elseif s.parameter == "bool" then 
+								if value then i = 2 end
 							else
 								i = value 
 							end
@@ -232,6 +238,8 @@ else
 							value = (i-1) * 0.05
 						elseif s.parameter == "list0" then
 							value = i - 1
+						elseif s.parameter == "bool" then 
+							value = ( i > 1 )
 						end
 					--print("SET: "..tostring(name)..": '"..tostring(value).."'")
 						
@@ -255,6 +263,32 @@ else
 		end
 
 	--********************************
+	-- replaceTexts (local)
+	--********************************
+		function replaceTexts( screen, element )
+			if element.mogliTextReplaced then 
+				return 
+			end 
+			element.mogliTextReplaced = true 
+			if element.toolTip ~= nil and element.toolTip:sub(1,7) == "$mogli_" then 
+				element.toolTip = screen.mogliTexts[element.toolTip:sub(8)]
+			end 
+			if element.text ~= nil and element.text:sub(1,7) == "$mogli_" then 
+				local n = element.text:sub(8)
+				if type( element.setText ) == "function" then 
+					element:setText( screen.mogliTexts[n] )
+				else 
+					element.text = screen.mogliTexts[n]
+				end 
+			end 
+			if type( element.elements ) == "table" then 
+				for _,e in pairs(element.elements) do 
+					replaceTexts( screen, e ) 
+				end 
+			end 
+		end 
+	
+	--********************************
 	-- onCreateSubElement
 	--********************************
 		function _newClass_:onCreateSubElement( element, parameter )
@@ -266,19 +300,13 @@ else
 			if element.id == nil then
 				checked = false
 			end
-			if     element.typeName == "toggleButton" then
-				if     parameter == nil then
-					parameter = false
-				elseif parameter == "inverted" then
-					parameter = true
-				else
-					print("Invalid ToggleButtonElement parameter: <nil>")
-					checked = false
-				end
-			elseif element.typeName == "multiTextOption" then
-				if parameter == nil then
-					print("Invalid MultiTextOptionElement parameter: <nil>")			
-					checked = false
+			if     element.typeName == "multiTextOption" then
+				if     parameter == nil 
+						or parameter == "bool" then
+					parameter = "bool"
+				--if table.getn(element.texts) ~= 2 then 
+				--	element:setTexts({g_i18n:getText("ui_off"), g_i18n:getText("ui_on")})
+				--end 
 				elseif parameter == "list"
 						or parameter == "list0" then
 					element:setTexts({"vehicle is <nil>"})

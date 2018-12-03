@@ -4,29 +4,29 @@
 	<description><![CDATA[Fügt allen Fahrzeugen eine adaptive Lenkung hinzu]]></description>
 
 	<texts>
-		<text name="ksmCAMERA"         text="Kamerabewegung"/>
-		<text name="ksmEXPONENT"       text="Geschwindigkeitsabhängigkeit"/>
-		<text name="ksmSTEERING"       text="Adaptive Lenkung"/>
-		<text name="ksmANALOG"         text="Analog Controller"/>
-		<text name="ksmREVERSE"        text="Zurückblicken"/>
-		<text name="ksmLIMIT"          text="Gaspedalbegrenzer"/>
-		<text name="ksmSETTINGS"       text="FS17_KeyboardSteer: Einstellungen"/>
-		
-		<text name="ksm_tip_CAMERA"    text="Die Kamera dreht sich passend zum Lenkeinschlag automatisch mit."/>
-		<text name="ksm_tip_EXPONENT"  text="Geschwindigkeitsabhängigkeit der adaptiven Lenkung"/>
-		<text name="ksm_tip_STEERING"  text="Die adaptive Lenkung verändert je nach Geschwindigkeit die Rückstellgeschwindigkeit und den maximalen Lenkwinkel"/>
-		<text name="ksm_tip_ANALOG"    text="Adaptive Lenkung auch für analoge Controller einschalten"/>
-		<text name="ksm_tip_REVERSE"   text="Beim Wechsel zwischen Vorwärts- und Rückwärtsfahrt wird automatisch die Kamera um 180° gedrecht"/>
-		<text name="ksm_tip_LIMIT"     text="Gaspedalbegrenzer ohne und mit gedrückter linker Umschalttaste (LShift)"/>
-		
-		<text name="input_ksmENABLE"   text="FS17_KeyboardSteer: Lenkung"/>
-		<text name="input_ksmCAMERA"   text="FS17_KeyboardSteer: Kamerabewegung"/>
-		<text name="input_ksmREVERSE"  text="FS17_KeyboardSteer: Zurückblicken"/>
-		<text name="input_ksmSETTINGS" text="FS17_KeyboardSteer: Einstellungen"/>
-		<text name="input_ksmUP"       text="FS17_KeyboardSteer: Nach vorne schauen"/>
-		<text name="input_ksmDOWN"     text="FS17_KeyboardSteer: Nach hinten schauen"/>
-		<text name="input_ksmLEFT"     text="FS17_KeyboardSteer: Nach links schauen"/>
-		<text name="input_ksmRIGHT"    text="FS17_KeyboardSteer: Nach rechts schauen"/>
+		<text name="ksmCAMERA"          text="Kamerabewegung"/>
+		<text name="ksmEXPONENT"        text="Geschwindigkeitsabhängigkeit"/>
+		<text name="ksmSTEERING"        text="Adaptive Lenkung"/>
+		<text name="ksmSHUTTLE"         text="Shuttle Control"/>
+		<text name="ksmREVERSE"         text="Zurückblicken"/>
+		<text name="ksmSETTINGS"        text="FS17_KeyboardSteer: Einstellungen"/>
+		                                
+		<text name="ksm_tip_CAMERA"     text="Die Kamera dreht sich passend zum Lenkeinschlag automatisch mit."/>
+		<text name="ksm_tip_EXPONENT"   text="Geschwindigkeitsabhängigkeit der adaptiven Lenkung"/>
+		<text name="ksm_tip_STEERING"   text="Die adaptive Lenkung verändert je nach Geschwindigkeit die Rückstellgeschwindigkeit und den maximalen Lenkwinkel"/>
+		<text name="ksm_tip_SHUTTLE"    text="Fahrtrichtung mit Leertaste wechseln"/>
+		<text name="ksm_tip_REVERSE"    text="Beim Wechsel zwischen Vorwärts- und Rückwärtsfahrt wird automatisch die Kamera um 180° gedrecht"/>
+		                                
+		<text name="input_ksmENABLE"    text="FS17_KeyboardSteer: Lenkung"/>
+		<text name="input_ksmCAMERA"    text="FS17_KeyboardSteer: Kamerabewegung"/>
+		<text name="input_ksmREVERSE"   text="FS17_KeyboardSteer: Zurückblicken"/>
+		<text name="input_ksmSETTINGS"  text="FS17_KeyboardSteer: Einstellungen"/>
+		<text name="input_ksmUP"        text="FS17_KeyboardSteer: Nach vorne schauen"/>
+		<text name="input_ksmDOWN"      text="FS17_KeyboardSteer: Nach hinten schauen"/>
+		<text name="input_ksmLEFT"      text="FS17_KeyboardSteer: Nach links schauen"/>
+		<text name="input_ksmRIGHT"     text="FS17_KeyboardSteer: Nach rechts schauen"/>
+		<text name="input_ksmSHUTTLE"   text="FS17_KeyboardSteer: Shuttle Control"/>
+		<text name="input_ksmDIRECTION" text="FS17_KeyboardSteer: Fahrtrichtung wechseln"/>
 	</texts>
 
 	<longTexts>
