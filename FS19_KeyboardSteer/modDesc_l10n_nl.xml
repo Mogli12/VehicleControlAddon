@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<l10n>
+	<!-- Note that 'description' is only here for easier translations. It needs to be manually copied to ModDesc.XML later. -->
+	<description><![CDATA[Voegt specialisatie toe voor adaptieve toetsenbord besturing]]></description>
+
+	<texts>
+		<text name="ksmCAMERA"         text="Camera Rotatie"/>
+		<text name="ksmEXPONENT"       text="Gevoeligheid"/>
+		<text name="ksmSTEERING"       text="Adaptieve Besturing"/>
+		<text name="ksmANALOG"         text="Analoge Controller"/>
+		<text name="ksmREVERSE"        text="Kijk Achterwaarts"/>
+		<text name="ksmLIMIT"          text="Gasregelaar"/>
+		<text name="ksmSETTINGS"       text="KeyboardSteer: Instellingen"/>
+		                               
+		<text name="ksm_tip_CAMERA"    text="De camera draait automatisch met de stuuruitslag"/>
+		<text name="ksm_tip_EXPONENT"  text="Gevoeligheid van de adaptieve besturing ten opzichte van de grondsnelheid"/>
+		<text name="ksm_tip_STEERING"  text="Aanpassing van de automatisch terugsturing en maximale stuuruitslag van de apatieve besturing"/>
+		<text name="ksm_tip_ANALOG"    text="Activering van adaptieve besturing voor analoge controllers"/>
+		<text name="ksm_tip_REVERSE"   text="Draaicamera 180 graden, wanneer voertuig van richting verandert"/>
+		<text name="ksm_tip_LIMIT"     text="Beperkt gasstand met of zonder linker Shift toets"/>
+		                               
+		<text name="input_ksmENABLE"   text="KeyboardSteer: adaptieve besturing"/>
+		<text name="input_ksmCAMERA"   text="KeyboardSteer: camera rotatie"/>
+		<text name="input_ksmREVERSE"  text="KeyboardSteer: kijk achterwaarts"/>
+		<text name="input_ksmSETTINGS" text="KeyboardSteer: instellingen"/>
+		<text name="input_ksmUP"       text="KeyboardSteer: Kijk vooruit"/>
+		<text name="input_ksmDOWN"     text="KeyboardSteer: Kijk achteruit"/>
+		<text name="input_ksmLEFT"     text="KeyboardSteer: Kijk links"/>
+		<text name="input_ksmRIGHT"    text="KeyboardSteer: Kijk rechts"/>
+	</texts>
+</l10n>
