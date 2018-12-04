@@ -13,9 +13,8 @@ This script varies depending on the speed, the steering speed, the return speed 
 It also rotates the camera to match the steering the moving direction.
 All functions can also be off again, with the following keys:
 
-[Shift Left + Up]: Moving Camera on / off, default is on
-[Shift Left + Down]: Look backwards on / off, default is on
-[Shift Left + Space]: Shuttle control backwards on / off, default is on
+[Ctrl Left + C]: Settings
+[Shift Left]: Throttle limiter / reduced cruise control speed
 [Shift Right + Cursor]: look forward, backwards, left right
 [Space]: Change direction (aka shuttle control)
 ]]></en>
@@ -27,20 +26,19 @@ Stellt man den Gasbegrenzer auf aber 100%, dann wird bei Umschalt Links nun Gasp
 
 Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tasten:
 
-[Umschalt Links + Pfeil hoch]: Bewegliche Kamera an/aus, Default ist an
-[Umschalt Links + Pfeil runter]: Zurückblicken an/aus, Default ist an
-[Umschalt Links + Leertaste]: Shuttle-Control an/aus, Default ist an
+[Strg Link + C]: Einstellungen
+[Umschalt Links]: Gaspedalbegrenzer / verringerter Tempomatgeschwindigkeit
 [Umschalt Rechts + Pfeiltaste]: Nach vorne, hinten, links, rechts blicken
 [Leertaste]: Fahrtrichtung wechseln
 		]]></de>
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>store.dds</iconFilename>
-	<version>0.0.0.4</version>
+	<version>0.0.0.5</version>
 	<l10n filenamePrefix="modDesc_l10n">
 		<text name="ksmVERSION">
-			<de>KeyboardSteer v0.0.0.4</de>
-			<en>KeyboardSteer v0.0.0.4</en>
+			<de>KeyboardSteer v0.0.0.5</de>
+			<en>KeyboardSteer v0.0.0.5</en>
 		</text>
 	</l10n>
 	

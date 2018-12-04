@@ -4,6 +4,7 @@
 	<cameraRotFactorRev  type="float" value="0.4"/>
 	<cameraRotTime       type="float" value="0.001"/>
   <timer4Reverse       type="int"   value="500"/>     
+	<limitThrottle       type="int"   value="15"/> <!-- 9 => 90%/100% 15 => 100%/75% -->
 			
 	<!-- defaults -->
 	<ksmSteeringIsOn     type="bool"  value="true"/>

@@ -905,22 +905,10 @@ else
 -- readStream
 --=======================================================================================
 	mogliBase30Event.readStream = function(self, streamId, connection)
-		--both clients and server can receive this event
-		local id       = streamReadInt32(streamId) 
-		if id == 0 then
-			self.object  = nil
-			return 
-		end
-		
+		self.object    = NetworkUtil.readNodeObject( streamId )				
 		self.className = streamReadString(streamId)
 		self.level1, self.value = _G[mogliBaseClass].readStreamEx( streamId )
-		
-		self.object  = networkGetObject(id) 
-		if self.object == nil then
-			print("Error reading network ID: "..tostring(id).." ("..tostring(self.className)..")")
-		else
-			self:run(connection) 
-		end
+		self:run(connection) 
 	end 
 	
 --=======================================================================================
@@ -928,21 +916,7 @@ else
 --=======================================================================================
 	mogliBase30Event.writeStream = function(self, streamId, connection)
 		--both clients and server can send this event
-		
-		local id = nil
-		
-		if self.object ~= nil and self.className ~= nil then
-			id = networkGetObjectId(self.object)
-		end
-		
-		if id == nil then
-			print("Error sending network ID: nil ("..tostring(self.className)..")")
-			mogliBase30.printCallStack()
-			streamWriteInt32(streamId, 0 )
-			return
-		end
- 
-		streamWriteInt32(streamId, id )
+		NetworkUtil.writeNodeObject( streamId, self.object )
 		streamWriteString(streamId, self.className )
 		_G[mogliBaseClass].writeStreamEx( streamId, self.level1, self.value )
 	end 
@@ -981,35 +955,12 @@ else
 		return self
 	end
 	function mogliBase30Request:readStream(streamId, connection)
-		local id       = streamReadInt32(streamId) 
-		if id == 0 then
-			self.object  = nil
-			return 
-		end
-		
+		self.object    = NetworkUtil.readNodeObject( streamId )				
 		self.className = streamReadString(streamId)
-		
-		self.object  = networkGetObject(id) 
-		if self.object == nil then
-			print("Error reading network ID: "..tostring(id).." ("..tostring(self.className)..")")
-		else
-			self:run(connection) 
-		end
+		self:run(connection) 
 	end
 	function mogliBase30Request:writeStream(streamId, connection)
-		local id = nil
-		
-		if self.object ~= nil and self.className ~= nil then
-			id = networkGetObjectId(self.object)
-		end
-		
-		if id == nil then
-			print("Error sending network ID: nil ("..tostring(self.className)..")")
-			mogliBase30.printCallStack()
-			streamWriteInt32(streamId, 0 )
-			return
-		end
-		
+		NetworkUtil.writeNodeObject( streamId, self.object )
 		streamWriteInt32( streamId, id )
 		streamWriteString(streamId, self.className )
 	end
@@ -1038,36 +989,12 @@ else
 		return self
 	end
 	function mogliBase30Reply:readStream(streamId, connection)
-		local id       = streamReadInt32(streamId) 
-		if id == 0 then
-			self.object  = nil
-			return 
-		end
-		local mbDocument
+		self.object = NetworkUtil.readNodeObject( streamId )		
 		self.className, self.document = mogliBase30.readStreamEx( streamId )
-		
-		self.object  = networkGetObject(id) 
-		if self.object == nil then
-			print("Error reading network ID: "..tostring(id).." ("..tostring(self.className)..")")
-		else
-			self:run(connection) 
-		end
+		self:run(connection) 
 	end
 	function mogliBase30Reply:writeStream(streamId, connection)
-		local id = nil
-		
-		if self.object ~= nil and self.className ~= nil then
-			id = networkGetObjectId(self.object)
-		end
-		
-		if id == nil then
-			print("Error sending network ID: nil ("..tostring(self.className)..")")
-			mogliBase30.printCallStack()
-			streamWriteInt32(streamId, 0 )
-			return
-		end
-		
-		streamWriteInt32(streamId, id )
+		NetworkUtil.writeNodeObject( streamId, self.object )
 		mogliBase30.writeStreamEx( streamId, self.className, self.document )
 	end
 	function mogliBase30Reply:run(connection)

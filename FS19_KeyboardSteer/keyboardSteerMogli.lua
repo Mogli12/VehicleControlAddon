@@ -16,6 +16,7 @@ function keyboardSteerMogli.globalsReset( createIfMissing )
 	KSMGlobals.cameraRotFactorRev  = 0
 	KSMGlobals.cameraRotTime       = 0
   KSMGlobals.timer4Reverse       = 0
+  KSMGlobals.limitThrottle       = 0
  	KSMGlobals.debugPrint          = false
 	
 -- defaults	
@@ -92,6 +93,8 @@ function keyboardSteerMogli:onLoad(savegame)
 	keyboardSteerMogli.registerState( self, "ksmReverseIsOn" , false, keyboardSteerMogli.ksmOnSetReverse )
 	keyboardSteerMogli.registerState( self, "ksmExponent"    , 1    , keyboardSteerMogli.ksmOnSetFactor )
 	keyboardSteerMogli.registerState( self, "ksmWarningText" , ""   , keyboardSteerMogli.ksmOnSetWarningText )
+	keyboardSteerMogli.registerState( self, "ksmLimitThrottle",KSMGlobals.limitThrottle )
+	keyboardSteerMogli.registerState( self, "ksmLShiftPressed",false )
 	
 	self.ksmFactor        = 1
 	self.ksmReverseTimer  = 1.5 / KSMGlobals.timer4Reverse
@@ -169,8 +172,17 @@ function keyboardSteerMogli:onUpdate(dt)
 
   if     self.spec_enterable         == nil
 			or self.spec_enterable.cameras == nil then 
-		self.ksmDisabled =true return 
+		self.ksmDisabled =true
+		return 
 	end
+	
+	if      self.isClient
+			and self:getIsVehicleControlledByPlayer() 
+			and Input.isKeyPressed( Input.KEY_lshift ) then 
+		self:ksmSetState( "ksmLShiftPressed", true )
+	else 
+		self:ksmSetState( "ksmLShiftPressed", false )
+	end 
 
 	local newRotCursorKey = self.ksmNewRotCursorKey
 	local i               = self.spec_enterable.camIndex
@@ -391,6 +403,72 @@ function keyboardSteerMogli:onUpdate(dt)
 			self.ksmWarningText = ""
 		end
 	end	
+	
+--******************************************************************************************************************************************
+-- adaptive steering 	
+	if self.ksmSteeringIsOn and self:getIsVehicleControlledByPlayer() then 
+		local speed = math.abs( self.lastSpeed * 3600 )
+		local f = 1
+		if     speed <= 12.5 then 
+		  f = 2 - 0.8 * speed / 12.5
+		elseif speed <= 25 then 
+			f = 1.2 - 0.5 * ( speed - 12.5 ) / 12.5 
+		elseif speed <= 50 then 
+			f = 0.7 - 0.3 * ( speed - 25 ) / 25 
+		elseif speed <= 100 then 
+			f = 0.4 - 0.3 * ( speed - 50 ) / 50 
+		else 
+			f = 0.1
+		end 
+		
+		self.ksmRotSpeedFactor = keyboardSteerMogli.ksmScaleFx( self, f )
+		
+		for i,w in pairs( self.spec_wheels.wheels ) do 
+			if w.rotSpeed ~= nil then 
+				if w.ksmRotSpeed == nil then 
+					w.ksmRotSpeed = w.rotSpeed 
+				end 				
+				w.rotSpeed = w.ksmRotSpeed * self.ksmRotSpeedFactor
+			end 
+			
+			if w.rotSpeedNeg ~= nil then 
+				if w.ksmRotSpeedNeg == nil then 
+					w.ksmRotSpeedNeg = w.rotSpeedNeg 
+				end 				
+				w.rotSpeedNeg = w.ksmRotSpeedNeg * self.ksmRotSpeedFactor
+			end 
+		end 
+	elseif self.ksmRotSpeedFactor ~= nil then
+		for i,w in pairs( self.spec_wheels.wheels ) do 
+			if w.ksmRotSpeed ~= nil and w.ksmRotSpeed ~= nil then 
+				w.rotSpeed = w.ksmRotSpeed
+			end 
+			
+			if w.rotSpeedNeg ~= nil and w.ksmRotSpeedNeg ~= nil then 
+				w.rotSpeedNeg = w.ksmRotSpeedNeg
+			end 
+		end 
+	
+		self.ksmRotSpeedFactor = nil 
+	end 
+--******************************************************************************************************************************************
+
+	if self.ksmLShiftPressed and self.spec_drivable.cruiseControl.state == 1 then
+		local limitThrottleRatio     = 0.75
+		if self.ksmLimitThrottle < 11 then
+			limitThrottleRatio     = 0.45 + 0.05 * self.ksmLimitThrottle
+		else
+			limitThrottleRatio     = 1.5 - 0.05 * self.ksmLimitThrottle
+		end
+		if self.ksmSpeedLimit == nil then 
+			self.ksmSpeedLimit = self.spec_drivable.cruiseControl.speed
+		end 
+		self.spec_drivable.cruiseControl.speed = self.ksmSpeedLimit * limitThrottleRatio
+	elseif self.ksmSpeedLimit ~= nil then 
+		self.spec_drivable.cruiseControl.speed = self.ksmSpeedLimit
+		self.ksmSpeedLimit = nil
+	end 
+	
 end
 
 function keyboardSteerMogli:onReadStream(streamId, connection)
@@ -460,7 +538,7 @@ end
 
 
 --******************************************************************************************************************************************
--- shuttle control
+-- shuttle control and inching
 function keyboardSteerMogli:ksmUpdateWheelsPhysics( superFunc, ... )
 	local backup = g_currentMission.missionInfo.stopAndGoBraking
 	local args   = { ... }
@@ -478,7 +556,23 @@ function keyboardSteerMogli:ksmUpdateWheelsPhysics( superFunc, ... )
 		self.hasStopped = false 
 	end 
 	
-	local state, result = pcall( superFunc, self, ... ) 
+	if args[3] ~= nil and self.spec_drivable.cruiseControl.state == 0 then 
+		local limitThrottleRatio     = 0.75
+		local limitThrottleIfPressed = true
+		if self.ksmLimitThrottle < 11 then
+			limitThrottleIfPressed = false
+			limitThrottleRatio     = 0.45 + 0.05 * self.ksmLimitThrottle
+		else
+			limitThrottleIfPressed = true
+			limitThrottleRatio     = 1.5 - 0.05 * self.ksmLimitThrottle
+		end
+			
+		if self.ksmLShiftPressed == limitThrottleIfPressed then
+			args[3] = acceleration * limitThrottleRatio
+		end
+	end
+	
+	local state, result = pcall( superFunc, self, unpack( args ) ) 
 	if not ( state ) then
 		print("Error in updateWheelsPhysics :"..tostring(result))
 		self.ksmShuttleIsOn = false 
@@ -497,7 +591,7 @@ WheelsUtil.updateWheelsPhysics = Utils.overwrittenFunction( WheelsUtil.updateWhe
 
 
 --******************************************************************************************************************************************
--- fixed RPM
+-- increased minRPM
 function keyboardSteerMogli:getRequiredMotorRpmRange( superFunc, ... )
 	local minRpm, maxRpm = superFunc( self, ... )
 	
@@ -508,59 +602,6 @@ function keyboardSteerMogli:getRequiredMotorRpmRange( superFunc, ... )
 	return minRpm, maxRpm 
 end 
 VehicleMotor.getRequiredMotorRpmRange = Utils.overwrittenFunction( VehicleMotor.getRequiredMotorRpmRange, keyboardSteerMogli.getRequiredMotorRpmRange )
-
---******************************************************************************************************************************************
--- adaptive steering 
-function keyboardSteerMogli:ksmUpdateVehiclePhysics( superFunc, ... ) --axisForward, axisSide, ... )
-	local args = { ... }
-	local axisSideIndex = 2
-	
-	if self.ksmSteeringIsOn and self:getIsVehicleControlledByPlayer() and type( args[axisSideIndex] ) == "number" then 
-		local speed = math.abs( self.lastSpeed * 3600 )
-		local diff  = 0
-		
-		if self.ksmLastAxisSide ~= nil then 
-			diff = args[axisSideIndex] - self.ksmLastAxisSide 
-		else 
-			self.ksmLastAxisSide = args[axisSideIndex]
-		end 
-		
-		local f = 1
-		if     speed <= 12.5 then 
-		  f = 2 - 0.8 * speed / 12.5
-		elseif speed <= 25 then 
-			f = 1.2 - 0.5 * ( speed - 12.5 ) / 12.5 
-		elseif speed <= 50 then 
-			f = 0.7 - 0.3 * ( speed - 25 ) / 25 
-		elseif speed <= 100 then 
-			f = 0.4 - 0.3 * ( speed - 50 ) / 50 
-		else 
-			f = 0.1
-		end 
-		
-		if args[axisSideIndex] * diff < 0 and f < 1 then 
-			f = 1 
-		end 
-
-		self.ksmDebug = tostring( args[axisSideIndex] ).."\n"..tostring( diff ).."\n"..tostring( speed ).."\n"..tostring( f )
-				
-		args[axisSideIndex] = math.max( math.min( args[axisSideIndex] + diff * ( keyboardSteerMogli.ksmScaleFx( self, f ) - 1 ), 1 ), -1 )
-		
-		self.ksmLastAxisSide = args[axisSideIndex]
-	elseif self.ksmLastAxisSide ~= nil then 
-		self.ksmLastAxisSide = nil
-	end 
-	
-	local state, result = pcall( superFunc, self, unpack( args ) )
-	if not ( state ) then
-		print("Error in updateVehiclePhysics :"..tostring(result))
-		self.ksmSteeringIsOn = false 
-	end
-	
-	return result 
-end 
-Drivable.updateVehiclePhysics = Utils.overwrittenFunction( Drivable.updateVehiclePhysics, keyboardSteerMogli.ksmUpdateVehiclePhysics )
-
 --******************************************************************************************************************************************
 
 
@@ -632,6 +673,10 @@ function keyboardSteerMogli:ksmShowSettingsUI()
 	self.ksmUI.ksmExponent = {}
 	for i,e in pairs( self.ksmUI.ksmExponent_V ) do
 		self.ksmUI.ksmExponent[i] = string.format("%3.0f %%", 100 * ( 1.1 ^ e ), true )
+	end
+	self.ksmUI.ksmLimitThrottle   = {}
+	for i=1,20 do
+	  self.ksmUI.ksmLimitThrottle[i] = string.format("%3d %% / %3d %%", 45 + 5 * math.min( i, 11 ), 150 - 5 * math.max( i, 10 ), true )
 	end
 	g_keyboardSteerMogliScreen:setVehicle( self )
 	g_gui:showGui( "keyboardSteerMogliScreen" )

@@ -55,7 +55,16 @@
 					<GuiElement type="text"   profile="multiTextOptionText" />
 					<GuiElement type="text"   profile="multiTextOptionTitle" text="$mogli_ksmEXPONENT"/>
 					<GuiElement type="bitmap" profile="multiTextOptionBg" />
-				</GuiElement>				
+				</GuiElement>	
+				
+				<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="ksmLimitThrottle" toolTip="$mogli_ksm_tip_LIMIT" onCreate="onCreateSubElement" onCreateArgs="list"
+												onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="16" focusChangeTop="15" focusChangeBottom="102">
+					<GuiElement type="button" profile="multiTextOptionLeft" />
+					<GuiElement type="button" profile="multiTextOptionRight"/>
+					<GuiElement type="text"   profile="multiTextOptionText" />
+					<GuiElement type="text"   profile="multiTextOptionTitle" text="$mogli_ksmLIMIT"/>
+					<GuiElement type="bitmap" profile="multiTextOptionBg" />
+				</GuiElement>
 			</GuiElement>
 			
 			<GuiElement type="text" profile="textDefault" screenAlign="topLeft" positionOrigin="topLeft" textAlignment="left" 
