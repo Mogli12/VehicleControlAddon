@@ -11,6 +11,7 @@
 		<text name="ksmREVERSE"        text="Kijk Achterwaarts"/>
 		<text name="ksmLIMIT"          text="Gasregelaar"/>
 		<text name="ksmSETTINGS"       text="KeyboardSteer: Instellingen"/>
+		<text name="ksmDIRECTION"	   text="Rijrichting"/>
 		                               
 		<text name="ksm_tip_CAMERA"    text="De camera draait automatisch met de stuuruitslag"/>
 		<text name="ksm_tip_EXPONENT"  text="Gevoeligheid van de adaptieve besturing ten opzichte van de grondsnelheid"/>
@@ -18,6 +19,7 @@
 		<text name="ksm_tip_ANALOG"    text="Activering van adaptieve besturing voor analoge controllers"/>
 		<text name="ksm_tip_REVERSE"   text="Draaicamera 180 graden, wanneer voertuig van richting verandert"/>
 		<text name="ksm_tip_LIMIT"     text="Beperkt gasstand met of zonder linker Shift toets"/>
+		<text name="ksm_tip_DIRECTION" text="Verander rijrichting voor/achterwaarts"/>
 		                               
 		<text name="input_ksmENABLE"   text="KeyboardSteer: adaptieve besturing"/>
 		<text name="input_ksmCAMERA"   text="KeyboardSteer: camera rotatie"/>
@@ -27,5 +29,6 @@
 		<text name="input_ksmDOWN"     text="KeyboardSteer: Kijk achteruit"/>
 		<text name="input_ksmLEFT"     text="KeyboardSteer: Kijk links"/>
 		<text name="input_ksmRIGHT"    text="KeyboardSteer: Kijk rechts"/>
+		<text name="input_ksmDIRECTION" text="KeyboardSteer: Vooruit/Achteruit"/>
 	</texts>
 </l10n>
