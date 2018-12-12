@@ -17,16 +17,16 @@
 		<text name="ksm_tip_SHUTTLE"    text="Fahrtrichtung mit Leertaste wechseln"/>
 		<text name="ksm_tip_REVERSE"    text="Beim Wechsel zwischen Vorwärts- und Rückwärtsfahrt wird automatisch die Kamera um 180° gedrecht"/>
 		                                
-		<text name="input_ksmENABLE"    text="FS17_KeyboardSteer: Lenkung"/>
-		<text name="input_ksmCAMERA"    text="FS17_KeyboardSteer: Kamerabewegung"/>
-		<text name="input_ksmREVERSE"   text="FS17_KeyboardSteer: Zurückblicken"/>
-		<text name="input_ksmSETTINGS"  text="FS17_KeyboardSteer: Einstellungen"/>
-		<text name="input_ksmUP"        text="FS17_KeyboardSteer: Nach vorne schauen"/>
-		<text name="input_ksmDOWN"      text="FS17_KeyboardSteer: Nach hinten schauen"/>
-		<text name="input_ksmLEFT"      text="FS17_KeyboardSteer: Nach links schauen"/>
-		<text name="input_ksmRIGHT"     text="FS17_KeyboardSteer: Nach rechts schauen"/>
-		<text name="input_ksmSHUTTLE"   text="FS17_KeyboardSteer: Shuttle Control"/>
-		<text name="input_ksmDIRECTION" text="FS17_KeyboardSteer: Fahrtrichtung wechseln"/>
+		<text name="input_ksmENABLE"    text="KeyboardSteer: Lenkung"/>
+		<text name="input_ksmCAMERA"    text="KeyboardSteer: Kamerabewegung"/>
+		<text name="input_ksmREVERSE"   text="KeyboardSteer: Zurückblicken"/>
+		<text name="input_ksmSETTINGS"  text="KeyboardSteer: Einstellungen"/>
+		<text name="input_ksmUP"        text="KeyboardSteer: Nach vorne schauen"/>
+		<text name="input_ksmDOWN"      text="KeyboardSteer: Nach hinten schauen"/>
+		<text name="input_ksmLEFT"      text="KeyboardSteer: Nach links schauen"/>
+		<text name="input_ksmRIGHT"     text="KeyboardSteer: Nach rechts schauen"/>
+		<text name="input_ksmSHUTTLE"   text="KeyboardSteer: Shuttle Control"/>
+		<text name="input_ksmDIRECTION" text="KeyboardSteer: Fahrtrichtung wechseln"/>
 	</texts>
 
 	<longTexts>

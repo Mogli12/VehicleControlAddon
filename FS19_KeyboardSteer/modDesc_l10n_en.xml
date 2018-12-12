@@ -19,13 +19,13 @@
 		<text name="ksm_tip_REVERSE"   text="If the verhicle changes direction the camera is rotated by 180°"/>
 		<text name="ksm_tip_LIMIT"     text="Limiter of the throttle without and with left shift key"/>
 		                               
-		<text name="input_ksmENABLE"   text="FS17_KeyboardSteer: adaptive steering"/>
-		<text name="input_ksmCAMERA"   text="FS17_KeyboardSteer: camera rotation"/>
-		<text name="input_ksmREVERSE"  text="FS17_KeyboardSteer: look backwards"/>
-		<text name="input_ksmSETTINGS" text="FS17_KeyboardSteer: settings"/>
-		<text name="input_ksmUP"       text="FS17_KeyboardSteer: look fwd"/>
-		<text name="input_ksmDOWN"     text="FS17_KeyboardSteer: look back"/>
-		<text name="input_ksmLEFT"     text="FS17_KeyboardSteer: look left"/>
-		<text name="input_ksmRIGHT"    text="FS17_KeyboardSteer: look right"/>
+		<text name="input_ksmENABLE"   text="KeyboardSteer: adaptive steering"/>
+		<text name="input_ksmCAMERA"   text="KeyboardSteer: camera rotation"/>
+		<text name="input_ksmREVERSE"  text="KeyboardSteer: look backwards"/>
+		<text name="input_ksmSETTINGS" text="KeyboardSteer: settings"/>
+		<text name="input_ksmUP"       text="KeyboardSteer: look fwd"/>
+		<text name="input_ksmDOWN"     text="KeyboardSteer: look back"/>
+		<text name="input_ksmLEFT"     text="KeyboardSteer: look left"/>
+		<text name="input_ksmRIGHT"    text="KeyboardSteer: look right"/>
 	</texts>
 </l10n>

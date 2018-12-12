@@ -34,11 +34,11 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>store.dds</iconFilename>
-	<version>0.0.0.5</version>
+	<version>0.0.0.6</version>
 	<l10n filenamePrefix="modDesc_l10n">
 		<text name="ksmVERSION">
-			<de>KeyboardSteer v0.0.0.5</de>
-			<en>KeyboardSteer v0.0.0.5</en>
+			<de>KeyboardSteer v0.0.0.6</de>
+			<en>KeyboardSteer v0.0.0.6</en>
 		</text>
 	</l10n>
 	
@@ -53,6 +53,8 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 		<action name="ksmRIGHT"     category="VEHICLE"/>
 		<action name="ksmSHUTTLE"   category="VEHICLE"/>
 		<action name="ksmDIRECTION" category="VEHICLE"/>
+		<action name="ksmFORWARD"   category="VEHICLE"/>
+		<action name="ksmREVERSE"   category="VEHICLE"/>
 	</actions>
 	<inputBinding>
 		<actionBinding action="ksmENABLE">	

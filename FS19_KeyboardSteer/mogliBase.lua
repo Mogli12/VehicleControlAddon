@@ -183,56 +183,6 @@ else
 			return id
 		end;
 
-	--**********************************************************************************************************	
-	-- hasInputEvent
-	--**********************************************************************************************************	
-		function _newClass_.mbHasInputEvent( name, noWarning )
-			if name == nil or name == "" then
-				return false 
-			end 
-			if InputBinding[name] == nil then
-				if not ( noWarning or _newClass_.noInputWarning ) then
-					if _newClass_.mbUndefinedInputs == nil then
-						_newClass_.mbUndefinedInputs = {}
-					end
-					if not ( _newClass_.mbUndefinedInputs[name] ) then
-						_newClass_.mbUndefinedInputs[name] = true
-						print("WARNING: undefined input in ".._globalClassName_..": "..tostring(name))
-					end
-				end
-				return false
-			end
-			if InputBinding.hasEvent(InputBinding[name]) then
-				if InputBinding.areKeysPressed( InputBinding.actions[InputBinding[name]].keys1 ) then
-				  return mogliBase30.checkForKeyModifiers( InputBinding.actions[InputBinding[name]].keys1 )
-				end
-				if InputBinding.areKeysPressed( InputBinding.actions[InputBinding[name]].keys2 ) then
-				  return mogliBase30.checkForKeyModifiers( InputBinding.actions[InputBinding[name]].keys2 )
-				end
-				return true
-			end
-			return false
-		end
-
-	--**********************************************************************************************************	
-	-- hasInputEvent
-	--**********************************************************************************************************	
-		function _newClass_.mbIsInputPressed( name, noWarning )
-			if InputBinding[name] == nil then
-				if not ( noWarning or _newClass_.noInputWarning ) then
-					if _newClass_.mbUndefinedInputs == nil then
-						_newClass_.mbUndefinedInputs = {}
-					end
-					if not ( _newClass_.mbUndefinedInputs[name] ) then
-						_newClass_.mbUndefinedInputs[name] = true
-						print("WARNING: undefined input in ".._globalClassName_..": "..tostring(name))
-					end
-				end
-				return false
-			end
-			return InputBinding.isPressed(InputBinding[name])		
-		end
-
 	--********************************
 	-- normalizeAngle
 	--********************************
@@ -244,6 +194,22 @@ else
 				normalizedAngle = angle + math.pi + math.pi
 			end
 			return normalizedAngle
+		end
+
+	--********************************
+	-- mbClamp
+	--********************************
+		function _newClass_.mbClamp( v, minV, maxV )
+			if v == nil then 
+				return 
+			end 
+			if minV ~= nil and v <= minV then 
+				return minV 
+			end
+			if maxV ~= nil and v >= maxV then 
+				return maxV 
+			end 
+			return v 
 		end
 
 	--********************************
@@ -961,7 +927,6 @@ else
 	end
 	function mogliBase30Request:writeStream(streamId, connection)
 		NetworkUtil.writeNodeObject( streamId, self.object )
-		streamWriteInt32( streamId, id )
 		streamWriteString(streamId, self.className )
 	end
 	function mogliBase30Request:run(connection)

@@ -69,26 +69,26 @@ end;
 
 addModEventListener(keyboardSteerMogli_Register);
 
-local oldVehicleLoad = Vehicle.load 
-Vehicle.load = function( ... )
-	for n,v in pairs({...}) do	
-		print(tostring(n)..": "..tostring(v).." ("..type(v)..")")
-	end 
-	
-	local oldGetXmlString = XMLUtil.getXMLStringWithDefault
-	XMLUtil.getXMLStringWithDefault = function( ... )
-		print( "getXMLString" )
-		return oldGetXmlString( ... )
-	end 
-	
-	local s,r = pcall( oldVehicleLoad, ... )
-	
-	XMLUtil.getXMLStringWithDefault = oldGetXmlString
-	
-	if s then 
-		return r 
-	else
-		print("Error: "..tostring(r))
-	end 
-end 
+--local oldVehicleLoad = Vehicle.load 
+--Vehicle.load = function( ... )
+--	for n,v in pairs({...}) do	
+--		print(tostring(n)..": "..tostring(v).." ("..type(v)..")")
+--	end 
+--	
+--	local oldGetXmlString = XMLUtil.getXMLStringWithDefault
+--	XMLUtil.getXMLStringWithDefault = function( ... )
+--		print( "getXMLString" )
+--		return oldGetXmlString( ... )
+--	end 
+--	
+--	local s,r = pcall( oldVehicleLoad, ... )
+--	
+--	XMLUtil.getXMLStringWithDefault = oldGetXmlString
+--	
+--	if s then 
+--		return r 
+--	else
+--		print("Error: "..tostring(r))
+--	end 
+--end 
 

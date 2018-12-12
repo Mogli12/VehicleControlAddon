@@ -116,28 +116,27 @@ function keyboardSteerMogli:onLoad(savegame)
 	end	
 end
 
-function keyboardSteerMogli.ksmClamp( v, minV, maxV )
-	if v == nil then 
-		return 
-	end 
-	if minV ~= nil and v <= minV then 
-		return minV 
-	end
-	if maxV ~= nil and v >= maxV then 
-		return maxV 
-	end 
-	return v 
-end
-
 function keyboardSteerMogli:onRegisterActionEvents(isSelected, isOnActiveVehicle)
 	if isOnActiveVehicle then
+		if self.ksmActionEvents == nil then 
+			self.ksmActionEvents = {}
+		else	
+			self:clearActionEventsTable( self.ksmActionEvents )
+		end 
+		
 		for _,actionName in pairs({ "ksmSETTINGS",  
                                 "ksmUP",        
                                 "ksmDOWN",      
                                 "ksmLEFT",      
                                 "ksmRIGHT",     
-                                "ksmDIRECTION" }) do
-			local __, eventName = InputBinding.registerActionEvent(g_inputBinding, actionName, self, keyboardSteerMogli.actionCallback ,false ,true ,false ,true)
+                                "ksmDIRECTION",     
+                                "ksmFORWARD",     
+                                "ksmREVERSE" }) do
+																
+
+			local _, eventName = self:addActionEvent(self.ksmActionEvents, InputAction[actionName], self, keyboardSteerMogli.actionCallback, false, true, false, true, nil);
+
+		--local __, eventName = InputBinding.registerActionEvent(g_inputBinding, actionName, self, keyboardSteerMogli.actionCallback ,false ,true ,false ,true)
 			if     actionName == "ksmSETTINGS"
 					or ( self.ksmShuttleIsOn and actionName == "ksmDIRECTION" ) then 
 				if isSelected then
@@ -154,6 +153,10 @@ function keyboardSteerMogli:actionCallback(actionName, keyStatus, arg4, arg5, ar
 	if keyStatus > 0 then 
 		if     actionName == "ksmDIRECTION" then
 			self:ksmSetState( "ksmShuttleFwd", not self.ksmShuttleFwd )
+		elseif actionName == "ksmFORWARD" then
+			self:ksmSetState( "ksmShuttleFwd", true )
+		elseif actionName == "ksmREVERSE" then
+			self:ksmSetState( "ksmShuttleFwd", false )
 		elseif actionName == "ksmUP" then
 			self.ksmNewRotCursorKey = 0
 		elseif actionName == "ksmDOWN" then
@@ -175,6 +178,8 @@ function keyboardSteerMogli:onUpdate(dt)
 		self.ksmDisabled =true
 		return 
 	end
+	
+	self.ksmTickDt = dt 
 	
 	if      self.isClient
 			and self:getIsVehicleControlledByPlayer() 
@@ -203,12 +208,16 @@ function keyboardSteerMogli:onUpdate(dt)
 		if self.spec_motorized.motor.lowBrakeForceScale == nil then
 		elseif self.ksmLowBrakeForceScale == nil then 
 			self.ksmLowBrakeForceScale = self.spec_motorized.motor.lowBrakeForceScale
+			self.ksmLowBrakeForceSpeedLimit = self.spec_motorized.motor.lowBrakeForceSpeedLimit 
 		else 
 			self.spec_motorized.motor.lowBrakeForceScale = 0.2 * self.ksmLowBrakeForceScale 
+			self.spec_motorized.motor.lowBrakeForceSpeedLimit = 0
 		end 
 	elseif self.ksmLowBrakeForceScale ~= nil then 
 		self.spec_motorized.motor.lowBrakeForceScale = self.ksmLowBrakeForceScale 
+		self.spec_motorized.motor.lowBrakeForceSpeedLimit = self.ksmLowBrakeForceSpeedLimit
 		self.ksmLowBrakeForceScale = nil
+		self.ksmLowBrakeForceSpeedLimit = nil
 	end 
 
 	if self:getIsActive() and self.isServer then
@@ -235,7 +244,7 @@ function keyboardSteerMogli:onUpdate(dt)
 			end
 				
 			local maxDelta    = dt * self.ksmReverseTimer
-			self.ksmMovingDir = self.ksmMovingDir + keyboardSteerMogli.ksmClamp( movingDirection - self.ksmMovingDir, -maxDelta, maxDelta )
+			self.ksmMovingDir = self.ksmMovingDir + keyboardSteerMogli.mbClamp( movingDirection - self.ksmMovingDir, -maxDelta, maxDelta )
 		else
 			self.ksmMovingDir = Utils.getNoNil( self.nextMovingDirection * self.spec_drivable.reverserDirection )
 		end
@@ -369,7 +378,7 @@ function keyboardSteerMogli:onUpdate(dt)
 				end
 				
 				local g = self.ksmLastFactor
-				self.ksmLastFactor = self.ksmLastFactor + keyboardSteerMogli.ksmClamp( f - self.ksmLastFactor, -KSMGlobals.cameraRotTime*dt, KSMGlobals.cameraRotTime*dt )
+				self.ksmLastFactor = self.ksmLastFactor + keyboardSteerMogli.mbClamp( f - self.ksmLastFactor, -KSMGlobals.cameraRotTime*dt, KSMGlobals.cameraRotTime*dt )
 				if math.abs( self.ksmLastFactor - g ) > 0.01 then
 					f = self.ksmLastFactor
 				else
@@ -533,27 +542,42 @@ function keyboardSteerMogli:getDefaultReverse( camIndex )
 end
 
 function keyboardSteerMogli:ksmScaleFx( fx, mi, ma )
-	return keyboardSteerMogli.ksmClamp( 1 + self.ksmFactor * ( fx - 1 ), mi, ma )
+	return keyboardSteerMogli.mbClamp( 1 + self.ksmFactor * ( fx - 1 ), mi, ma )
 end
 
 
 --******************************************************************************************************************************************
 -- shuttle control and inching
 function keyboardSteerMogli:ksmUpdateWheelsPhysics( superFunc, ... )
-	local backup = g_currentMission.missionInfo.stopAndGoBraking
+	local backup2 = self.spec_drivable.reverserDirection
 	local args   = { ... }
 	local acceleration = Utils.getNoNil( args[3] )
+	local brake = ( acceleration < 0 )
+	
+	self.ksmOldAcc       = args[3]
+	self.ksmOldHandbrake = args[4]
 	
 	if self.ksmShuttleIsOn and self:getIsVehicleControlledByPlayer() then 
-		g_currentMission.missionInfo.stopAndGoBraking = false 
-		if self.ksmShuttleFwd then 
-			self.spec_drivable.reverserDirection = 1
-			self.nextMovingDirection = 1
+		if self:getIsMotorStarted() then 
+			if self.ksmShuttleFwd then 
+				self.spec_drivable.reverserDirection = 1
+			else 
+				self.spec_drivable.reverserDirection = -1
+			end 
+		
+			if     math.abs( args[2] ) < 0.0004 and args[3] < 0 then 
+				args[3] = 0
+				args[4] = 1
+			elseif math.abs( args[2] ) < 0.0001 then
+			elseif self.movingDirection * self.spec_drivable.reverserDirection < 0 then 
+				args[3] = 0
+				args[4] = 1
+				brake   = true 
+			end 
 		else 
-			self.spec_drivable.reverserDirection = -1
-			self.nextMovingDirection = -1
-		end 
-		self.hasStopped = false 
+			args[3] = 0
+			args[4] = 1
+		end 		
 	end 
 	
 	if args[3] ~= nil and self.spec_drivable.cruiseControl.state == 0 then 
@@ -568,9 +592,12 @@ function keyboardSteerMogli:ksmUpdateWheelsPhysics( superFunc, ... )
 		end
 			
 		if self.ksmLShiftPressed == limitThrottleIfPressed then
-			args[3] = acceleration * limitThrottleRatio
+			args[3] = args[3] * limitThrottleRatio
 		end
 	end
+	
+	self.ksmNewAcc       = args[3]
+	self.ksmNewHandbrake = args[4]
 	
 	local state, result = pcall( superFunc, self, unpack( args ) ) 
 	if not ( state ) then
@@ -578,10 +605,11 @@ function keyboardSteerMogli:ksmUpdateWheelsPhysics( superFunc, ... )
 		self.ksmShuttleIsOn = false 
 	end
 	
-	g_currentMission.missionInfo.stopAndGoBraking = backup 
+	g_currentMission.missionInfo.stopAndGoBraking = backup1
+	self.spec_drivable.reverserDirection          = backup2
 	
 	if self.ksmShuttleIsOn then 
-		self:setBrakeLightsVisibility( acceleration < 0 )
+		self:setBrakeLightsVisibility( brake )
 		self:setReverseLightsVisibility( not self.ksmShuttleFwd )
 	end 
 	
@@ -595,9 +623,45 @@ WheelsUtil.updateWheelsPhysics = Utils.overwrittenFunction( WheelsUtil.updateWhe
 function keyboardSteerMogli:getRequiredMotorRpmRange( superFunc, ... )
 	local minRpm, maxRpm = superFunc( self, ... )
 	
-	if self.vehicle.ksmShuttleIsOn and self.vehicle.lastSpeed > 5.56e-4 then 
+	if self.vehicle.ksmShuttleIsOn then 
+		if self.vehicle.lastSpeed > 5.56e-4 then 
+			self.ksmIncreaseRpm = g_currentMission.time + 1000 
+		end 
+	elseif self.ksmIncreaseRpm ~= nil then 
+		self.ksmIncreaseRpm = nil 
+	end 
+	if self.ksmIncreaseRpm ~= nil and g_currentMission.time < self.ksmIncreaseRpm  then 
 		minRpm = math.min( math.max( minRpm, 0.62*math.min( 2100, self.vehicle.spec_motorized.motor.maxRpm ) ), maxRpm )
 	end
+	
+	if self.maxRpm ~= nil then
+		local limitThrottleRatio     = 0.75
+		local limitThrottleIfPressed = true
+		if self.vehicle.ksmLimitThrottle < 11 then
+			limitThrottleIfPressed = false
+			limitThrottleRatio     = 0.45 + 0.05 * self.vehicle.ksmLimitThrottle
+		else
+			limitThrottleIfPressed = true
+			limitThrottleRatio     = 1.5 - 0.05 * self.vehicle.ksmLimitThrottle
+		end
+				
+		if self.vehicle.ksmLShiftPressed == limitThrottleIfPressed then 
+			maxRpm = math.max( minRpm, math.min( maxRpm, self.maxRpm * limitThrottleRatio ) )
+		end 
+	end 
+	
+	if self.vehicle.ksmShuttleIsOn and self.vehicle.ksmTickDt ~= nil then 
+		local delta = self.vehicle.spec_motorized.motor.maxRpm * 0.001 * self.vehicle.ksmTickDt
+		if self.ksmLastMinRpm ~= nil and self.ksmLastMaxRpm ~= nil then 
+			minRpm = keyboardSteerMogli.mbClamp( minRpm, self.ksmLastMinRpm - delta, self.ksmLastMinRpm + delta )
+			maxRpm = keyboardSteerMogli.mbClamp( maxRpm, self.ksmLastMaxRpm - delta, self.ksmLastMaxRpm + delta )
+		end 
+		self.ksmLastMinRpm = minRpm 
+		self.ksmLastMaxRpm = maxRpm 
+	elseif self.ksmLastMinRpm ~= nil or self.ksmLastMaxRpm ~= nil then 
+		self.ksmLastMinRpm = nil 
+		self.ksmLastMaxRpm = nil 
+	end 
 	
 	return minRpm, maxRpm 
 end 
@@ -668,6 +732,13 @@ end
 
 
 function keyboardSteerMogli:ksmShowSettingsUI()
+	if g_gui:getIsGuiVisible() then
+		return 
+	end
+	if g_keyboardSteerMogliScreen == nil then
+		return
+	end
+
 	self.ksmUI = {}
 	self.ksmUI.ksmExponent_V = { -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5 }
 	self.ksmUI.ksmExponent = {}
