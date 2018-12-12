@@ -5,7 +5,8 @@
 		<en>Keyboard Steer</en>
 		<de>Keyboard Steer</de> 
 		<fr>Keyboard Steer</fr> 
-		<es>Keyboard Steer</es> 
+		<es>Keyboard Steer</es>
+		<nl>Keyboard Steer</nl>
 	</title>
 	<description>
 		<en><![CDATA[
@@ -31,6 +32,18 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 [Umschalt Rechts + Pfeiltaste]: Nach vorne, hinten, links, rechts blicken
 [Leertaste]: Fahrtrichtung wechseln
 		]]></de>
+		
+		<nl><![CDATA[
+Dit script varieert, afhankelijk van de snelheid, de stuursnelheid, terugstuursnelheid (autoRotateBackSpeed) en de maximale stuuruitslag. 
+Het zorgt er ook voor dat de camera meedraait met de stuuruitslag en rijrichting.
+Alle functies zijn in- en uitschakelbaar met de volgende toetscombinaties( aanpasbaar in keybindings):
+
+[Ctrl Left + C]: Settings
+[Shift Left]: Beperking gaspedaal / Beperking cruise control snelheid
+[Shift Right + Cursor]: Kijk vooruit, achteruit, links, recht
+[Space]: Verandering van richting (aka shuttle control)
+]]></nl>
+		
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>store.dds</iconFilename>
@@ -39,6 +52,7 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 		<text name="ksmVERSION">
 			<de>KeyboardSteer v0.0.0.5</de>
 			<en>KeyboardSteer v0.0.0.5</en>
+			<nl>KeyboardSteer v0.0.0.5</nl>
 		</text>
 	</l10n>
 	
