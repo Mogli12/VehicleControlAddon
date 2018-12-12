@@ -9,24 +9,24 @@
 		<text name="ksmSTEERING"        text="Adaptive Lenkung"/>
 		<text name="ksmSHUTTLE"         text="Shuttle Control"/>
 		<text name="ksmREVERSE"         text="Zurückblicken"/>
-		<text name="ksmSETTINGS"        text="FS17_KeyboardSteer: Einstellungen"/>
+		<text name="ksmLIMIT"           text="Gasbegrenzer"/>
+		<text name="ksmSETTINGS"        text="Einstellungen"/>
 		                                
 		<text name="ksm_tip_CAMERA"     text="Die Kamera dreht sich passend zum Lenkeinschlag automatisch mit."/>
 		<text name="ksm_tip_EXPONENT"   text="Geschwindigkeitsabhängigkeit der adaptiven Lenkung"/>
 		<text name="ksm_tip_STEERING"   text="Die adaptive Lenkung verändert je nach Geschwindigkeit die Rückstellgeschwindigkeit und den maximalen Lenkwinkel"/>
 		<text name="ksm_tip_SHUTTLE"    text="Fahrtrichtung mit Leertaste wechseln"/>
 		<text name="ksm_tip_REVERSE"    text="Beim Wechsel zwischen Vorwärts- und Rückwärtsfahrt wird automatisch die Kamera um 180° gedrecht"/>
+		<text name="ksm_tip_LIMIT"      text="Gasbegrenzer mit linker Umschalttaste"/>
 		                                
-		<text name="input_ksmENABLE"    text="KeyboardSteer: Lenkung"/>
-		<text name="input_ksmCAMERA"    text="KeyboardSteer: Kamerabewegung"/>
-		<text name="input_ksmREVERSE"   text="KeyboardSteer: Zurückblicken"/>
 		<text name="input_ksmSETTINGS"  text="KeyboardSteer: Einstellungen"/>
 		<text name="input_ksmUP"        text="KeyboardSteer: Nach vorne schauen"/>
 		<text name="input_ksmDOWN"      text="KeyboardSteer: Nach hinten schauen"/>
 		<text name="input_ksmLEFT"      text="KeyboardSteer: Nach links schauen"/>
 		<text name="input_ksmRIGHT"     text="KeyboardSteer: Nach rechts schauen"/>
-		<text name="input_ksmSHUTTLE"   text="KeyboardSteer: Shuttle Control"/>
 		<text name="input_ksmDIRECTION" text="KeyboardSteer: Fahrtrichtung wechseln"/>
+		<text name="input_ksmFORWARD"   text="KeyboardSteer: Fahrtrichtung vorwärts"/>
+		<text name="input_ksmREVERSE"   text="KeyboardSteer: Fahrtrichtung rückwärts"/>
 	</texts>
 
 	<longTexts>
