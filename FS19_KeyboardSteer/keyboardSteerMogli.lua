@@ -630,8 +630,9 @@ function keyboardSteerMogli:getRequiredMotorRpmRange( superFunc, ... )
 	elseif self.ksmIncreaseRpm ~= nil then 
 		self.ksmIncreaseRpm = nil 
 	end 
+	local minReducedRpm = math.min( math.max( minRpm, 0.62*math.min( 2100, self.vehicle.spec_motorized.motor.maxRpm ) ), maxRpm )
 	if self.ksmIncreaseRpm ~= nil and g_currentMission.time < self.ksmIncreaseRpm  then 
-		minRpm = math.min( math.max( minRpm, 0.62*math.min( 2100, self.vehicle.spec_motorized.motor.maxRpm ) ), maxRpm )
+		minRpm = minReducedRpm
 	end
 	
 	if self.maxRpm ~= nil then
@@ -646,15 +647,26 @@ function keyboardSteerMogli:getRequiredMotorRpmRange( superFunc, ... )
 		end
 				
 		if self.vehicle.ksmLShiftPressed == limitThrottleIfPressed then 
-			maxRpm = math.max( minRpm, math.min( maxRpm, self.maxRpm * limitThrottleRatio ) )
+			maxRpm = math.max( minReducedRpm, math.min( maxRpm, self.maxRpm * limitThrottleRatio ) )
 		end 
 	end 
 	
+	if self.vehicle.ksmShuttleIsOn and self.vehicle.spec_motorized.actualLoadPercentage < 0.9 then 
+		local maxSpeed = math.abs( self.vehicle.lastSpeedReal * 3600 ) + 1
+		local minRatio = self.vehicle.spec_motorized.motor.minForwardGearRatio
+		if not self.vehicle.ksmShuttleFwd then 
+			minRatio     = self.vehicle.spec_motorized.motor.minBackwardGearRatio
+		end 
+		local wheelRpm = maxSpeed/3.6 * 60 / (math.pi+math.pi)
+		local newRpm   = wheelRpm * minRatio 
+		maxRpm = keyboardSteerMogli.mbClamp( newRpm, minReducedRpm, maxRpm )
+	end 
+	
 	if self.vehicle.ksmShuttleIsOn and self.vehicle.ksmTickDt ~= nil then 
-		local delta = self.vehicle.spec_motorized.motor.maxRpm * 0.001 * self.vehicle.ksmTickDt
+		local delta = self.vehicle.spec_motorized.motor.maxRpm * 0.0002 * self.vehicle.ksmTickDt
 		if self.ksmLastMinRpm ~= nil and self.ksmLastMaxRpm ~= nil then 
-			minRpm = keyboardSteerMogli.mbClamp( minRpm, self.ksmLastMinRpm - delta, self.ksmLastMinRpm + delta )
-			maxRpm = keyboardSteerMogli.mbClamp( maxRpm, self.ksmLastMaxRpm - delta, self.ksmLastMaxRpm + delta )
+			minRpm = keyboardSteerMogli.mbClamp( minRpm, self.ksmLastMinRpm - delta, self.vehicle.spec_motorized.motor.lastRealMotorRpm + delta )
+			maxRpm = keyboardSteerMogli.mbClamp( maxRpm, self.vehicle.spec_motorized.motor.lastRealMotorRpm - delta, self.ksmLastMaxRpm + delta )
 		end 
 		self.ksmLastMinRpm = minRpm 
 		self.ksmLastMaxRpm = maxRpm 
