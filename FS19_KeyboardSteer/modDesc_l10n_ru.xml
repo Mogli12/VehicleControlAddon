@@ -7,26 +7,26 @@
 		<text name="ksmCAMERA"          text="Подруливание камеры"/>
 		<text name="ksmEXPONENT"        text="Чувствительность к скорости"/>
 		<text name="ksmSTEERING"        text="Адаптивное рулевое управление"/>
-		<text name="ksmANALOG"          text="Аналоговый контролер"/>
+		<text name="ksmSHUTTLE"         text="Изменение направления"/>
 		<text name="ksmREVERSE"         text="Оглянуться назад"/>
-		<text name="ksmLIMIT"           text="Ограничитель педали акселератора"/>
 		<text name="ksmSETTINGS"        text="KeyboardSteer: настройки"/>
 	
 		<text name="ksm_tip_CAMERA"     text="Камера автоматически поворачивается в соответствии с углом поворота рулевого колеса"/>
 		<text name="ksm_tip_EXPONENT"   text="Зависимость скорости рулевого управления от скорости движения"/>
 		<text name="ksm_tip_STEERING"   text="Адаптивное рулевое управление изменяет скорость возврата и максимальный угол поворота в зависимости от скорости"/>
-		<text name="ksm_tip_ANALOG"     text="Включить адаптивное рулевое управление также для аналоговых контроллеров"/>
+		<text name="ksm_tip_SHUTTLE"    text="Изменить направление с помощью пробела"/>
 		<text name="ksm_tip_REVERSE"    text="При изменении направления движения камера автоматически поворачивается на 180°"/>
-		<text name="ksm_tip_LIMIT"      text="Ограничение действия педали акселератора с нажатой и не нажатой клавишей Left Shift"/>
 	
 		<text name="input_ksmENABLE"    text="KeyboardSteer: Руление"/>
 		<text name="input_ksmCAMERA"    text="KeyboardSteer: Вращение камеры"/>
 		<text name="input_ksmREVERSE"   text="KeyboardSteer: Оборачиваться"/>
-		<text name="input_ksmSETTINGS"  text="KeyboardSteer: Настройки keyboardSteer"/>
+		<text name="input_ksmSETTINGS"  text="KeyboardSteer: Настройки"/>
 		<text name="input_ksmUP"        text="KeyboardSteer: Посмотреть вперед"/>
 		<text name="input_ksmDOWN"      text="KeyboardSteer: Посмотреть назад"/>
 		<text name="input_ksmLEFT"      text="KeyboardSteer: Посмотреть налево"/>
 		<text name="input_ksmRIGHT"     text="KeyboardSteer: Посмотреть направо"/>
+		<text name="input_ksmSHUTTLE"   text="KeyboardSteer: Изменение направления"/>
+		<text name="input_ksmDIRECTION" text="KeyboardSteer: Изм. направление движения"/>
 	</texts>
 	
 	<longTexts>
