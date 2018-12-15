@@ -232,10 +232,18 @@ function keyboardSteerMogli:onUpdate(dt)
 				self.ksmMovingDir = 1
 			end
 		elseif  self.ksmShuttleIsOn then 
+			local controlledVehicles = g_currentMission.controlledVehicles
+			local isHudVisible = g_currentMission.hud:getIsVisible()
 			if self.ksmShuttleFwd then
 				self.ksmMovingDir = 1
+				if next(controlledVehicles) ~= nil and isHudVisible then
+					renderText(0.95, 0.1, 0.022, "F")
+				end
 			else
 				self.ksmMovingDir = -1
+				if next(controlledVehicles) ~= nil and isHudVisible then
+					renderText(0.95, 0.1, 0.022, "R")
+				end
 			end
 		elseif g_currentMission.missionInfo.stopAndGoBraking then
 			local movingDirection = self.movingDirection * self.spec_drivable.reverserDirection
