@@ -31,5 +31,7 @@
 		<text name="input_ksmLEFT"     text="KeyboardSteer: Kijk links"/>
 		<text name="input_ksmRIGHT"    text="KeyboardSteer: Kijk rechts"/>
 		<text name="input_ksmDIRECTION" text="KeyboardSteer: Vooruit/Achteruit"/>
+		<text name="input_ksmFORWARD"   text="KeyboardSteer: Rij vooruit"/>
+		<text name="input_ksmREVERSE"   text="KeyboardSteer: Rij achteruit"/>
 	</texts>
 </l10n>
