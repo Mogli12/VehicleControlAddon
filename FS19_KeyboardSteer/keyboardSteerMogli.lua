@@ -630,7 +630,7 @@ WheelsUtil.updateWheelsPhysics = Utils.overwrittenFunction( WheelsUtil.updateWhe
 -- increased minRPM
 function keyboardSteerMogli:getRequiredMotorRpmRange( superFunc, ... )
 	local minRpm, maxRpm = superFunc( self, ... )
-	
+
 	local origMinRpm = minRpm
 	local origMaxRpm = maxRpm
 	local speed      = math.abs( self.vehicle.lastSpeedReal ) *3600
@@ -642,37 +642,44 @@ function keyboardSteerMogli:getRequiredMotorRpmRange( superFunc, ... )
 	elseif self.ksmIncreaseRpm ~= nil then 
 		self.ksmIncreaseRpm = nil 
 	end 
+	
 	local minReducedRpm = math.min( math.max( minRpm, 0.54*math.min( 2200, self.vehicle.spec_motorized.motor.maxRpm ) ), maxRpm )
+	if self.vehicle.spec_combine ~= nil then 
+		minReducedRpm = math.min( math.max( minRpm, 0.8*math.min( 2200, self.vehicle.spec_motorized.motor.maxRpm ) ), maxRpm )
+	end 
+	
 	if speed > 0.5 and self.ksmIncreaseRpm ~= nil and g_currentMission.time < self.ksmIncreaseRpm  then 
 		minRpm = minReducedRpm
 	end
 	
-	if self.maxRpm ~= nil then
-		minReducedRpm = minReducedRpm + 0.1 * self.maxRpm
+	if self.vehicle.spec_combine == nil then 
+		if self.maxRpm ~= nil then
+			minReducedRpm = minReducedRpm + 0.1 * self.maxRpm
+			
+			local limitThrottleRatio     = 0.75
+			local limitThrottleIfPressed = true
+			if self.vehicle.ksmLimitThrottle < 11 then
+				limitThrottleIfPressed = false
+				limitThrottleRatio     = 0.45 + 0.05 * self.vehicle.ksmLimitThrottle
+			else
+				limitThrottleIfPressed = true
+				limitThrottleRatio     = 1.5 - 0.05 * self.vehicle.ksmLimitThrottle
+			end
+					
+			if self.vehicle.ksmLShiftPressed == limitThrottleIfPressed then 
+				maxRpm = math.max( minReducedRpm, math.min( maxRpm, self.maxRpm * limitThrottleRatio ) )
+			end 
+		end 
 		
-		local limitThrottleRatio     = 0.75
-		local limitThrottleIfPressed = true
-		if self.vehicle.ksmLimitThrottle < 11 then
-			limitThrottleIfPressed = false
-			limitThrottleRatio     = 0.45 + 0.05 * self.vehicle.ksmLimitThrottle
-		else
-			limitThrottleIfPressed = true
-			limitThrottleRatio     = 1.5 - 0.05 * self.vehicle.ksmLimitThrottle
-		end
-				
-		if self.vehicle.ksmLShiftPressed == limitThrottleIfPressed then 
-			maxRpm = math.max( minReducedRpm, math.min( maxRpm, self.maxRpm * limitThrottleRatio ) )
+		if self.vehicle.ksmShuttleIsOn and self.vehicle.spec_motorized.actualLoadPercentage < 0.9 then 
+			local minRatio = self.vehicle.spec_motorized.motor.minForwardGearRatio
+			if not self.vehicle.ksmShuttleFwd then 
+				minRatio     = self.vehicle.spec_motorized.motor.minBackwardGearRatio
+			end 
+			local wheelRpm = (speed + 1 )/3.6 * 60 / (math.pi+math.pi)
+			local newRpm   = wheelRpm * minRatio 
+			maxRpm = keyboardSteerMogli.mbClamp( newRpm, minReducedRpm, maxRpm )
 		end 
-	end 
-	
-	if self.vehicle.ksmShuttleIsOn and self.vehicle.spec_motorized.actualLoadPercentage < 0.9 then 
-		local minRatio = self.vehicle.spec_motorized.motor.minForwardGearRatio
-		if not self.vehicle.ksmShuttleFwd then 
-			minRatio     = self.vehicle.spec_motorized.motor.minBackwardGearRatio
-		end 
-		local wheelRpm = (speed + 1 )/3.6 * 60 / (math.pi+math.pi)
-		local newRpm   = wheelRpm * minRatio 
-		maxRpm = keyboardSteerMogli.mbClamp( newRpm, minReducedRpm, maxRpm )
 	end 
 	
 	if speed > 0.5 and self.vehicle.ksmShuttleIsOn and self.vehicle.ksmTickDt ~= nil then 
