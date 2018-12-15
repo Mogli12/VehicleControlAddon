@@ -9,6 +9,7 @@
 		<text name="ksmSTEERING"       text="Adaptieve Besturing"/>
 		<text name="ksmANALOG"         text="Analoge Controller"/>
 		<text name="ksmREVERSE"        text="Kijk Achterwaarts"/>
+		<text name="ksmSHUTTLE"	       text="Schakelen"/>
 		<text name="ksmLIMIT"          text="Gasregelaar"/>
 		<text name="ksmSETTINGS"       text="KeyboardSteer: Instellingen"/>
 		<text name="ksmDIRECTION"	   text="Rijrichting"/>
