@@ -13,7 +13,7 @@ function keyboardSteerMogli.prerequisitesPresent(specializations)
 end
 
 function keyboardSteerMogli.registerEventListeners(vehicleType)
-	for _,n in pairs( { "onLoad", "onPostLoad", "onUpdate", "onReadStream", "onWriteStream", "saveToXMLFile", "onRegisterActionEvents" } ) do
+	for _,n in pairs( { "onLoad", "onPostLoad", "onUpdate", "onDraw", "onReadStream", "onWriteStream", "saveToXMLFile", "onRegisterActionEvents" } ) do
 		SpecializationUtil.registerEventListener(vehicleType, n, keyboardSteerMogli)
 	end 
 end 
@@ -331,14 +331,8 @@ function keyboardSteerMogli:onUpdate(dt)
 			local isHudVisible = g_currentMission.hud:getIsVisible()
 			if self.ksmShuttleFwd then
 				self.ksmMovingDir = 1
-				if next(controlledVehicles) ~= nil and isHudVisible then
-					renderText(0.95, 0.1, 0.022, "F")
-				end
 			else
 				self.ksmMovingDir = -1
-				if next(controlledVehicles) ~= nil and isHudVisible then
-					renderText(0.95, 0.1, 0.022, "R")
-				end
 			end
 		elseif g_currentMission.missionInfo.stopAndGoBraking then
 			local movingDirection = self.movingDirection * self.spec_drivable.reverserDirection
@@ -581,6 +575,16 @@ function keyboardSteerMogli:onUpdate(dt)
 		self.ksmSpeedLimit = nil
 	end 
 	
+end
+
+function keyboardSteerMogli:onDraw()
+	if self.ksmShuttleIsOn and self:getIsVehicleControlledByPlayer() and not g_gui:getIsGuiVisible() then 
+		if self.ksmShuttleFwd then
+			renderText(0.948, 0.151, 0.022, "F")
+		else
+			renderText(0.948, 0.151, 0.022, "R")
+		end
+	end
 end
 
 function keyboardSteerMogli:onReadStream(streamId, connection)
