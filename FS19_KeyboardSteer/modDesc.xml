@@ -34,11 +34,11 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>store.dds</iconFilename>
-	<version>0.0.1.0</version>
+	<version>0.0.1.1</version>
 	<l10n filenamePrefix="modDesc_l10n">
 		<text name="ksmVERSION">
-			<de>KeyboardSteer v0.0.1.0</de>
-			<en>KeyboardSteer v0.0.1.0</en>
+			<de>KeyboardSteer v0.0.1.1</de>
+			<en>KeyboardSteer v0.0.1.1</en>
 		</text>
 	</l10n>
 	
@@ -53,15 +53,6 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 		<action name="ksmREVERSE"   category="VEHICLE"/>
 	</actions>
 	<inputBinding>
-		<actionBinding action="ksmENABLE">	
-			<binding device="KB_MOUSE_DEFAULT" input="KEY_lshift KEY_e"     axisComponent="+" inputComponent="+" index="1"/>
-		</actionBinding>	
-		<actionBinding action="ksmCAMERA">	
-			<binding device="KB_MOUSE_DEFAULT" input="KEY_lshift KEY_c"     axisComponent="+" inputComponent="+" index="1"/>
-		</actionBinding>	
-		<actionBinding action="ksmREVERSE">	
-			<binding device="KB_MOUSE_DEFAULT" input="KEY_lshift KEY_r"     axisComponent="+" inputComponent="+" index="1"/>
-		</actionBinding>	
 		<actionBinding action="ksmSETTINGS">	
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_c"      axisComponent="+" inputComponent="+" index="1"/>
 		</actionBinding>	
@@ -76,9 +67,6 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 		</actionBinding>	
 		<actionBinding action="ksmRIGHT">	
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_rshift KEY_right" axisComponent="+" inputComponent="+" index="1"/>
-		</actionBinding>	
-		<actionBinding action="ksmSHUTTLE">	
-			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_space"  axisComponent="+" inputComponent="+" index="1"/>
 		</actionBinding>	
 		<actionBinding action="ksmDIRECTION">	
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_space"            axisComponent="+" inputComponent="+" index="1"/>

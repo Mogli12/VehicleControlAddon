@@ -4,6 +4,36 @@ source(Utils.getFilename("keyboardSteerMogliScreen.lua", g_currentModDirectory))
 keyboardSteerMogli_Register = {};
 keyboardSteerMogli_Register.g_currentModDirectory = g_currentModDirectory
 
+if g_specializationManager:getSpecializationByName("keyboardSteerMogli") == nil then
+--g_specializationManager:addSpecialization("keyboardSteerMogli", "keyboardSteerMogli", g_currentModDirectory.."keyboardSteerMogli.lua")
+	if keyboardSteerMogli == nil then 
+		print("Failed to add specialization keyboardSteerMogli")
+	else 
+		for k, typeDef in pairs(g_vehicleTypeManager.vehicleTypes) do
+			if typeDef ~= nil and k ~= "locomotive" then 
+				local isDrivable  = false
+				local isEnterable = false
+				local hasMotor    = false 
+				for name, spec in pairs(typeDef.specializationsByName) do
+					if     name == "drivable"  then 
+						isDrivable = true 
+					elseif name == "motorized" then 
+						hasMotor = true 
+					elseif name == "enterable" then 
+						isEnterable = true 
+					end 
+				end 
+				if isDrivable and isEnterable and hasMotor then 
+					print("  adding keyboardSteerMogli to vehicleType '"..tostring(k).."'")
+					typeDef.specializationsByName["keyboardSteerMogli"] = keyboardSteerMogli
+					table.insert(typeDef.specializationNames, "keyboardSteerMogli")
+					table.insert(typeDef.specializations, keyboardSteerMogli)	
+				end 
+			end 
+		end 	
+	end 
+end 
+
 function keyboardSteerMogli_Register:loadMap(name)
 	print("--- loading "..g_i18n:getText("ksmVERSION").." by mogli ---")
 	

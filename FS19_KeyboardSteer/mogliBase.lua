@@ -215,81 +215,75 @@ else
 	--********************************
 	-- getSaveAttributesAndNodes
 	--********************************
-		function _newClass_:getSaveAttributesAndNodes(nodeIdent)
-			local attributes = ""
-			local nodes      = ""
-			
-			if self[_globalClassName_.."StateHandler"] ~= nil then			
+	--function _newClass_:saveStatsToXMLFile(xmlFile, key)
+		function _newClass_:saveToXMLFile(xmlFile, key)
+			if self[_globalClassName_.."StateHandler"] ~= nil then		
+				local i = 0
 				for level1,state in pairs( self[_globalClassName_.."StateHandler"] ) do
 					if state.save then
 						local value = _newClass_.mbGetState( self, level1 )
 						
 						if value ~= nil and ( state.default == nil or not mogliBase30.compare( state.default, value ) ) then
 							local vType  = mogliBase30.getValueType( value )
-							local xValue = nil
+							local xmlKey = string.format("%s.state(%d)", key, i)
+							i = i + 1
+							setXMLString(xmlFile, xmlKey.."#name", HTMLUtil.encodeToHTML(level1))
+							setXMLString(xmlFile, xmlKey.."#type", HTMLUtil.encodeToHTML(vType))
+							
 							if     vType == "string"  then 
-								xValue = value
+								setXMLString(xmlFile, xmlKey.."#value", HTMLUtil.encodeToHTML(value))
 							elseif vType == "int8"    
-									or vType == "int32"   
-									or vType == "float32" 
+									or vType == "int32" then   
+								setXMLInt(xmlFile, xmlKey.."#value", value)
+							elseif vType == "float32" 
 									or vType == "number"  then 
-								xValue = tostring(value)
+								setXMLFloat(xmlFile, xmlKey.."#value", value)
 							elseif vType == "boolean" then 
-								xValue = tostring(value)
-							end
-							if xValue ~= nil then
-								if nodes == "" then
-									nodes = nodeIdent..'<'.._globalClassName_..'>'
-								end
-								nodes = nodes .. '\n'..nodeIdent..'  <state name="'..level1..'" type="'..vType..'" value="'..xValue..'"/>'
+								setXMLBool(xmlFile, xmlKey.."#value", value)
 							end
 						end
 					end
-				end
-				
-				if nodes ~= "" then
-					nodes = nodes .. '\n'..nodeIdent..'</'.._globalClassName_..'>'
-				end
-			end
-						
-			return attributes, nodes
+				end	
+			end		
 		end;
 
 	--********************************
 	-- loadFromAttributesAndNodes
 	--********************************
-		function _newClass_:loadFromAttributesAndNodes(xmlFile, key, resetVehicles)
-			local i = 0
-			while true do
-				local xmlKey = string.format("%s.%s.state(%d)", key, _globalClassName_, i)
-				i = i + 1
-				local level1 = getXMLString(xmlFile, xmlKey.."#name")
-				if level1 == nil then
-					break
-				end
-				local vType = getXMLString(xmlFile, xmlKey.."#type")
-				local value = nil
-				if     vType == nil then
-				elseif vType == "string"  then 
-					value = getXMLString(xmlFile, xmlKey.."#value")
-				elseif vType == "int8"    
-						or vType == "int32" then 
-					value = getXMLInt(xmlFile, xmlKey.."#value")
-				elseif vType == "float32" 
-						or vType == "number"  then 
-					value = getXMLFloat(xmlFile, xmlKey.."#value")
-				elseif vType == "boolean" then 
-					value = getXMLBool(xmlFile, xmlKey.."#value")
-				end
-				
-			--print(tostring(xmlKey).." "..tostring(level1).." "..tostring(vType).." "..tostring(value))
-				
-				if value ~= nil then
-					_newClass_.mbSetState( self, level1, value, true)
+		function _newClass_:onPostLoad(samegame)
+			if savegame ~= nil then
+				local xmlFile = savegame.xmlFile
+				local key     = savegame.key
+				local i = 0
+				while true do
+					local xmlKey = string.format("%s.%s.state(%d)", key, _globalClassName_, i)
+					i = i + 1
+					local level1 = HTMLUtil.decodeFromHTML(getXMLString(xmlFile, xmlKey.."#name"))
+					if level1 == nil then
+						break
+					end
+					local vType = HTMLUtil.decodeFromHTML(getXMLString(xmlFile, xmlKey.."#type"))
+					local value = nil
+					if     vType == nil then
+					elseif vType == "string"  then 
+						value = HTMLUtil.decodeFromHTML(getXMLString(xmlFile, xmlKey.."#value"))
+					elseif vType == "int8"    
+							or vType == "int32" then 
+						value = getXMLInt(xmlFile, xmlKey.."#value")
+					elseif vType == "float32" 
+							or vType == "number"  then 
+						value = getXMLFloat(xmlFile, xmlKey.."#value")
+					elseif vType == "boolean" then 
+						value = getXMLBool(xmlFile, xmlKey.."#value")
+					end
+					
+				--print(tostring(xmlKey).." "..tostring(level1).." "..tostring(vType).." "..tostring(value))
+					
+					if value ~= nil then
+						_newClass_.mbSetState( self, level1, value, true)
+					end
 				end
 			end
-			
-			return BaseMission.VEHICLE_LOAD_OK;
 		end
 
 	--********************************
