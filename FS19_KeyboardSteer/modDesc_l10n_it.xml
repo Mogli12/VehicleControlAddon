@@ -1,31 +1,43 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <l10n>
-	
+	<!-- Note that 'description' is only here for easier translations. It needs to be manually copied to ModDesc.XML later. -->
     <description><![CDATA[Aggiunge la specializzazione per lo sterzo adattivo da tastiera]]></description>
-	
+
     <texts>
-		<text name="ksmCAMERA"			text="Rotazione telecamera" />
+		<text name="ksmCAMERA"         	text="Rotazione telecamera" />
 		<text name="ksmEXPONENT"       	text="Sensibilità"/>
 		<text name="ksmSTEERING"       	text="Sterzo adattivo"/>
-		<text name="ksmANALOG"     		text="Controller analogico" />
-		<text name="ksmREVERSE"    		text="Guarda all'indietro" />
+		<text name="ksmSHUTTLE"        	text="Inverti" />
+		<text name="ksmREVERSE"        	text="Guarda all'indietro" />
 		<text name="ksmLIMIT"          	text="Limitatore di accelerazione"/>
-		<text name="ksmSETTINGS"       	text="KeyboardSteer: Impostazioni"/>
+		<text name="ksmSETTINGS"       	text="Impostazioni"/>
 
 		<text name="ksm_tip_CAMERA"    	text="La telecamera ruota automaticamente in base all'angolo di sterzata"/>
 		<text name="ksm_tip_EXPONENT"  	text="Sensibilità dello sterzo adattivo in base alla velocità sul terreno"/>
 		<text name="ksm_tip_STEERING"  	text="Lo sterzo adattivo regola la rotazione posteriore automatica e l'angolo di sterzata massimo"/>
-		<text name="ksm_tip_ANALOG"    	text="Abilita lo sterzo adattivo per i controller analogici"/>
 		<text name="ksm_tip_REVERSE"   	text="Se il veicolo cambia direzione la telecamera viene ruotata di 180°"/>
+		<text name="ksm_tip_SHUTTLE"   	text="Cambia direzione di guida con <barra spazio>"/>
 		<text name="ksm_tip_LIMIT"     	text="Limiter dell'acceleratore con tasto shift sinistro"/>
 
-		<text name="input_ksmENABLE"  	text="KeyboardSteer: Sterzo adattivo" />
-		<text name="input_ksmCAMERA"  	text="KeyboardSteer: Rotazione telecamera" />
-		<text name="input_ksmREVERSE" 	text="KeyboardSteer: Guarda all'indietro" />
 		<text name="input_ksmSETTINGS" 	text="KeyboardSteer: Impostazioni"/>
 		<text name="input_ksmUP"      	text="KeyboardSteer: Guarda avanti" />
 		<text name="input_ksmDOWN"    	text="KeyboardSteer: Guarda dietro" />
 		<text name="input_ksmLEFT"    	text="KeyboardSteer: Guarda sinistra" />
 		<text name="input_ksmRIGHT"   	text="KeyboardSteer: Guarda destra" />
+		<text name="input_ksmDIRECTION"	text="KeyboardSteer: cambia direzione" />
+		<text name="input_ksmFORWARD"  	text="KeyboardSteer: guida in avanti" />
+		<text name="input_ksmREVERSE" 	text="KeyboardSteer: guida all'indietro" />
     </texts>
+
+	<longTexts>
+		<longText name="ksm_Help_1">
+<![CDATA[Questo script varia la velocità di sterzata, la velocità di ritorno e l'angolo di sterzata massimo in base alla velocità di guida.
+Ruota anche la fotocamera per adattarla all'angolo di sterzata e alla direzione di marcia. L'acceleratore digitale (pulsanti A e W) può essere limitato
+Solo se il tasto Shift viene premuto contemporaneamente, viene dato o frenato il 100% dell'acceleratore.
+Se si imposta il limitatore del gas al 100%, il pedale del cambio a sinistra ora limita il pedale dell'acceleratore e il freno.
+
+Tutte le funzioni possono essere nuovamente disattivate.]]>
+		</longText>
+	</longTexts>
+
 </l10n>
