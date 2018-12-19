@@ -34,11 +34,11 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>store.dds</iconFilename>
-	<version>0.0.1.2</version>
+	<version>0.0.1.3</version>
 	<l10n filenamePrefix="modDesc_l10n">
 		<text name="ksmVERSION">
-			<de>KeyboardSteer v0.0.1.2</de>
-			<en>KeyboardSteer v0.0.1.2</en>
+			<de>KeyboardSteer v0.0.1.3</de>
+			<en>KeyboardSteer v0.0.1.3</en>
 		</text>
 	</l10n>
 	

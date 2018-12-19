@@ -92,6 +92,7 @@ function keyboardSteerMogli:onLoad(savegame)
 	self.ksmScaleFx       = keyboardSteerMogli.ksmScaleFx
 	self.ksmSetState      = keyboardSteerMogli.mbSetState
 	self.ksmIsValidCam    = keyboardSteerMogli.ksmIsValidCam
+	self.ksmGetCurrentCamRot = keyboardSteerMogli.ksmGetCurrentCamRot
 
 	keyboardSteerMogli.registerState( self, "ksmSteeringIsOn", KSMGlobals.adaptiveSteering )
 	keyboardSteerMogli.registerState( self, "ksmShuttleIsOn",  KSMGlobals.shuttleControl )
@@ -229,7 +230,7 @@ function keyboardSteerMogli:onRegisterActionEvents(isSelected, isOnActiveVehicle
                                 "ksmREVERSE" }) do
 																
 
-			local _, eventName = self:addActionEvent(self.ksmActionEvents, InputAction[actionName], self, keyboardSteerMogli.actionCallback, false, true, false, true, nil);
+			local _, eventName = self:addActionEvent(self.ksmActionEvents, InputAction[actionName], self, keyboardSteerMogli.actionCallback, true, true, false, true, nil);
 
 		--local __, eventName = InputBinding.registerActionEvent(g_inputBinding, actionName, self, keyboardSteerMogli.actionCallback ,false ,true ,false ,true)
 			if     actionName == "ksmSETTINGS"
@@ -245,7 +246,10 @@ function keyboardSteerMogli:onRegisterActionEvents(isSelected, isOnActiveVehicle
 end
 
 function keyboardSteerMogli:actionCallback(actionName, keyStatus, arg4, arg5, arg6)
+--print( actionName..": "..tostring(keyStatus))
 	if keyStatus > 0 then 
+		local i = self.spec_enterable.camIndex
+		self.ksmPrevRotCursorKey = nil
 		if     actionName == "ksmDIRECTION" then
 			self:ksmSetState( "ksmShuttleFwd", not self.ksmShuttleFwd )
 		elseif actionName == "ksmFORWARD" then
@@ -257,12 +261,33 @@ function keyboardSteerMogli:actionCallback(actionName, keyStatus, arg4, arg5, ar
 		elseif actionName == "ksmDOWN" then
 			self.ksmNewRotCursorKey = math.pi
 		elseif actionName == "ksmLEFT" then
-			self.ksmNewRotCursorKey = 0.3*math.pi
+			if i ~= nil and self.ksmCameras[i] ~= nil and self.ksmCameras[i].zero ~= nil and self.spec_enterable.cameras[i].origRotY ~= nil then 
+				self.ksmPrevRotCursorKey = keyboardSteerMogli.normalizeAngle( self.ksmCameras[i].zero - self.spec_enterable.cameras[i].origRotY )
+			end
+			if self.ksmPrevRotCursorKey ~= nil and math.abs( self.ksmPrevRotCursorKey ) > 0.5 * math.pi then
+				self.ksmNewRotCursorKey =  0.7*math.pi
+			else 
+				self.ksmNewRotCursorKey =  0.3*math.pi
+			end 
 		elseif actionName == "ksmRIGHT" then
-			self.ksmNewRotCursorKey = -0.3*math.pi
+			if i ~= nil and self.ksmCameras[i] ~= nil and self.ksmCameras[i].zero ~= nil and self.spec_enterable.cameras[i].origRotY ~= nil then 
+				self.ksmPrevRotCursorKey = keyboardSteerMogli.normalizeAngle( self.ksmCameras[i].zero - self.spec_enterable.cameras[i].origRotY )
+			end
+			if self.ksmPrevRotCursorKey ~= nil and math.abs( self.ksmPrevRotCursorKey ) > 0.5 * math.pi then
+				self.ksmNewRotCursorKey = -0.7*math.pi
+			else 
+				self.ksmNewRotCursorKey = -0.3*math.pi
+			end 
 		elseif actionName == "ksmSETTINGS" then
 			keyboardSteerMogli.ksmShowSettingsUI( self )
 		end
+	else 
+		if     actionName == "ksmLEFT" then
+			self.ksmNewRotCursorKey = self.ksmPrevRotCursorKey
+		elseif actionName == "ksmRIGHT" then
+			self.ksmNewRotCursorKey = self.ksmPrevRotCursorKey
+		end 
+		self.ksmPrevRotCursorKey = nil
 	end
 end
 
@@ -448,7 +473,7 @@ function keyboardSteerMogli:onUpdate(dt)
 				elseif self.ksmCameras[i].lastCamFwd == nil or self.ksmCameras[i].lastCamFwd ~= self.ksmCamFwd then
 					if isRev == self.ksmCamFwd then
 						self.ksmCameras[i].zero = keyboardSteerMogli.normalizeAngle( self.ksmCameras[i].zero + math.pi )
-						iRev = not isRev
+						isRev = not isRev
 					end
 				end
 				self.ksmCameras[i].lastCamFwd = self.ksmCamFwd
@@ -654,6 +679,21 @@ function keyboardSteerMogli:ksmScaleFx( fx, mi, ma )
 	return keyboardSteerMogli.mbClamp( 1 + self.ksmFactor * ( fx - 1 ), mi, ma )
 end
 
+function keyboardSteerMogli:ksmGetCurrentCamRot()
+	if self.spec_enterable == nil then 
+		return 0
+	end
+	local i = self.spec_enterable.camIndex
+	if     i == nil 
+			or self.spec_enterable.cameras == nil 
+			or self.spec_enterable.cameras[i] == nil
+			or self.spec_enterable.cameras[i].rotY == nil then 
+		return 0
+	end 
+	local a = keyboardSteerMogli.normalizeAngle( self.spec_enterable.cameras[i].rotY )
+	print(math.deg(a))
+	return a
+end 
 
 --******************************************************************************************************************************************
 -- shuttle control and inching
@@ -753,7 +793,7 @@ function keyboardSteerMogli:getRequiredMotorRpmRange( superFunc, ... )
 	end
 	
 	if self.vehicle.spec_combine == nil and self.vehicle.ksmLimitThrottle ~= nil and self.vehicle.ksmLShiftPressed ~= nil then 
-		if self.maxRpm ~= nil then
+		if self.maxRpm ~= nil and self.vehicle.spec_drivable.cruiseControl.state == 0 then
 			minReducedRpm = minReducedRpm + 0.1 * self.maxRpm
 			
 			local limitThrottleRatio     = 0.75
