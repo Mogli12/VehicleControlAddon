@@ -36,15 +36,11 @@ end
 
 function keyboardSteerMogli_Register:loadMap(name)
 	print("--- loading "..g_i18n:getText("ksmVERSION").." by mogli ---")
-	
-	-- settings screen
-	g_keyboardSteerMogliScreen = keyboardSteerMogliScreen:new()
-	g_gui:loadGui(keyboardSteerMogli_Register.g_currentModDirectory .. "keyboardSteerMogliScreen.xml", "keyboardSteerMogliScreen", g_keyboardSteerMogliScreen)	
-	FocusManager:setGui("MPLoadingScreen")
-	
-	-- make l10n global 
+	g_i18n.texts["ksmVERSION"] = g_i18n:getText("ksmVERSION")
+
+	keyboardSteerMogli_Register.mogliTexts = {}
 	for n,t in pairs( g_i18n.texts ) do
-		g_keyboardSteerMogliScreen.mogliTexts[n] = t
+		keyboardSteerMogli_Register.mogliTexts[n] = t
 	end
 	
 	local l10nFilenamePrefixFull = Utils.getFilename("modDesc_l10n", keyboardSteerMogli_Register.g_currentModDirectory);
@@ -68,7 +64,7 @@ function keyboardSteerMogli_Register:loadMap(name)
 			local name = getXMLString(l10nXmlFile, key.."#name");
 			local text = getXMLString(l10nXmlFile, key);
 			if name ~= nil and text ~= nil then
-				g_keyboardSteerMogliScreen.mogliTexts[name] = text:gsub("\r\n", "\n")
+				keyboardSteerMogli_Register.mogliTexts[name] = text:gsub("\r\n", "\n")
 			end;
 			textI = textI+1;
 		end;

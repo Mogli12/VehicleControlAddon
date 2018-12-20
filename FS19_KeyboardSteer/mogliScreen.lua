@@ -164,7 +164,7 @@ else
 					else
 						local value = getter( self.vehicle )
 						
-						if     element.typeName == "toggleButton" then
+						if     element.typeName == "checkedOption" then
 							local b = value
 							if s.parameter then
 								b = not b
@@ -222,7 +222,7 @@ else
 					
 					if     setter == nil then
 						print("Invalid UI element ID: "..tostring(name))
-					elseif element.typeName == "toggleButton" then
+					elseif element.typeName == "checkedOption" then
 						local b = element:getIsChecked()
 						if s.parameter then
 							b = not b

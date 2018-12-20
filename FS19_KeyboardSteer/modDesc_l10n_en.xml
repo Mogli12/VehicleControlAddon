@@ -4,12 +4,15 @@
 	<description><![CDATA[Adds the specialization for adaptive keyboard steering]]></description>
 
 	<texts>
+		<text name="ksmTITLE"           text="Keyboard Steer"/>
+		
 		<text name="ksmCAMERA"          text="Camera Rotation"/>
 		<text name="ksmEXPONENT"        text="Sensitivity"/>
 		<text name="ksmSTEERING"        text="Adaptive Steering"/>
 		<text name="ksmSHUTTLE"         text="Shuttle"/>
 		<text name="ksmREVERSE"         text="Look Backwards"/>
 		<text name="ksmLIMIT"           text="Throttle Limiter"/>
+		<text name="ksmPEEK"            text="Peek"/>
 		<text name="ksmSETTINGS"        text="Settings"/>
 		                                
 		<text name="ksm_tip_CAMERA"     text="The camera rotates automatically according to the steering angle"/>
@@ -18,6 +21,7 @@
 		<text name="ksm_tip_REVERSE"    text="If the verhicle changes direction the camera is rotated by 180°"/>
 		<text name="ksm_tip_SHUTTLE"    text="Change driving direction with <space>"/>
 		<text name="ksm_tip_LIMIT"      text="Limiter of the throttle without and with left shift key"/>
+		<text name="ksm_tip_PEEK"       text="Take a quick look with Shift-Right and the arrow keys"/>
 		                               
 		<text name="input_ksmSETTINGS"  text="KeyboardSteer: settings"/>
 		<text name="input_ksmUP"        text="KeyboardSteer: look fwd"/>

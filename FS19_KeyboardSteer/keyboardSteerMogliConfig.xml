@@ -11,7 +11,10 @@
 	<camOutsideRotation  type="bool"  value="false"/>
 	<camInsideRotation   type="bool"  value="true"/>
 	<camReverseRotation  type="bool"  value="true"/>
+	<camRevOutRotation   type="bool"  value="false"/>
 	<shuttleControl      type="bool"  value="true"/>
+	<peekFwdBack         type="bool"  value="true"/>
+	<peekLeftRight       type="bool"  value="true"/>
 </KSMGlobals>
 
 
