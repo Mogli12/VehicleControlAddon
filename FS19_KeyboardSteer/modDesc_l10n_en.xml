@@ -12,16 +12,18 @@
 		<text name="ksmSHUTTLE"         text="Shuttle"/>
 		<text name="ksmREVERSE"         text="Look Backwards"/>
 		<text name="ksmLIMIT"           text="Throttle Limiter"/>
-		<text name="ksmPEEK"            text="Peek"/>
+		<text name="ksmPEEKFB"          text="Peek forward/backward"/>
+		<text name="ksmPEEKLR"          text="Peek sideways"/>
 		<text name="ksmSETTINGS"        text="Settings"/>
 		                                
 		<text name="ksm_tip_CAMERA"     text="The camera rotates automatically according to the steering angle"/>
 		<text name="ksm_tip_EXPONENT"   text="Sensitivity of the adaptive steering with respect to ground speed"/>
 		<text name="ksm_tip_STEERING"   text="The adaptive steering adjust the automatic back rotation and the maximum steering angle"/>
-		<text name="ksm_tip_REVERSE"    text="If the verhicle changes direction the camera is rotated by 180°"/>
 		<text name="ksm_tip_SHUTTLE"    text="Change driving direction with <space>"/>
+		<text name="ksm_tip_REVERSE"    text="If the verhicle changes direction the camera is rotated by 180°"/>
 		<text name="ksm_tip_LIMIT"      text="Limiter of the throttle without and with left shift key"/>
-		<text name="ksm_tip_PEEK"       text="Take a quick look with Shift-Right and the arrow keys"/>
+		<text name="ksm_tip_PEEKFB"     text="Take a quick look with Shift-Right and the arrow keys forward/backward"/>
+		<text name="ksm_tip_PEEKLR"     text="Take a quick look with Shift-Right and the arrow keys sideways"/>
 		                               
 		<text name="input_ksmSETTINGS"  text="KeyboardSteer: settings"/>
 		<text name="input_ksmUP"        text="KeyboardSteer: look fwd"/>
@@ -32,4 +34,15 @@
 		<text name="input_ksmFORWARD"   text="KeyboardSteer: drive forwards"/>
 		<text name="input_ksmREVERSE"   text="KeyboardSteer: drive backwards"/>
 	</texts>
+
+	<longTexts>
+		<longText name="ksm_Help_1">
+<![CDATA[This Script varies the steering speed, the steering back speed and the maximum steering angle  depending on the current vehicle speed.
+In addition the camera is rotated according to the steering angle an the driving direction. The digital accelerator (keys a and w) can be limited.
+Only when Shift-Left is pressed at the same time 100% acceleration or braking happens.
+If the acceleration limiter is set to 100% then acceleration and braking are limited when Shift-Left is used.
+
+All functions can be switched off.]]>
+		</longText>
+	</longTexts>
 </l10n>
