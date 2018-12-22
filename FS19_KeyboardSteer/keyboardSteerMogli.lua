@@ -310,7 +310,7 @@ function keyboardSteerMogli:actionCallback(actionName, keyStatus, arg4, arg5, ar
 			if     actionName == "ksmUP" then
 				if     self.ksmPrevRotCursorKey == nil then 
 					self.ksmNewRotCursorKey = 0
-				elseif math.abs( self.ksmPrevRotCursorKey ) < 0.5 * math.pi then
+				elseif math.abs( self.ksmPrevRotCursorKey ) < 0.1 * math.pi then
 					self.ksmNewRotCursorKey = math.pi
 				else 
 					self.ksmNewRotCursorKey = 0
@@ -354,7 +354,7 @@ function keyboardSteerMogli:actionCallback(actionName, keyStatus, arg4, arg5, ar
 		elseif actionName == "ksmREVERSE" then
 			self:ksmSetState( "ksmShuttleFwd", false )
 		elseif actionName == "ksmSNAP" then
-			self:ksmSetState( "ksmSnapIsOn", true )
+			self:ksmSetState( "ksmSnapIsOn", not self.ksmSnapIsOn )
 		elseif actionName == "ksmSETTINGS" then
 			keyboardSteerMogli.ksmShowSettingsUI( self )
 		end
@@ -395,6 +395,7 @@ function keyboardSteerMogli:onUpdate(dt)
 	end
 	
 	local axisSideLast    = self.ksmAxisSideLast
+	local snapAngleLast   = self.ksmLastSnapAngle
 	self.ksmAxisSideLast  = nil
 	self.ksmLastSnapAngle = nil 
 	
@@ -404,32 +405,37 @@ function keyboardSteerMogli:onUpdate(dt)
 			local lx,_,lz = localDirectionToWorld( self.components[1].node, 0, 0, 1 )			
 			if lx*lx+lz*lz > 1e-6 then 
 				local rot    = math.atan2( lx, lz )
-				local target = 0
-				local diff   = math.pi
 				local d      = keyboardSteerMogli.snapAngles[self.ksmSnapAngle]
-				if d == nil then 
-					if self.ksmSnapAngle < 1 then 
-						d = keyboardSteerMogli.snapAngles[1] 
-					else 
-						d = 90 
-					end 
-				end 
-				for i=-180,180,d do 
-					local a = math.rad( i )
-					if math.abs( a - rot ) < diff then 
-						diff   = math.abs( keyboardSteerMogli.normalizeAngle( a - rot ) )
-						target = a 
-					end 
-				end 
 				
-				self.ksmLastSnapAngle = target 
+				if snapAngleLast == nil then  
+					local target = 0
+					local diff   = math.pi
+					if d == nil then 
+						if self.ksmSnapAngle < 1 then 
+							d = keyboardSteerMogli.snapAngles[1] 
+						else 
+							d = 90 
+						end 
+					end 
+					for i=-180,180,d do 
+						local a = math.rad( i )
+						if math.abs( a - rot ) < diff then 
+							diff   = math.abs( keyboardSteerMogli.normalizeAngle( a - rot ) )
+							target = a 
+						end 
+					end 
+					
+					self.ksmLastSnapAngle = target 
+				else 
+					self.ksmLastSnapAngle = snapAngleLast 
+				end 
 				
 				d = 0.5 * d 
 				
 				if d > 10 then d = 10 end 
 				d = math.rad( d )
 					
-				local a = keyboardSteerMogli.mbClamp( ( rot - target ) / d, -1, 1 ) 
+				local a = keyboardSteerMogli.mbClamp( ( rot - self.ksmLastSnapAngle ) / d, -1, 1 ) 
 				d = 0.002 * dt
 				
 				if axisSideLast == nil then 
@@ -441,7 +447,7 @@ function keyboardSteerMogli:onUpdate(dt)
 				self.ksmAxisSideLast = self.spec_drivable.axisSide
 				
 			--keyboardSteerMogli.debugPrint( string.format( "%4d° -> %4d° => %4d%% (%4d%%, %4d%%)",
-			--															 math.deg( rot ), math.deg( target ),
+			--															 math.deg( rot ), math.deg( self.ksmLastSnapAngle ),
 			--															 a*100, self.spec_drivable.axisSide*100, axisSideLast*100 ) )				
 			end 
 		else 
