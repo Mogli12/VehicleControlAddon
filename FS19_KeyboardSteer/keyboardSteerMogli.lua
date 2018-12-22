@@ -108,8 +108,9 @@ function keyboardSteerMogli:onLoad(savegame)
 	keyboardSteerMogli.registerState( self, "ksmExponent"    , 1    , keyboardSteerMogli.ksmOnSetFactor )
 	keyboardSteerMogli.registerState( self, "ksmWarningText" , ""   , keyboardSteerMogli.ksmOnSetWarningText )
 	keyboardSteerMogli.registerState( self, "ksmLimitThrottle",KSMGlobals.limitThrottle )
-	keyboardSteerMogli.registerState( self, "ksmSnapAngle",    KSMGlobals.snapAngle, keyboardSteerMogli.ksmOnSetSnapAngle )
-	keyboardSteerMogli.registerState( self, "ksmLShiftPressed",false )
+	keyboardSteerMogli.registerState( self, "ksmSnapAngle"   , KSMGlobals.snapAngle, keyboardSteerMogli.ksmOnSetSnapAngle )
+	keyboardSteerMogli.registerState( self, "ksmInchingIsOn" , false )
+	keyboardSteerMogli.registerState( self, "ksmNoAutoRotBack",false )
 	
 	self.ksmFactor        = 1
 	self.ksmReverseTimer  = 1.5 / KSMGlobals.timer4Reverse
@@ -252,6 +253,8 @@ function keyboardSteerMogli:onRegisterActionEvents(isSelected, isOnActiveVehicle
                                 "ksmDIRECTION",     
                                 "ksmFORWARD",     
                                 "ksmREVERSE",
+																"ksmNO_ARB",
+																"ksmINCHING",
                                 "ksmSNAP",
 																"AXIS_MOVE_SIDE_VEHICLE" }) do
 																
@@ -345,6 +348,10 @@ function keyboardSteerMogli:actionCallback(actionName, keyStatus, arg4, arg5, ar
 			self.ksmNewRotCursorKey  = self.ksmPrevRotCursorKey
 			self.ksmPrevRotCursorKey = nil
 		end
+	elseif actionName == "ksmINCHING" then 
+		self:ksmSetState( "ksmInchingIsOn", keyStatus > 0 )
+	elseif actionName == "ksmNO_ARB" then 
+		self:ksmSetState( "ksmNoAutoRotBack", keyStatus > 0 )
 	elseif keyStatus > 0 then 
 		self.ksmPrevRotCursorKey = nil
 		if     actionName == "ksmDIRECTION" then
@@ -371,14 +378,6 @@ function keyboardSteerMogli:onUpdate(dt)
 	
 	self.ksmTickDt = dt 
 	
-	if      self.isClient
-			and self:getIsVehicleControlledByPlayer() 
-			and Input.isKeyPressed( Input.KEY_lshift ) then 
-		self:ksmSetState( "ksmLShiftPressed", true )
-	else 
-		self:ksmSetState( "ksmLShiftPressed", false )
-	end 
-
 	local newRotCursorKey = self.ksmNewRotCursorKey
 	local i               = self.spec_enterable.camIndex
 	local requestedBack   = nil
@@ -399,6 +398,17 @@ function keyboardSteerMogli:onUpdate(dt)
 	self.ksmAxisSideLast  = nil
 	self.ksmLastSnapAngle = nil 
 	
+	if self.ksmNoAutoRotBack and self:getIsVehicleControlledByPlayer() then
+		if self.ksmAutoRotateBackSpeed == nil then 
+			self.ksmAutoRotateBackSpeed = self.autoRotateBackSpeed
+		end 
+		self:ksmSetState( "ksmSnapIsOn", false )
+		self.autoRotateBackSpeed      = 0
+	elseif self.ksmAutoRotateBackSpeed ~= nil then
+		self.autoRotateBackSpeed      = self.ksmAutoRotateBackSpeed
+		self.ksmAutoRotateBackSpeed   = nil 
+	end 
+	
 	if self.isClient and self.ksmSnapIsOn then 
 		if self:getIsVehicleControlledByPlayer() then 
 			
@@ -417,7 +427,8 @@ function keyboardSteerMogli:onUpdate(dt)
 							d = 90 
 						end 
 					end 
-					for i=-180,180,d do 
+					local s = d - 180
+					for i=s,180,d do 
 						local a = math.rad( i )
 						if math.abs( a - rot ) < diff then 
 							diff   = math.abs( keyboardSteerMogli.normalizeAngle( a - rot ) )
@@ -435,7 +446,7 @@ function keyboardSteerMogli:onUpdate(dt)
 				if d > 10 then d = 10 end 
 				d = math.rad( d )
 					
-				local a = keyboardSteerMogli.mbClamp( ( rot - self.ksmLastSnapAngle ) / d, -1, 1 ) 
+				local a = keyboardSteerMogli.mbClamp( keyboardSteerMogli.normalizeAngle( rot - self.ksmLastSnapAngle ) / d, -1, 1 ) 
 				d = 0.002 * dt
 				
 				if axisSideLast == nil then 
@@ -731,7 +742,7 @@ function keyboardSteerMogli:onUpdate(dt)
 	end 
 --******************************************************************************************************************************************
 
-	if self.ksmLShiftPressed and self.spec_drivable.cruiseControl.state == 1 then
+	if self.ksmInchingIsOn and self:getIsVehicleControlledByPlayer() and self.spec_drivable.cruiseControl.state == 1 then
 		local limitThrottleRatio     = 0.75
 		if self.ksmLimitThrottle < 11 then
 			limitThrottleRatio     = 0.45 + 0.05 * self.ksmLimitThrottle
@@ -879,7 +890,7 @@ function keyboardSteerMogli:ksmUpdateWheelsPhysics( superFunc, ... )
 		end 		
 	end 
 	
-	if args[3] ~= nil and self.spec_drivable.cruiseControl.state == 0 and self.ksmLimitThrottle ~= nil and self.ksmLShiftPressed ~= nil then 
+	if args[3] ~= nil and self:getIsVehicleControlledByPlayer() and self.spec_drivable.cruiseControl.state == 0 and self.ksmLimitThrottle ~= nil and self.ksmInchingIsOn ~= nil then 
 		local limitThrottleRatio     = 0.75
 		local limitThrottleIfPressed = true
 		if self.ksmLimitThrottle < 11 then
@@ -890,7 +901,7 @@ function keyboardSteerMogli:ksmUpdateWheelsPhysics( superFunc, ... )
 			limitThrottleRatio     = 1.5 - 0.05 * self.ksmLimitThrottle
 		end
 			
-		if self.ksmLShiftPressed == limitThrottleIfPressed then
+		if self.ksmInchingIsOn == limitThrottleIfPressed then
 			args[3] = args[3] * limitThrottleRatio
 		end
 	end
@@ -942,7 +953,7 @@ function keyboardSteerMogli:getRequiredMotorRpmRange( superFunc, ... )
 		minRpm = minReducedRpm
 	end
 	
-	if self.vehicle.spec_combine == nil and self.vehicle.ksmLimitThrottle ~= nil and self.vehicle.ksmLShiftPressed ~= nil then 
+	if self.vehicle.spec_combine == nil and self.vehicle.ksmLimitThrottle ~= nil and self.vehicle.ksmInchingIsOn ~= nil then 
 		if self.maxRpm ~= nil and self.vehicle.spec_drivable.cruiseControl.state == 0 then
 			minReducedRpm = minReducedRpm + 0.1 * self.maxRpm
 			
@@ -956,7 +967,7 @@ function keyboardSteerMogli:getRequiredMotorRpmRange( superFunc, ... )
 				limitThrottleRatio     = 1.5 - 0.05 * self.vehicle.ksmLimitThrottle
 			end
 					
-			if self.vehicle.ksmLShiftPressed == limitThrottleIfPressed then 
+			if self.vehicle.ksmInchingIsOn == limitThrottleIfPressed then 
 				maxRpm = math.max( minReducedRpm, math.min( maxRpm, self.maxRpm * limitThrottleRatio ) )
 			end 
 		end 

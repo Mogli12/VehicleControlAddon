@@ -34,6 +34,8 @@
 		<text name="input_ksmFORWARD"   text="KeyboardSteer: Fahrtrichtung vorwärts"/>
 		<text name="input_ksmREVERSE"   text="KeyboardSteer: Fahrtrichtung rückwärts"/>
 		<text name="input_ksmSNAP"      text="KeyboardSteer: Fahrtrichtung am Raster ausrichten"/>
+		<text name="input_ksmNO_ARB"    text="KeyboardSteer: Kein zurück Lenken"/>
+		<text name="input_ksmINCHING"   text="KeyboardSteer: Langsamer"/>
 	</texts>   
 
 	<longTexts>

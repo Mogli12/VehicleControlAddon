@@ -34,6 +34,8 @@
 		<text name="input_ksmFORWARD"   text="KeyboardSteer: drive forwards"/>
 		<text name="input_ksmREVERSE"   text="KeyboardSteer: drive backwards"/>
 		<text name="input_ksmSNAP"      text="KeyboardSteer: snap driving direction"/>
+		<text name="input_ksmNO_ARB"    text="KeyboardSteer: no auto rotate back"/>
+		<text name="input_ksmINCHING"   text="KeyboardSteer: inching"/>
 	</texts>
 
 	<longTexts>
