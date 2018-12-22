@@ -36,7 +36,7 @@
 			</GuiElement>
 			
 			<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="ksmShuttleIsOn" toolTip="$mogli_ksm_tip_SHUTTLE" onCreate="onCreateSubElement" 
-											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="14" focusChangeTop="13" focusChangeBottom="15">										
+											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="14" focusChangeTop="13" focusChangeBottom="16">										
 				<GuiElement type="button" profile="multiTextOptionLeft" />
 				<GuiElement type="button" profile="multiTextOptionRight"/>
 				<GuiElement type="text" profile="multiTextOptionText" />
@@ -47,17 +47,8 @@
 		
 		<GuiElement type="boxLayout" profile="settingsBox" size="527px 488px" position="567px 88px" positionOrigin="bottomLeft">	
 			
-			<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="ksmPeekFwdBack" toolTip="$mogli_ksm_tip_PEEKFB" onCreate="onCreateSubElement" 
-											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="15" focusChangeTop="14" focusChangeBottom="16">										
-				<GuiElement type="button" profile="multiTextOptionLeft" />
-				<GuiElement type="button" profile="multiTextOptionRight"/>
-				<GuiElement type="text" profile="multiTextOptionText" />
-				<GuiElement type="text" profile="multiTextOptionTitle" text="$mogli_ksmPEEKFB"/>
-				<GuiElement type="bitmap" profile="multiTextOptionBg" />
-			</GuiElement>			
-			
 			<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="ksmPeekLeftRight" toolTip="$mogli_ksm_tip_PEEKLR" onCreate="onCreateSubElement" 
-											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="16" focusChangeTop="15" focusChangeBottom="17">										
+											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="16" focusChangeTop="14" focusChangeBottom="17">										
 				<GuiElement type="button" profile="multiTextOptionLeft" />
 				<GuiElement type="button" profile="multiTextOptionRight"/>
 				<GuiElement type="text" profile="multiTextOptionText" />

@@ -36,7 +36,6 @@ function keyboardSteerMogli.globalsReset( createIfMissing )
  	KSMGlobals.camReverseRotation  = false
  	KSMGlobals.camRevOutRotation   = false
 	KSMGlobals.shuttleControl      = false	
-	KSMGlobals.peekFwdBack         = false	
 	KSMGlobals.peekLeftRight       = false	
 	
 	local file
@@ -99,7 +98,6 @@ function keyboardSteerMogli:onLoad(savegame)
 
 	keyboardSteerMogli.registerState( self, "ksmSteeringIsOn", KSMGlobals.adaptiveSteering )
 	keyboardSteerMogli.registerState( self, "ksmShuttleIsOn",  KSMGlobals.shuttleControl )
-	keyboardSteerMogli.registerState( self, "ksmPeekFwdBack",  KSMGlobals.peekFwdBack )
 	keyboardSteerMogli.registerState( self, "ksmPeekLeftRight",KSMGlobals.peekLeftRight )
 	keyboardSteerMogli.registerState( self, "ksmShuttleFwd",   true )
 	keyboardSteerMogli.registerState( self, "ksmCamFwd"      , true )
@@ -257,25 +255,52 @@ function keyboardSteerMogli:actionCallback(actionName, keyStatus, arg4, arg5, ar
 			or actionName == "ksmLEFT"
 			or actionName == "ksmRIGHT" then
 
-		if keyStatus > 0 then 
-			local i = self.spec_enterable.camIndex
-			if i ~= nil and self.ksmCameras[i] ~= nil and self.ksmCameras[i].zero ~= nil and self.spec_enterable.cameras[i].origRotY ~= nil then 
-				self.ksmPrevRotCursorKey = keyboardSteerMogli.normalizeAngle( self.ksmCameras[i].zero - self.spec_enterable.cameras[i].origRotY )
-			end
-			
+		if not ( self.ksmPeekLeftRight ) then 
 			if     actionName == "ksmUP" then
 				self.ksmNewRotCursorKey = 0
-				if not ( self.ksmPeekFwdBack ) then 
-					self.ksmPrevRotCursorKey = nil 
-				elseif self.ksmPrevRotCursorKey ~= nil and math.abs( self.ksmPrevRotCursorKey ) < 0.3 * math.pi then
-					self.ksmPrevRotCursorKey = nil 
-				end 
 			elseif actionName == "ksmDOWN" then
 				self.ksmNewRotCursorKey = math.pi
-				if not ( self.ksmPeekFwdBack ) then 
-					self.ksmPrevRotCursorKey = nil 
-				elseif self.ksmPrevRotCursorKey ~= nil and math.abs( self.ksmPrevRotCursorKey ) > 0.7 * math.pi then
-					self.ksmPrevRotCursorKey = nil 
+			elseif actionName == "ksmLEFT" then
+				if not ( self.ksmCamFwd ) then
+					self.ksmNewRotCursorKey =  0.7*math.pi
+				else 
+					self.ksmNewRotCursorKey =  0.3*math.pi
+				end 
+			elseif actionName == "ksmRIGHT" then
+				if not ( self.ksmCamFwd ) then
+					self.ksmNewRotCursorKey = -0.7*math.pi
+				else 
+					self.ksmNewRotCursorKey = -0.3*math.pi
+				end 
+			end
+		elseif keyStatus > 0 then 
+			local i = self.spec_enterable.camIndex
+			if i ~= nil and self.spec_enterable.cameras[i].rotY and self.spec_enterable.cameras[i].origRotY ~= nil then 
+				self.ksmPrevRotCursorKey = keyboardSteerMogli.normalizeAngle( self.spec_enterable.cameras[i].rotY - self.spec_enterable.cameras[i].origRotY )
+			else 
+				keyboardSteerMogli.debugPrint( "Cannot detect view direction: "..tostring(i) )
+				self.ksmPrevRotCursorKey = nil
+			end
+			
+			
+			keyboardSteerMogli.debugPrint( actionName.."("..tostring(keyStatus).."): "..tostring(self.ksmPrevRotCursorKey) )
+			
+			if     actionName == "ksmUP" then
+				if     self.ksmPrevRotCursorKey == nil then 
+					self.ksmNewRotCursorKey = 0
+				elseif math.abs( self.ksmPrevRotCursorKey ) < 0.5 * math.pi then
+					self.ksmNewRotCursorKey = math.pi
+				else 
+					self.ksmNewRotCursorKey = 0
+				end 
+				self.ksmPrevRotCursorKey  = nil 
+			elseif actionName == "ksmDOWN" then
+				if     self.ksmPrevRotCursorKey == nil then 
+					self.ksmNewRotCursorKey = nil
+				elseif math.abs( self.ksmPrevRotCursorKey ) < 0.5 * math.pi then
+					self.ksmNewRotCursorKey = math.pi
+				else 
+					self.ksmNewRotCursorKey = 0
 				end 
 			elseif actionName == "ksmLEFT" then
 				if     self.ksmPrevRotCursorKey ~= nil and math.abs( self.ksmPrevRotCursorKey ) > 0.7 * math.pi then
@@ -285,9 +310,6 @@ function keyboardSteerMogli:actionCallback(actionName, keyStatus, arg4, arg5, ar
 				else 
 					self.ksmNewRotCursorKey =  0.5*math.pi
 				end 
-				if not ( self.ksmPeekLeftRight ) then 
-					self.ksmPrevRotCursorKey = nil 
-				end
 			elseif actionName == "ksmRIGHT" then
 				if     self.ksmPrevRotCursorKey ~= nil and math.abs( self.ksmPrevRotCursorKey ) > 0.7 * math.pi then
 					self.ksmNewRotCursorKey = -0.7*math.pi
@@ -296,9 +318,6 @@ function keyboardSteerMogli:actionCallback(actionName, keyStatus, arg4, arg5, ar
 				else 
 					self.ksmNewRotCursorKey = -0.5*math.pi
 				end 
-				if not ( self.ksmPeekLeftRight ) then 
-					self.ksmPrevRotCursorKey = nil 
-				end
 			end
 		elseif self.ksmPrevRotCursorKey ~= nil then 
 			self.ksmNewRotCursorKey  = self.ksmPrevRotCursorKey
@@ -989,3 +1008,5 @@ function keyboardSteerMogli:ksmUISetksmExponent( value )
 		self:ksmSetState( "ksmExponent", self.ksmUI.ksmExponent_V[value] )
 	end
 end
+
+

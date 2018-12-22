@@ -12,8 +12,7 @@
 		<text name="ksmSHUTTLE"         text="Shuttle Control"/>
 		<text name="ksmREVERSE"         text="Zurückblicken"/>
 		<text name="ksmLIMIT"           text="Gasbegrenzer"/>
-		<text name="ksmPEEKFB"          text="Kurzer Blick vorne/hinten"/>
-		<text name="ksmPEEKLR"          text="Kurzer Blick zur Seite"/>
+		<text name="ksmPEEKLR"          text="Nur ein kurzer Blick"/>
 		<text name="ksmSETTINGS"        text="Einstellungen"/>
 		                                
 		<text name="ksm_tip_CAMERA"     text="Die Kamera dreht sich passend zum Lenkeinschlag automatisch mit."/>
@@ -22,12 +21,11 @@
 		<text name="ksm_tip_SHUTTLE"    text="Fahrtrichtung mit Leertaste wechseln"/>
 		<text name="ksm_tip_REVERSE"    text="Beim Wechsel zwischen Vorwärts- und Rückwärtsfahrt wird automatisch die Kamera um 180° gedrecht"/>
 		<text name="ksm_tip_LIMIT"      text="Gasbegrenzer mit linker Umschalttaste"/>
-		<text name="ksm_tip_PEEKFB"     text="Mit Umschalt-Rechts und den Pfeiltasten hoch/runtern nur einen kurzen Blick nach vorne/hinten werfen"/>
-		<text name="ksm_tip_PEEKLR"     text="Mit Umschalt-Rechts und den Pfeiltasten rechts/links reinen kurzen zur Seite Blick werfen"/>
+		<text name="ksm_tip_PEEKLR"     text="Mit Umschalt-Rechts und den Pfeiltasten einen kurzen zur Seite Blick werfen"/>
 		                                
 		<text name="input_ksmSETTINGS"  text="KeyboardSteer: Einstellungen"/>
-		<text name="input_ksmUP"        text="KeyboardSteer: Nach vorne schauen"/>
-		<text name="input_ksmDOWN"      text="KeyboardSteer: Nach hinten schauen"/>
+		<text name="input_ksmUP"        text="KeyboardSteer: Blickrichtung wechseln oder nach vorne schauen"/>
+		<text name="input_ksmDOWN"      text="KeyboardSteer: In die andere Richtung blicken / nach hinten schauen"/>
 		<text name="input_ksmLEFT"      text="KeyboardSteer: Nach links schauen"/>
 		<text name="input_ksmRIGHT"     text="KeyboardSteer: Nach rechts schauen"/>
 		<text name="input_ksmDIRECTION" text="KeyboardSteer: Fahrtrichtung wechseln"/>
