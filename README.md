@@ -7,11 +7,11 @@ Although I have a steering wheel, but almost always play with the keyboard. On w
 This script varies depending on the speed, the steering speed, the return speed (autoRotateBackSpeed) and the maximum steering angle. 
 It also rotates the camera to match the steering the moving direction.
 All functions can also be off again, with the following keys:
-* [Ctrl Left + C]: Settings
-* [Ctrl Left + W]: Snap Angle
-* [Shift Left]: Throttle limiter / reduced cruise control speed
-* [Shift Right + Cursor]: look forward, backwards, left right
-* [Space]: Change direction (aka shuttle control)
+* Ctrl Left + C: Settings
+* Ctrl Left + W: Snap Angle
+* Shift Left: Throttle limiter / reduced cruise control speed
+* Shift Right + Cursor: look forward, backwards, left right
+* Space: Change direction (aka shuttle control)
 
 ## Developer version
 Please be aware you're using a developer version, which may and will contain errors, bugs, mistakes and unfinished code. 
