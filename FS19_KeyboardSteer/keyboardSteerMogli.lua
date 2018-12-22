@@ -28,6 +28,7 @@ function keyboardSteerMogli.globalsReset( createIfMissing )
 	KSMGlobals.cameraRotTime       = 0
   KSMGlobals.timer4Reverse       = 0
   KSMGlobals.limitThrottle       = 0
+  KSMGlobals.snapAngle           = 0
  	KSMGlobals.debugPrint          = false
 	
 -- defaults	
@@ -107,7 +108,7 @@ function keyboardSteerMogli:onLoad(savegame)
 	keyboardSteerMogli.registerState( self, "ksmExponent"    , 1    , keyboardSteerMogli.ksmOnSetFactor )
 	keyboardSteerMogli.registerState( self, "ksmWarningText" , ""   , keyboardSteerMogli.ksmOnSetWarningText )
 	keyboardSteerMogli.registerState( self, "ksmLimitThrottle",KSMGlobals.limitThrottle )
-	keyboardSteerMogli.registerState( self, "ksmSnapAngle",    5,     keyboardSteerMogli.ksmOnSetSnapAngle )
+	keyboardSteerMogli.registerState( self, "ksmSnapAngle",    KSMGlobals.snapAngle, keyboardSteerMogli.ksmOnSetSnapAngle )
 	keyboardSteerMogli.registerState( self, "ksmLShiftPressed",false )
 	
 	self.ksmFactor        = 1
@@ -143,6 +144,12 @@ function keyboardSteerMogli:onPostLoad(savegame)
 			self:ksmSetState( "ksmShuttleIsOn", b )
 		end 
 		
+		b = getXMLBool(xmlFile, key.."#peek")
+		keyboardSteerMogli.debugPrint("peek: "..tostring(b))
+		if b ~= nil then 
+			self:ksmSetState( "ksmPeekLeftRight", b )
+		end 
+		
 		i = getXMLInt(xmlFile, key.."#exponent")
 		keyboardSteerMogli.debugPrint("exponent: "..tostring(i))
 		if i ~= nil then 
@@ -153,6 +160,12 @@ function keyboardSteerMogli:onPostLoad(savegame)
 		keyboardSteerMogli.debugPrint("throttle: "..tostring(i))
 		if i ~= nil then 
 			self:ksmSetState( "ksmLimitThrottle", i )
+		end 
+		
+		i = getXMLInt(xmlFile, key.."#snapAngle")
+		keyboardSteerMogli.debugPrint("snapAngle: "..tostring(i))
+		if i ~= nil then 
+			self:ksmSetState( "ksmSnapAngle", i )
 		end 
 		
 		i = 0
@@ -187,11 +200,17 @@ function keyboardSteerMogli:saveToXMLFile(xmlFile, key)
 	if self.ksmShuttleIsOn ~= nil and self.ksmShuttleIsOn ~= KSMGlobals.shuttleControl then
 		setXMLBool(xmlFile, key.."#shuttle", self.ksmShuttleIsOn)
 	end
+	if self.ksmPeekLeftRight ~= nil and self.ksmPeekLeftRight ~= KSMGlobals.peekLeftRight then
+		setXMLBool(xmlFile, key.."#peek", self.ksmPeekLeftRight)
+	end
 	if self.ksmExponent ~= nil and math.abs( self.ksmExponent - 1 ) > 1E-3 then
 		setXMLInt(xmlFile, key.."#exponent", self.ksmExponent)
 	end
-	if self.ksmLimitThrottle ~= nil and math.abs( self.ksmLimitThrottle - 15 ) > 1E-3 then
+	if self.ksmLimitThrottle ~= nil and math.abs( self.ksmLimitThrottle - KSMGlobals.limitThrottle ) > 1E-3 then
 		setXMLInt(xmlFile, key.."#throttle", self.ksmLimitThrottle)
+	end
+	if self.ksmSnapAngle ~= nil and math.abs( self.ksmSnapAngle - KSMGlobals.snapAngle ) > 1E-3 then
+		setXMLInt(xmlFile, key.."#snapAngle", self.ksmSnapAngle)
 	end
 	
 	local i = 0
