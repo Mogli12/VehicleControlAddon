@@ -19,6 +19,7 @@ function keyboardSteerMogli.registerEventListeners(vehicleType)
 end 
 
 KSMGlobals = {}
+keyboardSteerMogli.snapAngles = { 5, 7.5, 15, 22.5, 45, 90 }
 
 function keyboardSteerMogli.globalsReset( createIfMissing )
 	KSMGlobals                     = {}
@@ -106,6 +107,7 @@ function keyboardSteerMogli:onLoad(savegame)
 	keyboardSteerMogli.registerState( self, "ksmExponent"    , 1    , keyboardSteerMogli.ksmOnSetFactor )
 	keyboardSteerMogli.registerState( self, "ksmWarningText" , ""   , keyboardSteerMogli.ksmOnSetWarningText )
 	keyboardSteerMogli.registerState( self, "ksmLimitThrottle",KSMGlobals.limitThrottle )
+	keyboardSteerMogli.registerState( self, "ksmSnapAngle",    5,     keyboardSteerMogli.ksmOnSetSnapAngle )
 	keyboardSteerMogli.registerState( self, "ksmLShiftPressed",false )
 	
 	self.ksmFactor        = 1
@@ -230,7 +232,9 @@ function keyboardSteerMogli:onRegisterActionEvents(isSelected, isOnActiveVehicle
                                 "ksmRIGHT",     
                                 "ksmDIRECTION",     
                                 "ksmFORWARD",     
-                                "ksmREVERSE" }) do
+                                "ksmREVERSE",
+                                "ksmSNAP",
+																"AXIS_MOVE_SIDE_VEHICLE" }) do
 																
 
 			local _, eventName = self:addActionEvent(self.ksmActionEvents, InputAction[actionName], self, keyboardSteerMogli.actionCallback, true, true, false, true, nil);
@@ -249,8 +253,10 @@ function keyboardSteerMogli:onRegisterActionEvents(isSelected, isOnActiveVehicle
 end
 
 function keyboardSteerMogli:actionCallback(actionName, keyStatus, arg4, arg5, arg6)
---print( actionName..": "..tostring(keyStatus))
-	if     actionName == "ksmUP"
+
+	if     actionName == "AXIS_MOVE_SIDE_VEHICLE" and math.abs( keyStatus ) > 0.1 then 
+		self:ksmSetState( "ksmSnapIsOn", false )
+	elseif actionName == "ksmUP"
 			or actionName == "ksmDOWN"
 			or actionName == "ksmLEFT"
 			or actionName == "ksmRIGHT" then
@@ -281,10 +287,7 @@ function keyboardSteerMogli:actionCallback(actionName, keyStatus, arg4, arg5, ar
 				keyboardSteerMogli.debugPrint( "Cannot detect view direction: "..tostring(i) )
 				self.ksmPrevRotCursorKey = nil
 			end
-			
-			
-			keyboardSteerMogli.debugPrint( actionName.."("..tostring(keyStatus).."): "..tostring(self.ksmPrevRotCursorKey) )
-			
+
 			if     actionName == "ksmUP" then
 				if     self.ksmPrevRotCursorKey == nil then 
 					self.ksmNewRotCursorKey = 0
@@ -331,6 +334,8 @@ function keyboardSteerMogli:actionCallback(actionName, keyStatus, arg4, arg5, ar
 			self:ksmSetState( "ksmShuttleFwd", true )
 		elseif actionName == "ksmREVERSE" then
 			self:ksmSetState( "ksmShuttleFwd", false )
+		elseif actionName == "ksmSNAP" then
+			self:ksmSetState( "ksmSnapIsOn", true )
 		elseif actionName == "ksmSETTINGS" then
 			keyboardSteerMogli.ksmShowSettingsUI( self )
 		end
@@ -369,6 +374,61 @@ function keyboardSteerMogli:onUpdate(dt)
 			requestedBack = true 
 		end
 	end
+	
+	local axisSideLast    = self.ksmAxisSideLast
+	self.ksmAxisSideLast  = nil
+	self.ksmLastSnapAngle = nil 
+	
+	if self.isClient and self.ksmSnapIsOn then 
+		if self:getIsVehicleControlledByPlayer() then 
+			
+			local lx,_,lz = localDirectionToWorld( self.components[1].node, 0, 0, 1 )			
+			if lx*lx+lz*lz > 1e-6 then 
+				local rot    = math.atan2( lx, lz )
+				local target = 0
+				local diff   = math.pi
+				local d      = keyboardSteerMogli.snapAngles[self.ksmSnapAngle]
+				if d == nil then 
+					if self.ksmSnapAngle < 1 then 
+						d = keyboardSteerMogli.snapAngles[1] 
+					else 
+						d = 90 
+					end 
+				end 
+				for i=-180,180,d do 
+					local a = math.rad( i )
+					if math.abs( a - rot ) < diff then 
+						diff   = math.abs( keyboardSteerMogli.normalizeAngle( a - rot ) )
+						target = a 
+					end 
+				end 
+				
+				self.ksmLastSnapAngle = target 
+				
+				d = 0.5 * d 
+				
+				if d > 10 then d = 10 end 
+				d = math.rad( d )
+					
+				local a = keyboardSteerMogli.mbClamp( ( rot - target ) / d, -1, 1 ) 
+				d = 0.002 * dt
+				
+				if axisSideLast == nil then 
+					axisSideLast = self.spec_drivable.axisSideLast 
+				end 
+				
+				self.spec_drivable.axisSide = axisSideLast + keyboardSteerMogli.mbClamp( a - axisSideLast, -d, d )
+				
+				self.ksmAxisSideLast = self.spec_drivable.axisSide
+				
+			--keyboardSteerMogli.debugPrint( string.format( "%4d° -> %4d° => %4d%% (%4d%%, %4d%%)",
+			--															 math.deg( rot ), math.deg( target ),
+			--															 a*100, self.spec_drivable.axisSide*100, axisSideLast*100 ) )				
+			end 
+		else 
+			self:ksmSetState("ksmSnapIsOn", false ) 
+		end 
+	end 
 	
 	if self.ksmShuttleIsOn then 
 		if self.spec_motorized.motor.lowBrakeForceScale == nil then
@@ -599,7 +659,7 @@ function keyboardSteerMogli:onUpdate(dt)
 	
 --******************************************************************************************************************************************
 -- adaptive steering 	
-	if self.ksmSteeringIsOn and self:getIsVehicleControlledByPlayer() then 
+	if self.ksmSteeringIsOn and not ( self.ksmSnapIsOn ) and self:getIsVehicleControlledByPlayer() then 
 		local speed = math.abs( self.lastSpeed * 3600 )
 		local f = 1
 		if     speed <= 12.5 then 
@@ -672,6 +732,9 @@ function keyboardSteerMogli:onDraw()
 			renderText(0.948, 0.151, 0.022, "R")
 		end
 	end
+	if self.ksmLastSnapAngle ~= nil then 
+		renderText(0.5, 0.95, 0.022, string.format( "%3.1f°", math.deg( self.ksmLastSnapAngle )))
+	end 
 end
 
 function keyboardSteerMogli:onReadStream(streamId, connection)
@@ -930,6 +993,16 @@ function keyboardSteerMogli:ksmOnSetFactor( old, new, noEventSend )
 	self.ksmFactor   = 1.1 ^ new
 end
 
+function keyboardSteerMogli:ksmOnSetSnapAngle( old, new, noEventSend )
+	if new < 1 then 
+		self.ksmSnapAngle = 1 
+	elseif new > table.getn( keyboardSteerMogli.snapAngles ) then 
+		self.ksmSnapAngle = table.getn( keyboardSteerMogli.snapAngles ) 
+	else 
+		self.ksmSnapAngle = new 
+	end 
+end 
+
 function keyboardSteerMogli:ksmOnSetWarningText( old, new, noEventSend )
 	self.ksmWarningText  = new
   self.ksmWarningTimer = 2000
@@ -990,6 +1063,11 @@ function keyboardSteerMogli:ksmShowSettingsUI()
 	for i=1,20 do
 	  self.ksmUI.ksmLimitThrottle[i] = string.format("%3d %% / %3d %%", 45 + 5 * math.min( i, 11 ), 150 - 5 * math.max( i, 10 ), true )
 	end
+	self.ksmUI.ksmSnapAngle = {}
+	for i,v in pairs( keyboardSteerMogli.snapAngles ) do 
+		self.ksmUI.ksmSnapAngle[i] = string.format( "%3d°", v )
+	end 
+	
 	g_keyboardSteerMogliScreen:setVehicle( self )
 	g_gui:showGui( "keyboardSteerMogliScreen" )
 end

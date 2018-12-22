@@ -13,6 +13,7 @@
 		<text name="ksmREVERSE"         text="Look Backwards"/>
 		<text name="ksmLIMIT"           text="Throttle Limiter"/>
 		<text name="ksmPEEKLR"          text="Peek sideways"/>
+		<text name="ksmANGLE"           text="Snap Angle"/>
 		<text name="ksmSETTINGS"        text="Settings"/>
 		                                
 		<text name="ksm_tip_CAMERA"     text="The camera rotates automatically according to the steering angle"/>
@@ -22,6 +23,7 @@
 		<text name="ksm_tip_REVERSE"    text="If the verhicle changes direction the camera is rotated by 180°"/>
 		<text name="ksm_tip_LIMIT"      text="Limiter of the throttle without and with left shift key"/>
 		<text name="ksm_tip_PEEKLR"     text="Take a quick look with Shift-Right and the arrow keys sideways"/>
+		<text name="ksm_tip_ANGLE"      text="The latest feature"/>
 		                               
 		<text name="input_ksmSETTINGS"  text="KeyboardSteer: settings"/>
 		<text name="input_ksmUP"        text="KeyboardSteer: toggle view direction / lock forwards"/>
@@ -31,6 +33,7 @@
 		<text name="input_ksmDIRECTION" text="KeyboardSteer: toggle driving direction"/>
 		<text name="input_ksmFORWARD"   text="KeyboardSteer: drive forwards"/>
 		<text name="input_ksmREVERSE"   text="KeyboardSteer: drive backwards"/>
+		<text name="input_ksmSNAP"      text="KeyboardSteer: snap driving direction"/>
 	</texts>
 
 	<longTexts>

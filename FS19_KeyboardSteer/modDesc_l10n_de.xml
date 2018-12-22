@@ -13,6 +13,7 @@
 		<text name="ksmREVERSE"         text="Zurückblicken"/>
 		<text name="ksmLIMIT"           text="Gasbegrenzer"/>
 		<text name="ksmPEEKLR"          text="Nur ein kurzer Blick"/>
+		<text name="ksmANGLE"           text="Snap Angle"/>
 		<text name="ksmSETTINGS"        text="Einstellungen"/>
 		                                
 		<text name="ksm_tip_CAMERA"     text="Die Kamera dreht sich passend zum Lenkeinschlag automatisch mit."/>
@@ -21,7 +22,8 @@
 		<text name="ksm_tip_SHUTTLE"    text="Fahrtrichtung mit Leertaste wechseln"/>
 		<text name="ksm_tip_REVERSE"    text="Beim Wechsel zwischen Vorwärts- und Rückwärtsfahrt wird automatisch die Kamera um 180° gedrecht"/>
 		<text name="ksm_tip_LIMIT"      text="Gasbegrenzer mit linker Umschalttaste"/>
-		<text name="ksm_tip_PEEKLR"     text="Mit Umschalt-Rechts und den Pfeiltasten einen kurzen zur Seite Blick werfen"/>
+		<text name="ksm_tip_PEEKLR"     text="Take a quick look with Shift-Right and the arrow keys sideways"/>
+		<text name="ksm_tip_ANGLE"      text="The latest feature"/>
 		                                
 		<text name="input_ksmSETTINGS"  text="KeyboardSteer: Einstellungen"/>
 		<text name="input_ksmUP"        text="KeyboardSteer: Blickrichtung wechseln oder nach vorne schauen"/>
@@ -31,7 +33,8 @@
 		<text name="input_ksmDIRECTION" text="KeyboardSteer: Fahrtrichtung wechseln"/>
 		<text name="input_ksmFORWARD"   text="KeyboardSteer: Fahrtrichtung vorwärts"/>
 		<text name="input_ksmREVERSE"   text="KeyboardSteer: Fahrtrichtung rückwärts"/>
-	</texts>
+		<text name="input_ksmSNAP"      text="KeyboardSteer: Fahrtrichtung am Raster ausrichten"/>
+	</texts>   
 
 	<longTexts>
 		<longText name="ksm_Help_1">
