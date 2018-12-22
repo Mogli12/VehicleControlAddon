@@ -13,7 +13,7 @@
 		<text name="ksmREVERSE"         text="Zurückblicken"/>
 		<text name="ksmLIMIT"           text="Gasbegrenzer"/>
 		<text name="ksmPEEKLR"          text="Nur ein kurzer Blick"/>
-		<text name="ksmANGLE"           text="Snap Angle"/>
+		<text name="ksmANGLE"           text="Rastersteuerung"/>
 		<text name="ksmSETTINGS"        text="Einstellungen"/>
 		                                
 		<text name="ksm_tip_CAMERA"     text="Die Kamera dreht sich passend zum Lenkeinschlag automatisch mit."/>

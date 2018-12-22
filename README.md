@@ -4,12 +4,13 @@
 Although I have a steering wheel, but almost always play with the keyboard. On winding roads, I am again and again landed in the ditch in front of nights or power poles.
 
 ## Description
-Now I have invented this script. It varies depending on the speed, the steering speed, the return speed (autoRotateBackSpeed) and the maximum steering angle. It also turns the camera to match 
-the steering angle. Both functions can also be off again, with the following keys:
-* [LShift Left + Up]: Moving Camera on / off, default is on
-* [LShift Left + Down]: Look backwards on / off, default is on
-* [LShift Left + Space]: Shuttle control on / off, default is on
-* [RShift Right + Up/Down/Left/Right]: look forward, backwards, left right
+This script varies depending on the speed, the steering speed, the return speed (autoRotateBackSpeed) and the maximum steering angle. 
+It also rotates the camera to match the steering the moving direction.
+All functions can also be off again, with the following keys:
+* [Ctrl Left + C]: Settings
+* [Ctrl Left + W]: Snap Angle
+* [Shift Left]: Throttle limiter / reduced cruise control speed
+* [Shift Right + Cursor]: look forward, backwards, left right
 * [Space]: Change direction (aka shuttle control)
 
 ## Developer version

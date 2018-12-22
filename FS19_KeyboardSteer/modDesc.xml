@@ -14,6 +14,7 @@ It also rotates the camera to match the steering the moving direction.
 All functions can also be off again, with the following keys:
 
 [Ctrl Left + C]: Settings
+[Ctrl Left + W]: Snap Angle
 [Shift Left]: Throttle limiter / reduced cruise control speed
 [Shift Right + Cursor]: look forward, backwards, left right
 [Space]: Change direction (aka shuttle control)
@@ -26,7 +27,8 @@ Stellt man den Gasbegrenzer auf aber 100%, dann wird bei Umschalt Links nun Gasp
 
 Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tasten:
 
-[Strg Link + C]: Einstellungen
+[Strg Links + C]: Einstellungen
+[Strg Links + W]: Rastersteuerung
 [Umschalt Links]: Gaspedalbegrenzer / verringerter Tempomatgeschwindigkeit
 [Umschalt Rechts + Pfeiltaste]: Nach vorne, hinten, links, rechts blicken
 [Leertaste]: Fahrtrichtung wechseln
