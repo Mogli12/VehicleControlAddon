@@ -270,8 +270,8 @@ else
 				return 
 			end 
 			element.mogliTextReplaced = true 
-			if element.toolTip ~= nil and element.toolTip:sub(1,7) == "$mogli_" then 
-				element.toolTip = screen.mogliTexts[element.toolTip:sub(8)]
+			if element.toolTipText ~= nil and element.toolTipText:sub(1,7) == "$mogli_" then 
+				element.toolTipText = screen.mogliTexts[element.toolTipText:sub(8)]				
 			end 
 			if element.text ~= nil and element.text:sub(1,7) == "$mogli_" then 
 				local n = element.text:sub(8)
@@ -448,8 +448,8 @@ else
 	-- onFocusSettingsBox()
 	--********************************
 		function _newClass_:mogliFocusToolTip(element)
-			if self.mogliToolTipBox ~= nil and element.toolTip ~= nil then
-				self.mogliToolTipBoxText:setText(element.toolTip)
+			if self.mogliToolTipBox ~= nil and element.toolTipText ~= nil then
+				self.mogliToolTipBoxText:setText(element.toolTipText)
 				self.mogliToolTipBox:setVisible(true)
 			end
 		end		
@@ -458,8 +458,8 @@ else
 	-- mogliScreenGetPageTitle()
 	--********************************
 		function _newClass_:mogliScreenGetPageTitle(page)
-			if page.element.toolTip ~= nil then
-				return page.element.toolTip
+			if page.element.toolTipText ~= nil then
+				return page.element.toolTipText
 			end
 			return page.element.name
 		end
