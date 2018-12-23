@@ -48,8 +48,9 @@ function keyboardSteerMogli.globalsReset( createIfMissing )
 		print("ERROR: NO GLOBALS IN "..file)
 	end
 	
-	file = keyboardSteerMogli.modsDirectory.."keyboardSteerMogliConfig.xml"
+	file = getUserProfileAppPath().. "modsSettings/keyboardSteerMogliConfig.xml"
 	if fileExists(file) then	
+		print('Loading "modsSettings/keyboardSteerMogliConfig.xml"...')
 		keyboardSteerMogli.globalsLoad( file, "KSMGlobals", KSMGlobals )	
 	elseif createIfMissing then
 		keyboardSteerMogli.globalsCreate()
@@ -419,7 +420,7 @@ function keyboardSteerMogli:onUpdate(dt)
 				
 				if snapAngleLast == nil then  
 					local target = 0
-					local diff   = math.pi
+					local diff   = math.pi+math.pi
 					if d == nil then 
 						if self.ksmSnapAngle < 1 then 
 							d = keyboardSteerMogli.snapAngles[1] 
@@ -427,12 +428,12 @@ function keyboardSteerMogli:onUpdate(dt)
 							d = 90 
 						end 
 					end 
-					local s = d - 180
-					for i=s,180,d do 
+					for i=0,360,d do 
 						local a = math.rad( i )
-						if math.abs( a - rot ) < diff then 
-							diff   = math.abs( keyboardSteerMogli.normalizeAngle( a - rot ) )
+						local b = math.abs( keyboardSteerMogli.normalizeAngle( a - rot ) )
+						if b < diff then 
 							target = a 
+							diff   = b
 						end 
 					end 
 					
