@@ -91,7 +91,7 @@
 
 		<GuiElement type="bitmap" profile="ingameMenuHelpRowBg" id="mogliToolTipBox" size="1660px 48px" position="0px 0px" positionOrigin="bottomLeft" visible="true">
 			<GuiElement type="bitmap" profile="ingameMenuHelpRowIcon"/>
-			<GuiElement type="text" profile="ingameMenuHelpRowText" id="mogliToolTipBoxText" text="" onTextChanged="onToolTipBoxTextChanged"/>
+			<GuiElement type="text" profile="ingameMenuHelpRowText" id="mogliToolTipBoxText" text="" />
 		</GuiElement>
 
 		<GuiElement type="flowLayout" profile="buttonBoxDocked" id="buttonsPC" >
