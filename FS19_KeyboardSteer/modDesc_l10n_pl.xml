@@ -41,7 +41,7 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="input_ksmDIRECTION" text="KeyboardSteer: Zmiana kierunku jazdy"/>
 		<text name="input_ksmFORWARD"   text="KeyboardSteer: Jazda w przód"/>
 		<text name="input_ksmREVERSE"   text="KeyboardSteer: Jazda w tył"/>
-		<text name="input_ksmSNAP"      text="KeyboardSteer: Wyrównanie kieruneku jazdy"/>
+		<text name="input_ksmSNAP"      text="KeyboardSteer: Wyrównanie kierunku jazdy"/>
 		<text name="input_ksmNO_ARB"    text="KeyboardSteer: Wył. auto. spojrzenia w tył"/>
 		<text name="input_ksmINCHING"   text="KeyboardSteer: Kontroler tempomatu"/>
 	</texts>
