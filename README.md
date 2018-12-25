@@ -4,9 +4,11 @@
 Although I have a steering wheel, but almost always play with the keyboard. On winding roads, I am again and again landed in the ditch in front of nights or power poles.
 
 ## Description
-This script varies depending on the speed, the steering speed, the return speed (autoRotateBackSpeed) and the maximum steering angle. 
-It also rotates the camera to match the steering the moving direction.
-All functions can also be off again, with the following keys:
+This script varies the steering speed depending on the speed you are driving, and it rotates the camera to match the steering angle and direction.
+Shift-Left limits throttle, cruise control and maximum rounds per minute to 75%. With Shift-right and the cursor keys you can peek in the corresponding direction.
+If you press Ctrl left together with W then the driving direction snaps to fixed directions.
+
+All functions are switchable with the following default key combinations:
 * Ctrl Left + C: Settings
 * Ctrl Left + W: Snap Angle
 * Shift Left: Throttle limiter / reduced cruise control speed

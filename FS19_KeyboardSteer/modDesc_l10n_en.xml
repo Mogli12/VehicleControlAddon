@@ -4,8 +4,6 @@
 	<description><![CDATA[Adds the specialization for adaptive keyboard steering]]></description>
 
 	<texts>
-		<text name="ksmTITLE"           text="Keyboard Steer"/>
-		
 		<text name="ksmCAMERA"          text="Camera Rotation"/>
 		<text name="ksmEXPONENT"        text="Sensitivity"/>
 		<text name="ksmSTEERING"        text="Adaptive Steering"/>
@@ -23,7 +21,7 @@
 		<text name="ksm_tip_REVERSE"    text="If the verhicle changes direction the camera is rotated by 180°"/>
 		<text name="ksm_tip_LIMIT"      text="Limiter of the throttle without and with left shift key"/>
 		<text name="ksm_tip_PEEKLR"     text="Take a quick look with Shift-Right and the arrow keys sideways"/>
-		<text name="ksm_tip_ANGLE"      text="The latest feature"/>
+		<text name="ksm_tip_ANGLE"      text="Steer automatically to follow snap angle"/>
 		                               
 		<text name="input_ksmSETTINGS"  text="KeyboardSteer: settings"/>
 		<text name="input_ksmUP"        text="KeyboardSteer: toggle view direction / lock forwards"/>
@@ -40,10 +38,12 @@
 
 	<longTexts>
 		<longText name="ksm_Help_1">
-<![CDATA[This Script varies the steering speed, the steering back speed and the maximum steering angle  depending on the current vehicle speed.
-In addition the camera is rotated according to the steering angle an the driving direction. The digital accelerator (keys a and w) can be limited.
-Only when Shift-Left is pressed at the same time 100% acceleration or braking happens.
-If the acceleration limiter is set to 100% then acceleration and braking are limited when Shift-Left is used.
+<![CDATA[
+This script varies the steering speed depending on the speed you are driving, and it rotates the camera to match the steering angle and direction.
+
+Shift-Left limits throttle, cruise control and maximum rounds per minute to 75%. With Shift-right and the cursor keys you can peek in the corresponding direction.
+
+If you press Ctrl left together with W then the driving direction snaps to fixed directions.
 
 All functions can be switched off.]]>
 		</longText>

@@ -263,8 +263,11 @@ function keyboardSteerMogli:onRegisterActionEvents(isSelected, isOnActiveVehicle
 			local _, eventName = self:addActionEvent(self.ksmActionEvents, InputAction[actionName], self, keyboardSteerMogli.actionCallback, true, true, false, true, nil);
 
 		--local __, eventName = InputBinding.registerActionEvent(g_inputBinding, actionName, self, keyboardSteerMogli.actionCallback ,false ,true ,false ,true)
-			if     actionName == "ksmSETTINGS"
-					or ( self.ksmShuttleIsOn and actionName == "ksmDIRECTION" ) then 
+			if      g_inputBinding                   ~= nil 
+					and g_inputBinding.events            ~= nil 
+					and g_inputBinding.events[eventName] ~= nil
+					and ( actionName == "ksmSETTINGS"
+					   or ( self.ksmShuttleIsOn and actionName == "ksmDIRECTION" ) ) then 
 				if isSelected then
 					g_inputBinding.events[eventName].displayPriority = 1
 				elseif  isOnActiveVehicle then
@@ -1101,6 +1104,7 @@ function keyboardSteerMogli:ksmShowSettingsUI()
 			g_keyboardSteerMogliScreen.mogliTexts[n] = t
 		end
 		g_gui:loadGui(keyboardSteerMogli_Register.g_currentModDirectory .. "keyboardSteerMogliScreen.xml", "keyboardSteerMogliScreen", g_keyboardSteerMogliScreen)	
+		g_keyboardSteerMogliScreen:setTitle( "ksmVERSION" )
 	end
 
 	self.ksmUI = {}

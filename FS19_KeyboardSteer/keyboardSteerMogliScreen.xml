@@ -3,7 +3,7 @@
 	<GuiElement type="empty" profile="newLayer" />
 	<GuiElement type="bitmap" profile="yesNoDialogBg" size="1660px 708px">
 		<GuiElement type="bitmap" profile="uiInGameMenuHeader" size="1660px 112px">
-			<GuiElement type="text" profile="headerText" text="Keyboard Steer"/>
+			<GuiElement type="text" profile="headerText" id="mogliHeaderText" text="$mogli_ksmTITLE"/>
 		</GuiElement>
 		
 		<GuiElement type="boxLayout" profile="settingsBox" size="527px 488px" position="20px 88px" positionOrigin="bottomLeft">	
@@ -87,7 +87,7 @@
 
 		
 		<GuiElement type="text" profile="textDefault" textAlignment="left" size="527px 488px" position="1113px 88px" positionOrigin="bottomLeft" 
-								textWrapWidth="500px" textVerticalAlignment="top" textSize="22px" text="$mogli_ksm_Help_1" />				
+								textWrapWidth="500px" textVerticalAlignment="top" textSize="20px" text="$mogli_ksm_Help_1" />				
 
 		<GuiElement type="bitmap" profile="ingameMenuHelpRowBg" id="mogliToolTipBox" size="1660px 48px" position="0px 0px" positionOrigin="bottomLeft" visible="true">
 			<GuiElement type="bitmap" profile="ingameMenuHelpRowIcon"/>
