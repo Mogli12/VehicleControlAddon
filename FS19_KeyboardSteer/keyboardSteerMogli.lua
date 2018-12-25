@@ -762,16 +762,29 @@ function keyboardSteerMogli:onUpdate(dt)
 end
 
 function keyboardSteerMogli:onDraw()
-	if self.ksmShuttleIsOn and self:getIsVehicleControlledByPlayer() and not g_gui:getIsGuiVisible() then 
+	setTextAlignment( RenderText.ALIGN_CENTER ) 
+	setTextVerticalAlignment( RenderText.VERTICAL_ALIGN_MIDDLE )
+	setTextColor(1, 1, 1, 1) 
+	
+	local x = g_currentMission.inGameMenu.hud.speedMeter.gaugeCenterX
+	local y = g_currentMission.inGameMenu.hud.speedMeter.gaugeCenterY + g_currentMission.inGameMenu.hud.speedMeter.fuelGaugeRadiusY * 1.6
+	local l = 0.03 * keyboardSteerMogli.getUiScale()
+
+	if self.ksmShuttleIsOn and self:getIsVehicleControlledByPlayer() and not g_gui:getIsGuiVisible() then
 		if self.ksmShuttleFwd then
-			renderText(0.948, 0.151, 0.022, "F")
+			renderText(x, y, l, "F")
 		else
-			renderText(0.948, 0.151, 0.022, "R")
+			renderText(x, y, l, "R")
 		end
 	end
-	if self.ksmLastSnapAngle ~= nil then 
-		renderText(0.5, 0.95, 0.022, string.format( "%3.1f°", math.deg( self.ksmLastSnapAngle )))
+	if self.ksmLastSnapAngle ~= nil then
+		x = x + l * 0.2
+		y = y + l * 1.1
+		renderText(x, y, l, string.format( "%3.1f°", math.deg( keyboardSteerMogli.normalizeAngle( self.ksmLastSnapAngle + math.pi ))))
 	end 
+	
+	setTextAlignment( RenderText.ALIGN_LEFT ) 
+	setTextVerticalAlignment( RenderText.VERTICAL_ALIGN_BASELINE )
 end
 
 function keyboardSteerMogli:onReadStream(streamId, connection)
