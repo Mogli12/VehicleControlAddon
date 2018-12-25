@@ -397,79 +397,6 @@ function keyboardSteerMogli:onUpdate(dt)
 		end
 	end
 	
-	local axisSideLast    = self.ksmAxisSideLast
-	local snapAngleLast   = self.ksmLastSnapAngle
-	self.ksmAxisSideLast  = nil
-	self.ksmLastSnapAngle = nil 
-	
-	if self.ksmNoAutoRotBack and self:getIsVehicleControlledByPlayer() then
-		if self.ksmAutoRotateBackSpeed == nil then 
-			self.ksmAutoRotateBackSpeed = self.autoRotateBackSpeed
-		end 
-		self:ksmSetState( "ksmSnapIsOn", false )
-		self.autoRotateBackSpeed      = 0
-	elseif self.ksmAutoRotateBackSpeed ~= nil then
-		self.autoRotateBackSpeed      = self.ksmAutoRotateBackSpeed
-		self.ksmAutoRotateBackSpeed   = nil 
-	end 
-	
-	if self.isClient and self.ksmSnapIsOn then 
-		if self:getIsVehicleControlledByPlayer() then 
-			
-			local lx,_,lz = localDirectionToWorld( self.components[1].node, 0, 0, 1 )			
-			if lx*lx+lz*lz > 1e-6 then 
-				local rot    = math.atan2( lx, lz )
-				local d      = keyboardSteerMogli.snapAngles[self.ksmSnapAngle]
-				
-				if snapAngleLast == nil then  
-					local target = 0
-					local diff   = math.pi+math.pi
-					if d == nil then 
-						if self.ksmSnapAngle < 1 then 
-							d = keyboardSteerMogli.snapAngles[1] 
-						else 
-							d = 90 
-						end 
-					end 
-					for i=0,360,d do 
-						local a = math.rad( i )
-						local b = math.abs( keyboardSteerMogli.normalizeAngle( a - rot ) )
-						if b < diff then 
-							target = a 
-							diff   = b
-						end 
-					end 
-					
-					self.ksmLastSnapAngle = target 
-				else 
-					self.ksmLastSnapAngle = snapAngleLast 
-				end 
-				
-				d = 0.5 * d 
-				
-				if d > 10 then d = 10 end 
-				d = math.rad( d )
-					
-				local a = keyboardSteerMogli.mbClamp( keyboardSteerMogli.normalizeAngle( rot - self.ksmLastSnapAngle ) / d, -1, 1 ) 
-				d = 0.002 * dt
-				
-				if axisSideLast == nil then 
-					axisSideLast = self.spec_drivable.axisSideLast 
-				end 
-				
-				self.spec_drivable.axisSide = axisSideLast + keyboardSteerMogli.mbClamp( a - axisSideLast, -d, d )
-				
-				self.ksmAxisSideLast = self.spec_drivable.axisSide
-				
-			--keyboardSteerMogli.debugPrint( string.format( "%4d° -> %4d° => %4d%% (%4d%%, %4d%%)",
-			--															 math.deg( rot ), math.deg( self.ksmLastSnapAngle ),
-			--															 a*100, self.spec_drivable.axisSide*100, axisSideLast*100 ) )				
-			end 
-		else 
-			self:ksmSetState("ksmSnapIsOn", false ) 
-		end 
-	end 
-	
 	if self.ksmShuttleIsOn then 
 		if self.spec_motorized.motor.lowBrakeForceScale == nil then
 		elseif self.ksmLowBrakeForceScale == nil then 
@@ -526,6 +453,84 @@ function keyboardSteerMogli:onUpdate(dt)
 			fwd = self.ksmCamFwd
 		end		
 	end
+	
+	local axisSideLast    = self.ksmAxisSideLast
+	local snapAngleLast   = self.ksmLastSnapAngle
+	self.ksmAxisSideLast  = nil
+	self.ksmLastSnapAngle = nil 
+	
+	if self.ksmNoAutoRotBack and self:getIsVehicleControlledByPlayer() then
+		if self.ksmAutoRotateBackSpeed == nil then 
+			self.ksmAutoRotateBackSpeed = self.autoRotateBackSpeed
+		end 
+		self:ksmSetState( "ksmSnapIsOn", false )
+		self.autoRotateBackSpeed      = 0
+	elseif self.ksmAutoRotateBackSpeed ~= nil then
+		self.autoRotateBackSpeed      = self.ksmAutoRotateBackSpeed
+		self.ksmAutoRotateBackSpeed   = nil 
+	end 
+	
+	if self.isClient and self.ksmSnapIsOn then 
+		if self:getIsVehicleControlledByPlayer() then 
+			
+			local lx,_,lz = localDirectionToWorld( self.components[1].node, 0, 0, 1 )			
+			if lx*lx+lz*lz > 1e-6 then 
+				local rot    = math.atan2( lx, lz )
+				local d      = keyboardSteerMogli.snapAngles[self.ksmSnapAngle]
+				
+				if snapAngleLast == nil then  
+					local target = 0
+					local diff   = math.pi+math.pi
+					if d == nil then 
+						if self.ksmSnapAngle < 1 then 
+							d = keyboardSteerMogli.snapAngles[1] 
+						else 
+							d = 90 
+						end 
+					end 
+					for i=0,360,d do 
+						local a = math.rad( i )
+						local b = math.abs( keyboardSteerMogli.normalizeAngle( a - rot ) )
+						if b < diff then 
+							target = a 
+							diff   = b
+						end 
+					end 
+					
+					self.ksmLastSnapAngle = target 
+				else 
+					self.ksmLastSnapAngle = snapAngleLast 
+				end 
+				
+				d = 0.5 * d 
+				
+				if d > 10 then d = 10 end 
+				d = math.rad( d )
+					
+				local a = keyboardSteerMogli.mbClamp( keyboardSteerMogli.normalizeAngle( rot - self.ksmLastSnapAngle ) / d, -1, 1 ) 
+				
+				if self.ksmMovingDir < 0 then 
+					a = -a 
+				end 
+				
+				d = 0.002 * dt
+				
+				if axisSideLast == nil then 
+					axisSideLast = self.spec_drivable.axisSideLast 
+				end 
+				
+				self.spec_drivable.axisSide = axisSideLast + keyboardSteerMogli.mbClamp( a - axisSideLast, -d, d )
+				
+				self.ksmAxisSideLast = self.spec_drivable.axisSide
+				
+			--keyboardSteerMogli.debugPrint( string.format( "%4d° -> %4d° => %4d%% (%4d%%, %4d%%)",
+			--															 math.deg( rot ), math.deg( self.ksmLastSnapAngle ),
+			--															 a*100, self.spec_drivable.axisSide*100, axisSideLast*100 ) )				
+			end 
+		else 
+			self:ksmSetState("ksmSnapIsOn", false ) 
+		end 
+	end 
 	
 	if      self:getIsActive() 
 			and self.isClient 
