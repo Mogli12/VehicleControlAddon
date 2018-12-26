@@ -112,6 +112,7 @@ function keyboardSteerMogli:onLoad(savegame)
 	keyboardSteerMogli.registerState( self, "ksmSnapAngle"   , KSMGlobals.snapAngle, keyboardSteerMogli.ksmOnSetSnapAngle )
 	keyboardSteerMogli.registerState( self, "ksmInchingIsOn" , false )
 	keyboardSteerMogli.registerState( self, "ksmNoAutoRotBack",false )
+	keyboardSteerMogli.registerState( self, "ksmBrakeLights",  false )
 	
 	self.ksmFactor        = 1
 	self.ksmReverseTimer  = 1.5 / KSMGlobals.timer4Reverse
@@ -767,6 +768,10 @@ function keyboardSteerMogli:onUpdate(dt)
 		self.ksmSpeedLimit = nil
 	end 
 	
+	if self.ksmShuttleIsOn then 
+		self:setBrakeLightsVisibility( self.ksmBrakeLights )
+		self:setReverseLightsVisibility( not self.ksmShuttleFwd )
+	end 	
 end
 
 function keyboardSteerMogli:onDraw()
@@ -785,11 +790,17 @@ function keyboardSteerMogli:onDraw()
 			renderText(x, y, l, "R")
 		end
 	end
-	if self.ksmLastSnapAngle ~= nil then
-		x = x + l * 0.2
-		y = y + l * 1.1
-		renderText(x, y, l, string.format( "%3.1f°", math.deg( keyboardSteerMogli.normalizeAngle( self.ksmLastSnapAngle + math.pi ))))
+	
+	y = y + l * 1.1
+	local lx,_,lz = localDirectionToWorld( self.components[1].node, 0, 0, 1 )			
+	if lx*lx+lz*lz > 1e-6 then 
+		renderText(x, y, l, string.format( "%4.1f°", math.deg( keyboardSteerMogli.normalizeAngle( math.atan2( lx, lz ) + math.pi ))))
 	end 
+	
+	y = y + l * 1.1	
+	if self.ksmLastSnapAngle ~= nil then
+		renderText(x, y, l, string.format( "%4.1f°", math.deg( keyboardSteerMogli.normalizeAngle( self.ksmLastSnapAngle + math.pi ))))
+	end
 	
 	setTextAlignment( RenderText.ALIGN_LEFT ) 
 	setTextVerticalAlignment( RenderText.VERTICAL_ALIGN_BASELINE )
@@ -889,44 +900,46 @@ function keyboardSteerMogli:ksmUpdateWheelsPhysics( superFunc, ... )
 	self.ksmOldAcc       = args[3]
 	self.ksmOldHandbrake = args[4]
 	
-	if self.ksmShuttleIsOn and self:getIsVehicleControlledByPlayer() then 
-		if self:getIsMotorStarted() then 
-			if self.ksmShuttleFwd then 
-				self.spec_drivable.reverserDirection = 1
-			else 
-				self.spec_drivable.reverserDirection = -1
-			end 
-		
-			if     math.abs( args[2] ) < 0.0004 and args[3] < 0 then 
-				args[3] = 0
-				args[4] = 1
-			elseif math.abs( args[2] ) < 0.0001 then
-			elseif self.movingDirection * self.spec_drivable.reverserDirection < 0 then 
-				args[3] = 0
-				args[4] = 1
-				brake   = true 
-			end 
-		else 
-			args[3] = 0
-			args[4] = 1
-		end 		
-	end 
-	
-	if args[3] ~= nil and self:getIsVehicleControlledByPlayer() and self.spec_drivable.cruiseControl.state == 0 and self.ksmLimitThrottle ~= nil and self.ksmInchingIsOn ~= nil then 
-		local limitThrottleRatio     = 0.75
-		local limitThrottleIfPressed = true
-		if self.ksmLimitThrottle < 11 then
-			limitThrottleIfPressed = false
-			limitThrottleRatio     = 0.45 + 0.05 * self.ksmLimitThrottle
-		else
-			limitThrottleIfPressed = true
-			limitThrottleRatio     = 1.5 - 0.05 * self.ksmLimitThrottle
-		end
+	if self:getIsVehicleControlledByPlayer() then 
+		if self.ksmShuttleIsOn then 
+			if self:getIsMotorStarted() then 
+				if self.ksmShuttleFwd then 
+					self.spec_drivable.reverserDirection = 1
+				else 
+					self.spec_drivable.reverserDirection = -1
+				end 
 			
-		if self.ksmInchingIsOn == limitThrottleIfPressed then
-			args[3] = args[3] * limitThrottleRatio
+				if     math.abs( args[2] ) < 0.0004 and args[3] < 0 then 
+					args[3] = 0
+					args[4] = 1
+				elseif math.abs( args[2] ) < 0.0001 then
+				elseif self.movingDirection * self.spec_drivable.reverserDirection < 0 then 
+					args[3] = 0
+					args[4] = 1
+					brake   = true 
+				end 
+			else 
+				args[3] = 0
+				args[4] = 1
+			end 		
+		end 
+		
+		if args[3] ~= nil and self.spec_drivable.cruiseControl.state == 0 and self.ksmLimitThrottle ~= nil and self.ksmInchingIsOn ~= nil then 
+			local limitThrottleRatio     = 0.75
+			local limitThrottleIfPressed = true
+			if self.ksmLimitThrottle < 11 then
+				limitThrottleIfPressed = false
+				limitThrottleRatio     = 0.45 + 0.05 * self.ksmLimitThrottle
+			else
+				limitThrottleIfPressed = true
+				limitThrottleRatio     = 1.5 - 0.05 * self.ksmLimitThrottle
+			end
+				
+			if self.ksmInchingIsOn == limitThrottleIfPressed then
+				args[3] = args[3] * limitThrottleRatio
+			end
 		end
-	end
+	end 
 	
 	self.ksmNewAcc       = args[3]
 	self.ksmNewHandbrake = args[4]
@@ -940,8 +953,7 @@ function keyboardSteerMogli:ksmUpdateWheelsPhysics( superFunc, ... )
 	self.spec_drivable.reverserDirection = backup
 	
 	if self.ksmShuttleIsOn then 
-		self:setBrakeLightsVisibility( brake )
-		self:setReverseLightsVisibility( not self.ksmShuttleFwd )
+		self:ksmSetState( "ksmBrakeLights", brake )
 	end 
 	
 	return result 
