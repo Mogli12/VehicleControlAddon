@@ -1,28 +1,55 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <l10n>
 	<!-- Note that 'description' is only here for easier translations. It needs to be manually copied to ModDesc.XML later. -->
 	<description><![CDATA[Ajoute la spécialisation pour la conduite adaptative au clavier]]></description>
-	<texts>
-		<text name="ksmENABLE_ON"     text="Conduite [adaptive]" />
-		<text name="ksmENABLE_OFF"    text="Conduite [normale]" />
-		<text name="ksmCAMERA_ON"     text="Mouvement de caméra [ON]" />
-		<text name="ksmCAMERA_OFF"    text="Mouvement de caméra [OFF]" />
-		<text name="ksmANALOG_ON"     text="Manette analogique [ON]" />
-		<text name="ksmANALOG_OFF"    text="Manette analogique [OFF]" />
-		<text name="ksmREVERSE_ON"    text="Caméra de recul [ON]" />
-		<text name="ksmREVERSE_OFF"   text="Caméra de recul [OFF]" />
 
-		<text name="input_ksmENABLE"  text="keyboardSteer : Direction" />
-		<text name="input_ksmCAMERA"  text="keyboardSteer : Mouvement de caméra" />
-		<text name="input_ksmREVERSE" text="keyboardSteer : Caméra de recul" />
-		<text name="input_ksmANALOG"  text="keyboardSteer : Manette analogique" />
-		<text name="input_ksmPLUS"    text="keyboardSteer : Sensibilité +" />
-		<text name="input_ksmMINUS"   text="keyboardSteer : Sensibilité -" />
-		<text name="input_ksmTPLUS"   text="keyboardSteer : throttle limiter +"/>
-		<text name="input_ksmTMINUS"  text="keyboardSteer : throttle limiter -"/>
-		<text name="input_ksmUP"      text="keyboardSteer : Devant" />
-		<text name="input_ksmDOWN"    text="keyboardSteer : Derrière" />
-		<text name="input_ksmLEFT"    text="keyboardSteer : Gauche" />
-		<text name="input_ksmRIGHT"   text="keyboardSteer : Droite" />
-	</texts>
+	<texts>
+		<text name="ksmCAMERA"          text="Mouvement de caméra"/>
+		<text name="ksmEXPONENT"        text="Adaptation à la vitesse"/>
+		<text name="ksmSTEERING"        text="Direction adaptative"/>
+		<text name="ksmSHUTTLE"         text="Shuttle Control"/>
+		<text name="ksmREVERSE"         text="Caméra de recul"/>
+		<text name="ksmLIMIT"           text="Limitateur de vitesse"/>
+		<text name="ksmPEEKLR"          text="Coup d'oeil rapide"/>
+		<text name="ksmANGLE"           text="Pas de verrouillage de la direction"/>
+		<text name="ksmSETTINGS"        text="Paramétrage"/>
+		                                
+		<text name="ksm_tip_CAMERA"     text="La caméra tourne automatiquement en fonction de l'angle de direction."/>
+		<text name="ksm_tip_EXPONENT"   text="Adaptation de la direction en fonction de la vitesse."/>
+		<text name="ksm_tip_STEERING"   text="La direction adaptative modifie l'angle et la vitesse de retour de la direction en fonction de la vitesse d'avancement."/>
+		<text name="ksm_tip_SHUTTLE"    text="Modifier le sens d'avancement avec la touche 'Espace'."/>
+		<text name="ksm_tip_REVERSE"    text="La caméra tourne automatiquement en fonction du sens d'avancement."/>
+		<text name="ksm_tip_LIMIT"      text="Limitateur de vitesse d'avancement avec la touche 'Shift' gauche."/>
+		<text name="ksm_tip_PEEKLR"     text="'Shift' droit et les flèches de direction permettent de jeter un coup d'oeil dans la direction choisie."/>
+		<text name="ksm_tip_ANGLE"      text="Verrouille la direction sur l'orientation choisie en fonction du pas sélectionné."/>
+		                                
+		<text name="input_ksmSETTINGS"  text="KeyboardSteer: Paramétrage"/>
+		<text name="input_ksmUP"        text="KeyboardSteer: Basculer entre vue avant et arrière"/>
+		<text name="input_ksmDOWN"      text="KeyboardSteer: Regarder vers l'arrière"/>
+		<text name="input_ksmLEFT"      text="KeyboardSteer: Regarder vers la gauche"/>
+		<text name="input_ksmRIGHT"     text="KeyboardSteer: Regarder vers la droite"/>
+		<text name="input_ksmDIRECTION" text="KeyboardSteer: Modifier le sens d'avancement"/>
+		<text name="input_ksmFORWARD"   text="KeyboardSteer: Marche avant"/>
+		<text name="input_ksmREVERSE"   text="KeyboardSteer: Marche arrière"/>
+		<text name="input_ksmSNAP"      text="KeyboardSteer: Verrouiller la direction"/>
+		<text name="input_ksmNO_ARB"    text="KeyboardSteer: Retour autom. de la direction"/>
+		<text name="input_ksmINCHING"   text="KeyboardSteer: Limitateur de vitesse"/>
+	</texts>   
+
+	<longTexts>
+		<longText name="ksm_Help_1">
+<![CDATA[
+Ce script adapte le comportement de la direction en fonction de la vitesse d'avancement et tourne la caméra par rapport à l'angle de direction et au sens d'avancement.
+
+Il introduit aussi les fonctions suivantes :
+
+    - 'Shift' gauche : limitation du régulateur de vitesse et du régime moteur à 75%
+
+    - 'Shift' droit et les flèches : jeter un coup d'oeil dans la direction choisie
+
+    - 'Ctrl' gauche et Z : verrouille la direction sur l'orientation voulue.
+
+Ces différentes fonctions peuvent être paramétrées à l'aide des options ci-contre.]]>
+		</longText>
+	</longTexts>
 </l10n>
