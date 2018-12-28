@@ -11,7 +11,7 @@
 		<text name="ksmREVERSE"         text="Kig Bagud"/>
 		<text name="ksmLIMIT"           text="Speeder Begrænsning"/>
 		<text name="ksmPEEKLR"          text="Kig sidelæns"/>
-		<text name="ksmANGLE"           text="Snap Vinkel"/>
+		<text name="ksmANGLE"           text="Lås Vinkel"/>
 		<text name="ksmSETTINGS"        text="Indstillinger"/>
 		                                
 		<text name="ksm_tip_CAMERA"     text="The camera rotates automatically according to the steering angle"/>
