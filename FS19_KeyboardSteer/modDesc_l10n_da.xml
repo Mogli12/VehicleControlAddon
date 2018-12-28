@@ -4,15 +4,15 @@
 	<description><![CDATA[Adds the specialization for adaptive keyboard steering]]></description>
 
 	<texts>
-		<text name="ksmCAMERA"          text="Camera Rotation"/>
-		<text name="ksmEXPONENT"        text="Sensitivity"/>
-		<text name="ksmSTEERING"        text="Adaptive Steering"/>
-		<text name="ksmSHUTTLE"         text="Shuttle"/>
-		<text name="ksmREVERSE"         text="Look Backwards"/>
-		<text name="ksmLIMIT"           text="Throttle Limiter"/>
-		<text name="ksmPEEKLR"          text="Peek sideways"/>
-		<text name="ksmANGLE"           text="Snap Angle"/>
-		<text name="ksmSETTINGS"        text="Settings"/>
+		<text name="ksmCAMERA"          text="Kamera Rotation"/>
+		<text name="ksmEXPONENT"        text="Følsomhed"/>
+		<text name="ksmSTEERING"        text="Adaptiv Styring"/>
+		<text name="ksmSHUTTLE"         text="Transport"/>
+		<text name="ksmREVERSE"         text="Kig Bagud"/>
+		<text name="ksmLIMIT"           text="Speeder Begrænsning"/>
+		<text name="ksmPEEKLR"          text="Kig sidelæns"/>
+		<text name="ksmANGLE"           text="Snap Vinkel"/>
+		<text name="ksmSETTINGS"        text="Indstillinger"/>
 		                                
 		<text name="ksm_tip_CAMERA"     text="The camera rotates automatically according to the steering angle"/>
 		<text name="ksm_tip_EXPONENT"   text="Sensitivity of the adaptive steering with respect to ground speed"/>
