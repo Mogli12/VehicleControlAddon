@@ -12,6 +12,7 @@
 		<text name="ksmLIMIT"           text="Throttle Limiter"/>
 		<text name="ksmPEEKLR"          text="Peek sideways"/>
 		<text name="ksmANGLE"           text="Snap Angle"/>
+		<text name="ksmBRAKE"           text="Low Brake Force"/>
 		<text name="ksmSETTINGS"        text="Settings"/>
 		                                
 		<text name="ksm_tip_CAMERA"     text="The camera rotates automatically according to the steering angle"/>
@@ -22,6 +23,7 @@
 		<text name="ksm_tip_LIMIT"      text="Limiter of the throttle without and with left shift key"/>
 		<text name="ksm_tip_PEEKLR"     text="Take a quick look with Shift-Right and the arrow keys sideways"/>
 		<text name="ksm_tip_ANGLE"      text="Steer automatically to follow snap angle"/>
+		<text name="ksm_tip_BRAKE"      text="Low brake force percentage, aka rolling resistance"/>
 		                               
 		<text name="input_ksmSETTINGS"  text="KeyboardSteer: settings"/>
 		<text name="input_ksmUP"        text="KeyboardSteer: toggle view direction / lock forwards"/>

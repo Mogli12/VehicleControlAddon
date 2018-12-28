@@ -6,6 +6,7 @@
   <timer4Reverse       type="int"   value="500"/>     
 	<limitThrottle       type="int"   value="15"/> <!-- 9 => 90%/100% 15 => 100%/75% -->
 	<snapAngle           type="int"   value="5"/>  <!-- 45° -->
+	<brakeForceFactor    type="float" value="0.15"/>
 			
 	<!-- defaults -->
 	<adaptiveSteering    type="bool"  value="true"/>

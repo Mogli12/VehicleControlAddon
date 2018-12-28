@@ -9,7 +9,7 @@
 -- Usage:  source(Utils.getFilename("mogliScreen.lua", g_currentModDirectory));
 --         _G[g_currentModDirectory.."mogliScreen"].newClass( "AutoCombine", "acParameters" )
 
-local mogliScreenVersion   = 1.07
+local mogliScreenVersion   = 1.08
 local mogliScreenClass     = g_currentModName..".mogliScreen"
 
 if _G[mogliScreenClass] ~= nil and _G[mogliScreenClass].version ~= nil and _G[mogliScreenClass].version >= mogliScreenVersion then
@@ -277,14 +277,15 @@ else
 			end 
 			element.mogliTextReplaced = true 
 			if element.toolTipText ~= nil and element.toolTipText:sub(1,7) == "$mogli_" then 
-				element.toolTipText = screen.mogliTexts[element.toolTipText:sub(8)]				
+				local n = element.toolTipText:sub(8)
+				element.toolTipText = Utils.getNoNil( screen.mogliTexts[n], n )			
 			end 
 			if element.text ~= nil and element.text:sub(1,7) == "$mogli_" then 
 				local n = element.text:sub(8)
 				if type( element.setText ) == "function" then 
-					element:setText( screen.mogliTexts[n] )
+					element:setText( Utils.getNoNil( screen.mogliTexts[n], n ) )
 				else 
-					element.text = screen.mogliTexts[n]
+					element.text = Utils.getNoNil( screen.mogliTexts[n], n )
 				end 
 			elseif title ~= nil and element.id ~= nil and element.id == "mogliHeaderText" then 
 				if type( element.setText ) == "function" then 

@@ -12,6 +12,7 @@
 		<text name="ksmLIMIT"           text="Gasbegrenzer"/>
 		<text name="ksmPEEKLR"          text="Nur ein kurzer Blick"/>
 		<text name="ksmANGLE"           text="Rastersteuerung"/>
+		<text name="ksmBRAKE"           text="Niedrige Bremskraft"/>
 		<text name="ksmSETTINGS"        text="Einstellungen"/>
 		                                
 		<text name="ksm_tip_CAMERA"     text="Die Kamera dreht sich passend zum Lenkeinschlag automatisch mit."/>
@@ -22,6 +23,7 @@
 		<text name="ksm_tip_LIMIT"      text="Gasbegrenzer mit linker Umschalttaste"/>
 		<text name="ksm_tip_PEEKLR"     text="Mit Umschalt-Rechts und Pfeiltasten nur einen kurzen Blick nach hinten/rechts/links werfen"/>
 		<text name="ksm_tip_ANGLE"      text="Automatisch in Richtung des Einrastwinkels lenken"/>
+		<text name="ksm_tip_BRAKE"      text="Niedrige Bremskraft in Prozent / Rollwiderstand"/>
 		                                
 		<text name="input_ksmSETTINGS"  text="KeyboardSteer: Einstellungen"/>
 		<text name="input_ksmUP"        text="KeyboardSteer: Blickrichtung wechseln oder nach vorne schauen"/>

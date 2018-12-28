@@ -29,6 +29,7 @@ function keyboardSteerMogli.globalsReset( createIfMissing )
   KSMGlobals.timer4Reverse       = 0
   KSMGlobals.limitThrottle       = 0
   KSMGlobals.snapAngle           = 0
+  KSMGlobals.brakeForceFactor    = 0
  	KSMGlobals.debugPrint          = false
 	
 -- defaults	
@@ -113,6 +114,7 @@ function keyboardSteerMogli:onLoad(savegame)
 	keyboardSteerMogli.registerState( self, "ksmInchingIsOn" , false )
 	keyboardSteerMogli.registerState( self, "ksmNoAutoRotBack",false )
 	keyboardSteerMogli.registerState( self, "ksmBrakeLights",  false )
+	keyboardSteerMogli.registerState( self, "ksmBrakeForce",   KSMGlobals.brakeForceFactor )
 	
 	self.ksmFactor        = 1
 	self.ksmReverseTimer  = 1.5 / KSMGlobals.timer4Reverse
@@ -131,7 +133,7 @@ function keyboardSteerMogli:onPostLoad(savegame)
 	if savegame ~= nil then
 		local xmlFile = savegame.xmlFile
 		local key     = savegame.key ..".keyboardSteerMogli"	
-		local b, i
+		local b, i, f
 		
 		keyboardSteerMogli.debugPrint("loading... ("..tostring(key)..")")
 		
@@ -169,6 +171,12 @@ function keyboardSteerMogli:onPostLoad(savegame)
 		keyboardSteerMogli.debugPrint("snapAngle: "..tostring(i))
 		if i ~= nil then 
 			self:ksmSetState( "ksmSnapAngle", i )
+		end 
+		
+		f = getXMLFloat(xmlFile, key.."#brakeForce")
+		keyboardSteerMogli.debugPrint("brakeForce: "..tostring(f))
+		if f ~= nil then 
+			self:ksmSetState( "ksmBrakeForce", f )
 		end 
 		
 		i = 0
@@ -215,6 +223,10 @@ function keyboardSteerMogli:saveToXMLFile(xmlFile, key)
 	if self.ksmSnapAngle ~= nil and math.abs( self.ksmSnapAngle - KSMGlobals.snapAngle ) > 1E-3 then
 		setXMLInt(xmlFile, key.."#snapAngle", self.ksmSnapAngle)
 	end
+	if self.ksmBrakeForce ~= nil and math.abs( self.ksmBrakeForce - KSMGlobals.brakeForceFactor ) > 1E-3 then
+		setXMLFloat(xmlFile, key.."#brakeForce", self.ksmBrakeForce)
+	end
+	
 	
 	local i = 0
 	for j,b in pairs(self.ksmCameras) do
@@ -408,20 +420,15 @@ function keyboardSteerMogli:onUpdate(dt)
 		end
 	end
 	
-	if self.ksmShuttleIsOn then 
-		if self.spec_motorized.motor.lowBrakeForceScale == nil then
-		elseif self.ksmLowBrakeForceScale == nil then 
-			self.ksmLowBrakeForceScale = self.spec_motorized.motor.lowBrakeForceScale
-			self.ksmLowBrakeForceSpeedLimit = self.spec_motorized.motor.lowBrakeForceSpeedLimit 
-		else 
-			self.spec_motorized.motor.lowBrakeForceScale = 0.2 * self.ksmLowBrakeForceScale 
-			self.spec_motorized.motor.lowBrakeForceSpeedLimit = 0
+	if     self.spec_motorized.motor.lowBrakeForceScale == nil then
+	elseif self:getIsVehicleControlledByPlayer() and self.ksmBrakeForce <= 0.99 then 
+		if self.ksmLowBrakeForceScale == nil then 
+			self.ksmLowBrakeForceScale                 = self.spec_motorized.motor.lowBrakeForceScale
 		end 
-	elseif self.ksmLowBrakeForceScale ~= nil then 
+		self.spec_motorized.motor.lowBrakeForceScale = self.ksmBrakeForce * self.ksmLowBrakeForceScale 
+	elseif self.ksmLowBrakeForceScale ~= nil then  
 		self.spec_motorized.motor.lowBrakeForceScale = self.ksmLowBrakeForceScale 
-		self.spec_motorized.motor.lowBrakeForceSpeedLimit = self.ksmLowBrakeForceSpeedLimit
-		self.ksmLowBrakeForceScale = nil
-		self.ksmLowBrakeForceSpeedLimit = nil
+		self.ksmLowBrakeForceScale                   = nil
 	end 
 
 	if self:getIsActive() and self.isServer then
@@ -936,18 +943,29 @@ function keyboardSteerMogli:ksmUpdateWheelsPhysics( superFunc, ... )
 					self.spec_drivable.reverserDirection = -1
 				end 
 			
-				if     math.abs( args[2] ) < 0.0004 and args[3] < 0 then 
+				if      self.spec_motorized.motor.maxGearRatio ~= nil 
+						and self.spec_motorized.motor.maxGearRatio * self.spec_drivable.reverserDirection < 0 then 
+					-- wrong direction and new transmission
+					args[3] = 1
+					args[4] = true 
+					brake   = true 
+				elseif  math.abs( args[2] ) < 5.56e-4 and args[3] < 0 then 
+					-- braking at low speed
 					args[3] = 0
-					args[4] = 1
-				elseif math.abs( args[2] ) < 0.0002 then
-				elseif self.movingDirection * self.spec_drivable.reverserDirection < 0 then 
+					args[4] = true 
+				elseif  self.spec_motorized.motor.maxGearRatio ~= nil then 
+					-- no further processing for new transmission
+				elseif  math.abs( args[2] ) < 0.0001 then
+					-- low speed 
+				elseif  self.movingDirection * self.spec_drivable.reverserDirection < 0 then 
+					-- wrong direction and old transmission
 					args[3] = 0
-					args[4] = 1
+					args[4] = true 
 					brake   = true 
 				end 
 			else 
 				args[3] = 0
-				args[4] = 1
+				args[4] = true
 			end 		
 		end 
 		
@@ -970,6 +988,7 @@ function keyboardSteerMogli:ksmUpdateWheelsPhysics( superFunc, ... )
 	
 	self.ksmNewAcc       = args[3]
 	self.ksmNewHandbrake = args[4]
+	args[5] = true 
 	
 	local state, result = pcall( superFunc, self, unpack( args ) ) 
 	if not ( state ) then
@@ -1165,6 +1184,11 @@ function keyboardSteerMogli:ksmShowSettingsUI()
 	for i,v in pairs( keyboardSteerMogli.snapAngles ) do 
 		self.ksmUI.ksmSnapAngle[i] = string.format( "%3d°", v )
 	end 
+	self.ksmUI.ksmBrakeForce_V = { 0, 0.05, 0.10, 0.15, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1 }
+	self.ksmUI.ksmBrakeForce = {}
+	for i,e in pairs( self.ksmUI.ksmBrakeForce_V ) do
+		self.ksmUI.ksmBrakeForce[i] = string.format("%3.0f %%", 100 * e )
+	end
 	
 	g_keyboardSteerMogliScreen:setVehicle( self )
 	g_gui:showGui( "keyboardSteerMogliScreen" )
@@ -1182,6 +1206,24 @@ end
 function keyboardSteerMogli:ksmUISetksmExponent( value )
 	if self.ksmUI.ksmExponent_V[value] ~= nil then
 		self:ksmSetState( "ksmExponent", self.ksmUI.ksmExponent_V[value] )
+	end
+end
+
+function keyboardSteerMogli:ksmUIGetksmBrakeForce()
+	local d = 2
+	local j = 4
+	for i,e in pairs( self.ksmUI.ksmBrakeForce_V ) do
+		if math.abs( e - self.ksmBrakeForce ) < d then
+			d = math.abs( e - self.ksmBrakeForce )
+			j = i
+		end
+	end
+	return j
+end
+
+function keyboardSteerMogli:ksmUISetksmBrakeForce( value )
+	if self.ksmUI.ksmBrakeForce_V[value] ~= nil then
+		self:ksmSetState( "ksmBrakeForce", self.ksmUI.ksmBrakeForce_V[value] )
 	end
 end
 
