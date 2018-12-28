@@ -13,7 +13,7 @@ function keyboardSteerMogli.prerequisitesPresent(specializations)
 end
 
 function keyboardSteerMogli.registerEventListeners(vehicleType)
-	for _,n in pairs( { "onLoad", "onPostLoad", "onUpdate", "onDraw", "onReadStream", "onWriteStream", "saveToXMLFile", "onRegisterActionEvents" } ) do
+	for _,n in pairs( { "onLoad", "onPostLoad", "onUpdate", "onUpdateTick", "onDraw", "onReadStream", "onWriteStream", "saveToXMLFile", "onRegisterActionEvents" } ) do
 		SpecializationUtil.registerEventListener(vehicleType, n, keyboardSteerMogli)
 	end 
 end 
@@ -260,8 +260,18 @@ function keyboardSteerMogli:onRegisterActionEvents(isSelected, isOnActiveVehicle
                                 "ksmSNAP",
 																"AXIS_MOVE_SIDE_VEHICLE" }) do
 																
-
-			local _, eventName = self:addActionEvent(self.ksmActionEvents, InputAction[actionName], self, keyboardSteerMogli.actionCallback, true, true, false, true, nil);
+			local isPressed = false 
+			if     actionName == "AXIS_MOVE_SIDE_VEHICLE"
+					or actionName == "ksmUP"
+					or actionName == "ksmDOWN"
+					or actionName == "ksmLEFT"
+					or actionName == "ksmRIGHT" 
+					or actionName == "ksmINCHING"
+					or actionName == "ksmNO_ARB" then 
+				isPressed = true 
+			end 
+			
+			local _, eventName = self:addActionEvent(self.ksmActionEvents, InputAction[actionName], self, keyboardSteerMogli.actionCallback, isPressed, true, false, true, nil);
 
 		--local __, eventName = InputBinding.registerActionEvent(g_inputBinding, actionName, self, keyboardSteerMogli.actionCallback ,false ,true ,false ,true)
 			if      g_inputBinding                   ~= nil 
@@ -357,7 +367,7 @@ function keyboardSteerMogli:actionCallback(actionName, keyStatus, arg4, arg5, ar
 		self:ksmSetState( "ksmInchingIsOn", keyStatus > 0 )
 	elseif actionName == "ksmNO_ARB" then 
 		self:ksmSetState( "ksmNoAutoRotBack", keyStatus > 0 )
-	elseif keyStatus > 0 then 
+	else
 		self.ksmPrevRotCursorKey = nil
 		if     actionName == "ksmDIRECTION" then
 			self:ksmSetState( "ksmShuttleFwd", not self.ksmShuttleFwd )
@@ -767,10 +777,27 @@ function keyboardSteerMogli:onUpdate(dt)
 		self.spec_drivable.cruiseControl.speed = self.ksmSpeedLimit
 		self.ksmSpeedLimit = nil
 	end 
+end 
 	
+local origSetBrakeLightsVisibility   = Lights.setBrakeLightsVisibility
+local origSetReverseLightsVisibility = Lights.setReverseLightsVisibility
+function Lights:setBrakeLightsVisibility( visibility, ... )
 	if self.ksmShuttleIsOn then 
-		self:setBrakeLightsVisibility( self.ksmBrakeLights )
-		self:setReverseLightsVisibility( not self.ksmShuttleFwd )
+		return true 
+	end 
+	return origSetBrakeLightsVisibility( self, visibility, ... )
+end 
+function Lights:setReverseLightsVisibility( visibility, ... )
+	if self.ksmShuttleIsOn then 
+		return true 
+	end 
+	return origSetReverseLightsVisibility( self, visibility, ... )
+end 
+
+function keyboardSteerMogli:onUpdateTick(dt)
+	if self.ksmShuttleIsOn then 
+		origSetBrakeLightsVisibility( self, self.ksmBrakeLights )
+		origSetReverseLightsVisibility( self, not self.ksmShuttleFwd )
 	end 	
 end
 
@@ -912,7 +939,7 @@ function keyboardSteerMogli:ksmUpdateWheelsPhysics( superFunc, ... )
 				if     math.abs( args[2] ) < 0.0004 and args[3] < 0 then 
 					args[3] = 0
 					args[4] = 1
-				elseif math.abs( args[2] ) < 0.0001 then
+				elseif math.abs( args[2] ) < 0.0002 then
 				elseif self.movingDirection * self.spec_drivable.reverserDirection < 0 then 
 					args[3] = 0
 					args[4] = 1
