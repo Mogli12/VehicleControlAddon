@@ -4,34 +4,46 @@
 	<description><![CDATA[Voegt specialisatie toe voor adaptieve toetsenbord besturing]]></description>
 
 	<texts>
-		<text name="ksmCAMERA"         text="Camera Rotatie"/>
-		<text name="ksmEXPONENT"       text="Gevoeligheid"/>
-		<text name="ksmSTEERING"       text="Adaptieve Besturing"/>
-		<text name="ksmANALOG"         text="Analoge Controller"/>
-		<text name="ksmREVERSE"        text="Kijk Achterwaarts"/>
-		<text name="ksmSHUTTLE"	       text="Schakelen"/>
-		<text name="ksmLIMIT"          text="Gasregelaar"/>
-		<text name="ksmSETTINGS"       text="KeyboardSteer: Instellingen"/>
-		<text name="ksmDIRECTION"	   text="Rijrichting"/>
+		<text name="ksmCAMERA"          text="Camera Rotatie"/>
+		<text name="ksmEXPONENT"        text="Gevoeligheid"/>
+		<text name="ksmSTEERING"        text="Adaptieve Besturing"/>
+		<text name="ksmREVERSE"         text="Kijk Achterwaarts"/>
+		<text name="ksmSHUTTLE"	        text="Schakelen"/>
+		<text name="ksmLIMIT"           text="Gasregelaar"/>
+		<text name="ksmPEEKLR"          text="Korte blik zijwaarts"/>
+		<text name="ksmANGLE"           text="Rastersturen"/>
+		<text name="ksmBRAKE"           text="Lagere Remkracht"/>
+		<text name="ksmSETTINGS"        text="KeyboardSteer: Instellingen"/>
+				                               
+		<text name="ksm_tip_CAMERA"     text="De camera draait automatisch met de stuuruitslag"/>
+		<text name="ksm_tip_EXPONENT"   text="Gevoeligheid van de adaptieve besturing ten opzichte van de grondsnelheid"/>
+		<text name="ksm_tip_STEERING"   text="Aanpassing van de automatisch terugsturing en maximale stuuruitslag van de apatieve besturing"/>
+		<text name="ksm_tip_REVERSE"    text="Draaicamera 180 graden, wanneer voertuig van richting verandert"/>
+		<text name="ksm_tip_LIMIT"      text="Beperkt gasstand met of zonder linker Shift toets"/>
+		<text name="ksm_tip_PEEKLR"     text="Een korte blik link of rechts werpen met Shift pijltjes toetsen"/>
+		<text name="ksm_tip_ANGLE"      text="Automatisch in de richting van rasterhoeken sturen"/>
+		<text name="ksm_tip_BRAKE"      text="Lagere remkracht percentage, ook wel rolweerstand"/>
 		                               
-		<text name="ksm_tip_CAMERA"    text="De camera draait automatisch met de stuuruitslag"/>
-		<text name="ksm_tip_EXPONENT"  text="Gevoeligheid van de adaptieve besturing ten opzichte van de grondsnelheid"/>
-		<text name="ksm_tip_STEERING"  text="Aanpassing van de automatisch terugsturing en maximale stuuruitslag van de apatieve besturing"/>
-		<text name="ksm_tip_ANALOG"    text="Activering van adaptieve besturing voor analoge controllers"/>
-		<text name="ksm_tip_REVERSE"   text="Draaicamera 180 graden, wanneer voertuig van richting verandert"/>
-		<text name="ksm_tip_LIMIT"     text="Beperkt gasstand met of zonder linker Shift toets"/>
-		<text name="ksm_tip_DIRECTION" text="Verander rijrichting voor/achterwaarts"/>
-		                               
-		<text name="input_ksmENABLE"   text="KeyboardSteer: adaptieve besturing"/>
-		<text name="input_ksmCAMERA"   text="KeyboardSteer: camera rotatie"/>
-		<text name="input_ksmREVERSE"  text="KeyboardSteer: kijk achterwaarts"/>
-		<text name="input_ksmSETTINGS" text="KeyboardSteer: instellingen"/>
-		<text name="input_ksmUP"       text="KeyboardSteer: Kijk vooruit"/>
-		<text name="input_ksmDOWN"     text="KeyboardSteer: Kijk achteruit"/>
-		<text name="input_ksmLEFT"     text="KeyboardSteer: Kijk links"/>
-		<text name="input_ksmRIGHT"    text="KeyboardSteer: Kijk rechts"/>
-		<text name="input_ksmDIRECTION" text="KeyboardSteer: Vooruit/Achteruit"/>
+		<text name="input_ksmSETTINGS"  text="KeyboardSteer: Instellingen"/>
+		<text name="input_ksmUP"        text="KeyboardSteer: Wissel kijkrichting / naar voren kijken"/>
+		<text name="input_ksmDOWN"      text="KeyboardSteer: Andere kant op kijken / naar achteren kijken"/>
+		<text name="input_ksmLEFT"      text="KeyboardSteer: Kijk links"/>
+		<text name="input_ksmRIGHT"     text="KeyboardSteer: Kijk rechts"/>
+		<text name="input_ksmDIRECTION" text="KeyboardSteer: Rijrichting wisselen"/>
 		<text name="input_ksmFORWARD"   text="KeyboardSteer: Rij vooruit"/>
 		<text name="input_ksmREVERSE"   text="KeyboardSteer: Rij achteruit"/>
+		<text name="input_ksmSNAP"      text="KeyboardSteer: Rijriching op raster uitrichten"/>
+		<text name="input_ksmNO_ARB"    text="KeyboardSteer: Niet terug sturen"/>
+		<text name="input_ksmINCHING"   text="KeyboardSteer: Langzamer"/>
 	</texts>
+	
+	<longTexts>
+		<longText name="ksm_Help_1">
+<![CDATA[
+Dit script varieert de stuursnelheid afhankelijk van de rijsnelheid en draait de camera mee met de stuurhoek en stuurrichting.
+Met de linker Shift wordt het gaspedaal, cruise-controle en het maximum toerental beperkt op 75%. Met de rechter Shift en de pijltjes toetsen kan een korte blik links of recht worden geworpen.
+Wanneer Ctrl left + W in drukt, wordt de rijrichting uitgelijnd op vaste richtingen.
+Alle functions kunnen worden uitgeschakeld.]]>
+		</longText>
+	</longTexts>
 </l10n>
