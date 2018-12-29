@@ -24,7 +24,7 @@ if g_specializationManager:getSpecializationByName("keyboardSteerMogli") == nil 
 					end 
 				end 
 				if isDrivable and isEnterable and hasMotor then 
-					print("  adding keyboardSteerMogli to vehicleType '"..tostring(k).."'")
+				--print("  adding keyboardSteerMogli to vehicleType '"..tostring(k).."'")
 					typeDef.specializationsByName["keyboardSteerMogli"] = keyboardSteerMogli
 					table.insert(typeDef.specializationNames, "keyboardSteerMogli")
 					table.insert(typeDef.specializations, keyboardSteerMogli)	
