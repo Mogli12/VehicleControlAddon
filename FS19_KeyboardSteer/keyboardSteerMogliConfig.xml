@@ -5,13 +5,17 @@
 	<cameraRotTime       type="float" value="0.001"/>
   <timer4Reverse       type="int"   value="500"/>     
 	<limitThrottle       type="int"   value="15"/> <!-- 9 => 90%/100% 15 => 100%/75% -->
+	<snapAngle           type="int"   value="5"/>  <!-- 45° -->
+	<brakeForceFactor    type="float" value="0.15"/>
 			
 	<!-- defaults -->
 	<adaptiveSteering    type="bool"  value="true"/>
 	<camOutsideRotation  type="bool"  value="false"/>
 	<camInsideRotation   type="bool"  value="true"/>
 	<camReverseRotation  type="bool"  value="true"/>
+	<camRevOutRotation   type="bool"  value="false"/>
 	<shuttleControl      type="bool"  value="true"/>
+	<peekLeftRight       type="bool"  value="true"/>
 </KSMGlobals>
 
 

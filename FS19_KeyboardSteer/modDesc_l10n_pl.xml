@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<l10n>
+	<description>
+<![CDATA[Skrypt ten zmienia prędkość skrętu, centrowania kół i maksymalny kąt skrętu w zależności od aktualnej prędkości pojazdu.
+Obraca również kamerę, aby dopasować ją do kierunku jazdy.
+Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
+
+[Lewy Ctrl + C]: Ustawienia
+[Lewy Shift]: Kotrola prędkości tempomatu
+[Prawy Shift + Strzałki]: Widok w przód, tył, prawo, lewo
+[Spacja]: Zmiana kierunku jazdy (rewers)]]>
+	</description>
+
+	<texts>
+		<text name="ksmTITLE"           text="Keyboard Steer"/>
+		
+		<text name="ksmCAMERA"          text="Obrót kamery"/>
+		<text name="ksmEXPONENT"        text="Czułość"/>
+		<text name="ksmSTEERING"        text="Sterowanie adaptacyjne"/>
+		<text name="ksmSHUTTLE"         text="Rewers"/>
+		<text name="ksmREVERSE"         text="Widok do tyłu"/>
+		<text name="ksmLIMIT"           text="Tempomat"/>
+		<text name="ksmPEEKLR"          text="Zerknięcie w bok"/>
+		<text name="ksmANGLE"           text="Przeskok kątu wyrównania"/>
+		<text name="ksmSETTINGS"        text="Ustawienia"/>
+		                                
+		<text name="ksm_tip_CAMERA"     text="Kamera obraca się automatycznie zgodnie z kątem skrętu"/>
+		<text name="ksm_tip_EXPONENT"   text="Czułość sterowania adaptacyjnego w odniesieniu do prędkości jazdy"/>
+		<text name="ksm_tip_STEERING"   text="Sterowanie adaptacyjne automatycznie dostosowuje centrowanie kół i maksymalny kąt skrętu"/>
+		<text name="ksm_tip_REVERSE"    text="Przy zmianie kierunku jazdy do tyłu, kamera zostaje obrócona o 180°"/>
+		<text name="ksm_tip_SHUTTLE"    text="Zmiana kierunku jazdy (Spacja)"/>
+		<text name="ksm_tip_LIMIT"      text="Kontrola prędkości tempomatu (bez/z Lewy Shift)"/>
+		<text name="ksm_tip_PEEKLR"     text="Zerknij się szybko w bok (Prawy Shift + strzałki w bok)"/>
+		<text name="ksm_tip_ANGLE"      text="Najnowsza funkcja"/>
+		                               
+		<text name="input_ksmSETTINGS"  text="KeyboardSteer: Ustawienia"/>
+		<text name="input_ksmUP"        text="KeyboardSteer: Widok w przód"/>
+		<text name="input_ksmDOWN"      text="KeyboardSteer: Widok w tył"/>
+		<text name="input_ksmLEFT"      text="KeyboardSteer: Widok w lewo"/>
+		<text name="input_ksmRIGHT"     text="KeyboardSteer: Widok w prawo"/>
+		<text name="input_ksmDIRECTION" text="KeyboardSteer: Zmiana kierunku jazdy"/>
+		<text name="input_ksmFORWARD"   text="KeyboardSteer: Jazda w przód"/>
+		<text name="input_ksmREVERSE"   text="KeyboardSteer: Jazda w tył"/>
+		<text name="input_ksmSNAP"      text="KeyboardSteer: Wyrównanie kierunku jazdy"/>
+		<text name="input_ksmNO_ARB"    text="KeyboardSteer: Wył. auto. spojrzenia w tył"/>
+		<text name="input_ksmINCHING"   text="KeyboardSteer: Kontroler tempomatu"/>
+	</texts>
+	
+	<longTexts>
+		<longText name="ksm_Help_1">
+<![CDATA[Skrypt ten zmienia prędkość skrętu, centrowania kół i maksymalny kąt skrętu w zależności od aktualnej prędkości pojazdu.
+Ponadto kamera jest obracana zgodnie z kątem skrętu i kierunkiem jazdy. Gaz i hamulec na klawiaturze (klawisze W i S) może być ograniczony,
+tylko przy naciśnięciu Lewy Shift w tym samym czasie, następuje wtedy 100% przyspieszenie lub hamowanie.
+Jeśli ogranicznik przyspieszenia jest ustawiony na 100%, wówczas przyspieszenie i hamowanie są ograniczone, gdy używany jest Lewy Shift.
+Wszystkie funkcje można wyłączyć.]]>
+		</longText>
+	</longTexts>
+</l10n>

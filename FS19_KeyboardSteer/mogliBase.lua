@@ -152,14 +152,9 @@ else
 	-- getUiScale
 	--********************************
 		function _newClass_.getUiScale()
-			-- compatibility < patch 1.3
-			if g_uiScale ~= nil and 0 < g_uiScale and g_uiScale < 2 then
-				return g_uiScale
-			end
-			-- patch 1.3 and above
 			local uiScale = 1.0
-			if g_gameSettings ~= nil and g_gameSettings.getValue ~= nil then
-					uiScale = Utils.getNoNil(g_gameSettings:getValue("uiScale"), 1.0)
+			if g_gameSettings ~= nil and type( g_gameSettings.uiScale ) == "number" then
+				uiScale = g_gameSettings.uiScale
 			end
 			return uiScale 
 		end

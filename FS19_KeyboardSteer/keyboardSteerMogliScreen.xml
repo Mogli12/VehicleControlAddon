@@ -1,84 +1,112 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <GUI onOpen="onOpen" onClose="onClose" onCreate="onCreate">
-	<GuiElement type="bitmap" profile="backgroundImageIngame" />
-
-
-	<GuiElement type="bitmap" profile="uiElementBg">
-		<GuiElement type="bitmap" profile="uiElementMainBg" >
-			<GuiElement type="bitmap" profile="uiElementBaseHeader">
-				<GuiElement type="text" profile="headerText" text="$mogli_ksmVERSION" />
+	<GuiElement type="empty" profile="newLayer" />
+	<GuiElement type="bitmap" profile="yesNoDialogBg" size="1660px 708px">
+		<GuiElement type="bitmap" profile="uiInGameMenuHeader" size="1660px 112px">
+			<GuiElement type="text" profile="headerText" id="mogliHeaderText" text="$mogli_ksmTITLE"/>
+		</GuiElement>
+		
+		<GuiElement type="boxLayout" profile="settingsBox" size="527px 488px" position="20px 88px" positionOrigin="bottomLeft">	
+		
+			<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="ksmCameraIsOn" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_ksm_tip_CAMERA"  onCreate="onCreateSubElement"
+											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="11" focusChangeTop="101" focusChangeBottom="101">										
+				<GuiElement type="button" profile="multiTextOptionLeft" />
+				<GuiElement type="button" profile="multiTextOptionRight"/>
+				<GuiElement type="text" profile="multiTextOptionText" />
+				<GuiElement type="text" profile="multiTextOptionTitle" text="$mogli_ksmCAMERA"/>
+				<GuiElement type="bitmap" profile="multiTextOptionBg" />
 			</GuiElement>
-
-			<GuiElement type="boxLayout" profile="settingsBox" position="20px 550px">			
-				<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="ksmCameraIsOn" toolTip="$mogli_ksm_tip_CAMERA"  onCreate="onCreateSubElement" texts="$l10n_ui_off|$l10n_ui_on"
-												onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="11" focusChangeTop="101" focusChangeBottom="101">										
-					<GuiElement type="button" profile="multiTextOptionLeft" />
-					<GuiElement type="button" profile="multiTextOptionRight"/>
-					<GuiElement type="text" profile="multiTextOptionText" />
-					<GuiElement type="text" profile="multiTextOptionTitle" text="$mogli_ksmCAMERA"/>
-					<GuiElement type="bitmap" profile="multiTextOptionBg" />
-				</GuiElement>
 				
-				<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="ksmReverseIsOn" toolTip="$mogli_ksm_tip_REVERSE"  onCreate="onCreateSubElement" texts="$l10n_ui_off|$l10n_ui_on" 
-												onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="12" focusChangeTop="11" focusChangeBottom="13">										
-					<GuiElement type="button" profile="multiTextOptionLeft" />
-					<GuiElement type="button" profile="multiTextOptionRight"/>
-					<GuiElement type="text" profile="multiTextOptionText" />
-					<GuiElement type="text" profile="multiTextOptionTitle" text="$mogli_ksmREVERSE"/>
-					<GuiElement type="bitmap" profile="multiTextOptionBg" />
-				</GuiElement>
-				
-				<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="ksmSteeringIsOn" toolTip="$mogli_ksm_tip_STEERING"  onCreate="onCreateSubElement" texts="$l10n_ui_off|$l10n_ui_on" 
-												onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="13" focusChangeTop="12" focusChangeBottom="14">										
-					<GuiElement type="button" profile="multiTextOptionLeft" />
-					<GuiElement type="button" profile="multiTextOptionRight"/>
-					<GuiElement type="text" profile="multiTextOptionText" />
-					<GuiElement type="text" profile="multiTextOptionTitle" text="$mogli_ksmSTEERING"/>
-					<GuiElement type="bitmap" profile="multiTextOptionBg" />
-				</GuiElement>
-				
-				<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="ksmShuttleIsOn" toolTip="$mogli_ksm_tip_SHUTTLE" onCreate="onCreateSubElement" texts="$l10n_ui_off|$l10n_ui_on" 
-												onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="14" focusChangeTop="13" focusChangeBottom="15">										
-					<GuiElement type="button" profile="multiTextOptionLeft" />
-					<GuiElement type="button" profile="multiTextOptionRight"/>
-					<GuiElement type="text" profile="multiTextOptionText" />
-					<GuiElement type="text" profile="multiTextOptionTitle" text="$mogli_ksmSHUTTLE"/>
-					<GuiElement type="bitmap" profile="multiTextOptionBg" />
-				</GuiElement>
+			<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="ksmReverseIsOn" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_ksm_tip_REVERSE"  onCreate="onCreateSubElement" 
+											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="12" focusChangeTop="11" focusChangeBottom="13">										
+				<GuiElement type="button" profile="multiTextOptionLeft" />
+				<GuiElement type="button" profile="multiTextOptionRight"/>
+				<GuiElement type="text" profile="multiTextOptionText" />
+				<GuiElement type="text" profile="multiTextOptionTitle" text="$mogli_ksmREVERSE"/>
+				<GuiElement type="bitmap" profile="multiTextOptionBg" />
 			</GuiElement>
 			
-			<GuiElement type="boxLayout" profile="settingsBox" position="347px 550px">
-				<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="ksmExponent" toolTip="$mogli_ksm_tip_EXPONENT" onCreate="onCreateSubElement" onCreateArgs="list"
-												onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="15" focusChangeTop="14" focusChangeBottom="16">
-					<GuiElement type="button" profile="multiTextOptionLeft" />
-					<GuiElement type="button" profile="multiTextOptionRight"/>
-					<GuiElement type="text"   profile="multiTextOptionText" />
-					<GuiElement type="text"   profile="multiTextOptionTitle" text="$mogli_ksmEXPONENT"/>
-					<GuiElement type="bitmap" profile="multiTextOptionBg" />
-				</GuiElement>	
-				
-				<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="ksmLimitThrottle" toolTip="$mogli_ksm_tip_LIMIT" onCreate="onCreateSubElement" onCreateArgs="list"
-												onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="16" focusChangeTop="15" focusChangeBottom="102">
-					<GuiElement type="button" profile="multiTextOptionLeft" />
-					<GuiElement type="button" profile="multiTextOptionRight"/>
-					<GuiElement type="text"   profile="multiTextOptionText" />
-					<GuiElement type="text"   profile="multiTextOptionTitle" text="$mogli_ksmLIMIT"/>
-					<GuiElement type="bitmap" profile="multiTextOptionBg" />
-				</GuiElement>
+			<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="ksmSteeringIsOn" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_ksm_tip_STEERING"  onCreate="onCreateSubElement" 
+											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="13" focusChangeTop="12" focusChangeBottom="14">										
+				<GuiElement type="button" profile="multiTextOptionLeft" />
+				<GuiElement type="button" profile="multiTextOptionRight"/>
+				<GuiElement type="text" profile="multiTextOptionText" />
+				<GuiElement type="text" profile="multiTextOptionTitle" text="$mogli_ksmSTEERING"/>
+				<GuiElement type="bitmap" profile="multiTextOptionBg" />
 			</GuiElement>
 			
-			<GuiElement type="text" profile="textDefault" screenAlign="topLeft" positionOrigin="topLeft" textAlignment="left" 
-											position="675px -95px" textWrapWidth="320px" text="$mogli_ksm_Help_1" />				
-
-			<GuiElement type="bitmap" profile="ingameMenuHelpRowBg" id="mogliToolTipBox" visible="false">
-				<GuiElement type="bitmap" profile="ingameMenuHelpRowIcon" />
-				<GuiElement type="text" profile="ingameMenuHelpRowText" id="mogliToolTipBoxText" text=""/>
+			<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="ksmShuttleIsOn" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_ksm_tip_SHUTTLE" onCreate="onCreateSubElement" 
+											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="14" focusChangeTop="13" focusChangeBottom="15">										
+				<GuiElement type="button" profile="multiTextOptionLeft" />
+				<GuiElement type="button" profile="multiTextOptionRight"/>
+				<GuiElement type="text" profile="multiTextOptionText" />
+				<GuiElement type="text" profile="multiTextOptionTitle" text="$mogli_ksmSHUTTLE"/>
+				<GuiElement type="bitmap" profile="multiTextOptionBg" />
 			</GuiElement>
 
-			<GuiElement type="flowLayout" profile="buttonBox" id="buttonsPC" >
-				<GuiElement type="button" profile="buttonBack"   size="500px 40px" text="$l10n_button_back" onClick="onClickBack"  focusId="101" focusChangeTop="11" focusChangeBottom="102" />
-				<GuiElement type="button" profile="buttonSave"   size="500px 40px" text="$l10n_button_ok"   onClick="onClickOk"    focusId="102" focusChangeTop="16" focusChangeBottom="11" />
+			<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="ksmPeekLeftRight" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_ksm_tip_PEEKLR" onCreate="onCreateSubElement" 
+											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="15" focusChangeTop="14" focusChangeBottom="16">										
+				<GuiElement type="button" profile="multiTextOptionLeft" />
+				<GuiElement type="button" profile="multiTextOptionRight"/>
+				<GuiElement type="text" profile="multiTextOptionText" />
+				<GuiElement type="text" profile="multiTextOptionTitle" text="$mogli_ksmPEEKLR"/>
+				<GuiElement type="bitmap" profile="multiTextOptionBg" />
+			</GuiElement>			
+		
+		</GuiElement>
+		
+		<GuiElement type="boxLayout" profile="settingsBox" size="527px 488px" position="567px 88px" positionOrigin="bottomLeft">	
+			
+			<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="ksmSnapAngle" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_ksm_tip_ANGLE" onCreate="onCreateSubElement" onCreateArgs="list"
+											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="16" focusChangeTop="15" focusChangeBottom="17">
+				<GuiElement type="button" profile="multiTextOptionLeft" />
+				<GuiElement type="button" profile="multiTextOptionRight"/>
+				<GuiElement type="text"   profile="multiTextOptionText" />
+				<GuiElement type="text"   profile="multiTextOptionTitle" text="$mogli_ksmANGLE"/>
+				<GuiElement type="bitmap" profile="multiTextOptionBg" />
+			</GuiElement>	
+		
+			<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="ksmExponent" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_ksm_tip_EXPONENT" onCreate="onCreateSubElement" onCreateArgs="list"
+											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="17" focusChangeTop="16" focusChangeBottom="18">
+				<GuiElement type="button" profile="multiTextOptionLeft" />
+				<GuiElement type="button" profile="multiTextOptionRight"/>
+				<GuiElement type="text"   profile="multiTextOptionText" />
+				<GuiElement type="text"   profile="multiTextOptionTitle" text="$mogli_ksmEXPONENT"/>
+				<GuiElement type="bitmap" profile="multiTextOptionBg" />
+			</GuiElement>	
+			
+			<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="ksmLimitThrottle" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_ksm_tip_LIMIT" onCreate="onCreateSubElement" onCreateArgs="list"
+											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="18" focusChangeTop="17" focusChangeBottom="19">
+				<GuiElement type="button" profile="multiTextOptionLeft" />
+				<GuiElement type="button" profile="multiTextOptionRight"/>
+				<GuiElement type="text"   profile="multiTextOptionText" />
+				<GuiElement type="text"   profile="multiTextOptionTitle" text="$mogli_ksmLIMIT"/>
+				<GuiElement type="bitmap" profile="multiTextOptionBg" />
 			</GuiElement>
+			
+			<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="ksmBrakeForce" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_ksm_tip_BRAKE" onCreate="onCreateSubElement" onCreateArgs="list"
+											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="19" focusChangeTop="18" focusChangeBottom="102">
+				<GuiElement type="button" profile="multiTextOptionLeft" />
+				<GuiElement type="button" profile="multiTextOptionRight"/>
+				<GuiElement type="text"   profile="multiTextOptionText" />
+				<GuiElement type="text"   profile="multiTextOptionTitle" text="$mogli_ksmBRAKE"/>
+				<GuiElement type="bitmap" profile="multiTextOptionBg" />
+			</GuiElement>
+		</GuiElement>
+
+
+		
+		<GuiElement type="text" profile="textDefault" textAlignment="left" size="527px 488px" position="1113px 88px" positionOrigin="bottomLeft" 
+								textWrapWidth="500px" textVerticalAlignment="top" textSize="20px" text="$mogli_ksm_Help_1" />				
+
+		<GuiElement type="bitmap" profile="ingameMenuHelpRowBg" id="mogliToolTipBox" size="1660px 48px" position="0px 0px" positionOrigin="bottomLeft" visible="true">
+			<GuiElement type="bitmap" profile="ingameMenuHelpRowIcon"/>
+			<GuiElement type="text" profile="ingameMenuHelpRowText" id="mogliToolTipBoxText" text="" />
+		</GuiElement>
+
+		<GuiElement type="flowLayout" profile="buttonBoxDocked" id="buttonsPC" >
+			<GuiElement type="button" profile="buttonOK"   text="$l10n_button_ok"   onClick="onClickOk"    focusId="102" focusChangeTop="16" focusChangeBottom="11" />
+			<GuiElement type="button" profile="buttonBack" text="$l10n_button_back" onClick="onClickBack"  focusId="101" focusChangeTop="11" focusChangeBottom="102" />
 		</GuiElement>
 	</GuiElement>
 </GUI>

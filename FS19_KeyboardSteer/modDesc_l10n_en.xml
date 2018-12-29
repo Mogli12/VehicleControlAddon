@@ -10,22 +10,44 @@
 		<text name="ksmSHUTTLE"         text="Shuttle"/>
 		<text name="ksmREVERSE"         text="Look Backwards"/>
 		<text name="ksmLIMIT"           text="Throttle Limiter"/>
+		<text name="ksmPEEKLR"          text="Peek sideways"/>
+		<text name="ksmANGLE"           text="Snap Angle"/>
+		<text name="ksmBRAKE"           text="Low Brake Force"/>
 		<text name="ksmSETTINGS"        text="Settings"/>
 		                                
 		<text name="ksm_tip_CAMERA"     text="The camera rotates automatically according to the steering angle"/>
 		<text name="ksm_tip_EXPONENT"   text="Sensitivity of the adaptive steering with respect to ground speed"/>
 		<text name="ksm_tip_STEERING"   text="The adaptive steering adjust the automatic back rotation and the maximum steering angle"/>
-		<text name="ksm_tip_REVERSE"    text="If the verhicle changes direction the camera is rotated by 180°"/>
 		<text name="ksm_tip_SHUTTLE"    text="Change driving direction with <space>"/>
+		<text name="ksm_tip_REVERSE"    text="If the verhicle changes direction the camera is rotated by 180°"/>
 		<text name="ksm_tip_LIMIT"      text="Limiter of the throttle without and with left shift key"/>
+		<text name="ksm_tip_PEEKLR"     text="Take a quick look with Shift-Right and the arrow keys sideways"/>
+		<text name="ksm_tip_ANGLE"      text="Steer automatically to follow snap angle"/>
+		<text name="ksm_tip_BRAKE"      text="Low brake force percentage, aka rolling resistance"/>
 		                               
 		<text name="input_ksmSETTINGS"  text="KeyboardSteer: settings"/>
-		<text name="input_ksmUP"        text="KeyboardSteer: look fwd"/>
-		<text name="input_ksmDOWN"      text="KeyboardSteer: look back"/>
+		<text name="input_ksmUP"        text="KeyboardSteer: toggle view direction / lock forwards"/>
+		<text name="input_ksmDOWN"      text="KeyboardSteer: peek into other view direction / lock backwards"/>
 		<text name="input_ksmLEFT"      text="KeyboardSteer: look left"/>
 		<text name="input_ksmRIGHT"     text="KeyboardSteer: look right"/>
-		<text name="input_ksmDIRECTION" text="KeyboardSteer: change direction"/>
+		<text name="input_ksmDIRECTION" text="KeyboardSteer: toggle driving direction"/>
 		<text name="input_ksmFORWARD"   text="KeyboardSteer: drive forwards"/>
 		<text name="input_ksmREVERSE"   text="KeyboardSteer: drive backwards"/>
+		<text name="input_ksmSNAP"      text="KeyboardSteer: snap driving direction"/>
+		<text name="input_ksmNO_ARB"    text="KeyboardSteer: no auto rotate back"/>
+		<text name="input_ksmINCHING"   text="KeyboardSteer: inching"/>
 	</texts>
+
+	<longTexts>
+		<longText name="ksm_Help_1">
+<![CDATA[
+This script varies the steering speed depending on the speed you are driving, and it rotates the camera to match the steering angle and direction.
+
+Shift-Left limits throttle, cruise control and maximum rounds per minute to 75%. With Shift-right and the cursor keys you can peek in the corresponding direction.
+
+If you press Ctrl left together with W then the driving direction snaps to fixed directions.
+
+All functions can be switched off.]]>
+		</longText>
+	</longTexts>
 </l10n>

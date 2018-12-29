@@ -10,6 +10,9 @@
 		<text name="ksmSHUTTLE"         text="Shuttle Control"/>
 		<text name="ksmREVERSE"         text="Zurückblicken"/>
 		<text name="ksmLIMIT"           text="Gasbegrenzer"/>
+		<text name="ksmPEEKLR"          text="Nur ein kurzer Blick"/>
+		<text name="ksmANGLE"           text="Rastersteuerung"/>
+		<text name="ksmBRAKE"           text="Niedrige Bremskraft"/>
 		<text name="ksmSETTINGS"        text="Einstellungen"/>
 		                                
 		<text name="ksm_tip_CAMERA"     text="Die Kamera dreht sich passend zum Lenkeinschlag automatisch mit."/>
@@ -18,23 +21,31 @@
 		<text name="ksm_tip_SHUTTLE"    text="Fahrtrichtung mit Leertaste wechseln"/>
 		<text name="ksm_tip_REVERSE"    text="Beim Wechsel zwischen Vorwärts- und Rückwärtsfahrt wird automatisch die Kamera um 180° gedrecht"/>
 		<text name="ksm_tip_LIMIT"      text="Gasbegrenzer mit linker Umschalttaste"/>
+		<text name="ksm_tip_PEEKLR"     text="Mit Umschalt-Rechts und Pfeiltasten nur einen kurzen Blick nach hinten/rechts/links werfen"/>
+		<text name="ksm_tip_ANGLE"      text="Automatisch in Richtung des Einrastwinkels lenken"/>
+		<text name="ksm_tip_BRAKE"      text="Niedrige Bremskraft in Prozent / Rollwiderstand"/>
 		                                
 		<text name="input_ksmSETTINGS"  text="KeyboardSteer: Einstellungen"/>
-		<text name="input_ksmUP"        text="KeyboardSteer: Nach vorne schauen"/>
-		<text name="input_ksmDOWN"      text="KeyboardSteer: Nach hinten schauen"/>
+		<text name="input_ksmUP"        text="KeyboardSteer: Blickrichtung wechseln oder nach vorne schauen"/>
+		<text name="input_ksmDOWN"      text="KeyboardSteer: In die andere Richtung blicken / nach hinten schauen"/>
 		<text name="input_ksmLEFT"      text="KeyboardSteer: Nach links schauen"/>
 		<text name="input_ksmRIGHT"     text="KeyboardSteer: Nach rechts schauen"/>
 		<text name="input_ksmDIRECTION" text="KeyboardSteer: Fahrtrichtung wechseln"/>
 		<text name="input_ksmFORWARD"   text="KeyboardSteer: Fahrtrichtung vorwärts"/>
 		<text name="input_ksmREVERSE"   text="KeyboardSteer: Fahrtrichtung rückwärts"/>
-	</texts>
+		<text name="input_ksmSNAP"      text="KeyboardSteer: Fahrtrichtung am Raster ausrichten"/>
+		<text name="input_ksmNO_ARB"    text="KeyboardSteer: Kein zurück Lenken"/>
+		<text name="input_ksmINCHING"   text="KeyboardSteer: Langsamer"/>
+	</texts>   
 
 	<longTexts>
 		<longText name="ksm_Help_1">
-<![CDATA[Dieses Script variiert abhängig von der gefahrenen Geschwindigkeit die Lenkgeschwindigkeit, die Rückstellgeschwindigkeit und den maximalen Lenkeinschlag. 
-Außerdem dreht es die Kamera passend zum Lenkeinschlag und zur Fahrtrichtung. Das digitale Gaspedal (Tasten A und W) kann begrenzt werden
-Nur, wenn gleichzeitig die Taste Umschalt Links gedrückt wird, dann wird zu 100% Gas gegeben, bzw. gebremst. 
-Stellt man den Gasbegrenzer auf aber 100%, dann wird bei Umschalt Links nun Gaspedal und Bremse begrenzt.
+<![CDATA[
+Dieses Script variiert abhängig von der gefahrenen Geschwindigkeit die Lenkgeschwindigkeit und dreht die Kamera passend zum Lenkeinschlag und zur Fahrtrichtung. 
+
+Mit Umschalt-Llinks wird das Gaspedal, der Tempomat und die maximale Drehzahl auf 75% begrenzt. Mit Umschalt-Rechts und den Pfeiltasten kann man in die entsprechende Richtung blicken. 
+
+Drückt man Strg Links zusammen mit W, dann richtet sich die Fahrtrichtung an festen Richtungen aus.
 
 Alle Funktionen lassen sich auch wieder ausschalten.]]>
 		</longText>

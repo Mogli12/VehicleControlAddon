@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="no" ?>
-<modDesc descVersion="41">
+<modDesc descVersion="42">
 	<author>mogli</author>
 	<title>
 		<en>Keyboard Steer</en>
@@ -9,24 +9,25 @@
 	</title>
 	<description>
 		<en><![CDATA[
-This script varies depending on the speed, the steering speed, the return speed (autoRotateBackSpeed) and the maximum steering angle. 
-It also rotates the camera to match the steering the moving direction.
-All functions can also be off again, with the following keys:
+This script varies the steering speed depending on the speed you are driving, and it rotates the camera to match the steering angle and direction.
+Shift-Left limits throttle, cruise control and maximum rounds per minute to 75%. With Shift-right and the cursor keys you can peek in the corresponding direction.
+If you press Ctrl left together with W then the driving direction snaps to fixed directions.
 
+All functions are switchable with the following default key combinations:
 [Ctrl Left + C]: Settings
+[Ctrl Left + W]: Snap Angle
 [Shift Left]: Throttle limiter / reduced cruise control speed
 [Shift Right + Cursor]: look forward, backwards, left right
 [Space]: Change direction (aka shuttle control)
 ]]></en>
 		<de><![CDATA[
-Dieses Script variiert abhängig von der gefahrenen Geschwindigkeit die Lenkgeschwindigkeit, die Rückstellgeschwindigkeit und den maximalen Lenkeinschlag. 
-Außerdem dreht es die Kamera passend zum Lenkeinschlag und zur Fahrtrichtung. Das digitale Gaspedal (Tasten A und W) wird nun auf 80% begrenzt. 
-Nur, wenn gleichzeitig die Taste Umschalt Links gedrückt wird, dann wird zu 100% Gas gegeben, bzw. gebremst. 
-Stellt man den Gasbegrenzer auf aber 100%, dann wird bei Umschalt Links nun Gaspedal und Bremse auf 75% begrenzt.
+Dieses Script variiert abhängig von der gefahrenen Geschwindigkeit die Lenkgeschwindigkeit und dreht die Kamera passend zum Lenkeinschlag und zur Fahrtrichtung. 
+Mit Umschalt-Llinks wird das Gaspedal, der Tempomat und die maximale Drehzahl auf 75% begrenzt. Mit Umschalt-Rechts und den Pfeiltasten kann man in die entsprechende Richtung blicken. 
+Drückt man Strg Links zusammen mit W, dann richtet sich die Fahrtrichtung an festen Richtungen aus.
 
 Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tasten:
-
-[Strg Link + C]: Einstellungen
+[Strg Links + C]: Einstellungen
+[Strg Links + W]: Rastersteuerung
 [Umschalt Links]: Gaspedalbegrenzer / verringerter Tempomatgeschwindigkeit
 [Umschalt Rechts + Pfeiltaste]: Nach vorne, hinten, links, rechts blicken
 [Leertaste]: Fahrtrichtung wechseln
@@ -34,11 +35,11 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>store.dds</iconFilename>
-	<version>0.0.1.3</version>
+	<version>0.0.2.6</version>
 	<l10n filenamePrefix="modDesc_l10n">
 		<text name="ksmVERSION">
-			<de>KeyboardSteer v0.0.1.3</de>
-			<en>KeyboardSteer v0.0.1.3</en>
+			<de>KeyboardSteer 0.0.2.6</de>
+			<en>KeyboardSteer 0.0.2.6</en>
 		</text>
 	</l10n>
 	
@@ -51,6 +52,9 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 		<action name="ksmDIRECTION" category="VEHICLE"/>
 		<action name="ksmFORWARD"   category="VEHICLE"/>
 		<action name="ksmREVERSE"   category="VEHICLE"/>
+		<action name="ksmSNAP"      category="VEHICLE"/>
+		<action name="ksmNO_ARB"    category="VEHICLE"/>
+		<action name="ksmINCHING"   category="VEHICLE"/>
 	</actions>
 	<inputBinding>
 		<actionBinding action="ksmSETTINGS">	
@@ -70,6 +74,12 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 		</actionBinding>	
 		<actionBinding action="ksmDIRECTION">	
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_space"            axisComponent="+" inputComponent="+" index="1"/>
+		</actionBinding>	
+		<actionBinding action="ksmSNAP">	
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_w"      axisComponent="+" inputComponent="+" index="1"/>
+		</actionBinding>	
+		<actionBinding action="ksmINCHING">	
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_lshift"           axisComponent="+" inputComponent="+" index="1"/>
 		</actionBinding>	
 	</inputBinding>
 	

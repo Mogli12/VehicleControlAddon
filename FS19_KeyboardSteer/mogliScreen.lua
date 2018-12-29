@@ -4,11 +4,12 @@
 --
 -- change log
 -- 1.00 initial version
+-- 1.07 FS19, title
 
 -- Usage:  source(Utils.getFilename("mogliScreen.lua", g_currentModDirectory));
 --         _G[g_currentModDirectory.."mogliScreen"].newClass( "AutoCombine", "acParameters" )
 
-local mogliScreenVersion   = 1.06
+local mogliScreenVersion   = 1.08
 local mogliScreenClass     = g_currentModName..".mogliScreen"
 
 if _G[mogliScreenClass] ~= nil and _G[mogliScreenClass].version ~= nil and _G[mogliScreenClass].version >= mogliScreenVersion then
@@ -70,14 +71,19 @@ else
 				_newClass_.mogliScreenOnCreate(self,element) 
 			end
 		end
+
+	--********************************
+	-- setTitle
+	--********************************
+		function _newClass_:setTitle( title )
+			replaceTexts( self, self, title )
+		end 
 		
 	--********************************
 	-- setVehicle
 	--********************************
 		function _newClass_:setVehicle( vehicle )
 			self.vehicle       = vehicle 
-			
-			replaceTexts( self, self )
 			
 			if self.vehicle ~= nil then
 				for name,s in pairs( self.mogliScreenElements ) do
@@ -164,7 +170,7 @@ else
 					else
 						local value = getter( self.vehicle )
 						
-						if     element.typeName == "toggleButton" then
+						if     element.typeName == "checkedOption" then
 							local b = value
 							if s.parameter then
 								b = not b
@@ -222,7 +228,7 @@ else
 					
 					if     setter == nil then
 						print("Invalid UI element ID: "..tostring(name))
-					elseif element.typeName == "toggleButton" then
+					elseif element.typeName == "checkedOption" then
 						local b = element:getIsChecked()
 						if s.parameter then
 							b = not b
@@ -265,25 +271,32 @@ else
 	--********************************
 	-- replaceTexts (local)
 	--********************************
-		function replaceTexts( screen, element )
+		function replaceTexts( screen, element, title )
 			if element.mogliTextReplaced then 
 				return 
 			end 
 			element.mogliTextReplaced = true 
-			if element.toolTip ~= nil and element.toolTip:sub(1,7) == "$mogli_" then 
-				element.toolTip = screen.mogliTexts[element.toolTip:sub(8)]
+			if element.toolTipText ~= nil and element.toolTipText:sub(1,7) == "$mogli_" then 
+				local n = element.toolTipText:sub(8)
+				element.toolTipText = Utils.getNoNil( screen.mogliTexts[n], n )			
 			end 
 			if element.text ~= nil and element.text:sub(1,7) == "$mogli_" then 
 				local n = element.text:sub(8)
 				if type( element.setText ) == "function" then 
-					element:setText( screen.mogliTexts[n] )
+					element:setText( Utils.getNoNil( screen.mogliTexts[n], n ) )
 				else 
-					element.text = screen.mogliTexts[n]
+					element.text = Utils.getNoNil( screen.mogliTexts[n], n )
+				end 
+			elseif title ~= nil and element.id ~= nil and element.id == "mogliHeaderText" then 
+				if type( element.setText ) == "function" then 
+					element:setText( screen.mogliTexts[title] )
+				else 
+					element.text = screen.mogliTexts[title]
 				end 
 			end 
 			if type( element.elements ) == "table" then 
 				for _,e in pairs(element.elements) do 
-					replaceTexts( screen, e ) 
+					replaceTexts( screen, e, title ) 
 				end 
 			end 
 		end 
@@ -448,8 +461,8 @@ else
 	-- onFocusSettingsBox()
 	--********************************
 		function _newClass_:mogliFocusToolTip(element)
-			if self.mogliToolTipBox ~= nil and element.toolTip ~= nil then
-				self.mogliToolTipBoxText:setText(element.toolTip)
+			if self.mogliToolTipBox ~= nil and element.toolTipText ~= nil then
+				self.mogliToolTipBoxText:setText(element.toolTipText)
 				self.mogliToolTipBox:setVisible(true)
 			end
 		end		
@@ -458,8 +471,8 @@ else
 	-- mogliScreenGetPageTitle()
 	--********************************
 		function _newClass_:mogliScreenGetPageTitle(page)
-			if page.element.toolTip ~= nil then
-				return page.element.toolTip
+			if page.element.toolTipText ~= nil then
+				return page.element.toolTipText
 			end
 			return page.element.name
 		end
