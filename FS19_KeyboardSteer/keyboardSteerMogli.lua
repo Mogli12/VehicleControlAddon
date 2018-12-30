@@ -420,6 +420,19 @@ function keyboardSteerMogli:onUpdate(dt)
 		end
 	end
 	
+	if self.ksmShuttleIsOn then 
+		if self.ksmReverserDirection == nil then 
+			self.ksmReverserDirection = self.spec_drivable.reverserDirection
+		end 
+		if self.ksmShuttleFwd then 
+			self.spec_drivable.reverserDirection = 1
+		else 
+			self.spec_drivable.reverserDirection = -1
+		end 
+	elseif self.ksmReverserDirection ~= nil then 
+		self.spec_drivable.reverserDirection = self.ksmReverserDirection
+	end 
+	
 	if     self.spec_motorized.motor.lowBrakeForceScale == nil then
 	elseif self:getIsVehicleControlledByPlayer() and self.ksmBrakeForce <= 0.99 then 
 		if self.ksmLowBrakeForceScale == nil then 
@@ -802,7 +815,7 @@ function Lights:setReverseLightsVisibility( visibility, ... )
 end 
 
 function keyboardSteerMogli:onUpdateTick(dt)
-	if self.ksmShuttleIsOn then 
+	if self.ksmShuttleIsOn and self.spec_lights ~= nil then 
 		origSetBrakeLightsVisibility( self, self.ksmBrakeLights )
 		origSetReverseLightsVisibility( self, not self.ksmShuttleFwd )
 	end 	
@@ -926,7 +939,6 @@ end
 --******************************************************************************************************************************************
 -- shuttle control and inching
 function keyboardSteerMogli:ksmUpdateWheelsPhysics( superFunc, ... )
-	local backup = self.spec_drivable.reverserDirection
 	local args   = { ... }
 	local acceleration = Utils.getNoNil( args[3] )
 	local brake = ( acceleration < 0 )
@@ -937,10 +949,10 @@ function keyboardSteerMogli:ksmUpdateWheelsPhysics( superFunc, ... )
 	if self:getIsVehicleControlledByPlayer() then 
 		if self.ksmShuttleIsOn then 
 			if self:getIsMotorStarted() then 
-				if self.ksmShuttleFwd then 
-					self.spec_drivable.reverserDirection = 1
-				else 
-					self.spec_drivable.reverserDirection = -1
+				
+				local lowSpeedBrake = -1
+				if args[3] < 0 then 
+					lowSpeedBrake = 1.389e-4 - args[3] * 6.944e-4 -- 0.5 .. 3
 				end 
 			
 				if      self.spec_motorized.motor.maxGearRatio ~= nil 
@@ -949,7 +961,7 @@ function keyboardSteerMogli:ksmUpdateWheelsPhysics( superFunc, ... )
 					args[3] = 1
 					args[4] = true 
 					brake   = true 
-				elseif  math.abs( args[2] ) < 5.56e-4 and args[3] < 0 then 
+				elseif  math.abs( args[2] ) < lowSpeedBrake then 
 					-- braking at low speed
 					args[3] = 0
 					args[4] = true 
@@ -995,8 +1007,6 @@ function keyboardSteerMogli:ksmUpdateWheelsPhysics( superFunc, ... )
 		print("Error in updateWheelsPhysics :"..tostring(result))
 		self.ksmShuttleIsOn = false 
 	end
-	
-	self.spec_drivable.reverserDirection = backup
 	
 	if self.ksmShuttleIsOn then 
 		self:ksmSetState( "ksmBrakeLights", brake )
