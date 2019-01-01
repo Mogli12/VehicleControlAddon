@@ -12,6 +12,7 @@
 		<text name="ksmLIMIT"          	text="Limitatore di accelerazione"/>
 		<text name="ksmPEEKLR"          text="Occhiata di lato"/>
 		<text name="ksmANGLE"           text="Angolo snap"/>
+		<text name="ksmBRAKE"           text="Frenata lenta"/>
 		<text name="ksmSETTINGS"       	text="Impostazioni"/>
 
 		<text name="ksm_tip_CAMERA"    	text="La telecamera ruota automaticamente in base all'angolo di sterzata"/>
@@ -22,6 +23,7 @@
 		<text name="ksm_tip_LIMIT"     	text="Limiter dell'acceleratore con e senza tasto shift sinistro"/>
 		<text name="ksm_tip_PEEKLR"     text="Dai un'occhiata con Shift-Destro e i tasti freccia accanto"/>
 		<text name="ksm_tip_ANGLE"      text="Sterzare automaticamente per seguire l'angolo di snap"/>
+		<text name="ksm_tip_BRAKE"      text="Percentuale frenata lenta, aka resistenza inerzia"/>
 
 		<text name="input_ksmSETTINGS" 	text="KeyboardSteer: impostazioni"/>
 		<text name="input_ksmUP"      	text="KeyboardSteer: scambia direzione vista / guarda indietro " />
