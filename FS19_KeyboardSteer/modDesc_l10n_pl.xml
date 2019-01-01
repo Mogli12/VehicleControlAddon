@@ -22,6 +22,7 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="ksmLIMIT"           text="Tempomat"/>
 		<text name="ksmPEEKLR"          text="Zerknięcie w bok"/>
 		<text name="ksmANGLE"           text="Przeskok kątu wyrównania"/>
+		<text name="ksmBRAKE"           text="Niska siła hamowania"/>
 		<text name="ksmSETTINGS"        text="Ustawienia"/>
 		                                
 		<text name="ksm_tip_CAMERA"     text="Kamera obraca się automatycznie zgodnie z kątem skrętu"/>
@@ -32,10 +33,11 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="ksm_tip_LIMIT"      text="Kontrola prędkości tempomatu (bez/z Lewy Shift)"/>
 		<text name="ksm_tip_PEEKLR"     text="Zerknij się szybko w bok (Prawy Shift + strzałki w bok)"/>
 		<text name="ksm_tip_ANGLE"      text="Najnowsza funkcja"/>
+		<text name="ksm_tip_BRAKE"      text="Procentrowo najniża siła hamowania, czyli opór toczenia"/>
 		                               
 		<text name="input_ksmSETTINGS"  text="KeyboardSteer: Ustawienia"/>
-		<text name="input_ksmUP"        text="KeyboardSteer: Widok w przód"/>
-		<text name="input_ksmDOWN"      text="KeyboardSteer: Widok w tył"/>
+		<text name="input_ksmUP"        text="KeyboardSteer: Zmiana widok / Widok w przód"/>
+		<text name="input_ksmDOWN"      text="KeyboardSteer: Zmiana zerknięcia / Widok w tył"/>
 		<text name="input_ksmLEFT"      text="KeyboardSteer: Widok w lewo"/>
 		<text name="input_ksmRIGHT"     text="KeyboardSteer: Widok w prawo"/>
 		<text name="input_ksmDIRECTION" text="KeyboardSteer: Zmiana kierunku jazdy"/>
