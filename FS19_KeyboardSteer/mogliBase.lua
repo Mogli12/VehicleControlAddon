@@ -93,7 +93,6 @@ else
 	-- globalsLoad
 	--********************************
 		function _newClass_.globalsLoad( file , rootTag, globals, writeLog )	
-
 			local xmlFile = loadXMLFile( "mogliBasics", file, rootTag )
 			_newClass_.globalsLoad2( xmlFile , rootTag, globals, writeLog )	
 		end
@@ -132,12 +131,68 @@ else
 		--			print(file..": "..name.." = "..tostring(globals[name]))
 				else
 					tm = 2
-					print(file..": "..name..": invalid XML type : "..tp)
+					print('    <'..name..": invalid XML type : "..tp)
 				end
 				if writeLog and tm > 0 then
 					if wl then
 						wl = false
-						print('Loading settings from "'..tostring(file)..'"')
+						print('Loading settings...')
+					end
+					if tm == 1 then
+						print('    <'..name..' type="'..tostring(tp)..'" value="'..tostring(globals[name])..'"/>')
+					else
+						print('    <'..name..' .../>: invalid XML type : '..tostring(tp))
+					end
+				end
+			end
+		end
+		
+	--********************************
+	-- globalsCreate
+	--********************************
+		function _newClass_.globalsCreate( file , rootTag, globals, writeLog )	
+			if writeLog then 
+				print('Creating file "'..file..'"...')
+			end
+			local xmlFile = createXMLFile( "mogliBasics", file, rootTag )
+			_newClass_.globalsCreate2( xmlFile , rootTag, globals, writeLog )	
+			saveXMLFile(xmlFile)
+		end 
+		
+	--********************************
+	-- globalsCreate2
+	--********************************
+		function _newClass_.globalsCreate2( xmlFile , rootTag, globals, writeLog )	
+
+			local wl = true
+			for name,value in pairs(globals) do
+				local tp = mogliBase30.getValueType( value )			
+				local tm = 1
+				if     tp == nil then
+					tm = 0
+				elseif tp == "boolean" then
+					tp = "bool"
+					setXMLBool( xmlFile, rootTag.."." .. name .. "#value", value )
+				elseif tp == "float32" or tp == "number" then
+					tp = "float"
+					setXMLFloat( xmlFile, rootTag.."." .. name .. "#value", value )
+				elseif tp == "int32" or tp == "int8" then
+					tp = "int"
+					setXMLInt( xmlFile, rootTag.."." .. name .. "#value", value )
+				elseif tp == "string" then
+					tp = "string"
+					setXMLString( xmlFile, rootTag.."." .. name .. "#value", value )
+				else
+					tm = 2
+					print('    <'..name..": invalid XML type : "..tp)
+				end
+				if tm == 1 then 
+					setXMLString(xmlFile, rootTag.."." .. name .. "#type", tp)
+				end 
+				if writeLog and tm > 0 then
+					if wl then
+						wl = false
+						print('Writing settings...')
 					end
 					if tm == 1 then
 						print('    <'..name..' type="'..tostring(tp)..'" value="'..tostring(globals[name])..'"/>')
@@ -183,10 +238,10 @@ else
 	--********************************
 		function _newClass_.normalizeAngle( angle )
 			local normalizedAngle = angle
-			while normalizedAngle > math.pi do
+			while normalizedAngle >= math.pi do
 				normalizedAngle = normalizedAngle - math.pi - math.pi
 			end 
-			while normalizedAngle <= -math.pi do
+			while normalizedAngle < -math.pi do
 				normalizedAngle = normalizedAngle + math.pi + math.pi
 			end
 			return normalizedAngle
