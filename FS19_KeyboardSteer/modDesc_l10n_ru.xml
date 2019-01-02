@@ -12,6 +12,7 @@
 		<text name="ksmLIMIT"           text="Ограничитель газа"/>
 		<text name="ksmPEEKLR"          text="Быстрый взгляд в сторону"/>
 		<text name="ksmANGLE"           text="Привязка к сетке"/>
+		<text name="ksmBRAKE"           text="Малое сопротивление качению"/>
 		<text name="ksmSETTINGS"        text="KbSt: настройки"/>
 	
 		<text name="ksm_tip_CAMERA"     text="Камера автоматически поворачивается в соответствии с углом поворота рулевого колеса"/>
@@ -22,6 +23,7 @@
 		<text name="ksm_tip_LIMIT"      text="Ограничивает педаль газа при нажатии Left-Shift"/>
 		<text name="ksm_tip_PEEKLR"     text="Взглянуть по клавише Right-Shift + стрелка в сторону"/>
 		<text name="ksm_tip_ANGLE"      text="Выравнивание движения техники по заданному направлению"/>
+		<text name="ksm_tip_BRAKE"      text="Уменьшение уровня сопротивления качению (%)"/>
 	
 		<text name="input_ksmSETTINGS"  text="KbSt: настройки"/>
 		<text name="input_ksmUP"        text="KbSt: Посмотреть вперед"/>
