@@ -7,7 +7,9 @@
 	<limitThrottle       type="int"   value="15"/> <!-- 9 => 90%/100% 15 => 100%/75% -->
 	<snapAngle           type="int"   value="5"/>  <!-- 45° -->
 	<brakeForceFactor    type="float" value="0.15"/>
-			
+	<snapAngleHudX       type="float" value="-1"/> <!-- any value >= 0 => position of bottom left corner / -1 above HUD -->
+	<snapAngleHudY       type="float" value="-1"/> <!-- any value >= 0 => position of bottom left corner / -1 above HUD -->
+	
 	<!-- defaults -->
 	<adaptiveSteering    type="bool"  value="true"/>
 	<camOutsideRotation  type="bool"  value="false"/>

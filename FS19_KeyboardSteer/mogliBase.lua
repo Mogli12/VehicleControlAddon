@@ -238,10 +238,10 @@ else
 	--********************************
 		function _newClass_.normalizeAngle( angle )
 			local normalizedAngle = angle
-			while normalizedAngle > math.pi do
+			while normalizedAngle >= math.pi do
 				normalizedAngle = normalizedAngle - math.pi - math.pi
 			end 
-			while normalizedAngle <= -math.pi do
+			while normalizedAngle < -math.pi do
 				normalizedAngle = normalizedAngle + math.pi + math.pi
 			end
 			return normalizedAngle

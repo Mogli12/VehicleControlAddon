@@ -30,6 +30,8 @@ function keyboardSteerMogli.globalsReset( createIfMissing )
   KSMGlobals.limitThrottle       = 0
   KSMGlobals.snapAngle           = 0
   KSMGlobals.brakeForceFactor    = 0
+  KSMGlobals.snapAngleHudX       = 0
+  KSMGlobals.snapAngleHudY       = 0
  	KSMGlobals.debugPrint          = false
 	
 -- defaults	
@@ -543,7 +545,7 @@ function keyboardSteerMogli:onUpdate(dt)
 						end 
 					end 
 					
-					self.ksmLastSnapAngle = target 
+					self.ksmLastSnapAngle = keyboardSteerMogli.normalizeAngle( target )
 				else 
 					self.ksmLastSnapAngle = snapAngleLast 
 				end 
@@ -853,15 +855,23 @@ function keyboardSteerMogli:onDraw()
 		end
 	end
 	
-	y = y + l * 1.1
+	if KSMGlobals.snapAngleHudX >= 0 then 
+		x = KSMGlobals.snapAngleHudX
+		y = KSMGlobals.snapAngleHudY
+		setTextAlignment( RenderText.ALIGN_LEFT ) 
+		setTextVerticalAlignment( RenderText.VERTICAL_ALIGN_BASELINE )
+	else 
+		y = y + l * 1.1
+	end 
+	
 	local lx,_,lz = localDirectionToWorld( self.components[1].node, 0, 0, 1 )			
 	if lx*lx+lz*lz > 1e-6 then 
-		renderText(x, y, l, string.format( "%4.1f°", math.deg( keyboardSteerMogli.normalizeAngle( math.atan2( lx, lz ) + math.pi ))))
+		renderText(x, y, l, string.format( "%4.1f°", math.deg( math.atan2( lx, lz ) + math.pi )))
 	end 
 	
 	y = y + l * 1.1	
 	if self.ksmLastSnapAngle ~= nil then
-		renderText(x, y, l, string.format( "%4.1f°", math.deg( keyboardSteerMogli.normalizeAngle( self.ksmLastSnapAngle + math.pi ))))
+		renderText(x, y, l, string.format( "%4.1f°", math.deg( self.ksmLastSnapAngle + math.pi )))
 	end
 	
 	setTextAlignment( RenderText.ALIGN_LEFT ) 
