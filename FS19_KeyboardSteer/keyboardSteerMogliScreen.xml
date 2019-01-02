@@ -92,6 +92,7 @@
 				<GuiElement type="text"   profile="multiTextOptionTitle" text="$mogli_ksmBRAKE"/>
 				<GuiElement type="bitmap" profile="multiTextOptionBg" />
 			</GuiElement>
+		
 		</GuiElement>
 
 

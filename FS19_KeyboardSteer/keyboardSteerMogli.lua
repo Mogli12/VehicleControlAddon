@@ -54,13 +54,13 @@ function keyboardSteerMogli.globalsReset( createIfMissing )
 		print('Loading "modsSettings/keyboardSteerMogliConfig.xml"...')
 		keyboardSteerMogli.globalsLoad( file, "KSMGlobals", KSMGlobals )	
 	elseif createIfMissing then
-		keyboardSteerMogli.globalsCreate()
+		keyboardSteerMogli.globalsCreate( file, "KSMGlobals", KSMGlobals, true )	
 	end
 	
 	print("keyboardSteerMogli initialized");
 end
 
-keyboardSteerMogli.globalsReset(false)
+keyboardSteerMogli.globalsReset(true)
 
 function keyboardSteerMogli.debugPrint( ... )
 	if KSMGlobals.debugPrint then
@@ -1043,9 +1043,9 @@ WheelsUtil.updateWheelsPhysics = Utils.overwrittenFunction( WheelsUtil.updateWhe
 function keyboardSteerMogli:getRequiredMotorRpmRange( superFunc, ... )
 	local minRpm, maxRpm = superFunc( self, ... )
 
-	local origMinRpm = minRpm
-	local origMaxRpm = maxRpm
-	local speed      = math.abs( self.vehicle.lastSpeedReal ) *3600
+	self.ksmOrigMinRpm = minRpm
+	self.ksmOrigMaxRpm = maxRpm
+	local speed = math.abs( self.vehicle.lastSpeedReal ) *3600
 	
 	if self.vehicle.ksmShuttleIsOn then 
 		if speed > 2 then 
@@ -1055,31 +1055,19 @@ function keyboardSteerMogli:getRequiredMotorRpmRange( superFunc, ... )
 		self.ksmIncreaseRpm = nil 
 	end 
 	
-	local minReducedRpm = math.min( math.max( minRpm, 0.54*math.min( 2200, self.vehicle.spec_motorized.motor.maxRpm ) ), maxRpm )
+	local minReducedRpm = math.min( math.max( minRpm, 0.5*math.min( 2200, self.maxRpm ) ), maxRpm )
 	if self.vehicle.spec_combine ~= nil then 
-		minReducedRpm = math.min( math.max( minRpm, 0.8*math.min( 2200, self.vehicle.spec_motorized.motor.maxRpm ) ), maxRpm )
+		minReducedRpm = math.min( math.max( minRpm, 0.8*math.min( 2200, self.maxRpm ) ), maxRpm )
 	end 
 	
 	if speed > 0.5 and self.ksmIncreaseRpm ~= nil and g_currentMission.time < self.ksmIncreaseRpm  then 
 		minRpm = minReducedRpm
 	end
-	
-	local lowLoad = false 
-	if self.vehicle.ksmShuttleIsOn and self.lastRealMotorRpm > 0.54 * self.maxRpm then 
-		local l = 1 
-		if self.vehicle.spec_motorized.actualLoadPercentage < 0.9 then 
-			l = 0.2 
-		end 
-		if     self.gearRatio > 0 and self.differentialRotAcceleration > l and self.differentialRotAccelerationSmoothed > l then 
-			lowLoad = true 
-		elseif self.gearRatio < 0 and self.differentialRotAcceleration <-l and self.differentialRotAccelerationSmoothed <-l then 
-			lowLoad = true 
-		end 
-	end 
+	minReducedRpm = minReducedRpm + 0.1 * maxRpm
 	
 	if self.vehicle.spec_combine == nil and self.vehicle.ksmLimitThrottle ~= nil and self.vehicle.ksmInchingIsOn ~= nil then 
+		
 		if self.maxRpm ~= nil and self.vehicle.spec_drivable.cruiseControl.state == 0 then
-			minReducedRpm = minReducedRpm + 0.1 * self.maxRpm
 			
 			local limitThrottleRatio     = 0.75
 			local limitThrottleIfPressed = true
@@ -1096,25 +1084,51 @@ function keyboardSteerMogli:getRequiredMotorRpmRange( superFunc, ... )
 			end 
 		end 
 		
+		local lowLoad = false 
+		if self.vehicle.ksmShuttleIsOn then
+			if     self.ksmChangeTime ~= nil and g_currentMission.time < self.ksmChangeTime + 5500 then
+			elseif self.vehicle.spec_motorized.actualLoadPercentage < 0.5 then 	
+				lowLoad = true 
+			else 
+				local l = ( self.vehicle.spec_motorized.actualLoadPercentage - 0.5 ) * 2
+				if     self.gearRatio > 0 and self.differentialRotAcceleration > l and self.differentialRotAccelerationSmoothed > l then 
+					lowLoad = true 
+				elseif self.gearRatio < 0 and self.differentialRotAcceleration <-l and self.differentialRotAccelerationSmoothed <-l then 
+					lowLoad = true 
+				end 
+			end 
+		end 
+		
 		if lowLoad then 
-			local minRatio = self.vehicle.spec_motorized.motor.minForwardGearRatio
+			local minRatio = self.minForwardGearRatio
 			if not self.vehicle.ksmShuttleFwd then 
-				minRatio     = self.vehicle.spec_motorized.motor.minBackwardGearRatio
+				minRatio     = self.minBackwardGearRatio
 			end 
 			local wheelRpm = (speed + 1 )/3.6 * 60 / (math.pi+math.pi)
 			local newRpm   = wheelRpm * minRatio 
-			maxRpm = keyboardSteerMogli.mbClamp( newRpm, minReducedRpm, maxRpm )
+			if newRpm < minReducedRpm then 
+				newRpm = minReducedRpm 
+			end 
+			if newRpm < maxRpm then 
+				if self.vehicle.spec_motorized.actualLoadPercentage < 0.75 then 
+					maxRpm = newRpm 
+				else 
+					maxRpm = newRpm + 4 * ( self.vehicle.spec_motorized.actualLoadPercentage - 0.75 ) * ( maxRpm - newRpm )
+				end 
+			end 
 		end 
 	end 
 	
 	if speed > 0.5 and self.vehicle.ksmShuttleIsOn and self.vehicle.ksmTickDt ~= nil then 
-		local delta = self.vehicle.spec_motorized.motor.maxRpm * 0.0002 * self.vehicle.ksmTickDt
 		if self.ksmLastMinRpm == nil or self.ksmLastMaxRpm == nil then 
-			self.ksmLastMinRpm = self.vehicle.spec_motorized.motor.lastRealMotorRpm 
-			self.ksmLastMaxRpm = self.vehicle.spec_motorized.motor.lastRealMotorRpm 
+			self.ksmLastMinRpm = self.lastRealMotorRpm 
+			self.ksmLastMaxRpm = self.lastRealMotorRpm 
 		end 
-		minRpm = keyboardSteerMogli.mbClamp( minRpm, self.ksmLastMinRpm - delta, math.max( self.ksmLastMinRpm, self.vehicle.spec_motorized.motor.lastRealMotorRpm + delta ) )
-		maxRpm = keyboardSteerMogli.mbClamp( maxRpm, math.max( self.ksmLastMaxRpm, self.vehicle.spec_motorized.motor.lastRealMotorRpm ) - delta, self.ksmLastMaxRpm + delta )
+		local deltaS, deltaF
+		deltaS = self:getMaxRpm() * 0.0001 * self.vehicle.ksmTickDt
+		deltaF = self:getMaxRpm() * 0.0002 * self.vehicle.ksmTickDt
+		minRpm = keyboardSteerMogli.mbClamp( minRpm, self.ksmLastMinRpm - deltaS, math.max( self.ksmLastMinRpm, self.lastRealMotorRpm + deltaF ) )
+		maxRpm = keyboardSteerMogli.mbClamp( maxRpm, math.max( self.ksmLastMaxRpm, self.lastRealMotorRpm ) - deltaS, self.ksmLastMaxRpm + deltaS )
 		self.ksmLastMinRpm = minRpm 
 		self.ksmLastMaxRpm = maxRpm 
 	elseif self.ksmLastMinRpm ~= nil or self.ksmLastMaxRpm ~= nil then 
@@ -1125,35 +1139,7 @@ function keyboardSteerMogli:getRequiredMotorRpmRange( superFunc, ... )
 	return minRpm, maxRpm 
 end 
 
-function keyboardSteerMogli:getMinMaxGearRatio( superFunc, ... )
-	local minGearRatio, maxGearRatio = superFunc( self, ... )
-	
-	local lowLoad = false 
-	if self.vehicle.ksmShuttleIsOn and self.lastRealMotorRpm > 0.54 * self.maxRpm then 
-		local l = 1 
-		if self.vehicle.spec_motorized.actualLoadPercentage < 0.9 then 
-			l = 0.2 
-		end 
-		if     self.gearRatio > 0 and self.differentialRotAcceleration > l and self.differentialRotAccelerationSmoothed > l then 
-			lowLoad = true 
-		elseif self.gearRatio < 0 and self.differentialRotAcceleration <-l and self.differentialRotAccelerationSmoothed <-l then 
-			lowLoad = true 
-		end 
-	end 
-	
-	if lowLoad then 
-		if     maxGearRatio > 0 then 
-			maxGearRatio = keyboardSteerMogli.mbClamp( self.gearRatio, minGearRatio, maxGearRatio )
-		elseif maxGearRatio < 0 then 
-			maxGearRatio = keyboardSteerMogli.mbClamp( self.gearRatio, maxGearRatio, minGearRatio )
-		end 
-	end 
-
-	return minGearRatio, maxGearRatio
-end 
-
 VehicleMotor.getRequiredMotorRpmRange = Utils.overwrittenFunction( VehicleMotor.getRequiredMotorRpmRange, keyboardSteerMogli.getRequiredMotorRpmRange )
-VehicleMotor.getMinMaxGearRatio       = Utils.overwrittenFunction( VehicleMotor.getMinMaxGearRatio, keyboardSteerMogli.getMinMaxGearRatio )
 --******************************************************************************************************************************************
 
 
