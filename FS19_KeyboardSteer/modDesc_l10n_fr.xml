@@ -12,6 +12,7 @@
 		<text name="ksmLIMIT"           text="Limitateur de vitesse"/>
 		<text name="ksmPEEKLR"          text="Coup d'oeil rapide"/>
 		<text name="ksmANGLE"           text="Pas de verrouillage de la direction"/>
+		<text name="ksmBRAKE"           text="Réduction puissance de freinage"/>
 		<text name="ksmSETTINGS"        text="Paramétrage"/>
 		                                
 		<text name="ksm_tip_CAMERA"     text="La caméra tourne automatiquement en fonction de l'angle de direction."/>
@@ -22,6 +23,7 @@
 		<text name="ksm_tip_LIMIT"      text="Limitateur de vitesse d'avancement avec la touche 'Shift' gauche."/>
 		<text name="ksm_tip_PEEKLR"     text="'Shift' droit et les flèches de direction permettent de jeter un coup d'oeil dans la direction choisie."/>
 		<text name="ksm_tip_ANGLE"      text="Verrouille la direction sur l'orientation choisie en fonction du pas sélectionné."/>
+		<text name="ksm_tip_BRAKE"      text="Réduction puissance de freinage en % / Résistance au roulement"/>
 		                                
 		<text name="input_ksmSETTINGS"  text="KeyboardSteer: Paramétrage"/>
 		<text name="input_ksmUP"        text="KeyboardSteer: Basculer entre vue avant et arrière"/>
