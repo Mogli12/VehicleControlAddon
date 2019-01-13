@@ -35,11 +35,11 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>store.dds</iconFilename>
-	<version>0.0.3.1</version>
+	<version>0.0.3.2</version>
 	<l10n filenamePrefix="modDesc_l10n">
 		<text name="ksmVERSION">
-			<de>KeyboardSteer 0.0.3.1</de>
-			<en>KeyboardSteer 0.0.3.1</en>
+			<de>KeyboardSteer 0.0.3.2</de>
+			<en>KeyboardSteer 0.0.3.2</en>
 		</text>
 	</l10n>
 	
@@ -55,6 +55,18 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 		<action name="ksmSNAP"      category="VEHICLE"/>
 		<action name="ksmNO_ARB"    category="VEHICLE"/>
 		<action name="ksmINCHING"   category="VEHICLE"/>
+		<action name="ksmGearUp"    category="VEHICLE"/>
+		<action name="ksmGearDown"  category="VEHICLE"/>
+		<action name="ksmRangeUp"   category="VEHICLE"/>
+		<action name="ksmRangeDown" category="VEHICLE"/>
+		<action name="ksmNeutral"   category="VEHICLE"/>
+		<action name="ksmShifter1"  category="VEHICLE"/>
+		<action name="ksmShifter2"  category="VEHICLE"/>
+		<action name="ksmShifter3"  category="VEHICLE"/>
+		<action name="ksmShifter4"  category="VEHICLE"/>
+		<action name="ksmShifter5"  category="VEHICLE"/>
+		<action name="ksmShifter6"  category="VEHICLE"/>
+		<action name="ksmShifter7"  category="VEHICLE"/>
 	</actions>
 	<inputBinding>
 		<actionBinding action="ksmSETTINGS">	
@@ -81,9 +93,26 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 		<actionBinding action="ksmINCHING">	
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_lshift"           axisComponent="+" inputComponent="+" index="1"/>
 		</actionBinding>	
+		<actionBinding action="ksmGearUp">
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_leftbracket"      axisComponent="+" inputComponent="+" index="1"/>
+		</actionBinding>	
+		<actionBinding action="ksmGearDown">
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_quote"            axisComponent="+" inputComponent="+" index="1"/>
+		</actionBinding>	
+		<actionBinding action="ksmRangeUp">
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_rightbracket"     axisComponent="+" inputComponent="+" index="1"/>
+		</actionBinding>	
+		<actionBinding action="ksmRangeDown">
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_backslash"        axisComponent="+" inputComponent="+" index="1"/>
+		</actionBinding>	
+		<actionBinding action="ksmNeutral">
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_semicolon"        axisComponent="+" inputComponent="+" index="1"/>
+		</actionBinding>	
 	</inputBinding>
 	
 	<extraSourceFiles>
+		<sourceFile filename="keyboardSteerMogli.lua" />
+		<sourceFile filename="keyboardSteerMogliScreen.lua" />
 		<sourceFile filename="register.lua" />
 	</extraSourceFiles>    
 </modDesc>

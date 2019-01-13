@@ -13,6 +13,11 @@
 		<text name="ksmPEEKLR"          text="Peek sideways"/>
 		<text name="ksmANGLE"           text="Snap Angle"/>
 		<text name="ksmBRAKE"           text="Low Brake Force"/>
+		<text name="ksmTRANSMISSION"    text="Transmnission"/>
+		<text name="ksmMAXSPEED"        text="Axle speed"/>
+		<text name="ksmLIMSPEED"        text="Speed limiter"/>
+		<text name="ksmAUTOSHIFT"       text="Automatic"/>
+		<text name="ksmLAUNCH"          text="Launch gear"/>
 		<text name="ksmSETTINGS"        text="Settings"/>
 		                                
 		<text name="ksm_tip_CAMERA"     text="The camera rotates automatically according to the steering angle"/>
@@ -24,6 +29,11 @@
 		<text name="ksm_tip_PEEKLR"     text="Take a quick look with Shift-Right and the arrow keys sideways"/>
 		<text name="ksm_tip_ANGLE"      text="Steer automatically to follow snap angle"/>
 		<text name="ksm_tip_BRAKE"      text="Low brake force percentage, aka rolling resistance"/>
+		<text name="ksm_tip_TRANSMISSION" text="Type of the transmission; IVT variable transmissoin, all other transmissions have 12 differnt gears, 2x6 is best for trucks"/>
+		<text name="ksm_tip_MAXSPEED"   text="Maximum speed of highest gear, can be faster than the maximum speed of the vehicle"/>
+		<text name="ksm_tip_LIMSPEED"   text="Limits the maximum speed of the vehicle to its default value"/>
+		<text name="ksm_tip_AUTOSHIFT"  text="Automatic shifting of gears and ranges"/>
+		<text name="ksm_tip_LAUNCH"     text="Rated speed of the launch gear"/>
 		                               
 		<text name="input_ksmSETTINGS"  text="KeyboardSteer: settings"/>
 		<text name="input_ksmUP"        text="KeyboardSteer: toggle view direction / lock forwards"/>
@@ -36,6 +46,18 @@
 		<text name="input_ksmSNAP"      text="KeyboardSteer: snap driving direction"/>
 		<text name="input_ksmNO_ARB"    text="KeyboardSteer: no auto rotate back"/>
 		<text name="input_ksmINCHING"   text="KeyboardSteer: inching"/>
+		<text name="input_ksmGearUp"    text="KeyboardSteer: gear up"/>
+		<text name="input_ksmGearDown"  text="KeyboardSteer: gear down"/>
+		<text name="input_ksmRangeUp"   text="KeyboardSteer: range up"/>
+		<text name="input_ksmRangeDown" text="KeyboardSteer: range down"/>
+		<text name="input_ksmNeutral"   text="KeyboardSteer: Leerlauf an/aus"/>
+		<text name="input_ksmShifter1"  text="KeyboardSteer: G27/G29 gear 1"/>
+		<text name="input_ksmShifter2"  text="KeyboardSteer: G27/G29 gear 2"/>
+		<text name="input_ksmShifter3"  text="KeyboardSteer: G27/G29 gear 3"/>
+		<text name="input_ksmShifter4"  text="KeyboardSteer: G27/G29 gear 4"/>
+		<text name="input_ksmShifter5"  text="KeyboardSteer: G27/G29 gear 5 / range down"/>
+		<text name="input_ksmShifter6"  text="KeyboardSteer: G27/G29 gear 6 / range up"/>
+		<text name="input_ksmShifter7"  text="KeyboardSteer: G27/G29 reverse gear"/>
 	</texts>
 
 	<longTexts>
