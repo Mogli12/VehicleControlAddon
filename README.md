@@ -1,5 +1,8 @@
 # KeyboardSteer for Farming Simulator 2019
 
+## Status
+As already announced I plan to pause or stop modding for FS. As my present I added a small gearbox simulation. Have fun.
+
 ## Motivation
 Although I have a steering wheel, but almost always play with the keyboard. On winding roads, I am again and again landed in the ditch in front of nights or power poles.
 
@@ -14,6 +17,7 @@ All functions are switchable with the following default key combinations:
 * Shift Left: Throttle limiter / reduced cruise control speed
 * Shift Right + Cursor: look forward, backwards, left right
 * Space: Change direction (aka shuttle control)
+* Please check the keys for shifting
 
 ## Developer version
 Please be aware you're using a developer version, which may and will contain errors, bugs, mistakes and unfinished code. 

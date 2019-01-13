@@ -9,6 +9,9 @@
 	<brakeForceFactor    type="float" value="0.15"/>
 	<snapAngleHudX       type="float" value="-1"/> <!-- any value >= 0 => position of bottom left corner / -1 above HUD -->
 	<snapAngleHudY       type="float" value="-1"/> <!-- any value >= 0 => position of bottom left corner / -1 above HUD -->
+	<transmission        type="int"   value="1"/>  <!-- 0 = Giants, 1 = IVT, 2 = 4x4, 3 = 4x4 PowerShift, 4 = 2x6, 5 = FullPowerShift -->
+	<launchGear          type="float" value="6"/>  
+	<clutchTimer         type="int"   value="3000"/> <!-- ms -->
 	
 	<!-- defaults -->
 	<adaptiveSteering    type="bool"  value="true"/>

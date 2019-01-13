@@ -13,6 +13,11 @@
 		<text name="ksmPEEKLR"          text="Nur ein kurzer Blick"/>
 		<text name="ksmANGLE"           text="Rastersteuerung"/>
 		<text name="ksmBRAKE"           text="Niedrige Bremskraft"/>
+		<text name="ksmTRANSMISSION"    text="Getriebe"/>
+		<text name="ksmMAXSPEED"        text="Übersetzung"/>
+		<text name="ksmLIMSPEED"        text="Geschwindigkeitsbegrenzer"/>
+		<text name="ksmAUTOSHIFT"       text="Automatik"/>
+		<text name="ksmLAUNCH"          text="Startgang"/>
 		<text name="ksmSETTINGS"        text="Einstellungen"/>
 		                                
 		<text name="ksm_tip_CAMERA"     text="Die Kamera dreht sich passend zum Lenkeinschlag automatisch mit."/>
@@ -24,6 +29,11 @@
 		<text name="ksm_tip_PEEKLR"     text="Mit Umschalt-Rechts und Pfeiltasten nur einen kurzen Blick nach hinten/rechts/links werfen"/>
 		<text name="ksm_tip_ANGLE"      text="Automatisch in Richtung des Einrastwinkels lenken"/>
 		<text name="ksm_tip_BRAKE"      text="Niedrige Bremskraft in Prozent / Rollwiderstand"/>
+		<text name="ksm_tip_TRANSMISSION" text="Typ des Getriebes; IVT ist ein stufenloses Getriebe, die anderen Getriebe haben 12 verschiedene Gänge, 2x6 eignet sich am besten für LKWs"/>
+		<text name="ksm_tip_MAXSPEED"   text="Höchstgeschwindigkeit, die im höchsten Gang erreicht werdern kann"/>
+		<text name="ksm_tip_LIMSPEED"   text="Begrenzung der Höchtstgeschwindigkeit auf den Standardwert des Fahrzeugs"/>
+		<text name="ksm_tip_AUTOSHIFT"  text="Automatische Schaltung von Gängen und Gruppen"/>
+		<text name="ksm_tip_LAUNCH"     text="Geschwindigkeit des Ganges, der zum Anfahren benutzt wird"/>
 		                                
 		<text name="input_ksmSETTINGS"  text="KeyboardSteer: Einstellungen"/>
 		<text name="input_ksmUP"        text="KeyboardSteer: Blickrichtung wechseln oder nach vorne schauen"/>
@@ -36,6 +46,18 @@
 		<text name="input_ksmSNAP"      text="KeyboardSteer: Fahrtrichtung am Raster ausrichten"/>
 		<text name="input_ksmNO_ARB"    text="KeyboardSteer: Kein zurück Lenken"/>
 		<text name="input_ksmINCHING"   text="KeyboardSteer: Langsamer"/>
+		<text name="input_ksmGearUp"    text="KeyboardSteer: Gang hoch"/>
+		<text name="input_ksmGearDown"  text="KeyboardSteer: Gang runter"/>
+		<text name="input_ksmRangeUp"   text="KeyboardSteer: Gruppe hoch"/>
+		<text name="input_ksmRangeDown" text="KeyboardSteer: Gruppe runter"/>
+		<text name="input_ksmNeutral"   text="KeyboardSteer: Leerlauf an/aus"/>
+		<text name="input_ksmShifter1"  text="KeyboardSteer: G27/G29 Gang 1"/>
+		<text name="input_ksmShifter2"  text="KeyboardSteer: G27/G29 Gang 2"/>
+		<text name="input_ksmShifter3"  text="KeyboardSteer: G27/G29 Gang 3"/>
+		<text name="input_ksmShifter4"  text="KeyboardSteer: G27/G29 Gang 4"/>
+		<text name="input_ksmShifter5"  text="KeyboardSteer: G27/G29 Gang 5 / Gruppe runter"/>
+		<text name="input_ksmShifter6"  text="KeyboardSteer: G27/G29 Gang 6 / Gruppe hoch"/>
+		<text name="input_ksmShifter7"  text="KeyboardSteer: G27/G29 Rückwärtsgang"/>
 	</texts>   
 
 	<longTexts>
