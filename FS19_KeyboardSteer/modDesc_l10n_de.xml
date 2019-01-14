@@ -51,6 +51,7 @@
 		<text name="input_ksmRangeUp"   text="KeyboardSteer: Gruppe hoch"/>
 		<text name="input_ksmRangeDown" text="KeyboardSteer: Gruppe runter"/>
 		<text name="input_ksmNeutral"   text="KeyboardSteer: Leerlauf an/aus"/>
+		<text name="input_ksmClutchKey" text="KeyboardSteer: Einfache Kupplung"/>
 		<text name="input_ksmShifter1"  text="KeyboardSteer: G27/G29 Gang 1"/>
 		<text name="input_ksmShifter2"  text="KeyboardSteer: G27/G29 Gang 2"/>
 		<text name="input_ksmShifter3"  text="KeyboardSteer: G27/G29 Gang 3"/>

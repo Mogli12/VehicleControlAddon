@@ -136,6 +136,7 @@ function keyboardSteerMogli:onLoad(savegame)
 	self.ksmMovingDir     = 0
 	self.ksmLastFactor    = 0
 	self.ksmWarningTimer  = 0
+	self.ksmShifter7isR1  = nil 
 	
 	self.ksmCameras = {}
 	
@@ -162,6 +163,15 @@ function keyboardSteerMogli:onLoad(savegame)
 			loadSample(keyboardSteerMogli.bovSample, fileName, false)
 		end 	
 	end 	
+	
+	if keyboardSteerMogli.ovArrowUpWhite == nil then
+		keyboardSteerMogli.ovArrowUpWhite   = createImageOverlay( Utils.getFilename( "arrow_up_white.dds",   keyboardSteerMogli.baseDirectory ))
+		keyboardSteerMogli.ovArrowUpGray    = createImageOverlay( Utils.getFilename( "arrow_up_gray.dds",    keyboardSteerMogli.baseDirectory ))
+		keyboardSteerMogli.ovArrowDownWhite = createImageOverlay( Utils.getFilename( "arrow_down_white.dds", keyboardSteerMogli.baseDirectory ))
+		keyboardSteerMogli.ovArrowDownGray  = createImageOverlay( Utils.getFilename( "arrow_down_gray.dds",  keyboardSteerMogli.baseDirectory ))
+		keyboardSteerMogli.ovHandBrakeUp    = createImageOverlay( Utils.getFilename( "hand_brake_up.dds",    keyboardSteerMogli.baseDirectory ))
+		keyboardSteerMogli.ovHandBrakeDown  = createImageOverlay( Utils.getFilename( "hand_brake_down.dds",  keyboardSteerMogli.baseDirectory ))
+	end 
 end
 
 function keyboardSteerMogli:onPostLoad(savegame)
@@ -361,6 +371,7 @@ function keyboardSteerMogli:onRegisterActionEvents(isSelected, isOnActiveVehicle
 																"ksmShifter5",
 																"ksmShifter6",
 																"ksmShifter7",
+																"ksmClutchKey",
 																"AXIS_MOVE_SIDE_VEHICLE" }) do
 																
 			local isPressed = false 
@@ -377,6 +388,7 @@ function keyboardSteerMogli:onRegisterActionEvents(isSelected, isOnActiveVehicle
 					or actionName == "ksmShifter5"
 					or actionName == "ksmShifter6"
 					or actionName == "ksmShifter7"
+					or actionName == "ksmClutchKey"
 					or actionName == "ksmNO_ARB" then 
 				isPressed = true 
 			end 
@@ -485,6 +497,9 @@ function keyboardSteerMogli:actionCallback(actionName, keyStatus, arg4, arg5, ar
 			or actionName == "ksmShifter2" 
 			or actionName == "ksmShifter3" 
 			or actionName == "ksmShifter4" then
+		if self.ksmShuttleCtrl and self.ksmTransmission >= 2 and self.ksmShifter7isR1 == nil then 
+			self.ksmShifter7isR1 = true 
+		end 
 		-- G27/G29 shifter gears 1..4; go to neutral if released
 		if self.ksmTransmission >= 2 then 
 			local g
@@ -505,14 +520,17 @@ function keyboardSteerMogli:actionCallback(actionName, keyStatus, arg4, arg5, ar
 				self:ksmSetState( "ksmGear", g )
 				self:ksmSetState( "ksmNeutral", false )
 				self:ksmSetState( "ksmAutoShift", false )
-				if self.ksmTransmission >= 4 then 
+				if self.ksmShuttleCtrl and self.ksmShifter7isR1 then
 					self:ksmSetState( "ksmShuttleFwd", true )
-				end 
+				end
 			else 
 				self:ksmSetState( "ksmNeutral", true )
 			end 
 		end 
 	elseif actionName == "ksmShifter5" then
+		if self.ksmShuttleCtrl and self.ksmTransmission >= 2 and self.ksmShifter7isR1 == nil then 
+			self.ksmShifter7isR1 = true 
+		end 
 		if self.ksmTransmission >= 4 then 
 		-- G27/G29 shifter gear 5; go to neutral if released
 			local g = 5
@@ -523,25 +541,21 @@ function keyboardSteerMogli:actionCallback(actionName, keyStatus, arg4, arg5, ar
 			if keyStatus > 0 then 
 				self:ksmSetState( "ksmGear", g )
 				self:ksmSetState( "ksmNeutral", false )
-				self:ksmSetState( "ksmShuttleFwd", true )
 				self:ksmSetState( "ksmAutoShift", false )
+				if self.ksmShuttleCtrl and self.ksmShifter7isR1 then
+					self:ksmSetState( "ksmShuttleFwd", true )
+				end
 			else 
 				self:ksmSetState( "ksmNeutral", true )
 			end 
-		elseif self.ksmTransmission >= 2 and keyStatus > 0 then 
+		elseif self.ksmTransmission >= 2 and self.ksmTransmission <= 4 and keyStatus > 0 and self.ksmRange < 4 then 
 		-- G27/G29 shift range down
-			if     self.ksmRange == 2 then 
-				self:ksmSetState( "ksmRange", 1 )
-				self:ksmSetState( "ksmGear", math.min( 4, self.ksmGear + 1 ) )
-			elseif self.ksmRange == 3 then 
-				self:ksmSetState( "ksmRange", 2 )
-				self:ksmSetState( "ksmGear", math.min( 4, self.ksmGear + 2 ) )
-			elseif self.ksmRange == 4 then 
-				self:ksmSetState( "ksmRange", 3 )
-				self:ksmSetState( "ksmGear", math.min( 4, self.ksmGear + 2 ) )
-			end 			
+			self:ksmSetState( "ksmRange", self.ksmRange + 1 )
 		end 
 	elseif actionName == "ksmShifter6" then
+		if self.ksmShuttleCtrl and self.ksmTransmission >= 2 and self.ksmShifter7isR1 == nil then 
+			self.ksmShifter7isR1 = true 
+		end 
 		if self.ksmTransmission >= 4 then 
 		-- G27/G29 shifter gear 6; go to neutral if released
 			local g = 6
@@ -552,39 +566,32 @@ function keyboardSteerMogli:actionCallback(actionName, keyStatus, arg4, arg5, ar
 			if keyStatus > 0 then 
 				self:ksmSetState( "ksmGear", g )
 				self:ksmSetState( "ksmNeutral", false )
-				self:ksmSetState( "ksmShuttleFwd", true )
 				self:ksmSetState( "ksmAutoShift", false )
+				if self.ksmShuttleCtrl and self.ksmShifter7isR1 then 
+					self:ksmSetState( "ksmShuttleFwd", true )
+				end
 			else 
 				self:ksmSetState( "ksmNeutral", true )
 			end 
-		elseif self.ksmTransmission >= 2 and keyStatus > 0 then 
-		-- G27/G29 shift range up
-			if     self.ksmRange == 1 then 
-				self:ksmSetState( "ksmRange", 2 )
-				self:ksmSetState( "ksmGear", math.max( 1, self.ksmGear - 1 ) )
-			elseif self.ksmRange == 2 then 
-				self:ksmSetState( "ksmRange", 3 )
-				self:ksmSetState( "ksmGear", math.max( 1, self.ksmGear - 2 ) )
-			elseif self.ksmRange == 3 then 
-				self:ksmSetState( "ksmRange", 4 )
-				self:ksmSetState( "ksmGear", math.max( 1, self.ksmGear - 2 ) )
-			end 
+		elseif self.ksmTransmission >= 2 and keyStatus > 0 and self.ksmRange > 1 then 
+		-- G27/G29 shift range down
+			self:ksmSetState( "ksmRange", self.ksmRange - 1 )
 		end 
 	elseif actionName == "ksmShifter7" then 
-		if self.ksmTransmission >= 4 then 
+		if self.ksmShuttleCtrl and self.ksmTransmission >= 2 then 
+			self.ksmShifter7isR1 = true 
 		-- G27/G29 1st reverse gear; go to neutral if released
 			if keyStatus > 0 then 
-				self:ksmSetState( "ksmGear", g )
+				self:ksmSetState( "ksmGear", 1 )
 				self:ksmSetState( "ksmNeutral", false )
 				self:ksmSetState( "ksmShuttleFwd", false )
 				self:ksmSetState( "ksmAutoShift", false )
 			else 
-				self:ksmSetState( "ksmShuttleFwd", true )
+				self:ksmSetState( "ksmNeutral", true  )
 			end 
-		elseif keyStatus > 0 then 
-		-- G27/G29 toggle reverse
-			self:ksmSetState( "ksmShuttleFwd", not self.ksmShuttleFwd )
-		end 
+		end
+	elseif actionName == "ksmClutchKey" then
+		self:ksmSetState("ksmNeutral", keyStatus > 0)
 	elseif actionName == "ksmGearUp"    then
 		if     self.ksmTransmission == 2
 				or self.ksmTransmission == 3 then 
@@ -603,7 +610,8 @@ function keyboardSteerMogli:actionCallback(actionName, keyStatus, arg4, arg5, ar
 	elseif actionName == "ksmGearDown"  then 
 		if     self.ksmTransmission == 2
 				or self.ksmTransmission == 3
-				or self.ksmTransmission == 4 then
+				or self.ksmTransmission == 4
+				or self.ksmTransmission == 5 then
 			if self.ksmGear > 1 then 
 				self:ksmSetState( "ksmGear", self.ksmGear - 1 )
 			end 
@@ -651,10 +659,13 @@ function keyboardSteerMogli:actionCallback(actionName, keyStatus, arg4, arg5, ar
 	elseif actionName == "ksmNO_ARB" then 
 		self:ksmSetState( "ksmNoAutoRotBack", keyStatus > 0 )
 	elseif actionName == "ksmDIRECTION" then
+		self.ksmShifter7isR1 = false 
 		self:ksmSetState( "ksmShuttleFwd", not self.ksmShuttleFwd )
 	elseif actionName == "ksmFORWARD" then
+		self.ksmShifter7isR1 = false 
 		self:ksmSetState( "ksmShuttleFwd", true )
 	elseif actionName == "ksmREVERSE" then
+		self.ksmShifter7isR1 = false 
 		self:ksmSetState( "ksmShuttleFwd", false )
 	elseif actionName == "ksmSNAP" then
 		self:ksmSetState( "ksmSnapIsOn", not self.ksmSnapIsOn )
@@ -1097,8 +1108,7 @@ function keyboardSteerMogli:onUpdate(dt)
 		end
 	end 	
 	
-end 
-
+end  
 
 function keyboardSteerMogli:onDraw()
 	setTextAlignment( RenderText.ALIGN_CENTER ) 
@@ -1107,21 +1117,38 @@ function keyboardSteerMogli:onDraw()
 	
 	local x = g_currentMission.inGameMenu.hud.speedMeter.gaugeCenterX
 	local y = g_currentMission.inGameMenu.hud.speedMeter.gaugeCenterY + g_currentMission.inGameMenu.hud.speedMeter.fuelGaugeRadiusY * 1.6
-	local l = 0.03 * keyboardSteerMogli.getUiScale()
+	local l = 0.025 * keyboardSteerMogli.getUiScale()
 
 	if self:getIsVehicleControlledByPlayer() and not g_gui:getIsGuiVisible() then
-		if     self.ksmNeutral then 
+		local w = 0.015 * keyboardSteerMogli.getUiScale()
+		local h = w * g_screenAspectRatio
+		if self.ksmShuttleCtrl then 
+			if self.ksmShuttleFwd then
+				if     self.ksmNeutral and self.ksmShifter7isR1 then 
+				elseif self.ksmNeutral then 
+					renderOverlay( keyboardSteerMogli.ovHandBrakeUp, x-0.5*w, y-0.5*h, w, h )
+				elseif self.ksmShifter7isR1 then
+					renderOverlay( keyboardSteerMogli.ovArrowUpGray, x-0.5*w, y-0.5*h, w, h )
+				else 
+					renderOverlay( keyboardSteerMogli.ovArrowUpWhite, x-0.5*w, y-0.5*h, w, h )
+				end 
+			else 
+				if     self.ksmNeutral and self.ksmShifter7isR1 then 
+				elseif self.ksmNeutral then 
+					renderOverlay( keyboardSteerMogli.ovHandBrakeDown, x-0.5*w, y-0.5*h, w, h )
+				elseif self.ksmShifter7isR1 then
+					renderOverlay( keyboardSteerMogli.ovArrowDownGray, x-0.5*w, y-0.5*h, w, h )
+				else 
+					renderOverlay( keyboardSteerMogli.ovArrowDownWhite, x-0.5*w, y-0.5*h, w, h )
+				end 
+			end 
+		elseif self.ksmNeutral then 
 			renderText(x, y, l, "N")
-		elseif not self.ksmShuttleCtrl then 
-		elseif self.ksmShuttleFwd then
-			renderText(x, y, l, "F")
-		else
-			renderText(x, y, l, "R")
-		end
-	end
+		end 
+	end 
 	
 	if self:getIsVehicleControlledByPlayer() and self.ksmTransmission >= 2 then 
-		y = y + l * 1.1
+		y = y + l * 1.2
 		
 		local gear = keyboardSteerMogli.getGearIndex( self.ksmTransmission, self.ksmGear, self.ksmRange )		
 		local maxSpeed = 3.6 * keyboardSteerMogli.gearRatios[gear] * self.ksmMaxSpeed
@@ -1156,7 +1183,7 @@ function keyboardSteerMogli:onDraw()
 		setTextAlignment( RenderText.ALIGN_LEFT ) 
 		setTextVerticalAlignment( RenderText.VERTICAL_ALIGN_BASELINE )
 	else 
-		y = y + l * 1.1
+		y = y + l * 1.2
 	end 
 	
 	local lx,_,lz = localDirectionToWorld( self.components[1].node, 0, 0, 1 )			
@@ -1495,7 +1522,19 @@ function keyboardSteerMogli:ksmUpdateGear( superFunc, acceleratorPedal, dt )
 		if lastFakeRpm == nil then 
 			lastFakeRpm = self.equalizedMotorRpm 
 		end 
-		self.ksmFakeRpm = keyboardSteerMogli.mbClamp( rpm, lastFakeRpm - 0.001 * dt * add, lastFakeRpm + 0.001 * dt * add )		
+		self.ksmFakeRpm   = keyboardSteerMogli.mbClamp( rpm, lastFakeRpm - 0.001 * dt * add, lastFakeRpm + 0.001 * dt * add )		
+		self.ksmFakeTimer = 500 
+	elseif self.ksmFakeTimer ~= nil then 
+		if lastFakeRpm == nil then
+			self.ksmFakeTimer = nil 
+		else 
+			local add = self.maxRpm - self.minRpm	
+			self.ksmFakeRpm   = keyboardSteerMogli.mbClamp( self.equalizedMotorRpm, lastFakeRpm - 0.001 * dt * add, lastFakeRpm + 0.001 * dt * add )	
+			self.ksmFakeTimer = self.ksmFakeTimer - dt 
+			if self.ksmFakeTimer <= 0 then 
+				self.ksmFakeTimer = nil 
+			end 
+		end 
 	end 
 	
 	local speed       = math.abs( self.vehicle.lastSpeedReal ) *3600
@@ -1670,11 +1709,25 @@ function keyboardSteerMogli:ksmUpdateGear( superFunc, acceleratorPedal, dt )
 			self.ksmLoad = self.ksmLoad + 0.03 * ( self.vehicle.spec_motorized.actualLoadPercentage - self.ksmLoad )
 		end 
 						
-		local gear     = keyboardSteerMogli.getGearIndex( self.vehicle.ksmTransmission, self.vehicle.ksmGear, self.vehicle.ksmRange )		
-		local ratio    = keyboardSteerMogli.gearRatios[gear]
-		local maxSpeed = ratio * self.vehicle.ksmMaxSpeed 
-		local wheelRpm = self.vehicle.lastSpeedReal * 1000 * self.maxRpm / maxSpeed 
-	
+		local gear      = keyboardSteerMogli.getGearIndex( self.vehicle.ksmTransmission, self.vehicle.ksmGear, self.vehicle.ksmRange )		
+		local ratio     = keyboardSteerMogli.gearRatios[gear]
+		local maxSpeed  = ratio * self.vehicle.ksmMaxSpeed 
+		local wheelRpm  = self.vehicle.lastSpeedReal * 1000 * self.maxRpm / maxSpeed 
+		local clutchRpm = wheelRpm
+		local slip      = 0
+		if self.gearChangeTimer <= 0 and not isNeutral then 
+			clutchRpm = self.differentialRotSpeed * self.minGearRatio * keyboardSteerMogli.factor30pi
+			if clutchRpm > 0 or wheelRpm > 0 then 
+				slip = ( clutchRpm - wheelRpm ) / math.max( clutchRpm, wheelRpm )
+			else 
+				slip = 1
+			end 
+		end 
+		if self.vehicle.ksmSlip == nil then 
+			self.vehicle.ksmSlip = 0 
+		end 
+		self.vehicle.ksmSlip = self.vehicle.ksmSlip + 0.05 * ( slip - self.vehicle.ksmSlip )
+		
 		--****************************************
 		-- no automatic shifting during gear shift or if clutch is open
 		if self.ksmAutoDownTimer == nil then 
@@ -1696,10 +1749,19 @@ function keyboardSteerMogli:ksmUpdateGear( superFunc, acceleratorPedal, dt )
 			self.ksmAutoDownTimer = 1000 
 		end 
 		
-		if curBrake >= 0.1 or self.ksmBrakeTimer == nil then  
-			self.ksmBrakeTimer = 1000 
-		elseif self.ksmBrakeTimer > 0 then 
-			self.ksmBrakeTimer = self.ksmBrakeTimer - dt 
+		if     self.ksmAutoStop then 
+			self.ksmBrakeTimer = nil
+		elseif curBrake >= 0.1 then 
+			if self.ksmBrakeTimer == nil then  
+				self.ksmBrakeTimer = 0
+			else 
+				self.ksmBrakeTimer = self.ksmBrakeTimer + dt
+			end 
+		elseif self.ksmBrakeTimer ~= nil then 
+			self.ksmBrakeTimer = self.ksmBrakeTimer - dt
+			if self.ksmBrakeTimer < 0 then 
+				self.ksmBrakeTimer = nil
+			end 
 		end 
 
 			-- no automatic shifting#
@@ -1709,17 +1771,13 @@ function keyboardSteerMogli:ksmUpdateGear( superFunc, acceleratorPedal, dt )
 		if self.gearChangeTimer > 0 and self.ksmAutoUpTimer < 1000 then 
 			self.ksmAutoUpTimer = 1000 
 		end 
-		if self.gearChangeTimer > 0 and self.ksmAutoDownTimer < 1000 then 
-			self.ksmAutoDownTimer = 1000 
+		if curBrake >= 0.1 and self.ksmBrakeTimer ~= nil and self.ksmBrakeTimer > 500 then 
+			self.ksmAutoDownTimer = 0
 		end 
-		if curBrake >= 0.1 and self.ksmAutoDownTimer > 1000 then 
-		-- every second one gear 
-			self.ksmAutoDownTimer = 1000 
-		elseif self.ksmBrakeTimer > 0 and self.ksmAutoDownTimer < 3000 then 
-		-- no down shift after releasing the brakes 
+		if newAcc < 0.1 and curBrake < 0.1 and self.ksmAutoDownTimer < 3000 then  
 			self.ksmAutoDownTimer = 3000 
 		end 
-		if newAcc < 0.1 and curBrake < 0.1 and self.ksmAutoDownTimer < 1000 then 
+		if self.gearChangeTimer > 0 and self.ksmAutoDownTimer < 1000 then 
 			self.ksmAutoDownTimer = 1000 
 		end 
 		if newAcc < 0.1 and self.ksmAutoUpTimer < 1000 then 
@@ -1733,6 +1791,9 @@ function keyboardSteerMogli:ksmUpdateGear( superFunc, acceleratorPedal, dt )
 		end 
 		if newAcc < 0.1 and self.ksmAutoLowTimer < 2000 then 
 			self.ksmAutoLowTimer = 2000
+		end 
+		if maxSpeed > 1.5 * self:getSpeedLimit() and self.ksmAutoDownTimer > 1000 then
+			self.ksmAutoDownTimer = 1000
 		end 
 		
 		local newGear  = gear 
@@ -1754,7 +1815,7 @@ function keyboardSteerMogli:ksmUpdateGear( superFunc, acceleratorPedal, dt )
 				autoMinRpm = math.max( m1, autoMaxRom * 0.8 )
 			end 
 					
-			if wheelRpm > m4 and self.ksmAutoUpTimer > 0 then
+			if clutchRpm > m4 and self.ksmAutoUpTimer > 0 then
 				self.ksmAutoUpTimer = 0
 			end 
 			if self.ksmClutchTimer <= 0 and wheelRpm < m1 and gear > self.vehicle.ksmLaunchGear and self.ksmAutoDownTimer > 500 then 
@@ -1766,7 +1827,7 @@ function keyboardSteerMogli:ksmUpdateGear( superFunc, acceleratorPedal, dt )
 				lowGear = math.floor( lowGear * ( 1 - self.ksmLoad ) )
 			end 
 			
-			local searchUp   = ( wheelRpm > autoMaxRpm and self.ksmAutoUpTimer   <= 0 )
+			local searchUp   = ( clutchRpm > autoMaxRpm and self.ksmAutoUpTimer  <= 0 )
 			local searchDown = ( wheelRpm < autoMinRpm and self.ksmAutoDownTimer <= 0 )
 			
 			if isNeutral then
@@ -1780,8 +1841,8 @@ function keyboardSteerMogli:ksmUpdateGear( superFunc, acceleratorPedal, dt )
 				if wheelRpm < autoMinRpm then 
 					d = autoMinRpm - wheelRpm
 				end 
-				if wheelRpm > autoMaxRpm then 
-					d = math.max( d, wheelRpm - autoMaxRpm )
+				if clutchRpm > autoMaxRpm then 
+					d = math.max( d, clutchRpm - autoMaxRpm )
 				end 
 				d = d - 1
 				local d1 = d
@@ -1793,10 +1854,11 @@ function keyboardSteerMogli:ksmUpdateGear( superFunc, acceleratorPedal, dt )
 						if rpm < autoMinRpm then 
 							d2 = autoMinRpm - rpm
 						end 
+						rpm = clutchRpm * ratio / r 
 						if rpm > autoMaxRpm then 
 							d2 = math.max( d2, rpm - autoMaxRpm )
 						end 
-						if d2 < d or ( d2 == d and wheelRpm > autoMaxRpm ) then 
+						if d2 < d or ( d2 == d and searchUp ) then 
 							newGear = i 
 							d = d2
 							rr = rpm
@@ -1964,8 +2026,13 @@ function keyboardSteerMogli:ksmUpdateGear( superFunc, acceleratorPedal, dt )
 			else
 				local f = self.ksmClutchTimer / KSMGlobals.clutchTimer
 				self.maxGearRatio = self.minGearRatio + f * ( self.maxForwardGearRatio - self.minGearRatio )
-				self.ksmMinRpm    = math.max( self.minRpm, motorPtoRpm * 0.95, math.min( self.maxRpm, wheelRpm ) )
-				self.ksmMaxRpm    = math.max( motorPtoRpm * 1.05, self.minRpm + f * ( self.maxRpm - self.minRpm ), self.lastRealMotorRpm - 0.004 * dt * ( self.maxRpm - self.minRpm ) )
+				if self.ksmFakeRpm ~= nil then 
+					self.ksmMinRpm  = self.ksmFakeRpm
+					self.ksmMaxRpm  = self.ksmFakeRpm
+				else 
+					self.ksmMinRpm  = math.max( self.minRpm, motorPtoRpm * 0.95, math.min( self.maxRpm, wheelRpm ) )
+					self.ksmMaxRpm  = math.max( motorPtoRpm * 1.05, self.minRpm + f * ( self.maxRpm - self.minRpm ), self.lastRealMotorRpm - 0.004 * dt * ( self.maxRpm - self.minRpm ) )
+				end 
 			end 
 		end  
 		
