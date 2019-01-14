@@ -582,7 +582,12 @@ function keyboardSteerMogli:actionCallback(actionName, keyStatus, arg4, arg5, ar
 			self.ksmShifter7isR1 = true 
 		-- G27/G29 1st reverse gear; go to neutral if released
 			if keyStatus > 0 then 
-				self:ksmSetState( "ksmGear", 1 )
+				local g = 1
+				if self.ksmTransmission == 5 then 
+					g = 6 
+				end 
+			
+				self:ksmSetState( "ksmGear", g )
 				self:ksmSetState( "ksmNeutral", false )
 				self:ksmSetState( "ksmShuttleFwd", false )
 				self:ksmSetState( "ksmAutoShift", false )
