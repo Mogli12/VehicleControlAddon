@@ -12,6 +12,7 @@
 		<text name="ksmLIMIT"           text="Speeder Begrænsning"/>
 		<text name="ksmPEEKLR"          text="Kig Sidelæns"/>
 		<text name="ksmANGLE"           text="Lås Vinkel"/>
+		<text name="ksmBRAKE"           text="Lav Bremse Kraft"/>
 		<text name="ksmSETTINGS"        text="Indstillinger"/>
 
 		<text name="ksm_tip_CAMERA"     text="Kameraet roterer automatisk i forhold den låste vinkel"/>
@@ -22,6 +23,7 @@
 		<text name="ksm_tip_LIMIT"      text="Begrænsning af speeder med og uden venstre shift tast"/>
 		<text name="ksm_tip_PEEKLR"     text="Kig hurtigt med højre shift key og højre/venstre tast"/>
 		<text name="ksm_tip_ANGLE"      text="Styr automatisk for at følge den låste retning"/>
+		<text name="ksm_tip_BRAKE"      text="Procent for lav bremse kraft, aka rullende modstand"/>
 
 		<text name="input_ksmSETTINGS"  text="KeyboardSteer: indstillinger"/>
 		<text name="input_ksmUP"        text="KeyboardSteer: skift syns retning / lås fremad"/>
