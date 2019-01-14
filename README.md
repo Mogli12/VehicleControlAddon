@@ -17,7 +17,9 @@ All functions are switchable with the following default key combinations:
 * Shift Left: Throttle limiter / reduced cruise control speed
 * Shift Right + Cursor: look forward, backwards, left right
 * Space: Change direction (aka shuttle control)
-* Please check the keys for shifting
+* Please check the keys for shifting. G27/G29 gear shifters are supported.
+* The 7th gear of the gear shifter is special. If you use action binding ksmShifter7 please make sure that shuttle control is enabled. This action binding will swtich into 1st reverse gear. 
+* In case of a 4x4 transmission the gears 5 and 6 are used to shift the range down or up. In case of a truck I propose to use the 2x6 transmission and to increase the start gear speed so that it matches H1.
 
 ## Developer version
 Please be aware you're using a developer version, which may and will contain errors, bugs, mistakes and unfinished code. 
