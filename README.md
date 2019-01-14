@@ -1,7 +1,7 @@
 # KeyboardSteer for Farming Simulator 2019
 
 ## Status
-As already announced I plan to pause or stop modding for FS. As my present I added a small gearbox simulation. Have fun.
+As already announced I plan to pause or stop modding for FS. As my farewell present I added a small gearbox simulation. Have fun.
 
 ## Motivation
 Although I have a steering wheel, but almost always play with the keyboard. On winding roads, I am again and again landed in the ditch in front of nights or power poles.
