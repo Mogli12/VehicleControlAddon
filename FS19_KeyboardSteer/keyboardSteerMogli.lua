@@ -13,7 +13,7 @@ function keyboardSteerMogli.prerequisitesPresent(specializations)
 end
 
 function keyboardSteerMogli.registerEventListeners(vehicleType)
-	for _,n in pairs( { "onLoad", "onPostLoad", "onUpdate", "onUpdateTick", "onDraw", "onLeaveVehicle", "onReadStream", "onWriteStream", "saveToXMLFile", "onRegisterActionEvents" } ) do
+	for _,n in pairs( { "onLoad", "onPostLoad", "onUpdate", "onDraw", "onLeaveVehicle", "onReadStream", "onWriteStream", "saveToXMLFile", "onRegisterActionEvents" } ) do
 		SpecializationUtil.registerEventListener(vehicleType, n, keyboardSteerMogli)
 	end 
 end 
@@ -120,7 +120,6 @@ function keyboardSteerMogli:onLoad(savegame)
 	keyboardSteerMogli.registerState( self, "ksmSnapIsOn" ,    false, keyboardSteerMogli.ksmOnSetSnapIsOn )
 	keyboardSteerMogli.registerState( self, "ksmInchingIsOn" , false )
 	keyboardSteerMogli.registerState( self, "ksmNoAutoRotBack",false )
-	keyboardSteerMogli.registerState( self, "ksmBrakeLights",  false )
 	keyboardSteerMogli.registerState( self, "ksmBrakeForce",   KSMGlobals.brakeForceFactor )
 	keyboardSteerMogli.registerState( self, "ksmTransmission", keyboardSteerMogli.getDefaultTransmission( self ) )
 	keyboardSteerMogli.registerState( self, "ksmMaxSpeed",     keyboardSteerMogli.getDefaultMaxSpeed( self ) )
@@ -1085,30 +1084,10 @@ function keyboardSteerMogli:onUpdate(dt)
 		self.spec_drivable.cruiseControl.speed = self.ksmSpeedLimit
 		self.ksmSpeedLimit = nil
 	end 
-end 
+--******************************************************************************************************************************************
 	
-local origSetBrakeLightsVisibility   = Lights.setBrakeLightsVisibility
-local origSetReverseLightsVisibility = Lights.setReverseLightsVisibility
-function Lights:setBrakeLightsVisibility( visibility, ... )
-	if self.ksmShuttleCtrl then 
-		return true 
-	end 
-	return origSetBrakeLightsVisibility( self, visibility, ... )
-end 
-function Lights:setReverseLightsVisibility( visibility, ... )
-	if self.ksmShuttleCtrl then 
-		return true 
-	end 
-	return origSetReverseLightsVisibility( self, visibility, ... )
-end 
-
-function keyboardSteerMogli:onUpdateTick(dt)
-	if self.ksmShuttleCtrl then 
-		if self.spec_lights ~= nil then 
-			origSetBrakeLightsVisibility( self, self.ksmBrakeLights )
-			origSetReverseLightsVisibility( self, not self.ksmShuttleFwd )
-		end 
-		if self.ksmReverseDriveSample ~= nil then 
+	if self.isClient and self:getIsVehicleControlledByPlayer() and self:getIsEntered() then 
+		if self.ksmShuttleCtrl and self.ksmReverseDriveSample ~= nil then 
 			local notRev = self.ksmShuttleFwd or self.ksmNeutral
 			if not g_soundManager:getIsSamplePlaying(self.ksmReverseDriveSample) and not notRev then
 				g_soundManager:playSample(self.ksmReverseDriveSample)
@@ -1117,7 +1096,9 @@ function keyboardSteerMogli:onUpdateTick(dt)
 			end
 		end
 	end 	
-end
+	
+end 
+
 
 function keyboardSteerMogli:onDraw()
 	setTextAlignment( RenderText.ALIGN_CENTER ) 
@@ -1398,7 +1379,8 @@ function keyboardSteerMogli:ksmUpdateWheelsPhysics( superFunc, dt, currentSpeed,
 	end
 	
 	if self.ksmShuttleCtrl then 
-		self:ksmSetState( "ksmBrakeLights", brake )
+		self:setBrakeLightsVisibility( brake )
+		self:setReverseLightsVisibility( not self.ksmShuttleFwd )
 	end 
 	
 	return result 
@@ -1621,7 +1603,7 @@ function keyboardSteerMogli:ksmUpdateGear( superFunc, acceleratorPedal, dt )
 	--****************************************	
 	-- 4x4 / 4x4 PS / 2x6 / FPS 
 	
-		self.ksmMinRpm = 0
+		self.ksmMinRpm = self.minRpm
 		self.ksmMaxRpm = self.maxRpm
 		
 		local initGear = false 
@@ -1681,6 +1663,9 @@ function keyboardSteerMogli:ksmUpdateGear( superFunc, acceleratorPedal, dt )
 		end 
 		if self.ksmLoad == nil or self.ksmLoad < self.vehicle.spec_motorized.actualLoadPercentage then 
 			self.ksmLoad = self.vehicle.spec_motorized.actualLoadPercentage
+		elseif curBrake >= 0.5 then 
+		-- simulate high load for immediate down shift
+			self.ksmLoad = 1
 		elseif self.gearChangeTimer <= 0 then 
 			self.ksmLoad = self.ksmLoad + 0.03 * ( self.vehicle.spec_motorized.actualLoadPercentage - self.ksmLoad )
 		end 
@@ -1710,6 +1695,12 @@ function keyboardSteerMogli:ksmUpdateGear( superFunc, acceleratorPedal, dt )
 		if self.gearChangeTimer > 0 and self.ksmAutoDownTimer < 1000 then 
 			self.ksmAutoDownTimer = 1000 
 		end 
+		
+		if curBrake >= 0.1 or self.ksmBrakeTimer == nil then  
+			self.ksmBrakeTimer = 1000 
+		elseif self.ksmBrakeTimer > 0 then 
+			self.ksmBrakeTimer = self.ksmBrakeTimer - dt 
+		end 
 
 			-- no automatic shifting#
 		if self.ksmClutchTimer > 0 and self.ksmAutoUpTimer < 500 then 
@@ -1720,6 +1711,19 @@ function keyboardSteerMogli:ksmUpdateGear( superFunc, acceleratorPedal, dt )
 		end 
 		if self.gearChangeTimer > 0 and self.ksmAutoDownTimer < 1000 then 
 			self.ksmAutoDownTimer = 1000 
+		end 
+		if curBrake >= 0.1 and self.ksmAutoDownTimer > 1000 then 
+		-- every second one gear 
+			self.ksmAutoDownTimer = 1000 
+		elseif self.ksmBrakeTimer > 0 and self.ksmAutoDownTimer < 3000 then 
+		-- no down shift after releasing the brakes 
+			self.ksmAutoDownTimer = 3000 
+		end 
+		if newAcc < 0.1 and curBrake < 0.1 and self.ksmAutoDownTimer < 1000 then 
+			self.ksmAutoDownTimer = 1000 
+		end 
+		if newAcc < 0.1 and self.ksmAutoUpTimer < 1000 then 
+			self.ksmAutoUpTimer = 1000 
 		end 
 		if self.ksmClutchTimer > 0 and self.ksmAutoUpTimer < 500 then 
 			self.ksmAutoUpTimer = 500 
@@ -1739,9 +1743,8 @@ function keyboardSteerMogli:ksmUpdateGear( superFunc, acceleratorPedal, dt )
 				and ( lastFwd ~= fwd or self.vehicle.ksmNeutral or self.ksmAutoStop ) then 
 			newGear = self.vehicle.ksmLaunchGear
 		elseif self.vehicle.ksmAutoShift and self.gearChangeTimer <= 0 and not self.vehicle.ksmNeutral then 
-			local m0 = 0.05 * self.maxRpm 
-			local m1 = self.minRpm + m0 
-			local m4 = self.maxRpm - 0.5 * m0  
+			local m1 = self.minRpm * 1.1
+			local m4 = self.maxRpm * 0.975
 			local m2 = math.min( m4, m1 / 0.72 )
 			local m3 = math.max( m1, m4 * 0.72 )
 			local autoMinRpm = m1 + self.ksmLoad * ( m3 - m1 )
@@ -1751,8 +1754,8 @@ function keyboardSteerMogli:ksmUpdateGear( superFunc, acceleratorPedal, dt )
 				autoMinRpm = math.max( m1, autoMaxRom * 0.8 )
 			end 
 					
-			if wheelRpm > m4 and self.ksmAutoUpTimer > 500 then
-				self.ksmAutoUpTimer = 500
+			if wheelRpm > m4 and self.ksmAutoUpTimer > 0 then
+				self.ksmAutoUpTimer = 0
 			end 
 			if self.ksmClutchTimer <= 0 and wheelRpm < m1 and gear > self.vehicle.ksmLaunchGear and self.ksmAutoDownTimer > 500 then 
 				self.ksmAutoDownTimer = 500
@@ -1932,7 +1935,7 @@ function keyboardSteerMogli:ksmUpdateGear( superFunc, acceleratorPedal, dt )
 				self.ksmAutoDownTimer = math.max( self.ksmAutoDownTimer, 500  + self.gearChangeTimer )
 			end
 		else
-			if wheelRpm < self.minRpm then 
+			if wheelRpm < self.minRpm * 1.05 then 
 				if isNeutral and newAcc < 0.1 then 
 					self.ksmAutoStop = true 
 				elseif not ( self.ksmAutoStop ) then 
@@ -1947,8 +1950,6 @@ function keyboardSteerMogli:ksmUpdateGear( superFunc, acceleratorPedal, dt )
 		
 		self.minGearRatio = self.maxRpm / ( maxSpeed * keyboardSteerMogli.factor30pi )
 		self.maxGearRatio = self.minGearRatio 
-		self.ksmMinRpm    = 0
-		self.ksmMaxRpm    = 1.1 * self.maxRpm
 				
 		if self.gearChangeTimer > 0 then 
 			newAcc              = 0
