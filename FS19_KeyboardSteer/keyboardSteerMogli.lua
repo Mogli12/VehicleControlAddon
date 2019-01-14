@@ -117,7 +117,7 @@ function keyboardSteerMogli:onLoad(savegame)
 	keyboardSteerMogli.registerState( self, "ksmWarningText" , ""   , keyboardSteerMogli.ksmOnSetWarningText )
 	keyboardSteerMogli.registerState( self, "ksmLimitThrottle",KSMGlobals.limitThrottle )
 	keyboardSteerMogli.registerState( self, "ksmSnapAngle"   , KSMGlobals.snapAngle, keyboardSteerMogli.ksmOnSetSnapAngle )
-	keyboardSteerMogli.registerState( self, "ksmSnapIsOn" ,    false )
+	keyboardSteerMogli.registerState( self, "ksmSnapIsOn" ,    false, keyboardSteerMogli.ksmOnSetSnapIsOn )
 	keyboardSteerMogli.registerState( self, "ksmInchingIsOn" , false )
 	keyboardSteerMogli.registerState( self, "ksmNoAutoRotBack",false )
 	keyboardSteerMogli.registerState( self, "ksmBrakeLights",  false )
@@ -143,16 +143,26 @@ function keyboardSteerMogli:onLoad(savegame)
 	for i,c in pairs(self.spec_enterable.cameras) do
 		self:ksmIsValidCam( i, true )
 	end
-    
-    local AutoSteerStartSoundFile = keyboardSteerMogli.baseDirectory.."GPS_on.ogg"
-    self.AutoSteerStartSoundId = createSample("AutoSteerOnSound")
-    loadSample(self.AutoSteerStartSoundId, AutoSteerStartSoundFile, false)
-	self.AutoSteerAllowStartSound = true
-	
-	local AutoSteerStopSoundFile = keyboardSteerMogli.baseDirectory.."GPS_off.ogg"
-    self.AutoSteerStopSoundId = createSample("AutoSteerOffSound")
-    loadSample(self.AutoSteerStopSoundId, AutoSteerStopSoundFile, false)
-	self.AutoSteerAllowStopSound = false
+
+	if self.isClient then 
+		if keyboardSteerMogli.snapOnSample == nil then 
+			local fileName = Utils.getFilename( "GPS_on.ogg", keyboardSteerMogli.baseDirectory )
+			keyboardSteerMogli.snapOnSample = createSample("AutoSteerOnSound")
+			loadSample(keyboardSteerMogli.snapOnSample, fileName, false)
+		end 
+		
+		if keyboardSteerMogli.snapOffSample == nil then 
+			local fileName = Utils.getFilename( "GPS_off.ogg", keyboardSteerMogli.baseDirectory )
+			keyboardSteerMogli.snapOffSample = createSample("AutoSteerOffSound")
+			loadSample(keyboardSteerMogli.snapOffSample, fileName, false)
+		end 
+		
+		if keyboardSteerMogli.bovSample == nil then 
+			local fileName = Utils.getFilename( "blowOffVentil.ogg", keyboardSteerMogli.baseDirectory )
+			keyboardSteerMogli.bovSample = createSample("keyboardSteerMogliBOVSample")
+			loadSample(keyboardSteerMogli.bovSample, fileName, false)
+		end 	
+	end 	
 end
 
 function keyboardSteerMogli:onPostLoad(savegame)
@@ -649,33 +659,7 @@ function keyboardSteerMogli:actionCallback(actionName, keyStatus, arg4, arg5, ar
 		self:ksmSetState( "ksmShuttleFwd", false )
 	elseif actionName == "ksmSNAP" then
 		self:ksmSetState( "ksmSnapIsOn", not self.ksmSnapIsOn )
-        
-        -- auto steer sounds
-        -- this needs to go here or sound plays on all clients, not sure if this is bug or feature
-        -- playSample() docs are incomplete for FS19 https://forum.giants-software.com/viewtopic.php?f=964&t=140360&p=1087622
-        if self.ksmSnapIsOn then
-            if self:getIsVehicleControlledByPlayer() and self:getIsActive() and self.AutoSteerAllowStartSound then
-                if self.AutoSteerStartSoundId ~= nil then
-                    playSample(self.AutoSteerStartSoundId, 1, 0.25, 0, 0, 0)
-                end
-                self.AutoSteerAllowStartSound = false
-            end
-            if not self.AutoSteerAllowStopSound then
-                self.AutoSteerAllowStopSound = true
-            end
-        else
-            if not self.AutoSteerAllowStartSound then
-                self.AutoSteerAllowStartSound = true
-            end
-            if self:getIsVehicleControlledByPlayer() and self:getIsActive() and self.AutoSteerAllowStopSound then
-                if self.AutoSteerStopSoundId ~= nil then
-                    playSample(self.AutoSteerStopSoundId, 1, 0.25, 0, 0, 0)
-                end
-                self.AutoSteerAllowStopSound = false
-            end
-        end
-        
-	elseif actionName == "ksmNeutral" then
+ 	elseif actionName == "ksmNeutral" then
 		self:ksmSetState( "ksmNeutral", not self.ksmNeutral )
 	elseif actionName == "ksmSETTINGS" then
 		keyboardSteerMogli.ksmShowSettingsUI( self )
@@ -2076,14 +2060,28 @@ function keyboardSteerMogli:ksmOnSetSnapAngle( old, new, noEventSend )
 	end 
 end 
 
-function keyboardSteerMogli:ksmOnSetGearChanged( old, new, noEventSend )
-	if self.isClient and old == nil or new > old then 
-		if keyboardSteerMogli.bovSample == nil then 
-			keyboardSteerMogli.bovSample = createSample("keyboardSteerMogliBOVSample")
-			local fileName = Utils.getFilename( "blowOffVentil.ogg", keyboardSteerMogli.baseDirectory )
-			loadSample(keyboardSteerMogli.bovSample, fileName, false)
+function keyboardSteerMogli:ksmOnSetSnapIsOn( old, new, noEventSend )
+	self.ksmSnapIsOn = new 
+	
+  if      ( old == nil or new ~= old )
+			and self.isClient
+			and self:getIsEntered()
+			and self:getIsVehicleControlledByPlayer() then
+		if new and keyboardSteerMogli.snapOnSample ~= nil then
+      playSample(keyboardSteerMogli.snapOnSample, 1, 0.2, 0, 0, 0)
+		elseif not new and keyboardSteerMogli.snapOffSample ~= nil then
+      playSample(keyboardSteerMogli.snapOffSample, 1, 0.2, 0, 0, 0)
 		end 
-		local v = 0.14 * new 
+	end 
+end 
+
+function keyboardSteerMogli:ksmOnSetGearChanged( old, new, noEventSend )
+	if      ( old == nil or new > old )
+			and self.isClient
+			and self:getIsEntered()
+			and self:getIsVehicleControlledByPlayer()
+			and keyboardSteerMogli.bovSample ~= nil then 
+		local v = 0.2 * new 
 		if isSamplePlaying( keyboardSteerMogli.bovSample ) then
 			setSampleVolume( keyboardSteerMogli.bovSample, v )
 		else 
