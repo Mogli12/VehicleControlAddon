@@ -108,7 +108,7 @@ end
 -- functions for others mods 
 function keyboardSteerMogli:ksmExternalSetShuttleCtrl( value )
 	if type( value ) == "boolean" then 
-		self:ksmSetState( "ksmShuttleCtrl", bool )
+		self:ksmSetState( "ksmShuttleCtrl", value )
 	end 
 end 
 
@@ -197,7 +197,8 @@ function keyboardSteerMogli:onLoad(savegame)
 	keyboardSteerMogli.registerState( self, "ksmGear",         0 )
 	keyboardSteerMogli.registerState( self, "ksmRange",        0 )
 	keyboardSteerMogli.registerState( self, "ksmNeutral",      false )
-	keyboardSteerMogli.registerState( self, "ksmAutoShift",    false )
+	keyboardSteerMogli.registerState( self, "ksmAutoShift",    true )
+	keyboardSteerMogli.registerState( self, "ksmGearShifter",  false )
 	keyboardSteerMogli.registerState( self, "ksmLimitSpeed",   true )
 	keyboardSteerMogli.registerState( self, "ksmLaunchGear",   KSMGlobals.launchGear )
 	keyboardSteerMogli.registerState( self, "ksmBOVVolume",    0, keyboardSteerMogli.ksmOnSetGearChanged )
@@ -568,11 +569,37 @@ function keyboardSteerMogli:actionCallback(actionName, keyStatus, arg4, arg5, ar
 			or actionName == "ksmShifter2" 
 			or actionName == "ksmShifter3" 
 			or actionName == "ksmShifter4" then
+		self:ksmSetState("ksmGearShifter", true)
 		if self.ksmShuttleCtrl and self.ksmTransmission >= 2 and self.ksmShifter7isR1 == nil then 
 			self.ksmShifter7isR1 = true 
 		end 
+		if     self.ksmTransmission == 3 then 
+		-- G27/G29 and 4x4 powershift => shift ranges instead of gears
+			local g
+			if     actionName == "ksmShifter1" then
+				g = 1
+			elseif actionName == "ksmShifter2" then
+				g = 2
+			elseif actionName == "ksmShifter3" then
+				g = 3
+			elseif actionName == "ksmShifter4" then
+				g = 4
+			end 
+			
+			if keyStatus > 0 then 
+				self:ksmSetState( "ksmRange", g )
+				self:ksmSetState( "ksmNeutral", false )
+				if self.ksmShuttleCtrl and self.ksmShifter7isR1 then
+					self:ksmSetState( "ksmShuttleFwd", true )
+				end
+			else 
+				self:ksmSetState( "ksmNeutral", true )
+				if self.spec_motorized.motor.ksmLoad ~= nil then 
+					self:ksmSetState("ksmBOVVolume",self.spec_motorized.motor.ksmLoad)
+				end 
+			end 
+		elseif self.ksmTransmission >= 2 then 
 		-- G27/G29 shifter gears 1..4; go to neutral if released
-		if self.ksmTransmission >= 2 then 
 			local g
 			if     actionName == "ksmShifter1" then
 				g = 1
@@ -590,7 +617,6 @@ function keyboardSteerMogli:actionCallback(actionName, keyStatus, arg4, arg5, ar
 			if keyStatus > 0 then 
 				self:ksmSetState( "ksmGear", g )
 				self:ksmSetState( "ksmNeutral", false )
-				self:ksmSetState( "ksmAutoShift", false )
 				if self.ksmShuttleCtrl and self.ksmShifter7isR1 then
 					self:ksmSetState( "ksmShuttleFwd", true )
 				end
@@ -602,10 +628,25 @@ function keyboardSteerMogli:actionCallback(actionName, keyStatus, arg4, arg5, ar
 			end 
 		end 
 	elseif actionName == "ksmShifter5" then
+		self:ksmSetState("ksmGearShifter", true)
 		if self.ksmShuttleCtrl and self.ksmTransmission >= 2 and self.ksmShifter7isR1 == nil then 
 			self.ksmShifter7isR1 = true 
 		end 
-		if self.ksmTransmission >= 4 then 
+		if     self.ksmTransmission == 3 then 
+		-- G27/G29 and 4x4 powershift => shift ranges instead of gears
+			self.ksmShifter7isR1 = true 
+		-- G27/G29 1st reverse gear; go to neutral if released
+			if keyStatus > 0 then 
+				self:ksmSetState( "ksmRange", 1 )
+				self:ksmSetState( "ksmNeutral", false )
+				self:ksmSetState( "ksmShuttleFwd", false )
+			else 
+				self:ksmSetState( "ksmNeutral", true  )
+				if self.spec_motorized.motor.ksmLoad ~= nil then 
+					self:ksmSetState("ksmBOVVolume",self.spec_motorized.motor.ksmLoad)
+				end 
+			end 
+		elseif self.ksmTransmission >= 4 then 
 		-- G27/G29 shifter gear 5; go to neutral if released
 			local g = 5
 			if self.ksmTransmission == 5 then 
@@ -615,7 +656,6 @@ function keyboardSteerMogli:actionCallback(actionName, keyStatus, arg4, arg5, ar
 			if keyStatus > 0 then 
 				self:ksmSetState( "ksmGear", g )
 				self:ksmSetState( "ksmNeutral", false )
-				self:ksmSetState( "ksmAutoShift", false )
 				if self.ksmShuttleCtrl and self.ksmShifter7isR1 then
 					self:ksmSetState( "ksmShuttleFwd", true )
 				end
@@ -630,10 +670,25 @@ function keyboardSteerMogli:actionCallback(actionName, keyStatus, arg4, arg5, ar
 			self:ksmSetState( "ksmRange", self.ksmRange + 1 )
 		end 
 	elseif actionName == "ksmShifter6" then
+		self:ksmSetState("ksmGearShifter", true)
 		if self.ksmShuttleCtrl and self.ksmTransmission >= 2 and self.ksmShifter7isR1 == nil then 
 			self.ksmShifter7isR1 = true 
 		end 
-		if self.ksmTransmission >= 4 then 
+		if self.ksmTransmission == 3 then 
+		-- G27/G29 and 4x4 powershift => shift ranges instead of gears
+			self.ksmShifter7isR1 = true 
+		-- G27/G29 1st reverse gear; go to neutral if released
+			if keyStatus > 0 then 
+				self:ksmSetState( "ksmRange", 2 )
+				self:ksmSetState( "ksmNeutral", false )
+				self:ksmSetState( "ksmShuttleFwd", false )
+			else 
+				self:ksmSetState( "ksmNeutral", true  )
+				if self.spec_motorized.motor.ksmLoad ~= nil then 
+					self:ksmSetState("ksmBOVVolume",self.spec_motorized.motor.ksmLoad)
+				end 
+			end 
+		elseif self.ksmTransmission >= 4 then 
 		-- G27/G29 shifter gear 6; go to neutral if released
 			local g = 6
 			if self.ksmTransmission == 5 then 
@@ -643,7 +698,6 @@ function keyboardSteerMogli:actionCallback(actionName, keyStatus, arg4, arg5, ar
 			if keyStatus > 0 then 
 				self:ksmSetState( "ksmGear", g )
 				self:ksmSetState( "ksmNeutral", false )
-				self:ksmSetState( "ksmAutoShift", false )
 				if self.ksmShuttleCtrl and self.ksmShifter7isR1 then 
 					self:ksmSetState( "ksmShuttleFwd", true )
 				end
@@ -658,7 +712,22 @@ function keyboardSteerMogli:actionCallback(actionName, keyStatus, arg4, arg5, ar
 			self:ksmSetState( "ksmRange", self.ksmRange - 1 )
 		end 
 	elseif actionName == "ksmShifter7" then 
-		if self.ksmShuttleCtrl and self.ksmTransmission >= 2 then 
+		self:ksmSetState("ksmGearShifter", true)
+		if self.ksmTransmission == 3 then 
+		-- G27/G29 and 4x4 powershift => shift ranges instead of gears
+			self.ksmShifter7isR1 = true 
+		-- G27/G29 1st reverse gear; go to neutral if released
+			if keyStatus > 0 then 
+				self:ksmSetState( "ksmRange", 3 )
+				self:ksmSetState( "ksmNeutral", false )
+				self:ksmSetState( "ksmShuttleFwd", false )
+			else 
+				self:ksmSetState( "ksmNeutral", true  )
+				if self.spec_motorized.motor.ksmLoad ~= nil then 
+					self:ksmSetState("ksmBOVVolume",self.spec_motorized.motor.ksmLoad)
+				end 
+			end 
+		elseif self.ksmShuttleCtrl and self.ksmTransmission >= 2 then 
 			self.ksmShifter7isR1 = true 
 		-- G27/G29 1st reverse gear; go to neutral if released
 			if keyStatus > 0 then 
@@ -670,7 +739,6 @@ function keyboardSteerMogli:actionCallback(actionName, keyStatus, arg4, arg5, ar
 				self:ksmSetState( "ksmGear", g )
 				self:ksmSetState( "ksmNeutral", false )
 				self:ksmSetState( "ksmShuttleFwd", false )
-				self:ksmSetState( "ksmAutoShift", false )
 			else 
 				self:ksmSetState( "ksmNeutral", true  )
 				if self.spec_motorized.motor.ksmLoad ~= nil then 
@@ -684,6 +752,9 @@ function keyboardSteerMogli:actionCallback(actionName, keyStatus, arg4, arg5, ar
 			self:ksmSetState("ksmBOVVolume",self.spec_motorized.motor.ksmLoad)
 		end 		
 	elseif actionName == "ksmGearUp"    then
+		if self.ksmTransmission ~= 3 then 
+			self:ksmSetState("ksmGearShifter", false)
+		end 	
 		if     self.ksmTransmission == 2
 				or self.ksmTransmission == 3 then 
 			if self.ksmGear < 4 then 
@@ -699,6 +770,9 @@ function keyboardSteerMogli:actionCallback(actionName, keyStatus, arg4, arg5, ar
 			end 
 		end 
 	elseif actionName == "ksmGearDown"  then 
+		if self.ksmTransmission ~= 3 then 
+			self:ksmSetState("ksmGearShifter", false)
+		end 
 		if     self.ksmTransmission == 2
 				or self.ksmTransmission == 3
 				or self.ksmTransmission == 4
@@ -708,7 +782,21 @@ function keyboardSteerMogli:actionCallback(actionName, keyStatus, arg4, arg5, ar
 			end 
 		end 
 	elseif actionName == "ksmRangeUp"   then 
-		if     self.ksmTransmission == 2
+		if self.ksmTransmission == 3 then 
+			self:ksmSetState("ksmGearShifter", false)
+		end 
+		if     self.ksmShifter7isR1 then 
+			local m
+			if     self.ksmTransmission == 2
+				  or self.ksmTransmission == 3 then
+				m = 4
+			elseif self.ksmTransmission == 4 then
+				m = 2
+			end 
+			if self.ksmRange < m then 
+				self:ksmSetState( "ksmRange", self.ksmRange + 1 )
+			end 
+		elseif self.ksmTransmission == 2
 				or self.ksmTransmission == 3 then 
 			if     self.ksmRange == 1 then 
 				self:ksmSetState( "ksmRange", 2 )
@@ -727,7 +815,14 @@ function keyboardSteerMogli:actionCallback(actionName, keyStatus, arg4, arg5, ar
 			end 
 		end 
 	elseif actionName == "ksmRangeDown" then 
-		if     self.ksmTransmission == 2
+		if self.ksmTransmission == 3 then 
+			self:ksmSetState("ksmGearShifter", false)
+		end 
+		if     self.ksmShifter7isR1 then 
+			if self.ksmRange > 1 then 
+				self:ksmSetState( "ksmRange", self.ksmRange - 1 )
+			end 
+		elseif self.ksmTransmission == 2
 				or self.ksmTransmission == 3 then 
 			if     self.ksmRange == 2 then 
 				self:ksmSetState( "ksmRange", 1 )
@@ -773,6 +868,7 @@ function keyboardSteerMogli:onLeaveVehicle()
 	self.ksmNewRotCursorKey  = nil
 	self.ksmPrevRotCursorKey = nil
 	self:ksmSetState( "ksmSnapIsOn", false )
+	self:ksmSetState( "ksmGearShifter", false )
 	self.ksmLastSnapAngle = nil
 end 
 
@@ -1585,6 +1681,8 @@ function keyboardSteerMogli:ksmUpdateGear( superFunc, acceleratorPedal, dt )
 	self.ksmMinRpm    = nil 
 	self.ksmMaxRpm    = nil 
 	self.ksmFakeRpm   = nil
+	local speed       = math.abs( self.vehicle.lastSpeedReal ) *3600
+	local motorPtoRpm = math.min(PowerConsumer.getMaxPtoRpm(self.vehicle)*self.ptoMotorRpmRatio, self.maxRpm)
 	
 	if not ( self.vehicle:getIsVehicleControlledByPlayer() 
 			and ( self.vehicle.ksmTransmission ~= nil	
@@ -1614,9 +1712,15 @@ function keyboardSteerMogli:ksmUpdateGear( superFunc, acceleratorPedal, dt )
 		if newAcc < 0 then 
 			newAcc = 0
 		end 
+		if self.vehicle.movingDirection < 0 then 
+			speed = -speed 
+		end 
 	else 
 		if newAcc > 0 then 
 			newAcc = 0 
+		end 
+		if self.vehicle.movingDirection > 0 then 
+			speed = -speed 
 		end 
 	end 
 	if g_gui:getIsGuiVisible() then
@@ -1626,7 +1730,7 @@ function keyboardSteerMogli:ksmUpdateGear( superFunc, acceleratorPedal, dt )
 	--****************************************
 -- handbrake
 	if self.vehicle.ksmNeutral then 
-		local rpm = self.minRpm 
+		local rpm = math.max( self.minRpm, motorPtoRpm )
 		local acc = math.abs( newAcc )
 		local add = self.maxRpm - self.minRpm
 		newAcc = 0
@@ -1636,7 +1740,7 @@ function keyboardSteerMogli:ksmUpdateGear( superFunc, acceleratorPedal, dt )
 		end
 			
 		if acc > 0 then 
-			rpm = self.minRpm + acc * add
+			rpm = rpm + acc * ( self.maxRpm - rpm )
 		end 
 		
 		if lastFakeRpm == nil then 
@@ -1658,8 +1762,6 @@ function keyboardSteerMogli:ksmUpdateGear( superFunc, acceleratorPedal, dt )
 	end 
 	
 	local curAcc      = math.abs( newAcc )
-	local speed       = math.abs( self.vehicle.lastSpeedReal ) *3600
-	local motorPtoRpm = math.min(PowerConsumer.getMaxPtoRpm(self.vehicle)*self.ptoMotorRpmRatio, self.maxRpm)
 	
 	if     self.vehicle.ksmTransmission == 1 then 
 	--****************************************	
@@ -1723,7 +1825,7 @@ function keyboardSteerMogli:ksmUpdateGear( superFunc, acceleratorPedal, dt )
 				if not fwd then 
 					minRatio     = self.minBackwardGearRatio
 				end 
-				local wheelRpm = (speed + 1 )/3.6 * 60 / (math.pi+math.pi)
+				local wheelRpm = (speed + 1 )/3.6 * keyboardSteerMogli.factor30pi
 				local newRpm   = wheelRpm * minRatio 
 				if newRpm < minReducedRpm then 
 					newRpm = minReducedRpm 
@@ -1931,8 +2033,24 @@ function keyboardSteerMogli:ksmUpdateGear( superFunc, acceleratorPedal, dt )
 		elseif  self.vehicle.ksmAutoShift 
 				and gear > self.vehicle.ksmLaunchGear
 				and ( lastFwd ~= fwd or self.vehicle.ksmNeutral or self.ksmAutoStop ) then 
-			newGear = self.vehicle.ksmLaunchGear
-		elseif self.vehicle.ksmAutoShift and self.gearChangeTimer <= 0 and not self.vehicle.ksmNeutral then 
+			if self.vehicle.ksmGearShifter then 
+			--if self.vehicle.ksmTransmission == 3 then 
+			--	if     self.vehicle.ksmRange == 1 then 
+			--		newGear = 1
+			--	elseif self.vehicle.ksmRange == 2 then 
+			--		newGear = 3
+			--	elseif self.vehicle.ksmRange == 3 then 
+			--		newGear = 6
+			--	elseif self.vehicle.ksmRange == 4 then 
+			--		newGear = 9
+			--	end 
+			--end 
+			else 
+				newGear = self.vehicle.ksmLaunchGear
+			end 
+		elseif self.vehicle.ksmAutoShift and self.gearChangeTimer <= 0 and not self.vehicle.ksmNeutral
+		  --and ( self.vehicle.ksmTransmission == 3 or not self.vehicle.ksmGearShifter ) then
+		    and not self.vehicle.ksmGearShifter then
 			local m1 = self.minRpm * 1.1
 			local m4 = self.maxRpm * 0.975
 			local m2 = math.min( m4, m1 / 0.72 )
@@ -1965,7 +2083,28 @@ function keyboardSteerMogli:ksmUpdateGear( superFunc, acceleratorPedal, dt )
 				lowGear    = self.vehicle.ksmLaunchGear
 			end 
 			
+			gearlist = {}
 			if searchUp or searchDown then 
+				for i=1,12 do 
+					if ( i < gear and searchDown and i >= lowGear ) or ( searchUp and i > gear )  then 
+						if self.vehicle.ksmGearShifter then 
+							if     self.vehicle.ksmRange == 1 and 1 <= i and i <=  4 then 
+								table.insert( gearlist, i )
+							elseif self.vehicle.ksmRange == 2 and 3 <= i and i <=  6 then 
+								table.insert( gearlist, i )
+							elseif self.vehicle.ksmRange == 3 and 6 <= i and i <=  9 then 
+								table.insert( gearlist, i )
+							elseif self.vehicle.ksmRange == 4 and 9 <= i and i <= 12 then 
+								table.insert( gearlist, i )
+							end 
+						else 
+							table.insert( gearlist, i )
+						end 
+					end 
+				end 
+			end 
+			
+			if #gearlist > 0 then 
 				local d = 0
 				if wheelRpm < autoMinRpm then 
 					d = autoMinRpm - wheelRpm
@@ -1976,22 +2115,20 @@ function keyboardSteerMogli:ksmUpdateGear( superFunc, acceleratorPedal, dt )
 				d = d - 1
 				local d1 = d
 				local rr = wheelRpm
-				for i,r in pairs( keyboardSteerMogli.gearRatios ) do 
-					if ( i < gear and searchDown and i >= lowGear ) or ( searchUp and i > gear )  then 
-						local rpm = wheelRpm * ratio / r 
-						local d2 = 0
-						if rpm < autoMinRpm then 
-							d2 = autoMinRpm - rpm
-						end 
-						rpm = clutchRpm * ratio / r 
-						if rpm > autoMaxRpm then 
-							d2 = math.max( d2, rpm - autoMaxRpm )
-						end 
-						if d2 < d or ( d2 == d and searchUp ) then 
-							newGear = i 
-							d = d2
-							rr = rpm
-						end 
+				for _,i in pairs( gearlist ) do 
+					local rpm = wheelRpm * ratio / keyboardSteerMogli.gearRatios[i] 
+					local d2 = 0
+					if rpm < autoMinRpm then 
+						d2 = autoMinRpm - rpm
+					end 
+					rpm = clutchRpm * ratio / keyboardSteerMogli.gearRatios[i] 
+					if rpm > autoMaxRpm then 
+						d2 = math.max( d2, rpm - autoMaxRpm )
+					end 
+					if d2 < d or ( d2 == d and searchUp ) then 
+						newGear = i 
+						d = d2
+						rr = rpm
 					end 
 				end 
 				
