@@ -13,13 +13,13 @@ function keyboardSteerMogli.prerequisitesPresent(specializations)
 end
 
 function keyboardSteerMogli.registerEventListeners(vehicleType)
-	if g_modIsLoaded.TSX_EnhancedVehicle then 
-		print("KeyboardSteer is disabled due to mod conflict")
-	else 
+--if g_modIsLoaded.TSX_EnhancedVehicle then 
+--	print("KeyboardSteer is disabled due to mod conflict")
+--else 
 		for _,n in pairs( { "onLoad", "onPostLoad", "onUpdate", "onDraw", "onLeaveVehicle", "onReadStream", "onWriteStream", "saveToXMLFile", "onRegisterActionEvents" } ) do
 			SpecializationUtil.registerEventListener(vehicleType, n, keyboardSteerMogli)
 		end 
-	end 
+--end 
 end 
 
 KSMGlobals = {}
@@ -37,6 +37,7 @@ function keyboardSteerMogli.globalsReset( createIfMissing )
   KSMGlobals.brakeForceFactor    = 0
   KSMGlobals.snapAngleHudX       = 0
   KSMGlobals.snapAngleHudY       = 0
+	KSMGlobals.drawHud             = false  
   KSMGlobals.transmission        = 0
   KSMGlobals.launchGear          = 0
 	KSMGlobals.clutchTimer         = 0
@@ -103,17 +104,82 @@ function keyboardSteerMogli:ksmIsValidCam( index, createIfMissing )
 	return false
 end
 
+--********************************************************************************************
+-- functions for others mods 
+function keyboardSteerMogli:ksmExternalSetShuttleCtrl( value )
+	if type( value ) == "boolean" then 
+		self:ksmSetState( "ksmShuttleCtrl", bool )
+	end 
+end 
+
+function keyboardSteerMogli:ksmExternalSetMovingDirection( value )
+	if type( value ) == "number" then 
+		self:ksmSetState( "ksmExternalDir", bool )
+	end 
+end 
+
+function keyboardSteerMogli:ksmExternalSetOverwriteBrakeForce( value )
+	if value then 
+		self:ksmSetState( "ksmBrakeForce", KSMGlobals.brakeForceFactor )
+	else 
+		self:ksmSetState( "ksmBrakeForce", 1 )
+	end 
+end 
+
+function keyboardSteerMogli:ksmExternalSetHideHud( value )
+	if value then 
+		self:ksmSetState( "ksmDrawHud", false )
+	else 
+		self:ksmSetState( "ksmDrawHud", true )
+	end 
+end 
+
+function keyboardSteerMogli:ksmExternalGetHudPosition()
+	if not self.ksmDrawHud then 
+		return 0, 0, 0, 0
+	end 
+	
+	local l = 0.025 * keyboardSteerMogli.getUiScale()
+
+	-- since we use align center it is hard to estimate the correct size
+	-- let's assume that it is 10 characters wide and 3.6 characters high	
+	if KSMGlobals.snapAngleHudX >= 0 then 
+		local x = KSMGlobals.snapAngleHudX
+		local y = KSMGlobals.snapAngleHudY
+		
+		return x, y, x+10*l, y+3.4*l 
+	end 
+	
+	local x = g_currentMission.inGameMenu.hud.speedMeter.gaugeCenterX
+	local y = g_currentMission.inGameMenu.hud.speedMeter.gaugeCenterY + g_currentMission.inGameMenu.hud.speedMeter.fuelGaugeRadiusY * 1.6
+	
+	return x-5*l, y+0.7*l, x+5*l, y+4.1*l 
+end 
+-- functions for others mods 
+--********************************************************************************************
+
 function keyboardSteerMogli:onLoad(savegame)
-	self.ksmDisabled      = false 
-	self.ksmScaleFx       = keyboardSteerMogli.ksmScaleFx
-	self.ksmSetState      = keyboardSteerMogli.mbSetState
-	self.ksmIsValidCam    = keyboardSteerMogli.ksmIsValidCam
+	self.ksmDisabled         = false 
+	self.ksmScaleFx          = keyboardSteerMogli.ksmScaleFx
+	self.ksmSetState         = keyboardSteerMogli.mbSetState
+	self.ksmIsValidCam       = keyboardSteerMogli.ksmIsValidCam
 	self.ksmGetCurrentCamRot = keyboardSteerMogli.ksmGetCurrentCamRot
+	
+	--********************************************************************************************
+	-- functions for others mods 
+	self.ksmExternalSetShuttleCtrl         = keyboardSteerMogli.ksmExternalSetShuttleCtrl
+	self.ksmExternalSetMovingDirection     = keyboardSteerMogli.ksmExternalSetMovingDirection
+	self.ksmExternalSetOverwriteBrakeForce = keyboardSteerMogli.ksmExternalSetOverwriteBrakeForce
+	self.ksmExternalSetHideHud             = keyboardSteerMogli.ksmExternalSetHideHud
+	self.ksmExternalGetHudPosition         = keyboardSteerMogli.ksmExternalGetHudPosition
+	-- functions for others mods 
+	--********************************************************************************************
 
 	keyboardSteerMogli.registerState( self, "ksmSteeringIsOn", KSMGlobals.adaptiveSteering )
 	keyboardSteerMogli.registerState( self, "ksmShuttleCtrl",  KSMGlobals.shuttleControl )
 	keyboardSteerMogli.registerState( self, "ksmPeekLeftRight",KSMGlobals.peekLeftRight )
 	keyboardSteerMogli.registerState( self, "ksmShuttleFwd",   true )
+	keyboardSteerMogli.registerState( self, "ksmExternalDir",  0 )
 	keyboardSteerMogli.registerState( self, "ksmCamFwd"      , true )
 	keyboardSteerMogli.registerState( self, "ksmCameraIsOn"  , false, keyboardSteerMogli.ksmOnSetCamera )
 	keyboardSteerMogli.registerState( self, "ksmReverseIsOn" , false, keyboardSteerMogli.ksmOnSetReverse )
@@ -122,6 +188,7 @@ function keyboardSteerMogli:onLoad(savegame)
 	keyboardSteerMogli.registerState( self, "ksmLimitThrottle",KSMGlobals.limitThrottle )
 	keyboardSteerMogli.registerState( self, "ksmSnapAngle"   , KSMGlobals.snapAngle, keyboardSteerMogli.ksmOnSetSnapAngle )
 	keyboardSteerMogli.registerState( self, "ksmSnapIsOn" ,    false, keyboardSteerMogli.ksmOnSetSnapIsOn )
+	keyboardSteerMogli.registerState( self, "ksmDrawHud" ,     KSMGlobals.drawHud )
 	keyboardSteerMogli.registerState( self, "ksmInchingIsOn" , false )
 	keyboardSteerMogli.registerState( self, "ksmNoAutoRotBack",false )
 	keyboardSteerMogli.registerState( self, "ksmBrakeForce",   KSMGlobals.brakeForceFactor )
@@ -166,16 +233,16 @@ function keyboardSteerMogli:onLoad(savegame)
 			keyboardSteerMogli.bovSample = createSample("keyboardSteerMogliBOVSample")
 			loadSample(keyboardSteerMogli.bovSample, fileName, false)
 		end 	
-	end 	
 	
-	if keyboardSteerMogli.ovArrowUpWhite == nil then
-		keyboardSteerMogli.ovArrowUpWhite   = createImageOverlay( Utils.getFilename( "arrow_up_white.dds",   keyboardSteerMogli.baseDirectory ))
-		keyboardSteerMogli.ovArrowUpGray    = createImageOverlay( Utils.getFilename( "arrow_up_gray.dds",    keyboardSteerMogli.baseDirectory ))
-		keyboardSteerMogli.ovArrowDownWhite = createImageOverlay( Utils.getFilename( "arrow_down_white.dds", keyboardSteerMogli.baseDirectory ))
-		keyboardSteerMogli.ovArrowDownGray  = createImageOverlay( Utils.getFilename( "arrow_down_gray.dds",  keyboardSteerMogli.baseDirectory ))
-		keyboardSteerMogli.ovHandBrakeUp    = createImageOverlay( Utils.getFilename( "hand_brake_up.dds",    keyboardSteerMogli.baseDirectory ))
-		keyboardSteerMogli.ovHandBrakeDown  = createImageOverlay( Utils.getFilename( "hand_brake_down.dds",  keyboardSteerMogli.baseDirectory ))
-	end 
+		if keyboardSteerMogli.ovArrowUpWhite == nil then
+			keyboardSteerMogli.ovArrowUpWhite   = createImageOverlay( Utils.getFilename( "arrow_up_white.dds",   keyboardSteerMogli.baseDirectory ))
+			keyboardSteerMogli.ovArrowUpGray    = createImageOverlay( Utils.getFilename( "arrow_up_gray.dds",    keyboardSteerMogli.baseDirectory ))
+			keyboardSteerMogli.ovArrowDownWhite = createImageOverlay( Utils.getFilename( "arrow_down_white.dds", keyboardSteerMogli.baseDirectory ))
+			keyboardSteerMogli.ovArrowDownGray  = createImageOverlay( Utils.getFilename( "arrow_down_gray.dds",  keyboardSteerMogli.baseDirectory ))
+			keyboardSteerMogli.ovHandBrakeUp    = createImageOverlay( Utils.getFilename( "hand_brake_up.dds",    keyboardSteerMogli.baseDirectory ))
+			keyboardSteerMogli.ovHandBrakeDown  = createImageOverlay( Utils.getFilename( "hand_brake_down.dds",  keyboardSteerMogli.baseDirectory ))
+		end 
+	end 	
 end
 
 function keyboardSteerMogli:onPostLoad(savegame)
@@ -529,6 +596,9 @@ function keyboardSteerMogli:actionCallback(actionName, keyStatus, arg4, arg5, ar
 				end
 			else 
 				self:ksmSetState( "ksmNeutral", true )
+				if self.spec_motorized.motor.ksmLoad ~= nil then 
+					self:ksmSetState("ksmBOVVolume",self.spec_motorized.motor.ksmLoad)
+				end 
 			end 
 		end 
 	elseif actionName == "ksmShifter5" then
@@ -551,6 +621,9 @@ function keyboardSteerMogli:actionCallback(actionName, keyStatus, arg4, arg5, ar
 				end
 			else 
 				self:ksmSetState( "ksmNeutral", true )
+				if self.spec_motorized.motor.ksmLoad ~= nil then 
+					self:ksmSetState("ksmBOVVolume",self.spec_motorized.motor.ksmLoad)
+				end 
 			end 
 		elseif self.ksmTransmission >= 2 and self.ksmTransmission <= 4 and keyStatus > 0 and self.ksmRange < 4 then 
 		-- G27/G29 shift range down
@@ -576,6 +649,9 @@ function keyboardSteerMogli:actionCallback(actionName, keyStatus, arg4, arg5, ar
 				end
 			else 
 				self:ksmSetState( "ksmNeutral", true )
+				if self.spec_motorized.motor.ksmLoad ~= nil then 
+					self:ksmSetState("ksmBOVVolume",self.spec_motorized.motor.ksmLoad)
+				end 
 			end 
 		elseif self.ksmTransmission >= 2 and keyStatus > 0 and self.ksmRange > 1 then 
 		-- G27/G29 shift range down
@@ -597,10 +673,16 @@ function keyboardSteerMogli:actionCallback(actionName, keyStatus, arg4, arg5, ar
 				self:ksmSetState( "ksmAutoShift", false )
 			else 
 				self:ksmSetState( "ksmNeutral", true  )
+				if self.spec_motorized.motor.ksmLoad ~= nil then 
+					self:ksmSetState("ksmBOVVolume",self.spec_motorized.motor.ksmLoad)
+				end 
 			end 
 		end
 	elseif actionName == "ksmClutchKey" then
 		self:ksmSetState("ksmNeutral", keyStatus > 0)
+		if keyStatus > 0 and self.spec_motorized.motor.ksmLoad ~= nil then 
+			self:ksmSetState("ksmBOVVolume",self.spec_motorized.motor.ksmLoad)
+		end 		
 	elseif actionName == "ksmGearUp"    then
 		if     self.ksmTransmission == 2
 				or self.ksmTransmission == 3 then 
@@ -717,6 +799,8 @@ function keyboardSteerMogli:onUpdate(dt)
 		end
 	end
 	
+	--*******************************************************************
+	-- overwrite or reset some values 
 	if self.ksmShuttleCtrl then 
 		if self.ksmReverserDirection == nil then 
 			self.ksmReverserDirection = self.spec_drivable.reverserDirection
@@ -728,6 +812,7 @@ function keyboardSteerMogli:onUpdate(dt)
 		end 
 	elseif self.ksmReverserDirection ~= nil then 
 		self.spec_drivable.reverserDirection = self.ksmReverserDirection
+		self.ksmReverserDirection            = nil
 	end 
 	
 	if self.ksmShuttleCtrl then 
@@ -737,6 +822,7 @@ function keyboardSteerMogli:onUpdate(dt)
 		self.spec_motorized.samples.reverseDrive = nil 
 	elseif self.ksmReverseDriveSample ~= nil then 
 		self.spec_motorized.samples.reverseDrive = self.ksmReverseDriveSample
+		self.ksmReverseDriveSample               = nil
 	end 
 	
 	if     self.spec_motorized.motor.lowBrakeForceScale == nil then
@@ -750,19 +836,56 @@ function keyboardSteerMogli:onUpdate(dt)
 		self.ksmLowBrakeForceScale                   = nil
 	end 
 	
-	if self.ksmMaxForwardSpeed == nil then 
-		self.ksmMaxForwardSpeed  = self.spec_motorized.motor.maxForwardSpeed 
-		self.ksmMaxBackwardSpeed = self.spec_motorized.motor.maxBackwardSpeed
-	elseif self.ksmLimitSpeed then 
-		self.spec_motorized.motor.maxForwardSpeed  = self.ksmMaxForwardSpeed 
-		self.spec_motorized.motor.maxBackwardSpeed = self.ksmMaxBackwardSpeed
-	else
+	if not self.ksmLimitSpeed then 
+		if self.ksmMaxForwardSpeed == nil then 
+			self.ksmMaxForwardSpeed  = self.spec_motorized.motor.maxForwardSpeed 
+			self.ksmMaxBackwardSpeed = self.spec_motorized.motor.maxBackwardSpeed
+		end
 		self.spec_motorized.motor.maxForwardSpeed  = self.ksmMaxSpeed 
 		self.spec_motorized.motor.maxBackwardSpeed = self.ksmMaxSpeed 
+	elseif self.ksmMaxForwardSpeed ~= nil then 
+		self.spec_motorized.motor.maxForwardSpeed  = self.ksmMaxForwardSpeed 
+		self.spec_motorized.motor.maxBackwardSpeed = self.ksmMaxBackwardSpeed
+		self.ksmMaxForwardSpeed  = nil
+		self.ksmMaxBackwardSpeed = nil
 	end 
 
+	if self.ksmNoAutoRotBack and self:getIsVehicleControlledByPlayer() then
+		if self.ksmAutoRotateBackSpeed == nil then 
+			self.ksmAutoRotateBackSpeed = self.autoRotateBackSpeed
+		end 
+		self:ksmSetState( "ksmSnapIsOn", false )
+		self.autoRotateBackSpeed      = 0
+	elseif self.ksmAutoRotateBackSpeed ~= nil then
+		self.autoRotateBackSpeed      = self.ksmAutoRotateBackSpeed
+		self.ksmAutoRotateBackSpeed   = nil 
+	end 
+	
+	if self.ksmInchingIsOn and self:getIsVehicleControlledByPlayer() and self.spec_drivable.cruiseControl.state == 1 then
+		local limitThrottleRatio     = 0.75
+		if self.ksmLimitThrottle < 11 then
+			limitThrottleRatio     = 0.45 + 0.05 * self.ksmLimitThrottle
+		else
+			limitThrottleRatio     = 1.5 - 0.05 * self.ksmLimitThrottle
+		end
+		if self.ksmSpeedLimit == nil then 
+			self.ksmSpeedLimit = self.spec_drivable.cruiseControl.speed
+		end 
+		self.spec_drivable.cruiseControl.speed = self.ksmSpeedLimit * limitThrottleRatio
+	elseif self.ksmSpeedLimit ~= nil then 
+		self.spec_drivable.cruiseControl.speed = self.ksmSpeedLimit
+		self.ksmSpeedLimit = nil
+	end 	
+	-- overwrite or reset some values 
+	--*******************************************************************
+	
+
 	if self:getIsActive() and self.isServer then
-		if      self.ksmShuttleCtrl then 
+		if     self.ksmExternalDir > 0 then 
+			self.ksmMovingDir = 1
+		elseif self.ksmExternalDir < 0 then 
+			self.ksmMovingDir = -1
+		elseif self.ksmShuttleCtrl then 
 			local controlledVehicles = g_currentMission.controlledVehicles
 			local isHudVisible = g_currentMission.hud:getIsVisible()
 			if self.ksmShuttleFwd then
@@ -796,17 +919,6 @@ function keyboardSteerMogli:onUpdate(dt)
 	local snapAngleLast   = self.ksmLastSnapAngle
 	self.ksmAxisSideLast  = nil
 	self.ksmLastSnapAngle = nil 
-	
-	if self.ksmNoAutoRotBack and self:getIsVehicleControlledByPlayer() then
-		if self.ksmAutoRotateBackSpeed == nil then 
-			self.ksmAutoRotateBackSpeed = self.autoRotateBackSpeed
-		end 
-		self:ksmSetState( "ksmSnapIsOn", false )
-		self.autoRotateBackSpeed      = 0
-	elseif self.ksmAutoRotateBackSpeed ~= nil then
-		self.autoRotateBackSpeed      = self.ksmAutoRotateBackSpeed
-		self.ksmAutoRotateBackSpeed   = nil 
-	end 
 	
 	if self.isClient and self.ksmSnapIsOn then 
 		if self:getIsVehicleControlledByPlayer() then 
@@ -905,8 +1017,7 @@ function keyboardSteerMogli:onUpdate(dt)
 				end 
 				
 				local targetBack = false 
-				if      self.ksmReverseIsOn
-						and not ( self.ksmCamFwd ) then 
+				if self.ksmReverseIsOn and not ( self.ksmCamFwd ) then 
 					targetBack = true 
 				end 
 				
@@ -1088,23 +1199,6 @@ function keyboardSteerMogli:onUpdate(dt)
 		self.ksmRotSpeedFactor = nil 
 	end 
 --******************************************************************************************************************************************
-
-	if self.ksmInchingIsOn and self:getIsVehicleControlledByPlayer() and self.spec_drivable.cruiseControl.state == 1 then
-		local limitThrottleRatio     = 0.75
-		if self.ksmLimitThrottle < 11 then
-			limitThrottleRatio     = 0.45 + 0.05 * self.ksmLimitThrottle
-		else
-			limitThrottleRatio     = 1.5 - 0.05 * self.ksmLimitThrottle
-		end
-		if self.ksmSpeedLimit == nil then 
-			self.ksmSpeedLimit = self.spec_drivable.cruiseControl.speed
-		end 
-		self.spec_drivable.cruiseControl.speed = self.ksmSpeedLimit * limitThrottleRatio
-	elseif self.ksmSpeedLimit ~= nil then 
-		self.spec_drivable.cruiseControl.speed = self.ksmSpeedLimit
-		self.ksmSpeedLimit = nil
-	end 
---******************************************************************************************************************************************
 	
 	if self.isClient and self:getIsVehicleControlledByPlayer() and self:getIsEntered() then 
 		if self.ksmShuttleCtrl and self.ksmReverseDriveSample ~= nil then 
@@ -1120,93 +1214,104 @@ function keyboardSteerMogli:onUpdate(dt)
 end  
 
 function keyboardSteerMogli:onDraw()
-	setTextAlignment( RenderText.ALIGN_CENTER ) 
-	setTextVerticalAlignment( RenderText.VERTICAL_ALIGN_MIDDLE )
-	setTextColor(1, 1, 1, 1) 
-	
-	local x = g_currentMission.inGameMenu.hud.speedMeter.gaugeCenterX
-	local y = g_currentMission.inGameMenu.hud.speedMeter.gaugeCenterY + g_currentMission.inGameMenu.hud.speedMeter.fuelGaugeRadiusY * 1.6
-	local l = 0.025 * keyboardSteerMogli.getUiScale()
-
 	if self:getIsVehicleControlledByPlayer() and not g_gui:getIsGuiVisible() then
-		local w = 0.015 * keyboardSteerMogli.getUiScale()
-		local h = w * g_screenAspectRatio
-		if self.ksmShuttleCtrl then 
-			if self.ksmShuttleFwd then
-				if     self.ksmNeutral and self.ksmShifter7isR1 then 
-				elseif self.ksmNeutral then 
-					renderOverlay( keyboardSteerMogli.ovHandBrakeUp, x-0.5*w, y-0.5*h, w, h )
-				elseif self.ksmShifter7isR1 then
-					renderOverlay( keyboardSteerMogli.ovArrowUpGray, x-0.5*w, y-0.5*h, w, h )
-				else 
-					renderOverlay( keyboardSteerMogli.ovArrowUpWhite, x-0.5*w, y-0.5*h, w, h )
-				end 
-			else 
-				if     self.ksmNeutral and self.ksmShifter7isR1 then 
-				elseif self.ksmNeutral then 
-					renderOverlay( keyboardSteerMogli.ovHandBrakeDown, x-0.5*w, y-0.5*h, w, h )
-				elseif self.ksmShifter7isR1 then
-					renderOverlay( keyboardSteerMogli.ovArrowDownGray, x-0.5*w, y-0.5*h, w, h )
-				else 
-					renderOverlay( keyboardSteerMogli.ovArrowDownWhite, x-0.5*w, y-0.5*h, w, h )
-				end 
-			end 
-		elseif self.ksmNeutral then 
-			renderText(x, y, l, "N")
-		end 
-	end 
-	
-	if self:getIsVehicleControlledByPlayer() and self.ksmTransmission >= 2 then 
-		y = y + l * 1.2
+		local x = g_currentMission.inGameMenu.hud.speedMeter.gaugeCenterX
+		local y = g_currentMission.inGameMenu.hud.speedMeter.gaugeCenterY + g_currentMission.inGameMenu.hud.speedMeter.fuelGaugeRadiusY * 1.6
+		local l = 0.025 * keyboardSteerMogli.getUiScale()
 		
-		local gear = keyboardSteerMogli.getGearIndex( self.ksmTransmission, self.ksmGear, self.ksmRange )		
-		local maxSpeed = 3.6 * keyboardSteerMogli.gearRatios[gear] * self.ksmMaxSpeed
-		local text = ""
-		
-		if     self.ksmTransmission == 5 then 
-		elseif self.ksmTransmission == 4 then 
-			if self.ksmRange == 1 then 
-				text = "L" 
-			else 
-				text = "H" 
-			end 
-		else 
-			if     self.ksmRange == 1 then 
-				text = "L" 
-			elseif self.ksmRange == 2 then 
-				text = "M" 
-			elseif self.ksmRange == 3 then 
-				text = "H" 
-			else
-				text = "S" 
+		setTextAlignment( RenderText.ALIGN_CENTER ) 
+		setTextVerticalAlignment( RenderText.VERTICAL_ALIGN_MIDDLE )
+		setTextColor(1, 1, 1, 1) 
+
+		if self.ksmShuttleCtrl or self.ksmTransmission ~= nil and self.ksmTransmission >= 2 then  
+			setTextAlignment( RenderText.ALIGN_CENTER ) 
+			setTextVerticalAlignment( RenderText.VERTICAL_ALIGN_MIDDLE )
+			setTextColor(1, 1, 1, 1) 
+			
+			if keyboardSteerMogli.ovArrowUpWhite ~= nil then
+				local w = 0.015 * keyboardSteerMogli.getUiScale()
+				local h = w * g_screenAspectRatio
+				if self.ksmShuttleCtrl then 
+					if self.ksmShuttleFwd then
+						if     self.ksmNeutral and self.ksmShifter7isR1 then 
+						elseif self.ksmNeutral then 
+							renderOverlay( keyboardSteerMogli.ovHandBrakeUp, x-0.5*w, y-0.5*h, w, h )
+						elseif self.ksmShifter7isR1 then
+							renderOverlay( keyboardSteerMogli.ovArrowUpGray, x-0.5*w, y-0.5*h, w, h )
+						else 
+							renderOverlay( keyboardSteerMogli.ovArrowUpWhite, x-0.5*w, y-0.5*h, w, h )
+						end 
+					else 
+						if     self.ksmNeutral and self.ksmShifter7isR1 then 
+						elseif self.ksmNeutral then 
+							renderOverlay( keyboardSteerMogli.ovHandBrakeDown, x-0.5*w, y-0.5*h, w, h )
+						elseif self.ksmShifter7isR1 then
+							renderOverlay( keyboardSteerMogli.ovArrowDownGray, x-0.5*w, y-0.5*h, w, h )
+						else 
+							renderOverlay( keyboardSteerMogli.ovArrowDownWhite, x-0.5*w, y-0.5*h, w, h )
+						end 
+					end 
+				elseif self.ksmNeutral then 
+					renderText(x, y, l, "N")
+				end 
 			end 
 		end 
 		
-		text = text .." "..string.format("%d %3.0f km/h",self.ksmGear, maxSpeed )
-		renderText(x, y, l, text)
-	end 
+		if self.ksmDrawHud then 
+			if KSMGlobals.snapAngleHudX >= 0 then 
+				x = KSMGlobals.snapAngleHudX
+				y = KSMGlobals.snapAngleHudY
+				setTextAlignment( RenderText.ALIGN_LEFT ) 
+				setTextVerticalAlignment( RenderText.VERTICAL_ALIGN_BASELINE )
+			else 
+				y = y + l * 1.2
+			end 
+			
+			if self.ksmTransmission >= 2 then 
+				local gear = keyboardSteerMogli.getGearIndex( self.ksmTransmission, self.ksmGear, self.ksmRange )		
+				local maxSpeed = 3.6 * keyboardSteerMogli.gearRatios[gear] * self.ksmMaxSpeed
+				local text = ""
+				
+				if     self.ksmTransmission == 5 then 
+				elseif self.ksmTransmission == 4 then 
+					if self.ksmRange == 1 then 
+						text = "L" 
+					else 
+						text = "H" 
+					end 
+				else 
+					if     self.ksmRange == 1 then 
+						text = "L" 
+					elseif self.ksmRange == 2 then 
+						text = "M" 
+					elseif self.ksmRange == 3 then 
+						text = "H" 
+					else
+						text = "S" 
+					end 
+				end 
+				
+				text = text .." "..string.format("%d %3.0f km/h",self.ksmGear, maxSpeed )
+				renderText(x, y, l, text)
+				y = y + l * 1.2	
+			end 
+
+			local lx,_,lz = localDirectionToWorld( self.components[1].node, 0, 0, 1 )			
+			if lx*lx+lz*lz > 1e-6 then 
+				renderText(x, y, l, string.format( "%4.1f°", math.deg( math.pi - math.atan2( lx, lz ) )))
+				y = y + l * 1.2	
+			end 
+			
+			if self.ksmLastSnapAngle ~= nil then
+				renderText(x, y, l, string.format( "%4.1f°", math.deg( math.pi - self.ksmLastSnapAngle )))
+				y = y + l * 1.2	
+			end
+			
+		end 
 	
-	if KSMGlobals.snapAngleHudX >= 0 then 
-		x = KSMGlobals.snapAngleHudX
-		y = KSMGlobals.snapAngleHudY
 		setTextAlignment( RenderText.ALIGN_LEFT ) 
 		setTextVerticalAlignment( RenderText.VERTICAL_ALIGN_BASELINE )
-	else 
-		y = y + l * 1.2
 	end 
-	
-	local lx,_,lz = localDirectionToWorld( self.components[1].node, 0, 0, 1 )			
-	if lx*lx+lz*lz > 1e-6 then 
-		renderText(x, y, l, string.format( "%4.1f°", math.deg( math.pi - math.atan2( lx, lz ) )))
-	end 
-	
-	y = y + l * 1.1	
-	if self.ksmLastSnapAngle ~= nil then
-		renderText(x, y, l, string.format( "%4.1f°", math.deg( math.pi - self.ksmLastSnapAngle )))
-	end
-	
-	setTextAlignment( RenderText.ALIGN_LEFT ) 
-	setTextVerticalAlignment( RenderText.VERTICAL_ALIGN_BASELINE )
 end
 
 function keyboardSteerMogli:onReadStream(streamId, connection)
@@ -1218,6 +1323,8 @@ function keyboardSteerMogli:onReadStream(streamId, connection)
   self.ksmShuttleCtrl   = streamReadBool(streamId) 
   self.ksmShuttleFwd    = streamReadBool(streamId) 
   self.ksmNeutral       = streamReadBool(streamId) 
+  self.ksmDrawHud       = streamReadBool(streamId) 
+	self.ksmExternalDir   = streamReadInt16(streamId)     
 	self.ksmExponent      = streamReadInt16(streamId)     
 	self.ksmSnapAngle     = streamReadInt16(streamId)     
 	
@@ -1241,9 +1348,10 @@ function keyboardSteerMogli:onWriteStream(streamId, connection)
 	streamWriteBool(streamId, self.ksmShuttleCtrl )     
 	streamWriteBool(streamId, self.ksmShuttleFwd )     
 	streamWriteBool(streamId, self.ksmNeutral )     
+	streamWriteBool(streamId, self.ksmDrawHud )     
+	streamWriteInt16(streamId,self.ksmExternalDir )     
 	streamWriteInt16(streamId,self.ksmExponent )     
 	streamWriteInt16(streamId,self.ksmSnapAngle )     
-
 	streamWriteBool(streamId,  self.ksmPeekLeftRight )
 	streamWriteBool(streamId,  self.ksmAutoShift     )
 	streamWriteBool(streamId,  self.ksmLimitSpeed    )
@@ -1385,9 +1493,13 @@ function keyboardSteerMogli:ksmUpdateWheelsPhysics( superFunc, dt, currentSpeed,
 					acceleration = 0 
 				end 
 			end 
+			if      self.spec_motorized.motor.ksmAutoStop
+					and acceleration < 0.1 then 
+				doHandbrake  = true 
+			end			
 		end 			
 			
-		if self.spec_drivable.cruiseControl.state == 0 and self.ksmLimitThrottle ~= nil and self.ksmInchingIsOn ~= nil then 
+		if self.spec_drivable.cruiseControl.state == 0 and self.ksmLimitThrottle ~= nil and self.ksmInchingIsOn ~= nil and math.abs( acceleration ) > 0.01 then 
 			local limitThrottleRatio     = 0.75
 			local limitThrottleIfPressed = true
 			if self.ksmLimitThrottle < 11 then
@@ -1411,12 +1523,17 @@ function keyboardSteerMogli:ksmUpdateWheelsPhysics( superFunc, dt, currentSpeed,
 	local state, result = pcall( superFunc, self, dt, currentSpeed, acceleration, doHandbrake, stopAndGoBraking ) 
 	if not ( state ) then
 		print("Error in updateWheelsPhysics :"..tostring(result))
-		self.ksmShuttleCtrl = false 
+		self.ksmShuttleCtrl  = false 
+		self.ksmTransmission = 0 
 	end
 	
 	if self.ksmShuttleCtrl then 
-		self:setBrakeLightsVisibility( brake )
-		self:setReverseLightsVisibility( not self.ksmShuttleFwd )
+		if type( self.setBrakeLightsVisibility ) == "function" then 
+			self:setBrakeLightsVisibility( brake )
+		end 
+		if type( self.setReverseLightsVisibility ) == "function" then 
+			self:setReverseLightsVisibility( not self.ksmShuttleFwd )
+		end 
 	end 
 	
 	return result 
@@ -1478,21 +1595,21 @@ function keyboardSteerMogli:ksmUpdateGear( superFunc, acceleratorPedal, dt )
 	local fwd, curBrake
 	local lastFwd  = Utils.getNoNil( self.ksmLastFwd )
 	if self.vehicle.ksmShuttleCtrl then 
-		fwd = self.vehicle.ksmShuttleFwd 
+		fwd      = self.vehicle.ksmShuttleFwd 
 		curBrake = math.max( 0, -self.vehicle.ksmOldAcc )
 	elseif acceleratorPedal < 0 then 
-		fwd = false 
+		fwd      = false 
 		curBrake = 0
 	elseif acceleratorPedal > 0 then 
-		fwd = true 
+		fwd      = true 
 		curBrake = 0
 	else
-		fwd = lastFwd
+		fwd      = lastFwd
 		curBrake = Utils.getNoNil( self.ksmLastRealBrake, 0 )
 	end 
 	self.ksmLastFwd = fwd
 	
-	local newAcc       = acceleratorPedal
+	local newAcc = acceleratorPedal
 	if fwd then 
 		if newAcc < 0 then 
 			newAcc = 0
@@ -1509,19 +1626,13 @@ function keyboardSteerMogli:ksmUpdateGear( superFunc, acceleratorPedal, dt )
 	--****************************************
 -- handbrake
 	if self.vehicle.ksmNeutral then 
-		newAcc = 0
-	
 		local rpm = self.minRpm 
-		local acc = 0
+		local acc = math.abs( newAcc )
 		local add = self.maxRpm - self.minRpm
-			
-		if     self.vehicle.ksmOldAcc == nil then 
-		elseif self.vehicle.ksmShuttleCtrl then 
+		newAcc = 0
+				
+		if self.vehicle.ksmShuttleCtrl and self.vehicle.ksmOldAcc ~= nil then 
 			acc =  self.vehicle.ksmOldAcc
-		elseif self.vehicle.nextMovingDirection > 0 then 
-			acc =  self.vehicle.ksmOldAcc
-		elseif self.vehicle.nextMovingDirection < 0 then 
-			acc = -self.vehicle.ksmOldAcc
 		end
 			
 		if acc > 0 then 
@@ -1546,6 +1657,7 @@ function keyboardSteerMogli:ksmUpdateGear( superFunc, acceleratorPedal, dt )
 		end 
 	end 
 	
+	local curAcc      = math.abs( newAcc )
 	local speed       = math.abs( self.vehicle.lastSpeedReal ) *3600
 	local motorPtoRpm = math.min(PowerConsumer.getMaxPtoRpm(self.vehicle)*self.ptoMotorRpmRatio, self.maxRpm)
 	
@@ -1642,6 +1754,14 @@ function keyboardSteerMogli:ksmUpdateGear( superFunc, acceleratorPedal, dt )
 			self.maxGearRatio = -self.maxGearRatio
 		end 
 		
+		if     curAcc > 0.1 then 
+			self.ksmAutoStop = false 
+		elseif lastFwd ~= fwd then 
+			self.ksmAutoStop = true
+		elseif speed < 3.6 and curBrake > 0.1 then 
+			self.ksmAutoStop = true
+		end 
+				
 		return newAcc
 
 	elseif self.vehicle.ksmTransmission == 2 
@@ -1687,8 +1807,8 @@ function keyboardSteerMogli:ksmUpdateGear( superFunc, acceleratorPedal, dt )
 									 or g_gui:getIsGuiVisible()
 		               or self.ksmClutchTimer == nil 
 									 or lastFwd ~= fwd 
-									 or ( newAcc == 0 and curBrake > 0.1 )
-		if     newAcc > 0.1 then 
+									 or ( curAcc == 0 and curBrake > 0.1 )
+		if     curAcc > 0.1 then 
 			self.ksmAutoStop = false 
 		elseif lastFwd ~= fwd then 
 			self.ksmAutoStop = true
@@ -1783,13 +1903,13 @@ function keyboardSteerMogli:ksmUpdateGear( superFunc, acceleratorPedal, dt )
 		if curBrake >= 0.1 and self.ksmBrakeTimer ~= nil and self.ksmBrakeTimer > 500 then 
 			self.ksmAutoDownTimer = 0
 		end 
-		if newAcc < 0.1 and curBrake < 0.1 and self.ksmAutoDownTimer < 3000 then  
+		if curAcc < 0.1 and curBrake < 0.1 and self.ksmAutoDownTimer < 3000 then  
 			self.ksmAutoDownTimer = 3000 
 		end 
 		if self.gearChangeTimer > 0 and self.ksmAutoDownTimer < 1000 then 
 			self.ksmAutoDownTimer = 1000 
 		end 
-		if newAcc < 0.1 and self.ksmAutoUpTimer < 1000 then 
+		if curAcc < 0.1 and self.ksmAutoUpTimer < 1000 then 
 			self.ksmAutoUpTimer = 1000 
 		end 
 		if self.ksmClutchTimer > 0 and self.ksmAutoUpTimer < 500 then 
@@ -1798,7 +1918,7 @@ function keyboardSteerMogli:ksmUpdateGear( superFunc, acceleratorPedal, dt )
 		if self.ksmLoad < 0.8 then 
 			self.ksmAutoLowTimer = 5000 
 		end 
-		if newAcc < 0.1 and self.ksmAutoLowTimer < 2000 then 
+		if curAcc < 0.1 and self.ksmAutoLowTimer < 2000 then 
 			self.ksmAutoLowTimer = 2000
 		end 
 		if maxSpeed > 1.5 * self:getSpeedLimit() and self.ksmAutoDownTimer > 1000 then
@@ -1876,7 +1996,7 @@ function keyboardSteerMogli:ksmUpdateGear( superFunc, acceleratorPedal, dt )
 				end 
 				
 				self.vehicle.ksmDebug = string.format("%3.0f%%; %3.0f%%; %4.0f..%4.0f; %4.0f -> %4.0f; %d -> %d; %5.0f -> %5.0f",
-																							newAcc*100,self.ksmLoad*100,autoMinRpm,autoMaxRpm,wheelRpm, rr,gear,newGear,d1,d)
+																							curAcc*100,self.ksmLoad*100,autoMinRpm,autoMaxRpm,wheelRpm, rr,gear,newGear,d1,d)
 			end 
 		end 
 		
@@ -2007,10 +2127,10 @@ function keyboardSteerMogli:ksmUpdateGear( superFunc, acceleratorPedal, dt )
 			end
 		else
 			if wheelRpm < self.minRpm * 1.05 then 
-				if isNeutral and newAcc < 0.1 then 
+				if isNeutral and curAcc < 0.1 then 
 					self.ksmAutoStop = true 
 				elseif not ( self.ksmAutoStop ) then 
-					newAcc = 1
+					curAcc = 1
 				end 
 			end 
 		end 
