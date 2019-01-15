@@ -2,7 +2,7 @@ keyboardSteerMogli_Register = {};
 keyboardSteerMogli_Register.g_currentModDirectory = g_currentModDirectory
 keyboardSteerMogli_Register.specName = "zzzKeyboardSteerMogli"
 
-if g_specializationManager:getSpecializationByName("keyboardSteerMogli") == nil then
+if g_specializationManager:getSpecializationByName("keyboardSteerMogli") == nil then 
 --g_specializationManager:addSpecialization("keyboardSteerMogli", "keyboardSteerMogli", g_currentModDirectory.."keyboardSteerMogli.lua")
 	if keyboardSteerMogli == nil then 
 		print("Failed to add specialization keyboardSteerMogli")
@@ -22,7 +22,7 @@ if g_specializationManager:getSpecializationByName("keyboardSteerMogli") == nil 
 					end 
 				end 
 				if isDrivable and isEnterable and hasMotor then 
-					print("  adding keyboardSteerMogli to vehicleType '"..tostring(k).."'")
+				--print("  adding keyboardSteerMogli to vehicleType '"..tostring(k).."'")
 					typeDef.specializationsByName[keyboardSteerMogli_Register.specName] = keyboardSteerMogli
 					table.insert(typeDef.specializationNames, keyboardSteerMogli_Register.specName)
 					table.insert(typeDef.specializations, keyboardSteerMogli)	

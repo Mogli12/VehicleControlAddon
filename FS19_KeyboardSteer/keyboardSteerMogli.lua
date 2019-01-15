@@ -13,8 +13,12 @@ function keyboardSteerMogli.prerequisitesPresent(specializations)
 end
 
 function keyboardSteerMogli.registerEventListeners(vehicleType)
-	for _,n in pairs( { "onLoad", "onPostLoad", "onUpdate", "onDraw", "onLeaveVehicle", "onReadStream", "onWriteStream", "saveToXMLFile", "onRegisterActionEvents" } ) do
-		SpecializationUtil.registerEventListener(vehicleType, n, keyboardSteerMogli)
+	if g_modIsLoaded.TSX_EnhancedVehicle then 
+		print("KeyboardSteer is disabled due to mod conflict")
+	else 
+		for _,n in pairs( { "onLoad", "onPostLoad", "onUpdate", "onDraw", "onLeaveVehicle", "onReadStream", "onWriteStream", "saveToXMLFile", "onRegisterActionEvents" } ) do
+			SpecializationUtil.registerEventListener(vehicleType, n, keyboardSteerMogli)
+		end 
 	end 
 end 
 
