@@ -114,7 +114,7 @@ end
 
 function keyboardSteerMogli:ksmExternalSetMovingDirection( value )
 	if type( value ) == "number" then 
-		self:ksmSetState( "ksmExternalDir", bool )
+		self:ksmSetState( "ksmExternalDir", value )
 	end 
 end 
 
