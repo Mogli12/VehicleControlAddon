@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<l10n>
+	<!-- Note that 'description' is only here for easier translations. It needs to be manually copied to ModDesc.XML later. -->
+	<description><![CDATA[Fügt allen Fahrzeugen eine adaptive Lenkung hinzu]]></description>
+
+	<texts>
+		<text name="vcaCAMERA"          text="Kamerabewegung"/>
+		<text name="vcaEXPONENT"        text="Geschwindigkeitsabhängigkeit"/>
+		<text name="vcaSTEERING"        text="Adaptive Lenkung"/>
+		<text name="vcaSHUTTLE"         text="Shuttle Control"/>
+		<text name="vcaREVERSE"         text="Zurückblicken"/>
+		<text name="vcaLIMIT"           text="Gasbegrenzer"/>
+		<text name="vcaPEEKLR"          text="Nur ein kurzer Blick"/>
+		<text name="vcaANGLE"           text="Rastersteuerung"/>
+		<text name="vcaBRAKE"           text="Niedrige Bremskraft"/>
+		<text name="vcaTRANSMISSION"    text="Getriebe"/>
+		<text name="vcaMAXSPEED"        text="Übersetzung"/>
+		<text name="vcaLIMSPEED"        text="Geschwindigkeitsbegrenzer"/>
+		<text name="vcaAUTOSHIFT"       text="Automatik"/>
+		<text name="vcaLAUNCH"          text="Startgang"/>
+		<text name="vcaSETTINGS"        text="Einstellungen"/>
+		                                
+		<text name="vca_tip_CAMERA"     text="Die Kamera dreht sich passend zum Lenkeinschlag automatisch mit."/>
+		<text name="vca_tip_EXPONENT"   text="Geschwindigkeitsabhängigkeit der adaptiven Lenkung"/>
+		<text name="vca_tip_STEERING"   text="Die adaptive Lenkung verändert je nach Geschwindigkeit die Rückstellgeschwindigkeit und den maximalen Lenkwinkel"/>
+		<text name="vca_tip_SHUTTLE"    text="Fahrtrichtung mit Leertaste wechseln"/>
+		<text name="vca_tip_REVERSE"    text="Beim Wechsel zwischen Vorwärts- und Rückwärtsfahrt wird automatisch die Kamera um 180° gedrecht"/>
+		<text name="vca_tip_LIMIT"      text="Gasbegrenzer mit linker Umschalttaste"/>
+		<text name="vca_tip_PEEKLR"     text="Mit Umschalt-Rechts und Pfeiltasten nur einen kurzen Blick nach hinten/rechts/links werfen"/>
+		<text name="vca_tip_ANGLE"      text="Automatisch in Richtung des Einrastwinkels lenken"/>
+		<text name="vca_tip_BRAKE"      text="Niedrige Bremskraft in Prozent / Rollwiderstand"/>
+		<text name="vca_tip_TRANSMISSION" text="Typ des Getriebes; IVT ist ein stufenloses Getriebe, die anderen Getriebe haben 12 verschiedene Gänge, 2x6 eignet sich am besten für LKWs"/>
+		<text name="vca_tip_MAXSPEED"   text="Höchstgeschwindigkeit, die im höchsten Gang erreicht werdern kann"/>
+		<text name="vca_tip_LIMSPEED"   text="Begrenzung der Höchtstgeschwindigkeit auf den Standardwert des Fahrzeugs"/>
+		<text name="vca_tip_AUTOSHIFT"  text="Automatische Schaltung von Gängen und Gruppen"/>
+		<text name="vca_tip_LAUNCH"     text="Geschwindigkeit des Ganges, der zum Anfahren benutzt wird"/>
+		                                
+		<text name="input_vcaSETTINGS"  text="VCA: Einstellungen"/>
+		<text name="input_vcaUP"        text="VCA: Blickrichtung wechseln oder nach vorne schauen"/>
+		<text name="input_vcaDOWN"      text="VCA: In die andere Richtung blicken / nach hinten schauen"/>
+		<text name="input_vcaLEFT"      text="VCA: Nach links schauen"/>
+		<text name="input_vcaRIGHT"     text="VCA: Nach rechts schauen"/>
+		<text name="input_vcaDIRECTION" text="VCA: Fahrtrichtung wechseln"/>
+		<text name="input_vcaFORWARD"   text="VCA: Fahrtrichtung vorwärts"/>
+		<text name="input_vcaREVERSE"   text="VCA: Fahrtrichtung rückwärts"/>
+		<text name="input_vcaSNAP"      text="VCA: Fahrtrichtung am Raster ausrichten"/>
+		<text name="input_vcaNO_ARB"    text="VCA: Kein zurück Lenken"/>
+		<text name="input_vcaINCHING"   text="VCA: Langsamer"/>
+		<text name="input_vcaGearUp"    text="VCA: Gang hoch"/>
+		<text name="input_vcaGearDown"  text="VCA: Gang runter"/>
+		<text name="input_vcaRangeUp"   text="VCA: Gruppe hoch"/>
+		<text name="input_vcaRangeDown" text="VCA: Gruppe runter"/>
+		<text name="input_vcaNeutral"   text="VCA: Leerlauf an/aus"/>
+		<text name="input_vcaClutchKey" text="VCA: Einfache Kupplung"/>
+		<text name="input_vcaShifter1"  text="VCA: G27/G29 Gang 1"/>
+		<text name="input_vcaShifter2"  text="VCA: G27/G29 Gang 2"/>
+		<text name="input_vcaShifter3"  text="VCA: G27/G29 Gang 3"/>
+		<text name="input_vcaShifter4"  text="VCA: G27/G29 Gang 4"/>
+		<text name="input_vcaShifter5"  text="VCA: G27/G29 Gang 5 / Gruppe runter"/>
+		<text name="input_vcaShifter6"  text="VCA: G27/G29 Gang 6 / Gruppe hoch"/>
+		<text name="input_vcaShifter7"  text="VCA: G27/G29 Rückwärtsgang"/>
+		<text name="input_vcaShifterLH" text="VCA: G27/G29 Gang Splitter"/>
+	</texts>   
+
+	<longTexts>
+		<longText name="vca_Help_1">
+<![CDATA[
+Dieses Script variiert abhängig von der gefahrenen Geschwindigkeit die Lenkgeschwindigkeit und dreht die Kamera passend zum Lenkeinschlag und zur Fahrtrichtung. 
+
+Mit Umschalt-Llinks wird das Gaspedal, der Tempomat und die maximale Drehzahl auf 75% begrenzt. Mit Umschalt-Rechts und den Pfeiltasten kann man in die entsprechende Richtung blicken. 
+
+Drückt man Strg Links zusammen mit W, dann richtet sich die Fahrtrichtung an festen Richtungen aus.
+
+Alle Funktionen lassen sich auch wieder ausschalten.]]>
+		</longText>
+	</longTexts>
+</l10n>

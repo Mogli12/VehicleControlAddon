@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<l10n>
+	<!-- Note that 'description' is only here for easier translations. It needs to be manually copied to ModDesc.XML later. -->
+    <description><![CDATA[Aggiunge la specializzazione per lo sterzo adattivo da tastiera]]></description>
+
+    <texts>
+		<text name="vcaCAMERA"         	text="Rotazione telecamera" />
+		<text name="vcaEXPONENT"       	text="Sensibilità"/>
+		<text name="vcaSTEERING"       	text="Sterzo adattivo"/>
+		<text name="vcaSHUTTLE"        	text="Inverti" />
+		<text name="vcaREVERSE"        	text="Guarda all'indietro" />
+		<text name="vcaLIMIT"          	text="Limitatore di accelerazione"/>
+		<text name="vcaPEEKLR"          text="Occhiata di lato"/>
+		<text name="vcaANGLE"           text="Angolo snap"/>
+		<text name="vcaBRAKE"           text="Frenata lenta"/>
+		<text name="vcaSETTINGS"       	text="Impostazioni"/>
+
+		<text name="vca_tip_CAMERA"    	text="La telecamera ruota automaticamente in base all'angolo di sterzata"/>
+		<text name="vca_tip_EXPONENT"  	text="Sensibilità dello sterzo adattivo in base alla velocità sul terreno"/>
+		<text name="vca_tip_STEERING"  	text="Lo sterzo adattivo regola la rotazione posteriore automatica e l'angolo di sterzata massimo"/>
+		<text name="vca_tip_SHUTTLE"   	text="Cambia direzione di guida con <barra spazio>"/>
+		<text name="vca_tip_REVERSE"   	text="Se il veicolo cambia direzione la telecamera viene ruotata di 180°"/>
+		<text name="vca_tip_LIMIT"     	text="Limiter dell'acceleratore con e senza tasto shift sinistro"/>
+		<text name="vca_tip_PEEKLR"     text="Dai un'occhiata con Shift-Destro e i tasti freccia accanto"/>
+		<text name="vca_tip_ANGLE"      text="Sterzare automaticamente per seguire l'angolo di snap"/>
+		<text name="vca_tip_BRAKE"      text="Percentuale frenata lenta, aka resistenza inerzia"/>
+
+		<text name="input_vcaSETTINGS" 	text="VCA: impostazioni"/>
+		<text name="input_vcaUP"      	text="VCA: scambia direzione vista / guarda indietro " />
+		<text name="input_vcaDOWN"    	text="VCA: sbirciare nell'altra direzione / guarda indietro" />
+		<text name="input_vcaLEFT"    	text="VCA: guarda a sinistra" />
+		<text name="input_vcaRIGHT"   	text="VCA: guarda a destra" />
+		<text name="input_vcaDIRECTION"	text="VCA: scambia direzione di guida" />
+		<text name="input_vcaFORWARD"  	text="VCA: guida in avanti" />
+		<text name="input_vcaREVERSE" 	text="VCA: guida all'indietro" />
+		<text name="input_vcaSNAP"      text="VCA: snap direzione guida"/>
+		<text name="input_vcaNO_ARB"    text="VCA: disabilita ritorno automatico"/>
+		<text name="input_vcaINCHING"   text="VCA: inching"/>
+		
+    </texts>
+
+	<longTexts>
+		<longText name="vca_Help_1">
+<![CDATA[
+Questo script varia la velocità di sterzata in base alla velocità che si sta guidando e ruota la telecamera per adattarla all'angolo e alla direzione dello sterzo.
+
+Shift-Sinistro limita l'acceleratore, il cambio e il regime massimo al 75%. Con Shift-Destro e i tasti cursore puoi sbirciare nella direzione corrispondente.
+
+Se premi Ctrl-Sinistro insieme a W, la direzione di guida scatta verso direzioni fisse.
+
+Tutte le funzioni possono essere nuovamente disattivate.]]>
+		</longText>
+	</longTexts>
+
+</l10n>

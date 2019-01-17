@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<l10n>
+	<!-- Note that 'description' is only here for easier translations. It needs to be manually copied to ModDesc.XML later. -->
+	<description><![CDATA[Añade la capacidad de modular el volante en la conducción con el teclado]]></description>
+
+	<texts>
+		<text name="vcaENABLE_ON"   text="volante [modulado]"/>
+		<text name="vcaENABLE_OFF"  text="volante [normal]"/>
+		<text name="vcaCAMERA_ON"   text="movimiento camera [on]"/>
+		<text name="vcaCAMERA_OFF"  text="movimiento camera [off]"/>
+		<text name="vcaANALOG_ON"   text="controlador analógico [on]"/>
+		<text name="vcaANALOG_OFF"  text="controlador analógico [off]"/>
+		<text name="vcaREVERSE_ON"  text="mirar hacia atrás [on]"/>
+		<text name="vcaREVERSE_OFF" text="mirar hacia atrás [off]"/>
+
+		<text name="input_vcaENABLE"  text="VCA: volante"/>
+		<text name="input_vcaCAMERA"  text="VCA: movimiento camara"/>
+		<text name="input_vcaREVERSE" text="VCA: mirar hacia atrás"/>
+		<text name="input_vcaANALOG"  text="VCA: controlador analógico"/>
+		<text name="input_vcaPLUS"    text="VCA:sensibilidad velocidad +"/>
+		<text name="input_vcaMINUS"   text="VCA:sensibilidad velocidad -"/>
+		<text name="input_vcaTPLUS"   text="VCA: throttle limiter +"/>
+		<text name="input_vcaTMINUS"  text="VCA: throttle limiter -"/>
+		<text name="input_vcaUP"      text="VCA: mira adelante"/>
+		<text name="input_vcaDOWN"    text="VCA: mira atrás"/>
+		<text name="input_vcaLEFT"    text="VCA: mira izquierda"/>
+		<text name="input_vcaRIGHT"   text="VCA: mira derecha"/>
+	</texts>
+</l10n>
+Contact GitHub API Training Shop Blog About
+© 2016 GitHub, Inc. Terms P

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<l10n>
+	<description>
+<![CDATA[Skrypt ten zmienia prędkość skrętu, centrowania kół i maksymalny kąt skrętu w zależności od aktualnej prędkości pojazdu.
+Obraca również kamerę, aby dopasować ją do kierunku jazdy.
+Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
+
+[Lewy Ctrl + C]: Ustawienia
+[Lewy Shift]: Kotrola prędkości tempomatu
+[Prawy Shift + Strzałki]: Widok w przód, tył, prawo, lewo
+[Spacja]: Zmiana kierunku jazdy (rewers)]]>
+	</description>
+
+	<texts>
+		<text name="vcaCAMERA"          text="Obrót kamery"/>
+		<text name="vcaEXPONENT"        text="Czułość"/>
+		<text name="vcaSTEERING"        text="Sterowanie adaptacyjne"/>
+		<text name="vcaSHUTTLE"         text="Rewers"/>
+		<text name="vcaREVERSE"         text="Widok do tyłu"/>
+		<text name="vcaLIMIT"           text="Tempomat"/>
+		<text name="vcaPEEKLR"          text="Zerknięcie w bok"/>
+		<text name="vcaANGLE"           text="Przeskok kątu wyrównania"/>
+		<text name="vcaBRAKE"           text="Niska siła hamowania"/>
+		<text name="vcaTRANSMISSION"    text="Skrzynia biegów"/>
+		<text name="vcaMAXSPEED"        text="Prędkość osi"/>
+		<text name="vcaLIMSPEED"        text="Speed limiter"/>
+		<text name="vcaAUTOSHIFT"       text="Automat"/>
+		<text name="vcaLAUNCH"          text="Załączony bieg"/>
+		<text name="vcaSETTINGS"        text="Ustawienia"/>
+		                                
+		<text name="vca_tip_CAMERA"     text="Kamera obraca się automatycznie zgodnie z kątem skrętu"/>
+		<text name="vca_tip_EXPONENT"   text="Czułość sterowania adaptacyjnego w odniesieniu do prędkości jazdy"/>
+		<text name="vca_tip_STEERING"   text="Sterowanie adaptacyjne automatycznie dostosowuje centrowanie kół i maksymalny kąt skrętu"/>
+		<text name="vca_tip_REVERSE"    text="Przy zmianie kierunku jazdy do tyłu, kamera zostaje obrócona o 180°"/>
+		<text name="vca_tip_SHUTTLE"    text="Zmiana kierunku jazdy (Spacja)"/>
+		<text name="vca_tip_LIMIT"      text="Kontrola prędkości tempomatu (bez/z Lewy Shift)"/>
+		<text name="vca_tip_PEEKLR"     text="Zerknij się szybko w bok (Prawy Shift + strzałki w bok)"/>
+		<text name="vca_tip_ANGLE"      text="Najnowsza funkcja"/>
+		<text name="vca_tip_BRAKE"      text="Procentowo najniża siła hamowania, czyli opór toczenia"/>
+		<text name="vca_tip_TRANSMISSION" text="Rodzaj skrzyni biegów; Przekładnia bezstopniowa (IVT), wszystkie pozostałe mają 12 różnych biegów, 2x6 jest najlepszą dla samochodów ciężarowych"/>
+		<text name="vca_tip_MAXSPEED"   text="Maksymalna prędkość najwyższego biegu, może być większa niż maksymalna prędkość pojazdu"/>
+		<text name="vca_tip_LIMSPEED"   text="Ogranicza maksymalną prędkość pojazdu do wartości domyślnej"/>
+		<text name="vca_tip_AUTOSHIFT"  text="Automatyczna zmiana biegów i zakresów"/>
+		<text name="vca_tip_LAUNCH"     text="Prędkość znamionowa włączenia biegu"/>
+		                               
+		<text name="input_vcaSETTINGS"  text="VCA: Ustawienia"/>
+		<text name="input_vcaUP"        text="VCA: Zmiana widok / Widok w przód"/>
+		<text name="input_vcaDOWN"      text="VCA: Zmiana zerknięcia / Widok w tył"/>
+		<text name="input_vcaLEFT"      text="VCA: Widok w lewo"/>
+		<text name="input_vcaRIGHT"     text="VCA: Widok w prawo"/>
+		<text name="input_vcaDIRECTION" text="VCA: Zmiana kierunku jazdy"/>
+		<text name="input_vcaFORWARD"   text="VCA: Jazda w przód"/>
+		<text name="input_vcaREVERSE"   text="VCA: Jazda w tył"/>
+		<text name="input_vcaSNAP"      text="VCA: Wyrównanie kierunku jazdy"/>
+		<text name="input_vcaNO_ARB"    text="VCA: Wył. auto. spojrzenia w tył"/>
+		<text name="input_vcaINCHING"   text="VCA: Kontroler tempomatu"/>
+		<text name="input_vcaGearUp"    text="VCA: Bieg w górę"/>
+		<text name="input_vcaGearDown"  text="VCA: Bieg w dół"/>
+		<text name="input_vcaRangeUp"   text="VCA: Zakres w górę"/>
+		<text name="input_vcaRangeDown" text="VCA: Zakres w dół"/>
+		<text name="input_vcaNeutral"   text="VCA: Luz"/>
+		<text name="input_vcaShifter1"  text="VCA: G27/G29 bieg 1"/>
+		<text name="input_vcaShifter2"  text="VCA: G27/G29 bieg 2"/>
+		<text name="input_vcaShifter3"  text="VCA: G27/G29 bieg 3"/>
+		<text name="input_vcaShifter4"  text="VCA: G27/G29 bieg 4"/>
+		<text name="input_vcaShifter5"  text="VCA: G27/G29 bieg 5 / Zakres w dół"/>
+		<text name="input_vcaShifter6"  text="VCA: G27/G29 bieg 6 / Zakres w górę"/>
+		<text name="input_vcaShifter7"  text="VCA: G27/G29 bieg wsteczny"/>
+	</texts>
+	
+	<longTexts>
+		<longText name="vca_Help_1">
+<![CDATA[Skrypt ten zmienia prędkość skrętu, centrowania kół i maksymalny kąt skrętu w zależności od aktualnej prędkości pojazdu.
+Ponadto kamera jest obracana zgodnie z kątem skrętu i kierunkiem jazdy. Gaz i hamulec na klawiaturze (klawisze W i S) może być ograniczony,
+tylko przy naciśnięciu Lewy Shift w tym samym czasie, następuje wtedy 100% przyspieszenie lub hamowanie.
+Jeśli ogranicznik przyspieszenia jest ustawiony na 100%, wówczas przyspieszenie i hamowanie są ograniczone, gdy używany jest Lewy Shift.
+Wszystkie funkcje można wyłączyć.]]>
+		</longText>
+	</longTexts>
+</l10n>

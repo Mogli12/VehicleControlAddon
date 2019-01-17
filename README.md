@@ -1,7 +1,9 @@
 # KeyboardSteer for Farming Simulator 2019
 
 ## Status
-I tried to publish version 0.0.3.1 on Modhub but I got it back for review. The automatic camera reversal if one switches the driving direction seems to be too disturbing. I guess the only consequence would be to split this mod into the old keyboard steer functions and a new gearbox. This means even more work and even elss motivation. I do not know how to continue.
+I tried to publish version 0.0.3.1 on Modhub but I got it back for review. The automatic camera reversal if one switches the driving direction seems to be too disturbing. 
+
+To overcome some of the problems I renamed the mod. The last verion of FS19_KeyboardSteer is available in branch 'keyboardSteerMogli'. The new name is FS19_VehicleControlAddon. I will update the rest of the texts in time.
 
 ## Motivation
 Although I have a steering wheel, but almost always play with the keyboard. On winding roads, I am again and again landed in the ditch in front of nights or power poles.

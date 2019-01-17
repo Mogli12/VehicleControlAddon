@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
-<KSMGlobals>
+<VCAGlobals>
 	<cameraRotFactor     type="float" value="0.7"/>
 	<cameraRotFactorRev  type="float" value="0.4"/>
 	<cameraRotTime       type="float" value="0.001"/>
@@ -22,7 +22,7 @@
 	<camRevOutRotation   type="bool"  value="false"/>
 	<shuttleControl      type="bool"  value="true"/>
 	<peekLeftRight       type="bool"  value="true"/>
-</KSMGlobals>
+</VCAGlobals>
 
 
 

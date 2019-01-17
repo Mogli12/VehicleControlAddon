@@ -2,10 +2,8 @@
 <modDesc descVersion="42">
 	<author>mogli</author>
 	<title>
-		<en>Keyboard Steer</en>
-		<de>Keyboard Steer</de> 
-		<fr>Keyboard Steer</fr> 
-		<es>Keyboard Steer</es> 
+		<en>Vehicle Control Addon</en>
+		<de>Vehicle Control Addon</de> 
 	</title>
 	<description>
 		<en><![CDATA[
@@ -35,85 +33,85 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>store.dds</iconFilename>
-	<version>0.0.4.0</version>
+	<version>0.0.0.1</version>
 	<l10n filenamePrefix="modDesc_l10n">
-		<text name="ksmVERSION">
-			<de>KeyboardSteer 0.0.4.0</de>
-			<en>KeyboardSteer 0.0.4.0</en>
+		<text name="vcaVERSION">
+			<de>VehicleControlAddon 0.0.0.1</de>
+			<en>VehicleControlAddon 0.0.0.1</en>
 		</text>
 	</l10n>
 	
 	<actions>
-		<action name="ksmSETTINGS"  category="VEHICLE"/>
-		<action name="ksmUP"        category="VEHICLE"/>
-		<action name="ksmDOWN"      category="VEHICLE"/>
-		<action name="ksmLEFT"      category="VEHICLE"/>
-		<action name="ksmRIGHT"     category="VEHICLE"/>
-		<action name="ksmDIRECTION" category="VEHICLE"/>
-		<action name="ksmFORWARD"   category="VEHICLE"/>
-		<action name="ksmREVERSE"   category="VEHICLE"/>
-		<action name="ksmSNAP"      category="VEHICLE"/>
-		<action name="ksmNO_ARB"    category="VEHICLE"/>
-		<action name="ksmINCHING"   category="VEHICLE"/>
-		<action name="ksmGearUp"    category="VEHICLE"/>
-		<action name="ksmGearDown"  category="VEHICLE"/>
-		<action name="ksmRangeUp"   category="VEHICLE"/>
-		<action name="ksmRangeDown" category="VEHICLE"/>
-		<action name="ksmNeutral"   category="VEHICLE"/>
-		<action name="ksmShifter1"  category="VEHICLE"/>
-		<action name="ksmShifter2"  category="VEHICLE"/>
-		<action name="ksmShifter3"  category="VEHICLE"/>
-		<action name="ksmShifter4"  category="VEHICLE"/>
-		<action name="ksmShifter5"  category="VEHICLE"/>
-		<action name="ksmShifter6"  category="VEHICLE"/>
-		<action name="ksmShifter7"  category="VEHICLE"/>
-		<action name="ksmShifterLH" category="VEHICLE"/>
+		<action name="vcaSETTINGS"  category="VEHICLE"/>
+		<action name="vcaUP"        category="VEHICLE"/>
+		<action name="vcaDOWN"      category="VEHICLE"/>
+		<action name="vcaLEFT"      category="VEHICLE"/>
+		<action name="vcaRIGHT"     category="VEHICLE"/>
+		<action name="vcaDIRECTION" category="VEHICLE"/>
+		<action name="vcaFORWARD"   category="VEHICLE"/>
+		<action name="vcaREVERSE"   category="VEHICLE"/>
+		<action name="vcaSNAP"      category="VEHICLE"/>
+		<action name="vcaNO_ARB"    category="VEHICLE"/>
+		<action name="vcaINCHING"   category="VEHICLE"/>
+		<action name="vcaGearUp"    category="VEHICLE"/>
+		<action name="vcaGearDown"  category="VEHICLE"/>
+		<action name="vcaRangeUp"   category="VEHICLE"/>
+		<action name="vcaRangeDown" category="VEHICLE"/>
+		<action name="vcaNeutral"   category="VEHICLE"/>
+		<action name="vcaShifter1"  category="VEHICLE"/>
+		<action name="vcaShifter2"  category="VEHICLE"/>
+		<action name="vcaShifter3"  category="VEHICLE"/>
+		<action name="vcaShifter4"  category="VEHICLE"/>
+		<action name="vcaShifter5"  category="VEHICLE"/>
+		<action name="vcaShifter6"  category="VEHICLE"/>
+		<action name="vcaShifter7"  category="VEHICLE"/>
+		<action name="vcaShifterLH" category="VEHICLE"/>
 	</actions>
 	<inputBinding>
-		<actionBinding action="ksmSETTINGS">	
+		<actionBinding action="vcaSETTINGS">	
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_c"      axisComponent="+" inputComponent="+" index="1"/>
 		</actionBinding>	
-		<actionBinding action="ksmUP">	
+		<actionBinding action="vcaUP">	
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_rshift KEY_up"    axisComponent="+" inputComponent="+" index="1"/>
 		</actionBinding>	
-		<actionBinding action="ksmDOWN">	
+		<actionBinding action="vcaDOWN">	
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_rshift KEY_down"  axisComponent="+" inputComponent="+" index="1"/>
 		</actionBinding>	
-		<actionBinding action="ksmLEFT">	
+		<actionBinding action="vcaLEFT">	
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_rshift KEY_left"  axisComponent="+" inputComponent="+" index="1"/>
 		</actionBinding>	
-		<actionBinding action="ksmRIGHT">	
+		<actionBinding action="vcaRIGHT">	
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_rshift KEY_right" axisComponent="+" inputComponent="+" index="1"/>
 		</actionBinding>	
-		<actionBinding action="ksmDIRECTION">	
+		<actionBinding action="vcaDIRECTION">	
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_space"            axisComponent="+" inputComponent="+" index="1"/>
 		</actionBinding>	
-		<actionBinding action="ksmSNAP">	
+		<actionBinding action="vcaSNAP">	
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_w"      axisComponent="+" inputComponent="+" index="1"/>
 		</actionBinding>	
-		<actionBinding action="ksmINCHING">	
+		<actionBinding action="vcaINCHING">	
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_lshift"           axisComponent="+" inputComponent="+" index="1"/>
 		</actionBinding>	
-		<actionBinding action="ksmGearUp">
+		<actionBinding action="vcaGearUp">
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_leftbracket"      axisComponent="+" inputComponent="+" index="1"/>
 		</actionBinding>	
-		<actionBinding action="ksmGearDown">
+		<actionBinding action="vcaGearDown">
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_quote"            axisComponent="+" inputComponent="+" index="1"/>
 		</actionBinding>	
-		<actionBinding action="ksmRangeUp">
+		<actionBinding action="vcaRangeUp">
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_rightbracket"     axisComponent="+" inputComponent="+" index="1"/>
 		</actionBinding>	
-		<actionBinding action="ksmRangeDown">
+		<actionBinding action="vcaRangeDown">
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_backslash"        axisComponent="+" inputComponent="+" index="1"/>
 		</actionBinding>	
-		<actionBinding action="ksmNeutral">
+		<actionBinding action="vcaNeutral">
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_semicolon"        axisComponent="+" inputComponent="+" index="1"/>
 		</actionBinding>	
 	</inputBinding>
 	
 	<extraSourceFiles>
-		<sourceFile filename="keyboardSteerMogli.lua" />
-		<sourceFile filename="keyboardSteerMogliScreen.lua" />
-		<sourceFile filename="register.lua" />
+		<sourceFile filename="vehicleControlAddon.lua" />
+		<sourceFile filename="vehicleControlAddonScreen.lua" />
+		<sourceFile filename="vehicleControlAddonRegister.lua" />
 	</extraSourceFiles>    
 </modDesc>

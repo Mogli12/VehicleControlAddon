@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<l10n>
+	<!-- Note that 'description' is only here for easier translations. It needs to be manually copied to ModDesc.XML later. -->
+	<description><![CDATA[Voegt specialisatie toe voor adaptieve toetsenbord besturing]]></description>
+
+	<texts>
+		<text name="vcaCAMERA"         text="Camera Rotatie"/>
+		<text name="vcaEXPONENT"       text="Gevoeligheid"/>
+		<text name="vcaSTEERING"       text="Adaptieve Besturing"/>
+		<text name="vcaANALOG"         text="Analoge Controller"/>
+		<text name="vcaREVERSE"        text="Kijk Achterwaarts"/>
+		<text name="vcaSHUTTLE"	       text="Schakelen"/>
+		<text name="vcaLIMIT"          text="Gasregelaar"/>
+		<text name="vcaSETTINGS"       text="VCA: Instellingen"/>
+		<text name="vcaDIRECTION"	   text="Rijrichting"/>
+		                               
+		<text name="vca_tip_CAMERA"    text="De camera draait automatisch met de stuuruitslag"/>
+		<text name="vca_tip_EXPONENT"  text="Gevoeligheid van de adaptieve besturing ten opzichte van de grondsnelheid"/>
+		<text name="vca_tip_STEERING"  text="Aanpassing van de automatisch terugsturing en maximale stuuruitslag van de apatieve besturing"/>
+		<text name="vca_tip_ANALOG"    text="Activering van adaptieve besturing voor analoge controllers"/>
+		<text name="vca_tip_REVERSE"   text="Draaicamera 180 graden, wanneer voertuig van richting verandert"/>
+		<text name="vca_tip_LIMIT"     text="Beperkt gasstand met of zonder linker Shift toets"/>
+		<text name="vca_tip_DIRECTION" text="Verander rijrichting voor/achterwaarts"/>
+		                               
+		<text name="input_vcaENABLE"   text="VCA: adaptieve besturing"/>
+		<text name="input_vcaCAMERA"   text="VCA: camera rotatie"/>
+		<text name="input_vcaREVERSE"  text="VCA: kijk achterwaarts"/>
+		<text name="input_vcaSETTINGS" text="VCA: instellingen"/>
+		<text name="input_vcaUP"       text="VCA: Kijk vooruit"/>
+		<text name="input_vcaDOWN"     text="VCA: Kijk achteruit"/>
+		<text name="input_vcaLEFT"     text="VCA: Kijk links"/>
+		<text name="input_vcaRIGHT"    text="VCA: Kijk rechts"/>
+		<text name="input_vcaDIRECTION" text="VCA: Vooruit/Achteruit"/>
+		<text name="input_vcaFORWARD"   text="VCA: Rij vooruit"/>
+		<text name="input_vcaREVERSE"   text="VCA: Rij achteruit"/>
+	</texts>
+</l10n>

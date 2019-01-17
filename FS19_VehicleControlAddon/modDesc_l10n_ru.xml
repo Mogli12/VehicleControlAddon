@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<l10n>
+	<!-- Note that 'description' is only here for easier translations. It needs to be manually copied to ModDesc.XML later. -->
+	<description><![CDATA[Добавляет специализацию для адаптивного рулевого управления с клавиатуры]]></description>
+
+	<texts>
+		<text name="vcaCAMERA"          text="Подруливание камеры"/>
+		<text name="vcaEXPONENT"        text="Чувствительность к скорости"/>
+		<text name="vcaSTEERING"        text="Адаптивное рулевое управление"/>
+		<text name="vcaSHUTTLE"         text="Изменение направления"/>
+		<text name="vcaREVERSE"         text="Автооборачивание при реверсе"/>
+		<text name="vcaLIMIT"           text="Ограничитель газа"/>
+		<text name="vcaPEEKLR"          text="Быстрый взгляд в сторону"/>
+		<text name="vcaANGLE"           text="Привязка к сетке"/>
+		<text name="vcaBRAKE"           text="Малое сопротивление качению"/>
+		<text name="vcaSETTINGS"        text="VCA: настройки"/>
+	
+		<text name="vca_tip_CAMERA"     text="Камера автоматически поворачивается в соответствии с углом поворота рулевого колеса"/>
+		<text name="vca_tip_EXPONENT"   text="Зависимость скорости рулевого управления от скорости движения"/>
+		<text name="vca_tip_STEERING"   text="Адаптивное рулевое управление изменяет скорость возврата и максимальный угол поворота в зависимости от скорости"/>
+		<text name="vca_tip_SHUTTLE"    text="Изменить направление с помощью пробела"/>
+		<text name="vca_tip_REVERSE"    text="При изменении направления движения камера автоматически поворачивается на 180°"/>
+		<text name="vca_tip_LIMIT"      text="Ограничивает педаль газа при нажатии Left-Shift"/>
+		<text name="vca_tip_PEEKLR"     text="Взглянуть по клавише Right-Shift + стрелка в сторону"/>
+		<text name="vca_tip_ANGLE"      text="Выравнивание движения техники по заданному направлению"/>
+		<text name="vca_tip_BRAKE"      text="Уменьшение уровня сопротивления качению (%)"/>
+	
+		<text name="input_vcaSETTINGS"  text="VCA: настройки"/>
+		<text name="input_vcaUP"        text="VCA: Посмотреть вперед"/>
+		<text name="input_vcaDOWN"      text="VCA: Посмотреть назад"/>
+		<text name="input_vcaLEFT"      text="VCA: Посмотреть налево"/>
+		<text name="input_vcaRIGHT"     text="VCA: Посмотреть направо"/>
+		<text name="input_vcaDIRECTION" text="VCA: Изменить направление движения"/>
+		<text name="input_vcaFORWARD"   text="VCA: Направление движения вперед"/>
+		<text name="input_vcaREVERSE"   text="VCA: Направление движения назад"/>
+		<text name="input_vcaSNAP"      text="VCA: выровнять направление по сетке"/>
+		<text name="input_vcaNO_ARB"    text="VCA: без автоповорота камеры назад"/>
+		<text name="input_vcaINCHING"   text="VCA: Сцепление"/>
+	</texts>
+	
+	<longTexts>
+		<longText name="vca_Help_1">
+<![CDATA[Этот скрипт меняет чувствительность рулевого управления, скорость автовозврата и максимальный угол поворота рулевого колеса в зависимости от скорости движения.
+Он также может поворачивать камеру в соответствии с углом поворота колес и направлением движения.
+Можно настроить ограничитель цифрового акселератора, при котором дополнительно нажав клавишу Left-Shift с клавишей акселератора или тормоза, будет передается или тормозится 75% усилия.
+
+Left-Shift устанавливает акселератор, круиз-контроль и максимальную скорость на 75%. С помощью Right-Shift и клавиш со стрелками вы можете взглянуть в соответствующем направлении.
+
+Нажав Left-Ctrl + W, направление движения будет выравнено в соотвествии с фиксированными углами сетки направлений.
+
+Все функции по желанию могут быть отключены.]]>
+		</longText>
+	</longTexts>
+</l10n>

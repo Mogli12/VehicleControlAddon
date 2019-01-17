@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<l10n>
+	<!-- Note that 'description' is only here for easier translations. It needs to be manually copied to ModDesc.XML later. -->
+	<description><![CDATA[Adds the specialization for adaptive keyboard steering]]></description>
+
+	<texts>
+		<text name="vcaCAMERA"          text="Camera Rotation"/>
+		<text name="vcaEXPONENT"        text="Sensitivity"/>
+		<text name="vcaSTEERING"        text="Adaptive Steering"/>
+		<text name="vcaSHUTTLE"         text="Shuttle"/>
+		<text name="vcaREVERSE"         text="Look Backwards"/>
+		<text name="vcaLIMIT"           text="Throttle Limiter"/>
+		<text name="vcaPEEKLR"          text="Peek Sideways"/>
+		<text name="vcaANGLE"           text="Snap Angle"/>
+		<text name="vcaBRAKE"           text="Low Brake Force"/>
+		<text name="vcaTRANSMISSION"    text="Transmission"/>
+		<text name="vcaMAXSPEED"        text="Axle Speed"/>
+		<text name="vcaLIMSPEED"        text="Speed Limiter"/>
+		<text name="vcaAUTOSHIFT"       text="Automatic"/>
+		<text name="vcaLAUNCH"          text="Launch Gear"/>
+		<text name="vcaSETTINGS"        text="Settings"/>
+		                                
+		<text name="vca_tip_CAMERA"     text="The camera rotates automatically according to the steering angle"/>
+		<text name="vca_tip_EXPONENT"   text="Sensitivity of the adaptive steering with respect to ground speed"/>
+		<text name="vca_tip_STEERING"   text="The adaptive steering adjusts the automatic back rotation and the maximum steering angle"/>
+		<text name="vca_tip_SHUTTLE"    text="Change driving direction with <space>"/>
+		<text name="vca_tip_REVERSE"    text="If the vehicle changes direction the camera is rotated by 180°"/>
+		<text name="vca_tip_LIMIT"      text="Limiter of the throttle without and with left shift key"/>
+		<text name="vca_tip_PEEKLR"     text="Take a quick look with Shift-Right and the left/right arrow keys"/>
+		<text name="vca_tip_ANGLE"      text="Steer automatically to follow snap angle"/>
+		<text name="vca_tip_BRAKE"      text="Low brake force percentage, aka rolling resistance"/>
+		<text name="vca_tip_TRANSMISSION" text="Type of the transmission; IVT variable transmission, all other transmissions have 12 differnt gears, 2x6 is best for trucks"/>
+		<text name="vca_tip_MAXSPEED"   text="Maximum speed of highest gear, can be faster than the maximum speed of the vehicle"/>
+		<text name="vca_tip_LIMSPEED"   text="Limits the maximum speed of the vehicle to its default value"/>
+		<text name="vca_tip_AUTOSHIFT"  text="Automatic shifting of gears and ranges"/>
+		<text name="vca_tip_LAUNCH"     text="Rated speed of the launch gear"/>
+		                               
+		<text name="input_vcaSETTINGS"  text="VCA: settings"/>
+		<text name="input_vcaUP"        text="VCA: toggle view direction / lock forwards"/>
+		<text name="input_vcaDOWN"      text="VCA: peek into other view direction / lock backwards"/>
+		<text name="input_vcaLEFT"      text="VCA: look left"/>
+		<text name="input_vcaRIGHT"     text="VCA: look right"/>
+		<text name="input_vcaDIRECTION" text="VCA: toggle driving direction"/>
+		<text name="input_vcaFORWARD"   text="VCA: drive forwards"/>
+		<text name="input_vcaREVERSE"   text="VCA: drive backwards"/>
+		<text name="input_vcaSNAP"      text="VCA: snap driving direction"/>
+		<text name="input_vcaNO_ARB"    text="VCA: no auto rotate back"/>
+		<text name="input_vcaINCHING"   text="VCA: inching"/>
+		<text name="input_vcaGearUp"    text="VCA: gear up"/>
+		<text name="input_vcaGearDown"  text="VCA: gear down"/>
+		<text name="input_vcaRangeUp"   text="VCA: range up"/>
+		<text name="input_vcaRangeDown" text="VCA: range down"/>
+		<text name="input_vcaNeutral"   text="VCA: neutral on/off"/>
+		<text name="input_vcaShifter1"  text="VCA: G27/G29 gear 1"/>
+		<text name="input_vcaShifter2"  text="VCA: G27/G29 gear 2"/>
+		<text name="input_vcaShifter3"  text="VCA: G27/G29 gear 3"/>
+		<text name="input_vcaShifter4"  text="VCA: G27/G29 gear 4"/>
+		<text name="input_vcaShifter5"  text="VCA: G27/G29 gear 5 / range down"/>
+		<text name="input_vcaShifter6"  text="VCA: G27/G29 gear 6 / range up"/>
+		<text name="input_vcaShifter7"  text="VCA: G27/G29 reverse gear"/>
+		<text name="input_vcaShifterLH" text="VCA: G27/G29 gear splitter"/>
+	</texts>
+
+	<longTexts>
+		<longText name="vca_Help_1">
+<![CDATA[
+This script varies the steering speed depending on the speed you are driving, and it rotates the camera to match the steering angle and direction.
+
+Shift-Left limits throttle, cruise control and maximum rounds per minute to 75%. With Shift-right and the cursor keys you can peek in the corresponding direction.
+
+If you press Ctrl left together with W then the driving direction snaps to fixed directions.
+
+All functions can be switched off.]]>
+		</longText>
+	</longTexts>
+</l10n>

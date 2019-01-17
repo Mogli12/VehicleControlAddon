@@ -3,53 +3,53 @@
 	<GuiElement type="empty" profile="newLayer" />
 	<GuiElement type="bitmap" profile="yesNoDialogBg" size="1660px 708px">
 		<GuiElement type="bitmap" profile="uiInGameMenuHeader" size="1660px 112px">
-			<GuiElement type="text" profile="headerText" id="mogliHeaderText" text="$mogli_ksmTITLE"/>
+			<GuiElement type="text" profile="headerText" id="mogliHeaderText" text="$mogli_vcaTITLE"/>
 		</GuiElement>
 		
 		<GuiElement type="boxLayout" profile="settingsBox" size="527px 488px" position="20px 88px" positionOrigin="bottomLeft">	
 		
-			<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="ksmCameraIsOn" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_ksm_tip_CAMERA"  onCreate="onCreateSubElement"
+			<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="vcaCameraIsOn" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_vca_tip_CAMERA"  onCreate="onCreateSubElement"
 											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="11" focusChangeTop="101" focusChangeBottom="101">										
 				<GuiElement type="button" profile="multiTextOptionLeft" />
 				<GuiElement type="button" profile="multiTextOptionRight"/>
 				<GuiElement type="text" profile="multiTextOptionText" />
-				<GuiElement type="text" profile="multiTextOptionTitle" text="$mogli_ksmCAMERA"/>
+				<GuiElement type="text" profile="multiTextOptionTitle" text="$mogli_vcaCAMERA"/>
 				<GuiElement type="bitmap" profile="multiTextOptionBg" />
 			</GuiElement>
 				
-			<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="ksmReverseIsOn" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_ksm_tip_REVERSE"  onCreate="onCreateSubElement" 
+			<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="vcaReverseIsOn" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_vca_tip_REVERSE"  onCreate="onCreateSubElement" 
 											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="12" focusChangeTop="11" focusChangeBottom="13">										
 				<GuiElement type="button" profile="multiTextOptionLeft" />
 				<GuiElement type="button" profile="multiTextOptionRight"/>
 				<GuiElement type="text" profile="multiTextOptionText" />
-				<GuiElement type="text" profile="multiTextOptionTitle" text="$mogli_ksmREVERSE"/>
+				<GuiElement type="text" profile="multiTextOptionTitle" text="$mogli_vcaREVERSE"/>
 				<GuiElement type="bitmap" profile="multiTextOptionBg" />
 			</GuiElement>
 			
-			<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="ksmSteeringIsOn" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_ksm_tip_STEERING"  onCreate="onCreateSubElement" 
+			<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="vcaSteeringIsOn" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_vca_tip_STEERING"  onCreate="onCreateSubElement" 
 											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="13" focusChangeTop="12" focusChangeBottom="14">										
 				<GuiElement type="button" profile="multiTextOptionLeft" />
 				<GuiElement type="button" profile="multiTextOptionRight"/>
 				<GuiElement type="text" profile="multiTextOptionText" />
-				<GuiElement type="text" profile="multiTextOptionTitle" text="$mogli_ksmSTEERING"/>
+				<GuiElement type="text" profile="multiTextOptionTitle" text="$mogli_vcaSTEERING"/>
 				<GuiElement type="bitmap" profile="multiTextOptionBg" />
 			</GuiElement>
 			
-			<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="ksmShuttleCtrl" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_ksm_tip_SHUTTLE" onCreate="onCreateSubElement" 
+			<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="vcaShuttleCtrl" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_vca_tip_SHUTTLE" onCreate="onCreateSubElement" 
 											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="14" focusChangeTop="13" focusChangeBottom="15">										
 				<GuiElement type="button" profile="multiTextOptionLeft" />
 				<GuiElement type="button" profile="multiTextOptionRight"/>
 				<GuiElement type="text" profile="multiTextOptionText" />
-				<GuiElement type="text" profile="multiTextOptionTitle" text="$mogli_ksmSHUTTLE"/>
+				<GuiElement type="text" profile="multiTextOptionTitle" text="$mogli_vcaSHUTTLE"/>
 				<GuiElement type="bitmap" profile="multiTextOptionBg" />
 			</GuiElement>
 
-			<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="ksmPeekLeftRight" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_ksm_tip_PEEKLR" onCreate="onCreateSubElement" 
+			<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="vcaPeekLeftRight" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_vca_tip_PEEKLR" onCreate="onCreateSubElement" 
 											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="15" focusChangeTop="14" focusChangeBottom="16">										
 				<GuiElement type="button" profile="multiTextOptionLeft" />
 				<GuiElement type="button" profile="multiTextOptionRight"/>
 				<GuiElement type="text" profile="multiTextOptionText" />
-				<GuiElement type="text" profile="multiTextOptionTitle" text="$mogli_ksmPEEKLR"/>
+				<GuiElement type="text" profile="multiTextOptionTitle" text="$mogli_vcaPEEKLR"/>
 				<GuiElement type="bitmap" profile="multiTextOptionBg" />
 			</GuiElement>			
 		
@@ -57,39 +57,39 @@
 		
 		<GuiElement type="boxLayout" profile="settingsBox" size="527px 488px" position="567px 88px" positionOrigin="bottomLeft">	
 			
-			<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="ksmSnapAngle" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_ksm_tip_ANGLE" onCreate="onCreateSubElement" onCreateArgs="list"
+			<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="vcaSnapAngle" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_vca_tip_ANGLE" onCreate="onCreateSubElement" onCreateArgs="list"
 											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="16" focusChangeTop="15" focusChangeBottom="17">
 				<GuiElement type="button" profile="multiTextOptionLeft" />
 				<GuiElement type="button" profile="multiTextOptionRight"/>
 				<GuiElement type="text"   profile="multiTextOptionText" />
-				<GuiElement type="text"   profile="multiTextOptionTitle" text="$mogli_ksmANGLE"/>
+				<GuiElement type="text"   profile="multiTextOptionTitle" text="$mogli_vcaANGLE"/>
 				<GuiElement type="bitmap" profile="multiTextOptionBg" />
 			</GuiElement>	
 		
-			<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="ksmExponent" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_ksm_tip_EXPONENT" onCreate="onCreateSubElement" onCreateArgs="list"
+			<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="vcaExponent" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_vca_tip_EXPONENT" onCreate="onCreateSubElement" onCreateArgs="list"
 											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="17" focusChangeTop="16" focusChangeBottom="18">
 				<GuiElement type="button" profile="multiTextOptionLeft" />
 				<GuiElement type="button" profile="multiTextOptionRight"/>
 				<GuiElement type="text"   profile="multiTextOptionText" />
-				<GuiElement type="text"   profile="multiTextOptionTitle" text="$mogli_ksmEXPONENT"/>
+				<GuiElement type="text"   profile="multiTextOptionTitle" text="$mogli_vcaEXPONENT"/>
 				<GuiElement type="bitmap" profile="multiTextOptionBg" />
 			</GuiElement>	
 			
-			<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="ksmLimitThrottle" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_ksm_tip_LIMIT" onCreate="onCreateSubElement" onCreateArgs="list"
+			<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="vcaLimitThrottle" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_vca_tip_LIMIT" onCreate="onCreateSubElement" onCreateArgs="list"
 											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="18" focusChangeTop="17" focusChangeBottom="19">
 				<GuiElement type="button" profile="multiTextOptionLeft" />
 				<GuiElement type="button" profile="multiTextOptionRight"/>
 				<GuiElement type="text"   profile="multiTextOptionText" />
-				<GuiElement type="text"   profile="multiTextOptionTitle" text="$mogli_ksmLIMIT"/>
+				<GuiElement type="text"   profile="multiTextOptionTitle" text="$mogli_vcaLIMIT"/>
 				<GuiElement type="bitmap" profile="multiTextOptionBg" />
 			</GuiElement>
 			
-			<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="ksmBrakeForce" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_ksm_tip_BRAKE" onCreate="onCreateSubElement" onCreateArgs="list"
+			<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="vcaBrakeForce" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_vca_tip_BRAKE" onCreate="onCreateSubElement" onCreateArgs="list"
 											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="19" focusChangeTop="18" focusChangeBottom="20">
 				<GuiElement type="button" profile="multiTextOptionLeft" />
 				<GuiElement type="button" profile="multiTextOptionRight"/>
 				<GuiElement type="text"   profile="multiTextOptionText" />
-				<GuiElement type="text"   profile="multiTextOptionTitle" text="$mogli_ksmBRAKE"/>
+				<GuiElement type="text"   profile="multiTextOptionTitle" text="$mogli_vcaBRAKE"/>
 				<GuiElement type="bitmap" profile="multiTextOptionBg" />
 			</GuiElement>
 
@@ -97,48 +97,48 @@
 
 		<GuiElement type="boxLayout" profile="settingsBox" size="527px 488px" position="1113px 88px" positionOrigin="bottomLeft">	
 					
-			<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="ksmTransmission" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_ksm_tip_TRANSMISSION" onCreate="onCreateSubElement" onCreateArgs="list0"
+			<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="vcaTransmission" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_vca_tip_TRANSMISSION" onCreate="onCreateSubElement" onCreateArgs="list0"
 											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="20" focusChangeTop="19" focusChangeBottom="21">
 				<GuiElement type="button" profile="multiTextOptionLeft" />
 				<GuiElement type="button" profile="multiTextOptionRight"/>
 				<GuiElement type="text"   profile="multiTextOptionText" />
-				<GuiElement type="text"   profile="multiTextOptionTitle" text="$mogli_ksmTRANSMISSION"/>
+				<GuiElement type="text"   profile="multiTextOptionTitle" text="$mogli_vcaTRANSMISSION"/>
 				<GuiElement type="bitmap" profile="multiTextOptionBg" />
 			</GuiElement>
 			
-			<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="ksmMaxSpeed" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_ksm_tip_MAXSPEED" onCreate="onCreateSubElement" onCreateArgs="list"
+			<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="vcaMaxSpeed" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_vca_tip_MAXSPEED" onCreate="onCreateSubElement" onCreateArgs="list"
 											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="21" focusChangeTop="20" focusChangeBottom="22">
 				<GuiElement type="button" profile="multiTextOptionLeft" />
 				<GuiElement type="button" profile="multiTextOptionRight"/>
 				<GuiElement type="text"   profile="multiTextOptionText" />
-				<GuiElement type="text"   profile="multiTextOptionTitle" text="$mogli_ksmMAXSPEED"/>
+				<GuiElement type="text"   profile="multiTextOptionTitle" text="$mogli_vcaMAXSPEED"/>
 				<GuiElement type="bitmap" profile="multiTextOptionBg" />
 			</GuiElement>
 			
-			<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="ksmAutoShift" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_ksm_tip_AUTOSHIFT" onCreate="onCreateSubElement"
+			<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="vcaAutoShift" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_vca_tip_AUTOSHIFT" onCreate="onCreateSubElement"
 											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="22" focusChangeTop="21" focusChangeBottom="102">
 				<GuiElement type="button" profile="multiTextOptionLeft" />
 				<GuiElement type="button" profile="multiTextOptionRight"/>
 				<GuiElement type="text"   profile="multiTextOptionText" />
-				<GuiElement type="text"   profile="multiTextOptionTitle" text="$mogli_ksmAUTOSHIFT"/>
+				<GuiElement type="text"   profile="multiTextOptionTitle" text="$mogli_vcaAUTOSHIFT"/>
 				<GuiElement type="bitmap" profile="multiTextOptionBg" />
 			</GuiElement>
 			
-			<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="ksmLimitSpeed" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_ksm_tip_LIMSPEED" onCreate="onCreateSubElement"
+			<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="vcaLimitSpeed" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_vca_tip_LIMSPEED" onCreate="onCreateSubElement"
 											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="22" focusChangeTop="21" focusChangeBottom="102">
 				<GuiElement type="button" profile="multiTextOptionLeft" />
 				<GuiElement type="button" profile="multiTextOptionRight"/>
 				<GuiElement type="text"   profile="multiTextOptionText" />
-				<GuiElement type="text"   profile="multiTextOptionTitle" text="$mogli_ksmLIMSPEED"/>
+				<GuiElement type="text"   profile="multiTextOptionTitle" text="$mogli_vcaLIMSPEED"/>
 				<GuiElement type="bitmap" profile="multiTextOptionBg" />
 			</GuiElement>
 		
-			<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="ksmLaunchGear" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_ksm_tip_LAUNCH" onCreate="onCreateSubElement" onCreateArgs="list"
+			<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="vcaLaunchGear" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_vca_tip_LAUNCH" onCreate="onCreateSubElement" onCreateArgs="list"
 											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="21" focusChangeTop="20" focusChangeBottom="22">
 				<GuiElement type="button" profile="multiTextOptionLeft" />
 				<GuiElement type="button" profile="multiTextOptionRight"/>
 				<GuiElement type="text"   profile="multiTextOptionText" />
-				<GuiElement type="text"   profile="multiTextOptionTitle" text="$mogli_ksmLAUNCH"/>
+				<GuiElement type="text"   profile="multiTextOptionTitle" text="$mogli_vcaLAUNCH"/>
 				<GuiElement type="bitmap" profile="multiTextOptionBg" />
 			</GuiElement>
 			
@@ -147,7 +147,7 @@
 
 		
 		<!--GuiElement type="text" profile="textDefault" textAlignment="left" size="527px 488px" position="1113px 88px" positionOrigin="bottomLeft" 
-								textWrapWidth="500px" textVerticalAlignment="top" textSize="20px" text="$mogli_ksm_Help_1" /-->				
+								textWrapWidth="500px" textVerticalAlignment="top" textSize="20px" text="$mogli_vca_Help_1" /-->				
 
 		<GuiElement type="bitmap" profile="ingameMenuHelpRowBg" id="mogliToolTipBox" size="1660px 48px" position="0px 0px" positionOrigin="bottomLeft" visible="true">
 			<GuiElement type="bitmap" profile="ingameMenuHelpRowIcon"/>
