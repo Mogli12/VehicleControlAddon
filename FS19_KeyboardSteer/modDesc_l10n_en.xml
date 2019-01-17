@@ -58,6 +58,7 @@
 		<text name="input_ksmShifter5"  text="KeyboardSteer: G27/G29 gear 5 / range down"/>
 		<text name="input_ksmShifter6"  text="KeyboardSteer: G27/G29 gear 6 / range up"/>
 		<text name="input_ksmShifter7"  text="KeyboardSteer: G27/G29 reverse gear"/>
+		<text name="input_ksmShifterLH" text="KeyboardSteer: G27/G29 gear splitter"/>
 	</texts>
 
 	<longTexts>

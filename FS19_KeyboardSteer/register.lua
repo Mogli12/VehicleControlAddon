@@ -9,20 +9,29 @@ if g_specializationManager:getSpecializationByName("keyboardSteerMogli") == nil 
 	else 
 		for k, typeDef in pairs(g_vehicleTypeManager.vehicleTypes) do
 			if typeDef ~= nil and k ~= "locomotive" then 
-				local isDrivable  = false
-				local isEnterable = false
-				local hasMotor    = false 
+				local isDrivable   = false
+				local isEnterable  = false
+				local hasMotor     = false 
+				local hasLights    = false 
+				local hasWheels    = false 
+				local isAttachable = false 
 				for name, spec in pairs(typeDef.specializationsByName) do
-					if     name == "drivable"  then 
+					if     name == "drivable"   then 
 						isDrivable = true 
-					elseif name == "motorized" then 
+					elseif name == "motorized"  then 
 						hasMotor = true 
-					elseif name == "enterable" then 
+					elseif name == "enterable"  then 
 						isEnterable = true 
+					elseif name == "lights"     then 
+						hasLights = true 
+					elseif name == "wheels"     then 
+						hasWheels = true 
+					elseif name == "attachable" then 
+						isAttachable = true 
 					end 
 				end 
-				if isDrivable and isEnterable and hasMotor then 
-				--print("  adding keyboardSteerMogli to vehicleType '"..tostring(k).."'")
+				if isDrivable and isEnterable and hasMotor and hasLights and hasWheels and not isAttachable then 
+					print("  adding keyboardSteerMogli to vehicleType '"..tostring(k).."'")
 					typeDef.specializationsByName[keyboardSteerMogli_Register.specName] = keyboardSteerMogli
 					table.insert(typeDef.specializationNames, keyboardSteerMogli_Register.specName)
 					table.insert(typeDef.specializations, keyboardSteerMogli)	

@@ -59,6 +59,7 @@
 		<text name="input_ksmShifter5"  text="KeyboardSteer: G27/G29 Gang 5 / Gruppe runter"/>
 		<text name="input_ksmShifter6"  text="KeyboardSteer: G27/G29 Gang 6 / Gruppe hoch"/>
 		<text name="input_ksmShifter7"  text="KeyboardSteer: G27/G29 Rückwärtsgang"/>
+		<text name="input_ksmShifterLH" text="KeyboardSteer: G27/G29 Gang Splitter"/>
 	</texts>   
 
 	<longTexts>
