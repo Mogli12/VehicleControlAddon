@@ -4,34 +4,76 @@
 	<description><![CDATA[Voegt specialisatie toe voor adaptieve toetsenbord besturing]]></description>
 
 	<texts>
-		<text name="vcaCAMERA"         text="Camera Rotatie"/>
-		<text name="vcaEXPONENT"       text="Gevoeligheid"/>
-		<text name="vcaSTEERING"       text="Adaptieve Besturing"/>
-		<text name="vcaANALOG"         text="Analoge Controller"/>
-		<text name="vcaREVERSE"        text="Kijk Achterwaarts"/>
-		<text name="vcaSHUTTLE"	       text="Schakelen"/>
-		<text name="vcaLIMIT"          text="Gasregelaar"/>
-		<text name="vcaSETTINGS"       text="VCA: Instellingen"/>
+		<text name="vcaCAMERA"          text="Camera Rotatie"/>
+		<text name="vcaEXPONENT"        text="Gevoeligheid"/>
+		<text name="vcaSTEERING"        text="Adaptieve Besturing"/>
+		<text name="vcaSHUTTLE"         text="Schakelen"/>
+		<text name="vcaREVERSE"         text="Kijk Achterwaarts"/>
+		<text name="vcaLIMIT"           text="Gasregelaar"/>
+		<text name="vcaPEEKLR"          text="Zijwaarts kijken"/>
+		<text name="vcaANGLE"           text="Snap Angle"/>
+		<text name="vcaBRAKE"           text="Low Brake Force"/>
+		<text name="vcaTRANSMISSION"    text="Transmissie"/>
+		<text name="vcaMAXSPEED"        text="As Snelheid"/>
+		<text name="vcaLIMSPEED"        text="Snelheidsbeperking"/>
+		<text name="vcaAUTOSHIFT"       text="Automaat"/>
+		<text name="vcaLAUNCH"          text="Wegrij Versnelling"/>
+		<text name="vcaSETTINGS"        text="VCA: Instellingen"/>
 		<text name="vcaDIRECTION"	   text="Rijrichting"/>
 		                               
-		<text name="vca_tip_CAMERA"    text="De camera draait automatisch met de stuuruitslag"/>
-		<text name="vca_tip_EXPONENT"  text="Gevoeligheid van de adaptieve besturing ten opzichte van de grondsnelheid"/>
-		<text name="vca_tip_STEERING"  text="Aanpassing van de automatisch terugsturing en maximale stuuruitslag van de apatieve besturing"/>
-		<text name="vca_tip_ANALOG"    text="Activering van adaptieve besturing voor analoge controllers"/>
-		<text name="vca_tip_REVERSE"   text="Draaicamera 180 graden, wanneer voertuig van richting verandert"/>
-		<text name="vca_tip_LIMIT"     text="Beperkt gasstand met of zonder linker Shift toets"/>
-		<text name="vca_tip_DIRECTION" text="Verander rijrichting voor/achterwaarts"/>
-		                               
-		<text name="input_vcaENABLE"   text="VCA: adaptieve besturing"/>
-		<text name="input_vcaCAMERA"   text="VCA: camera rotatie"/>
-		<text name="input_vcaREVERSE"  text="VCA: kijk achterwaarts"/>
-		<text name="input_vcaSETTINGS" text="VCA: instellingen"/>
-		<text name="input_vcaUP"       text="VCA: Kijk vooruit"/>
-		<text name="input_vcaDOWN"     text="VCA: Kijk achteruit"/>
-		<text name="input_vcaLEFT"     text="VCA: Kijk links"/>
-		<text name="input_vcaRIGHT"    text="VCA: Kijk rechts"/>
-		<text name="input_vcaDIRECTION" text="VCA: Vooruit/Achteruit"/>
+		<text name="vca_tip_CAMERA"     text="De camera draait automatisch met de stuuruitslag"/>
+		<text name="vca_tip_EXPONENT"   text="Gevoeligheid van de adaptieve besturing ten opzichte van de grondsnelheid"/>
+		<text name="vca_tip_STEERING"   text="Aanpassing van de automatisch terugsturing en maximale stuuruitslag van de adaptieve besturing"/>
+		<text name="vca_tip_SHUTTLE"    text="Verander de rijrichting met <spatiebalk>"/>
+		<text name="vca_tip_REVERSE"    text="Wanneer de rijrichting verandert, draait de camera 180°"/>
+		<text name="vca_tip_LIMIT"      text="Beperkt de snelheid met en zonder linker shift toets"/>
+		<text name="vca_tip_PEEKLR"     text="Kijk om de hoek met Shift-Rechts en de linker of rechter cursortoets"/>
+		<text name="vca_tip_ANGLE"      text="Stuur automatisch om de rasterhoek te volgen"/>
+		<text name="vca_tip_BRAKE"      text="Remkracht percentage, aka rolweerstand"/>
+		<text name="vca_tip_TRANSMISSION" text="Type transmissie; IVT variable transmissie (automaat), alle andere transmissies hebben 12 versnellingen, 2x6 is geschikt voor vrachtwagens"/>
+		<text name="vca_tip_MAXSPEED"   text="Maximum snelheid van de hoogste versnelling, kan hoger zijn dan max. snelheid van het voertuig"/>
+		<text name="vca_tip_LIMSPEED"   text="Beperkt de maximum snelheid van het voertuig naar standaard waarde"/>
+		<text name="vca_tip_AUTOSHIFT"  text="Automatisch schakelen van versnellingen en bereik"/>
+		<text name="vca_tip_LAUNCH"     text="Nominale snelheid van de wegrijversnelling"/>
+		
+		<text name="input_vcaSETTINGS"  text="VCA: instellingen"/>
+		<text name="input_vcaUP"        text="VCA: Kijk vooruit"/>
+		<text name="input_vcaDOWN"      text="VCA: Kijk achteruit"/>
+		<text name="input_vcaLEFT"      text="VCA: Kijk links"/>
+		<text name="input_vcaRIGHT"     text="VCA: Kijk rechts"/>
+		<text name="input_vcaDIRECTION" text="VCA: Verander rijrichting"/>
 		<text name="input_vcaFORWARD"   text="VCA: Rij vooruit"/>
 		<text name="input_vcaREVERSE"   text="VCA: Rij achteruit"/>
+		<text name="input_vcaSNAP"      text="VCA: Rasterrijrichting"/>
+		<text name="input_vcaNO_ARB"    text="VCA: Niet automatisch terugsturen"/>
+		<text name="input_vcaINCHING"   text="VCA: inching"/>
+		<text name="input_vcaGearUp"    text="VCA: Opschakelen"/>
+		<text name="input_vcaGearDown"  text="VCA: Terugschakelen"/>
+		<text name="input_vcaRangeUp"   text="VCA: Bereik opschakelen"/>
+		<text name="input_vcaRangeDown" text="VCA: Bereik terugschakelen"/>
+		<text name="input_vcaNeutral"   text="VCA: Versnelling in neutraal aan/uit"/>
+		<text name="input_vcaShifter1"  text="VCA: G27/G29 versn. 1"/>
+		<text name="input_vcaShifter2"  text="VCA: G27/G29 versn. 2"/>
+		<text name="input_vcaShifter3"  text="VCA: G27/G29 versn. 3"/>
+		<text name="input_vcaShifter4"  text="VCA: G27/G29 versn. 4"/>
+		<text name="input_vcaShifter5"  text="VCA: G27/G29 versn. 5 / Bereik terug"/>
+		<text name="input_vcaShifter6"  text="VCA: G27/G29 versn. 6 / Bereik omhoog"/>
+		<text name="input_vcaShifter7"  text="VCA: G27/G29 Achteruit"/>
+		<text name="input_vcaShifterLH" text="VCA: G27/G29 Versnelling Splitter"/>
+				
 	</texts>
+	<longTexts>
+		<longText name="vca_Help_1">
+<![CDATA[
+Dit script varieert de stuursnelheid afhankelijk van de snelheid waarmee je rijdt en draait de camera mee afhankelijk van de stuuruitslag.
+
+Linkershift toets beperkt het gas en cruise control en beperkt het toerental tot 75%. Met de rechter shift toets + cursortoets link/rechts kan je snel naar links of rechts kijken.
+
+Linker CTRL toets+W zorgt er voor dat je rijrichting wordt gefixeerd op rasterhoek.
+
+Alle functies kunnen worden uitgeschakeld.]]>
+		</longText>
+	</longTexts>
+	
+	
 </l10n>
