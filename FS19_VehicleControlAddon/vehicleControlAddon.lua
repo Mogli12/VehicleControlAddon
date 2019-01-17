@@ -67,7 +67,7 @@ function vehicleControlAddon.globalsReset( createIfMissing )
 	print("vehicleControlAddon initialized");
 end
 
-vehicleControlAddon.globalsReset(true)
+vehicleControlAddon.globalsReset(g_server ~= nil and g_client == nil)
 
 function vehicleControlAddon.debugPrint( ... )
 	if VCAGlobals.debugPrint then
