@@ -6,7 +6,7 @@ vehicleControlAddonTransmissionBase_mt = Class(vehicleControlAddonTransmissionBa
 vehicleControlAddonTransmissionBase.gearRatios = { 0.120, 0.145, 0.176, 0.213, 0.259, 0.314, 0.381, 0.462, 0.560, 0.680, 0.824, 1.000 }
 
 
-function vehicleControlAddonTransmissionBase:new( mt, name, noGears, timeGears, rangeGearOverlap, timeRanges )
+function vehicleControlAddonTransmissionBase:new( mt, name, noGears, timeGears, rangeGearOverlap, timeRanges, gearRatios, gearTexts, rangeTexts )
 	local self = {}
 
 	if mt == nil then 
@@ -34,6 +34,45 @@ function vehicleControlAddonTransmissionBase:new( mt, name, noGears, timeGears, 
 	self.rangeGearOverlap = rangeGearOverlap
 	self.changeTimeGears  = timeGears
 	self.changeTimeRanges = timeRanges
+	self.gearRatios       = Utils.getNoNil( gearRatios, vehicleControlAddonTransmissionBase.gearRatios )
+
+	if gearTexts == nil then 
+		if     self.numberOfGears <= 1 then 
+			self.gearTexts = { "" } 
+		elseif self.numberOfRanges <= 4 or self.numberOfGears > 4 then 
+			self.gearTexts = {} 
+			for i=1,self.numberOfGears do 
+				self.gearTexts[i] = tostring(i) 
+			end 
+		elseif self.numberOfGears == 2 then 
+			self.gearTexts = { "L", "H" }
+		elseif self.numberOfGears == 3 then 
+			self.gearTexts = { "L", "M", "H" }
+		else 
+			self.gearTexts = { "LL", "L", "M", "H" }
+		end 
+	else 
+		self.gearTexts = gearTexts 
+	end 
+
+	if rangeTexts == nil then 
+		if     self.numberOfRanges <= 1 then 
+			self.rangeTexts = { "" } 
+		elseif self.numberOfRanges > 4 then 
+			self.rangeTexts = {} 
+			for i=1,self.numberOfRanges do 
+				self.rangeTexts[i] = tostring(i) 
+			end 
+		elseif self.numberOfRanges == 2 then 
+			self.rangeTexts = { "L", "H" }
+		elseif self.numberOfRanges == 3 then 
+			self.rangeTexts = { "L", "M", "H" }
+		else 
+			self.rangeTexts = { "LL", "L", "M", "H" }
+		end 
+	else 
+		self.rangeTexts = rangeTexts 
+	end 
 
 	return self
 end 
@@ -66,40 +105,14 @@ function vehicleControlAddonTransmissionBase:getName()
 end 
 
 function vehicleControlAddonTransmissionBase:getGearText( gear, range )
-	local text = ""
-	if     self.numberOfRanges <= 1 then 
-	elseif self.numberOfRanges == 2 then
-		if range <= 1 then 
-			text = "L"
-		else 
-			text = "H"
-		end 
-	elseif self.numberOfRanges <= 4 then
-		if     range <= 1 then 
-			text = "L"
-		elseif range == 2 then
-			text = "M"
-		elseif range == 3 then 
-			text = "H"
-		else
-			text = "S" 
-		end 
-	else
-		text = tostring( range )
+	if self.rangeTexts[range] ~= nil and self.gearTexts[gear] ~= nil then 
+		return self.rangeTexts[range].." "..self.gearTexts[gear]
+	elseif self.rangeTexts[range] ~= nil then 
+		return self.rangeTexts[range] ~= nil 
+	elseif self.gearTexts[gear] then 
+		return self.gearTexts[gear]
 	end 
-	
-	if     self.numberOfRanges <= 1 then 
-	elseif self.numberOfRanges == 2 then
-		if gear <= 1 then 
-			text = text .." +"
-		else 
-			text = text .." -"
-		end 
-	else 
-		text = text.." "..tostring(gear)
-	end 
-	
-	return text 
+	return ""
 end 
 
 function vehicleControlAddonTransmissionBase:gearUp( vehicle )
@@ -136,10 +149,14 @@ function vehicleControlAddonTransmissionBase:rangeDown( vehicle )
 	end 
 end 
 
+function vehicleControlAddonTransmissionBase:splitGearsForShifter()
+	return true 
+end 
+
 function vehicleControlAddonTransmissionBase:gearShifter( vehicle, number, isPressed )
 	if isPressed then 
 		local goFwd = nil 
-		local list  = self:getGearShifterIndeces( vehicle.vcaShifterLH )
+		local list  = self:getGearShifterIndeces()
 		local num2  = 0
 		
 		if number == 7 then 
@@ -150,12 +167,25 @@ function vehicleControlAddonTransmissionBase:gearShifter( vehicle, number, isPre
 			vehicle.vcaShifter7isR1 = true 
 			goFwd = false 
 			
-			num2 = 2
-			for i,l in pairs(list) do  
-				if i > 1 and l > vehicle.vcaLaunchGear then 
-					break 
+			if self:splitGearsForShifter() then 
+				num2 = 2
+				for i,l in pairs(list) do  
+					if i > 1 and l > vehicle.vcaLaunchGear then 
+						break 
+					end 
+					num2 = i  
 				end 
-				num2 = i  
+				if not vehicle.vcaShifterLH and num2 > 1 then 
+					num2 = num2 - 1
+				elseif vehicle.vcaShifterLH and num2 == 1 then 
+					num2 = 2
+				end 
+			else 
+				if vehicle.vcaShifterLH then 
+					num2 = number 
+				else 
+					num2 = number - 6 
+				end 
 			end 
 		else			
 			if vehicle.vcaShuttleCtrl and vehicle.vcaShifter7isR1 == nil then 
@@ -165,12 +195,20 @@ function vehicleControlAddonTransmissionBase:gearShifter( vehicle, number, isPre
 				goFwd = true 
 			end 
 			
-			num2 =  number + number 
+			if self:splitGearsForShifter() then 
+				num2 =  number + number 
+				if not vehicle.vcaShifterLH and num2 > 1 then 
+					num2 = num2 - 1
+				end 
+			else 
+				if vehicle.vcaShifterLH then 
+					num2 = number + 6 
+				else 
+					num2 = number 
+				end 
+			end 
 		end 
 		
-		if not vehicle.vcaShifterLH and num2 > 1 then 
-			num2 = num2 - 1
-		end 
 		local index = list[num2] 
 		if index == nil then 
 			print("Cannot find correct gear for shifter position "..tostring(number))
@@ -210,11 +248,11 @@ function vehicleControlAddonTransmissionBase:getGearShifterIndeces( )
 end 
 
 function vehicleControlAddonTransmissionBase:getGearRatio( index )
-	return vehicleControlAddonTransmissionBase.gearRatios[index]
+	return self.gearRatios[index]
 end 
 
 function vehicleControlAddonTransmissionBase:getNumberOfRatios( )
-	return 12
+	return table.getn( self.gearRatios )
 end 
 
 function vehicleControlAddonTransmissionBase:getRatioIndex( gear, range )
@@ -257,16 +295,23 @@ function vehicleControlAddonTransmissionBase:getBestGearRangeFromIndex( oldGear,
 	return 1, self.numberOfRanges
 end 
 
-function vehicleControlAddonTransmissionBase:getRatioIndexList()
-	return { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }
-end 
-
 function vehicleControlAddonTransmissionBase:getRatioIndexListOfGear( gear )
-	return self:getRatioIndexList()
+	local list = {}
+	for i,r in pairs(self.rangeGearFromTo) do 
+		table.insert( list, gear + r.ofs ) 
+	end 
+	return list 
 end 
 
 function vehicleControlAddonTransmissionBase:getRatioIndexListOfRange( range )
-	return self:getRatioIndexList()
+	if self.rangeGearFromTo[range] == nil then 
+		return {} 
+	end 
+	list = {}
+	for i=self.rangeGearFromTo[range].from,self.rangeGearFromTo[range].to do	
+		table.insert( list, i )
+	end 
+	return list
 end 
 
 function vehicleControlAddonTransmissionBase:actionCallback( vehicle, actionName, keyStatus )
@@ -322,6 +367,9 @@ vehicleControlAddonTransmission2x6 = {}
 function vehicleControlAddonTransmission2x6:new()
 	local self = vehicleControlAddonTransmissionBase:new( Class(vehicleControlAddonTransmission2x6,vehicleControlAddonTransmissionBase), "2X6", 6, 750, {0}, 1000 )
 	return self 
+end 
+function vehicleControlAddonTransmission2x6:splitGearsForShifter()
+	return false 
 end 
 
 vehicleControlAddonTransmissionFPS = {}

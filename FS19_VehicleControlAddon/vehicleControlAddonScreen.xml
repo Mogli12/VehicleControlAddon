@@ -116,7 +116,7 @@
 			</GuiElement>
 			
 			<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="vcaAutoShift" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_vca_tip_AUTOSHIFT" onCreate="onCreateSubElement"
-											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="22" focusChangeTop="21" focusChangeBottom="102">
+											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="22" focusChangeTop="21" focusChangeBottom="23">
 				<GuiElement type="button" profile="multiTextOptionLeft" />
 				<GuiElement type="button" profile="multiTextOptionRight"/>
 				<GuiElement type="text"   profile="multiTextOptionText" />
@@ -125,7 +125,7 @@
 			</GuiElement>
 			
 			<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="vcaLimitSpeed" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_vca_tip_LIMSPEED" onCreate="onCreateSubElement"
-											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="22" focusChangeTop="21" focusChangeBottom="102">
+											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="23" focusChangeTop="22" focusChangeBottom="24">
 				<GuiElement type="button" profile="multiTextOptionLeft" />
 				<GuiElement type="button" profile="multiTextOptionRight"/>
 				<GuiElement type="text"   profile="multiTextOptionText" />
@@ -134,7 +134,7 @@
 			</GuiElement>
 		
 			<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="vcaLaunchGear" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_vca_tip_LAUNCH" onCreate="onCreateSubElement" onCreateArgs="list"
-											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="21" focusChangeTop="20" focusChangeBottom="22">
+											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="24" focusChangeTop="23" focusChangeBottom="102">
 				<GuiElement type="button" profile="multiTextOptionLeft" />
 				<GuiElement type="button" profile="multiTextOptionRight"/>
 				<GuiElement type="text"   profile="multiTextOptionText" />

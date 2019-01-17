@@ -621,6 +621,9 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus)
 	elseif actionName == "vcaSNAP" then
 		self:vcaSetState( "vcaSnapIsOn", not self.vcaSnapIsOn )
  	elseif actionName == "vcaNeutral" then
+		if self.vcaNeutral and self.vcaShifterIndex > 0 then 
+			self:vcaSetState( "vcaShifterIndex", 0 )
+		end 
 		self:vcaSetState( "vcaNeutral", not self.vcaNeutral )
 	elseif actionName == "vcaSETTINGS" then
 		vehicleControlAddon.vcaShowSettingsUI( self )
@@ -1099,19 +1102,19 @@ function vehicleControlAddon:onDraw()
 				local h = w * g_screenAspectRatio
 				if self.vcaShuttleCtrl then 
 					if self.vcaShuttleFwd then
-						if     self.vcaNeutral and self.vcaShifter7isR1 then 
+						if     self.vcaNeutral and self.vcaShifterIndex > 0 then 
 						elseif self.vcaNeutral then 
 							renderOverlay( vehicleControlAddon.ovHandBrakeUp, x-0.5*w, y-0.5*h, w, h )
-						elseif self.vcaShifter7isR1 then
+						elseif self.vcaShifter7isR1 and self.vcaShifterIndex > 0 then
 							renderOverlay( vehicleControlAddon.ovArrowUpGray, x-0.5*w, y-0.5*h, w, h )
 						else 
 							renderOverlay( vehicleControlAddon.ovArrowUpWhite, x-0.5*w, y-0.5*h, w, h )
 						end 
 					else 
-						if     self.vcaNeutral and self.vcaShifter7isR1 then 
+						if     self.vcaNeutral and self.vcaShifterIndex > 0 then 
 						elseif self.vcaNeutral then 
 							renderOverlay( vehicleControlAddon.ovHandBrakeDown, x-0.5*w, y-0.5*h, w, h )
-						elseif self.vcaShifter7isR1 then
+						elseif self.vcaShifter7isR1 and self.vcaShifterIndex > 0 then
 							renderOverlay( vehicleControlAddon.ovArrowDownGray, x-0.5*w, y-0.5*h, w, h )
 						else 
 							renderOverlay( vehicleControlAddon.ovArrowDownWhite, x-0.5*w, y-0.5*h, w, h )
@@ -1329,7 +1332,7 @@ end
 --******************************************************************************************************************************************
 -- shuttle control and inching
 function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed, acceleration, doHandbrake, stopAndGoBraking )
-	local brake = ( acceleration < 0 )
+	local brake = ( acceleration < -0.1 )
 	
 	self.vcaOldAcc       = acceleration
 	self.vcaOldHandbrake = doHandbrake
@@ -1385,12 +1388,17 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 	self.vcaNewHandbrake = doHandbrake
 	stopAndGoBraking = true 
 	
+	local lightsBackup = self.spec_lights
+	self.spec_lights = nil
+	
 	local state, result = pcall( superFunc, self, dt, currentSpeed, acceleration, doHandbrake, stopAndGoBraking ) 
 	if not ( state ) then
 		print("Error in updateWheelsPhysics :"..tostring(result))
 		self.vcaShuttleCtrl  = false 
 		self.vcaTransmission = 0 
 	end
+	
+	self.spec_lights = lightsBackup
 	
 	if self.vcaShuttleCtrl then 
 		if type( self.setBrakeLightsVisibility ) == "function" then 
@@ -2167,10 +2175,11 @@ function vehicleControlAddon:vcaShowSettingsUI()
 	self.vcaUI.vcaLaunchGear = {}
 	local transmission = vehicleControlAddon.transmissions[self.vcaTransmission]
 	if transmission ~= nli then 
-		for i,g in pairs(transmission:getRatioIndexList( i ) ) do
-			self.vcaUI.vcaLaunchGear[i] = string.format( "%3.0f km/h", transmission:getGearRatio( g )*3.6*self.vcaMaxSpeed )
+		for i=1,transmission:getNumberOfRatios() do
+			self.vcaUI.vcaLaunchGear[i] = string.format( "%3.0f km/h", transmission:getGearRatio( i )*3.6*self.vcaMaxSpeed )
 		end 
 	end 
+	
 	
 	g_vehicleControlAddonScreen:setVehicle( self )
 	g_gui:showGui( "vehicleControlAddonScreen" )
