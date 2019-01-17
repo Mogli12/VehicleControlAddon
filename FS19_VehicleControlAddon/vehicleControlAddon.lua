@@ -56,9 +56,9 @@ function vehicleControlAddon.globalsReset( createIfMissing )
 		print("ERROR: NO GLOBALS IN "..file)
 	end
 	
-	file = getUserProfileAppPath().. "modsSettings/vehicleControlAddonConfig.xml"
+	file = getUserProfileAppPath().. "modsSettings/FS19_VehicleControlAddon/vehicleControlAddonConfig.xml"
 	if fileExists(file) then	
-		print('Loading "modsSettings/vehicleControlAddonConfig.xml"...')
+		print('Loading "'..file..'"...')
 		vehicleControlAddon.globalsLoad( file, "VCAGlobals", VCAGlobals )	
 	elseif createIfMissing then
 		vehicleControlAddon.globalsCreate( file, "VCAGlobals", VCAGlobals, true )	
