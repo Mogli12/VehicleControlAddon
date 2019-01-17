@@ -832,13 +832,24 @@ function vehicleControlAddon:onUpdate(dt)
 					a = -a 
 				end 
 				
-				d = 0.002 * dt
+				if math.abs( a ) < 0.005 then 
+					a = 0
+				elseif math.abs( a ) < 0.05 then 
+					if a < 0 then 
+						a = -0.05
+					else 
+						a = 0.05
+					end 
+				end 
+				
+				d = 0.001 * dt
 				
 				if axisSideLast == nil then 
 					axisSideLast = self.spec_drivable.axisSideLast 
 				end 
 				
 				self.spec_drivable.axisSide = axisSideLast + vehicleControlAddon.mbClamp( a - axisSideLast, -d, d )
+
 				
 				self.vcaAxisSideLast = self.spec_drivable.axisSide
 				
