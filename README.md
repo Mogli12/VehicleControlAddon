@@ -1,4 +1,6 @@
-# KeyboardSteer for Farming Simulator 2019
+# VehicleControlAddon for Farming Simulator 2019
+
+## VehicleControlAddon is the new KeyboardSteer
 
 ## Status
 I tried to publish version 0.0.3.1 on Modhub but I got it back for review. The automatic camera reversal if one switches the driving direction seems to be too disturbing. 
@@ -12,6 +14,14 @@ Although I have a steering wheel, but almost always play with the keyboard. On w
 This script varies the steering speed depending on the speed you are driving, and it rotates the camera to match the steering angle and direction.
 Shift-Left limits throttle, cruise control and maximum rounds per minute to 75%. With Shift-right and the cursor keys you can peek in the corresponding direction.
 If you press Ctrl left together with W then the driving direction snaps to fixed directions.
+Additionally, there is a simple gear box. It was never planned to make a super realistic gearbox. The following transmisions are available:
+* off: the standard gearbox without customization
+* IVT: Still the standard gearbox but with little adjustments to the allowed RPM range. More to come...
+* 4X4: An old fashioned transmissoin with 4 gears in 4 groups and shuttle control. Shifting gears takes time and you might lose momentum.
+* 4PS: The same transmissoin as above but with power shift for the gears
+* 2X6: Two groups with 6 gears. This transmission is useful for G27/G29 gear shifters. There is a low and a high range. The 6 gears in each range do not overlap with the 6 gears in the other range
+* FPS: Full Power Shift: The transmission has 12 gears and shifts without interuption. 
+* 6PS: 6 gears with power shift: This transmission has 6 gears. Each gear can be reduced by about 80%
 
 All functions are switchable with the following default key combinations:
 * Ctrl Left + C: Settings
