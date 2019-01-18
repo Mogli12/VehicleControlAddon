@@ -373,7 +373,7 @@ function vehicleControlAddon:saveToXMLFile(xmlFile, key)
 	if self.vcaPeekLeftRight ~= nil and self.vcaPeekLeftRight ~= VCAGlobals.peekLeftRight then
 		setXMLBool(xmlFile, key.."#peek", self.vcaPeekLeftRight)
 	end
-	if self.vcaAutoShift then
+	if not self.vcaAutoShift then
 		setXMLBool(xmlFile, key.."#autoShift", self.vcaAutoShift)
 	end
 	if not self.vcaLimitSpeed then
@@ -1356,16 +1356,21 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 				self.nextMovingDirection = -1 
 			end 
 			
-			if not self:getIsMotorStarted() or g_gui:getIsGuiVisible() then 
+			if not self:getIsMotorStarted() then 
 				acceleration = 0
 				doHandbrake  = true 
-			elseif acceleration < 0 then 
+			elseif g_gui:getIsGuiVisible() and self.spec_drivable.cruiseControl.state == 0 then 
+				acceleration = 0
+				doHandbrake  = true 
+			elseif acceleration < -0.01 then 
 				local lowSpeedBrake = 1.389e-4 - acceleration * 6.944e-4 -- 0.5 .. 3			
 				if  math.abs( currentSpeed ) < lowSpeedBrake then 
 					-- braking at low speed
 					acceleration = 0
 					doHandbrake  = true 
 				end			
+			elseif acceleration < 0 then 
+				acceleration = 0				
 			end 
 			if self.vcaNeutral then 
 				if acceleration > 0 then 
@@ -1375,7 +1380,7 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 			if      self.spec_motorized.motor.vcaAutoStop
 					and acceleration < 0.1 then 
 				doHandbrake  = true 
-			end			
+			end		
 		end 			
 			
 		if self.spec_drivable.cruiseControl.state == 0 and self.vcaLimitThrottle ~= nil and self.vcaInchingIsOn ~= nil and math.abs( acceleration ) > 0.01 then 
@@ -1400,7 +1405,9 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 	stopAndGoBraking = true 
 	
 	local lightsBackup = self.spec_lights
-	self.spec_lights = nil
+	if self.vcaShuttleCtrl then 
+		self.spec_lights = nil
+	end 
 	
 	local state, result = pcall( superFunc, self, dt, currentSpeed, acceleration, doHandbrake, stopAndGoBraking ) 
 	if not ( state ) then
@@ -1409,9 +1416,8 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 		self.vcaTransmission = 0 
 	end
 	
-	self.spec_lights = lightsBackup
-	
 	if self.vcaShuttleCtrl then 
+		self.spec_lights = lightsBackup
 		if type( self.setBrakeLightsVisibility ) == "function" then 
 			self:setBrakeLightsVisibility( brake )
 		end 
