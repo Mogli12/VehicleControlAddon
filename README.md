@@ -1,6 +1,9 @@
 # VehicleControlAddon for Farming Simulator 2019
 
 ## VehicleControlAddon is the new KeyboardSteer
+Please check section status why I renamed the mod. Please use VCA as abreviation.
+
+You will have to choose the new mod after replacing it in the mods folder. But settings in old save games are still read.
 
 ## Developer version
 Please be aware you're using a developer version, which may and will contain errors, bugs, mistakes and unfinished code. 
