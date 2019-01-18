@@ -50,7 +50,7 @@ All functions are switchable with the following default key combinations:
 * Space: Change direction (aka shuttle control)
 * Please check the keys for shifting. G27/G29 gear shifters are supported.
 * The 7th gear of the gear shifter is special. If you use action binding ksmShifter7 please make sure that shuttle control is enabled. This action binding will swtich into 1st reverse gear. 
-* In case of a 4x4 transmission the gears 5 and 6 are used to shift the range down or up. Best transmission in combination with a gear shifter is maybe the FPS. The shifter operates on gears 7 to 12. The reverse gear is 6th.
+* Best transmission in combination with a gear shifter are 2X6, FPS and 6PS. 
 
 ## Developer version
 Please be aware you're using a developer version, which may and will contain errors, bugs, mistakes and unfinished code. 
