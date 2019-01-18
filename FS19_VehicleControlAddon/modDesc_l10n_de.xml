@@ -18,6 +18,7 @@
 		<text name="vcaLIMSPEED"        text="Geschwindigkeitsbegrenzer"/>
 		<text name="vcaAUTOSHIFT"       text="Automatik"/>
 		<text name="vcaLAUNCH"          text="Startgang"/>
+		<text name="vcaKEEPSPEED"       text="Geschwindigkeit permanent halten"/>
 		<text name="vcaSETTINGS"        text="Einstellungen"/>
 		                                
 		<text name="vca_tip_CAMERA"     text="Die Kamera dreht sich passend zum Lenkeinschlag automatisch mit."/>
@@ -34,6 +35,7 @@
 		<text name="vca_tip_LIMSPEED"   text="Begrenzung der Höchtstgeschwindigkeit auf den Standardwert des Fahrzeugs"/>
 		<text name="vca_tip_AUTOSHIFT"  text="Automatische Schaltung von Gängen und Gruppen"/>
 		<text name="vca_tip_LAUNCH"     text="Geschwindigkeit des Ganges, der zum Anfahren benutzt wird"/>
+		<text name="vca_tip_KEEPSPEED"  text="Falls ständiges Halten der Geschwindigkeit aktiviert ist, dann fährt das Fahrzeug quasi immer mit Tempomat. Das entspricht dem Fahrhebel in modernen Traktoren."/>
 		                                
 		<text name="input_vcaSETTINGS"  text="VCA: Einstellungen"/>
 		<text name="input_vcaUP"        text="VCA: Blickrichtung wechseln oder nach vorne schauen"/>
@@ -46,6 +48,8 @@
 		<text name="input_vcaSNAP"      text="VCA: Fahrtrichtung am Raster ausrichten"/>
 		<text name="input_vcaNO_ARB"    text="VCA: Kein zurück Lenken"/>
 		<text name="input_vcaINCHING"   text="VCA: Langsamer"/>
+		<text name="input_vcaKEEPSPEED" text="VCA: Geschwindigkeit halten"/>
+		<text name="input_vcaSWAPSPEED" text="VCA: Tempomatgeschindigkeit wechseln"/>
 		<text name="input_vcaGearUp"    text="VCA: Gang hoch"/>
 		<text name="input_vcaGearDown"  text="VCA: Gang runter"/>
 		<text name="input_vcaRangeUp"   text="VCA: Gruppe hoch"/>

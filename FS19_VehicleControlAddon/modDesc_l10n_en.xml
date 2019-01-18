@@ -18,6 +18,7 @@
 		<text name="vcaLIMSPEED"        text="Speed Limiter"/>
 		<text name="vcaAUTOSHIFT"       text="Automatic"/>
 		<text name="vcaLAUNCH"          text="Launch Gear"/>
+		<text name="vcaKEEPSPEED"       text="Permanent keep speed"/>
 		<text name="vcaSETTINGS"        text="Settings"/>
 		                                
 		<text name="vca_tip_CAMERA"     text="The camera rotates automatically according to the steering angle"/>
@@ -34,6 +35,7 @@
 		<text name="vca_tip_LIMSPEED"   text="Limits the maximum speed of the vehicle to its default value"/>
 		<text name="vca_tip_AUTOSHIFT"  text="Automatic shifting of gears and ranges"/>
 		<text name="vca_tip_LAUNCH"     text="Rated speed of the launch gear"/>
+		<text name="vca_tip_KEEPSPEED"  text="If permanent keep speed is enabled than the acceleration pedal behaves like a joystick. This is like driving with cruise control."/>
 		                               
 		<text name="input_vcaSETTINGS"  text="VCA: settings"/>
 		<text name="input_vcaUP"        text="VCA: toggle view direction / lock forwards"/>
@@ -46,6 +48,8 @@
 		<text name="input_vcaSNAP"      text="VCA: snap driving direction"/>
 		<text name="input_vcaNO_ARB"    text="VCA: no auto rotate back"/>
 		<text name="input_vcaINCHING"   text="VCA: inching"/>
+		<text name="input_vcaKEEPSPEED" text="VCA: keep speed"/>
+		<text name="input_vcaSWAPSPEED" text="VCA: swap speed"/>
 		<text name="input_vcaGearUp"    text="VCA: gear up"/>
 		<text name="input_vcaGearDown"  text="VCA: gear down"/>
 		<text name="input_vcaRangeUp"   text="VCA: range up"/>

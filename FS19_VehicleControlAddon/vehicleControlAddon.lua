@@ -186,7 +186,7 @@ function vehicleControlAddon:onLoad(savegame)
 	vehicleControlAddon.registerState( self, "vcaSteeringIsOn", VCAGlobals.adaptiveSteering )
 	vehicleControlAddon.registerState( self, "vcaShuttleCtrl",  VCAGlobals.shuttleControl )
 	vehicleControlAddon.registerState( self, "vcaPeekLeftRight",VCAGlobals.peekLeftRight )
-	vehicleControlAddon.registerState( self, "vcaShuttleFwd",   true )
+	vehicleControlAddon.registerState( self, "vcaShuttleFwd",   true, vehicleControlAddon.vcaOnSetDirection )
 	vehicleControlAddon.registerState( self, "vcaExternalDir",  0 )
 	vehicleControlAddon.registerState( self, "vcaCamFwd"      , true )
 	vehicleControlAddon.registerState( self, "vcaCameraIsOn"  , false, vehicleControlAddon.vcaOnSetCamera )
@@ -211,6 +211,11 @@ function vehicleControlAddon:onLoad(savegame)
 	vehicleControlAddon.registerState( self, "vcaLimitSpeed",   true )
 	vehicleControlAddon.registerState( self, "vcaLaunchGear",   VCAGlobals.launchGear )
 	vehicleControlAddon.registerState( self, "vcaBOVVolume",    0, vehicleControlAddon.vcaOnSetGearChanged )
+	vehicleControlAddon.registerState( self, "vcaKSIsOn",       true )
+	vehicleControlAddon.registerState( self, "vcaKeepSpeed",    0 )
+	vehicleControlAddon.registerState( self, "vcaKSToggle",     false )
+	vehicleControlAddon.registerState( self, "vcaCCSpeed2",     10 )
+	vehicleControlAddon.registerState( self, "vcaCCSpeed3",     15 )
 	
 	self.vcaFactor        = 1
 	self.vcaReverseTimer  = 1.5 / VCAGlobals.timer4Reverse
@@ -295,6 +300,12 @@ function vehicleControlAddon:onPostLoad(savegame)
 				self:vcaSetState( "vcaLimitSpeed", b )
 			end 
 			
+			b = getXMLBool(xmlFile, key.."#keepSpeed")
+			vehicleControlAddon.debugPrint("keepSpeed: "..tostring(b))
+			if b ~= nil then 
+				self:vcaSetState( "vcaKSToggle", b )
+			end 
+			
 			i = getXMLInt(xmlFile, key.."#exponent")
 			vehicleControlAddon.debugPrint("exponent: "..tostring(i))
 			if i ~= nil then 
@@ -337,6 +348,18 @@ function vehicleControlAddon:onPostLoad(savegame)
 				self:vcaSetState( "vcaMaxSpeed", f )
 			end 
 					
+			f = getXMLFloat(xmlFile, key.."#ccSpeed2")
+			vehicleControlAddon.debugPrint("ccSpeed2: "..tostring(f))
+			if f ~= nil then 
+				self:vcaSetState( "vcaCCSpeed2", f )
+			end 
+					
+			f = getXMLFloat(xmlFile, key.."#ccSpeed3")
+			vehicleControlAddon.debugPrint("ccSpeed3: "..tostring(f))
+			if f ~= nil then 
+				self:vcaSetState( "vcaCCSpeed3", f )
+			end 
+					
 			i = 0
 			while true do 
 				local cKey = string.format( "%s.camera(%d)", key, i )
@@ -361,6 +384,8 @@ function vehicleControlAddon:onPostLoad(savegame)
 			end 
 		end 
 	end 
+	
+	self:vcaSetState( "vcaKSIsOn", self.vcaKSToggle )
 end 
 
 function vehicleControlAddon:saveToXMLFile(xmlFile, key)
@@ -378,6 +403,9 @@ function vehicleControlAddon:saveToXMLFile(xmlFile, key)
 	end
 	if not self.vcaLimitSpeed then
 		setXMLBool(xmlFile, key.."#limitSpeed", self.vcaLimitSpeed)
+	end
+	if self.vcaKSToggle then
+		setXMLBool(xmlFile, key.."#keepSpeed", self.vcaKSToggle)
 	end
 	if self.vcaExponent ~= nil and math.abs( self.vcaExponent - 1 ) > 1E-3 then
 		setXMLInt(xmlFile, key.."#exponent", self.vcaExponent)
@@ -399,6 +427,12 @@ function vehicleControlAddon:saveToXMLFile(xmlFile, key)
 	end
 	if self.vcaMaxSpeed ~= nil and math.abs( self.vcaMaxSpeed - vehicleControlAddon.getDefaultMaxSpeed( self ) ) > 1E-3 then
 		setXMLFloat(xmlFile, key.."#maxSpeed", self.vcaMaxSpeed)
+	end
+	if self.vcaCCSpeed2 ~= nil and math.abs( self.vcaCCSpeed2 - 10 ) > 0.25 then
+		setXMLFloat(xmlFile, key.."#ccSpeed2", self.vcaCCSpeed2)
+	end
+	if self.vcaCCSpeed3 ~= nil and math.abs( self.vcaCCSpeed3 - 10 ) > 0.25 then
+		setXMLFloat(xmlFile, key.."#ccSpeed2", self.vcaCCSpeed3)
 	end
 	
 	local i = 0
@@ -442,6 +476,8 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
                                 "vcaREVERSE",
 																"vcaNO_ARB",
 																"vcaINCHING",
+																"vcaKEEPSPEED",
+																"vcaSWAPSPEED",
                                 "vcaSNAP",
 																"vcaGearUp",
 																"vcaGearDown",
@@ -456,15 +492,20 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
 																"vcaShifter6",
 																"vcaShifter7",
 																"vcaShifterLH",
+																"AXIS_BRAKE_VEHICLE",
+																"AXIS_ACCELERATE_VEHICLE",
 																"AXIS_MOVE_SIDE_VEHICLE" }) do
 																
 			local isPressed = false 
 			if     actionName == "AXIS_MOVE_SIDE_VEHICLE"
+					or actionName == "AXIS_BRAKE_VEHICLE"
+					or actionName == "AXIS_ACCELERATE_VEHICLE"
 					or actionName == "vcaUP"
 					or actionName == "vcaDOWN"
 					or actionName == "vcaLEFT"
 					or actionName == "vcaRIGHT" 
 					or actionName == "vcaINCHING"
+					or actionName == "vcaKEEPSPEED"
 					or actionName == "vcaShifter1"
 					or actionName == "vcaShifter2"
 					or actionName == "vcaShifter3"
@@ -529,7 +570,7 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus)
 		return 
 	end 
 
-	if     actionName == "AXIS_MOVE_SIDE_VEHICLE" and math.abs( keyStatus ) > 0.05 then 
+	if     actionName == "AXIS_MOVE_SIDE_VEHICLE"  and math.abs( keyStatus ) > 0.05 then 
 		self:vcaSetState( "vcaSnapIsOn", false )
 	elseif actionName == "vcaUP"
 			or actionName == "vcaDOWN"
@@ -607,6 +648,22 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus)
 		end
 	elseif actionName == "vcaINCHING" then 
 		self:vcaSetState( "vcaInchingIsOn", keyStatus >= 0.5 )
+	elseif actionName == "vcaKEEPSPEED" then 
+		local isPressed = keyStatus >= 0.5 
+		if self.vcaKSToggle then 
+			isPressed = not isPressed
+		end 
+		if isPressed then 
+			self:vcaSetState( "vcaKeepSpeed", self.lastSpeed * 3600 )
+			self:vcaSetState( "vcaKSIsOn", true )
+		else 
+			self:vcaSetState( "vcaKSIsOn", false )
+		end 
+	elseif actionName == "vcaSWAPSPEED" then 
+		local temp = self.spec_drivable.cruiseControl.speed
+		self:setCruiseControlMaxSpeed( self.vcaCCSpeed2 )
+		self:vcaSetState( "vcaCCSpeed2", self.vcaCCSpeed3 )
+		self:vcaSetState( "vcaCCSpeed3", temp )
 	elseif actionName == "vcaNO_ARB" then 
 		self:vcaSetState( "vcaNoAutoRotBack", keyStatus >= 0.5 )
 	elseif actionName == "vcaDIRECTION" then
@@ -637,6 +694,7 @@ function vehicleControlAddon:onLeaveVehicle()
 	self.vcaPrevRotCursorKey = nil
 	self:vcaSetState( "vcaSnapIsOn", false )
 	self:vcaSetState( "vcaShifterIndex", 0 )
+	self:vcaSetState( "vcaKSIsOn", self.vcaKSToggle )
 	self.vcaLastSnapAngle = nil
 end 
 
@@ -666,7 +724,13 @@ function vehicleControlAddon:onUpdate(dt)
 	--*******************************************************************
 	-- overwrite or reset some values 
 	if self.vcaShuttleCtrl then 
-		if self.vcaReverserDirection == nil then 
+		if     self.spec_reverseDriving  ~= nil then 
+			if self.spec_reverseDriving.isReverseDriving then 
+				self.vcaReverserDirection = -1 
+			else
+				self.vcaReverserDirection = 1 
+			end 
+		elseif self.vcaReverserDirection == nil then 
 			self.vcaReverserDirection = self.spec_drivable.reverserDirection
 		end 
 		if self.vcaShuttleFwd then 
@@ -778,14 +842,16 @@ function vehicleControlAddon:onUpdate(dt)
 			fwd = self.vcaCamFwd
 		end		
 	end
-	
+
+	--*******************************************************************
+	-- Snap Angle
 	local axisSideLast    = self.vcaAxisSideLast
 	local snapAngleLast   = self.vcaLastSnapAngle
 	self.vcaAxisSideLast  = nil
 	self.vcaLastSnapAngle = nil 
 	
 	if self.isClient and self.vcaSnapIsOn then 
-		if self:getIsVehicleControlledByPlayer() then 
+		if self:getIsVehicleControlledByPlayer() and not g_gui:getIsGuiVisible() then 
 			
 			local lx,_,lz = localDirectionToWorld( self.components[1].node, 0, 0, 1 )			
 			if lx*lx+lz*lz > 1e-6 then 
@@ -862,6 +928,26 @@ function vehicleControlAddon:onUpdate(dt)
 		end 
 	end 
 	
+	--*******************************************************************
+	-- Keep Speed 
+	if self.isClient and self.vcaKSIsOn and self:getIsVehicleControlledByPlayer() and not g_gui:getIsGuiVisible() then
+		if self.spec_drivable.cruiseControl.state > 0 then 
+			self:vcaSetState( "vcaKeepSpeed", self.lastSpeed * 3600 * self.movingDirection  )
+		elseif math.abs( self.spec_drivable.axisForward ) > 0.01 then 
+			local f = 3.6 * math.max( -self.spec_motorized.motor.maxBackwardSpeed, self.lastSpeed * 1000 * self.movingDirection - 1 )
+			local t = 3.6 * math.min(  self.spec_motorized.motor.maxForwardSpeed,  self.lastSpeed * 1000 * self.movingDirection + 1  )
+			local a = self.spec_drivable.axisForward
+			if     self.vcaReverserDirection ~= nil then 
+				a = a * self.vcaReverserDirection
+			elseif self.spec_drivable.reverserDirection ~= nil then 
+				a = a * self.spec_drivable.reverserDirection
+			end 
+			self:vcaSetState( "vcaKeepSpeed", vehicleControlAddon.mbClamp( self.vcaKeepSpeed + a * 0.003 * dt, f, t ) )
+		end 
+	end 
+	
+	--*******************************************************************
+	-- Camera Rotation
 	if      self:getIsActive() 
 			and self.isClient 
 --		and self.steeringEnabled 
@@ -1078,8 +1164,9 @@ function vehicleControlAddon:onUpdate(dt)
 	
 		self.vcaRotSpeedFactor = nil 
 	end 
---******************************************************************************************************************************************
 	
+--******************************************************************************************************************************************
+-- Reverse driving sound
 	if self.isClient and self:getIsVehicleControlledByPlayer() and self:getIsEntered() then 
 		if self.vcaShuttleCtrl and self.vcaReverseDriveSample ~= nil then 
 			local notRev = self.vcaShuttleFwd or self.vcaNeutral
@@ -1091,6 +1178,52 @@ function vehicleControlAddon:onUpdate(dt)
 		end
 	end 	
 	
+--******************************************************************************************************************************************
+-- Simple fix if vcaMaxSpeed was cleared for unknown reasons on Dedi
+	local somethingWentWrong = false 
+	for _,n in pairs({ "vcaSteeringIsOn",
+	                   "vcaShuttleCtrl", 
+	                   "vcaPeekLeftRight",
+	                   "vcaShuttleFwd",  
+	                   "vcaExternalDir", 
+	                   "vcaCamFwd"      ,
+	                   "vcaCameraIsOn"  ,
+	                   "vcaReverseIsOn" ,
+	                   "vcaExponent"    ,
+	                   "vcaWarningText" ,
+	                   "vcaLimitThrottle",
+	                   "vcaSnapAngle"   ,
+	                   "vcaSnapIsOn" ,   
+	                   "vcaDrawHud" ,    
+	                   "vcaInchingIsOn" ,
+	                   "vcaNoAutoRotBack",
+	                   "vcaBrakeForce",  
+	                   "vcaTransmission",
+	                   "vcaMaxSpeed",    
+	                   "vcaGear",        
+	                   "vcaRange",       
+	                   "vcaNeutral",     
+	                   "vcaAutoShift",   
+	                   "vcaShifterIndex",
+	                   "vcaShifterLH",   
+	                   "vcaLimitSpeed",  
+	                   "vcaLaunchGear",  
+	                   "vcaBOVVolume",   
+	                   "vcaKSIsOn",      
+	                   "vcaKeepSpeed",   
+	                   "vcaKSToggle",    
+	                   "vcaCCSpeed2",    
+	                   "vcaCCSpeed3" }) do 
+		if self[n] == nil then 
+			print( "Error: someone cleared variable self."..n.."!!! self.isServer = "..tostring(self.isServer)..", self.isClient = "..tostring(self.isClient))
+			if      self.vehicleControlAddonStateHandler ~= nil 
+					and self.vehicleControlAddonStateHandler[n] ~= nil 
+					and self.vehicleControlAddonStateHandler[n].default ~= nil then 
+				self:vcaSetState( n, self.vehicleControlAddonStateHandler[n].default )
+				print("Value was reset to default: '"..tostring(self[n]))
+			end 
+		end 
+	end 
 end  
 
 function vehicleControlAddon:onDraw()
@@ -1149,25 +1282,33 @@ function vehicleControlAddon:onDraw()
 			
 			if self.vcaTransmission >= 2 then 
 				local transmission = vehicleControlAddon.transmissions[self.vcaTransmission]
-				local gear = transmission:getRatioIndex( self.vcaGear, self.vcaRange )		
-				local maxSpeed = 3.6 * transmission:getGearRatio( gear ) * self.vcaMaxSpeed
-				local text = transmission:getGearText( self.vcaGear, self.vcaRange )	
-				local l2   = l
-				
-				if     self.vcaShifterIndex ==7 then 
-					if self.vcaShifterLH then 
-						text = "R+ ("..text..")"
-					else 
-						text = "R- ("..text..")" 
+				local gear  = transmission:getRatioIndex( self.vcaGear, self.vcaRange )		
+				local ratio = transmission:getGearRatio( gear )
+				local maxSpeed = 0
+				local text 
+				local l2    = l
+				if gear ~= nil and ratio ~= nil and self.vcaMaxSpeed ~= nil then 
+					transmission:initGears( self )
+					maxSpeed = 3.6 * ratio * self.vcaMaxSpeed
+					text = transmission:getGearText( self.vcaGear, self.vcaRange )	
+					
+					if     self.vcaShifterIndex ==7 then 
+						if self.vcaShifterLH then 
+							text = "R+ ("..text..")"
+						else 
+							text = "R- ("..text..")" 
+						end 
+						l2 = l * 0.8
+					elseif self.vcaShifterIndex > 0 then 
+						if self.vcaShifterLH then 
+							text = tostring(self.vcaShifterIndex).."+ ("..text..")"
+						else 
+							text = tostring(self.vcaShifterIndex).."- ("..text..")" 
+						end 				
+						l2 = l * 0.8
 					end 
-					l2 = l * 0.8
-				elseif self.vcaShifterIndex > 0 then 
-					if self.vcaShifterLH then 
-						text = tostring(self.vcaShifterIndex).."+ ("..text..")"
-					else 
-						text = tostring(self.vcaShifterIndex).."- ("..text..")" 
-					end 				
-					l2 = l * 0.8
+				else 
+					text = "nil"
 				end 
 				
 				text = text .." "..string.format("%3.0f km/h",maxSpeed )
@@ -1176,16 +1317,23 @@ function vehicleControlAddon:onDraw()
 			end 
 
 			local lx,_,lz = localDirectionToWorld( self.components[1].node, 0, 0, 1 )			
+			local d = 0
 			if lx*lx+lz*lz > 1e-6 then 
-				renderText(x, y, l, string.format( "%4.1f°", math.deg( math.pi - math.atan2( lx, lz ) )))
-				y = y + l * 1.2	
+				d = math.deg( math.pi - math.atan2( lx, lz ) )
 			end 
-			
-			if self.vcaLastSnapAngle ~= nil then
-				renderText(x, y, l, string.format( "%4.1f°", math.deg( math.pi - self.vcaLastSnapAngle )))
+			if self.vcaLastSnapAngle ~= nil then 
+				renderText(x, y, l, string.format( "%4.1f° / %4.1f°", math.deg( math.pi - self.vcaLastSnapAngle ),d))
+				y = y + l * 1.2	
+			else
+				renderText(x, y, l, string.format( "%4.1f°", d))
 				y = y + l * 1.2	
 			end
 			
+			if self.vcaKSIsOn and self.spec_drivable.cruiseControl.state == 0 then 
+				renderText(x, y, l, string.format( "%5.1f km/h",self.vcaKeepSpeed))
+				y = y + l * 1.2	
+			end
+
 		end 
 	
 		setTextAlignment( RenderText.ALIGN_LEFT ) 
@@ -1343,12 +1491,38 @@ end
 --******************************************************************************************************************************************
 -- shuttle control and inching
 function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed, acceleration, doHandbrake, stopAndGoBraking )
-	local brake = ( acceleration < -0.1 )
+	local lightsBackup = self.spec_lights
+	local brake        = ( acceleration < -0.1 )
 	
 	self.vcaOldAcc       = acceleration
 	self.vcaOldHandbrake = doHandbrake
 
 	if self:getIsVehicleControlledByPlayer() then 		
+		if self.vcaKSIsOn and self.spec_drivable.cruiseControl.state == 0 then 
+			if math.abs( self.vcaKeepSpeed ) < 1 then 
+				acceleration = 0
+				handbrake    = true 
+			else 
+				self.spec_motorized.motor:setSpeedLimit( math.min( self:getSpeedLimit(true), math.abs(self.vcaKeepSpeed) ) )
+				if self.vcaShuttleCtrl then 
+					acceleration = 1
+					brake        = false 
+					if self.vcaShifterIndex <= 0 then 
+						self:vcaSetState( "vcaShuttleFwd", (self.vcaKeepSpeed>0) )
+					elseif self.vcaShuttleFwd ~= (self.vcaKeepSpeed>0) then 
+						acceleration = 0
+						handbrake    = true 
+					end 
+				elseif self.vcaKeepSpeed > 0 then 
+					acceleration = self.spec_drivable.reverserDirection
+					self.nextMovingDirection = 1
+				else
+					acceleration = -self.spec_drivable.reverserDirection
+					self.nextMovingDirection = 1
+				end 
+			end 
+		end 
+	
 		if self.vcaShuttleCtrl then 
 			if self.vcaShuttleFwd then 
 				self.nextMovingDirection = 1 
@@ -1404,7 +1578,6 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 	self.vcaNewHandbrake = doHandbrake
 	stopAndGoBraking = true 
 	
-	local lightsBackup = self.spec_lights
 	if self.vcaShuttleCtrl then 
 		self.spec_lights = nil
 	end 
@@ -1412,6 +1585,7 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 	local state, result = pcall( superFunc, self, dt, currentSpeed, acceleration, doHandbrake, stopAndGoBraking ) 
 	if not ( state ) then
 		print("Error in updateWheelsPhysics :"..tostring(result))
+		self.spec_lights = lightsBackup
 		self.vcaShuttleCtrl  = false 
 		self.vcaTransmission = 0 
 	end
@@ -1517,7 +1691,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			speed = -speed 
 		end 
 	end 
-	if g_gui:getIsGuiVisible() then
+	if g_gui:getIsGuiVisible() and self.vehicle.spec_drivable.cruiseControl.state == 0 then 
 		newAcc = 0
 	end 
 	
@@ -1672,7 +1846,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		local initGear = transmission:initGears( self.vehicle ) 
 				
 		local isNeutral = self.vehicle.vcaNeutral 
-									 or g_gui:getIsGuiVisible()
+									 or ( g_gui:getIsGuiVisible() and self.vehicle.spec_drivable.cruiseControl.state == 0 )
 		               or self.vcaClutchTimer == nil 
 									 or lastFwd ~= fwd 
 									 or ( curAcc == 0 and curBrake > 0.1 )
@@ -1706,8 +1880,14 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			self.vcaLoad = self.vcaLoad + 0.03 * ( self.vehicle.spec_motorized.actualLoadPercentage - self.vcaLoad )
 		end 
 						
-		local gear      = transmission:getRatioIndex( self.vehicle.vcaGear, self.vehicle.vcaRange )		
-		local ratio     = transmission:getGearRatio( gear )
+		local gear  = transmission:getRatioIndex( self.vehicle.vcaGear, self.vehicle.vcaRange )		
+		local ratio = transmission:getGearRatio( gear )
+		if ratio == nil then 
+			print("Error in vehicleControlAddonTransmission: ratio is nil")
+			transmission:initGears( self.vehicle )
+			gear      = transmission:getRatioIndex( self.vehicle.vcaGear, self.vehicle.vcaRange )		
+			ratio     = transmission:getGearRatio( gear )ratio = 0.3
+		end 
 		local maxSpeed  = ratio * self.vehicle.vcaMaxSpeed 
 		local wheelRpm  = self.vehicle.lastSpeedReal * 1000 * self.maxRpm / maxSpeed 
 		local clutchRpm = wheelRpm
@@ -2073,6 +2253,19 @@ function vehicleControlAddon:vcaOnSetSnapIsOn( old, new, noEventSend )
       playSample(vehicleControlAddon.snapOnSample, 1, 0.2, 0, 0, 0)
 		elseif not new and vehicleControlAddon.snapOffSample ~= nil then
       playSample(vehicleControlAddon.snapOffSample, 1, 0.2, 0, 0, 0)
+		end 
+	end 
+end 
+
+function vehicleControlAddon:vcaOnSetDirection( old, new, noEventSend )
+	if self.vcaShuttleCtrl then 
+		self.vcaShuttleFwd = new 
+		if self.vcaKSIsOn then 
+			local sign = 1
+			if not self.vcaShuttleFwd then 
+				sign = -1 
+			end 
+			self:vcaSetState( "vcaKeepSpeed", sign * math.abs( self.vcaKeepSpeed ), noEventSend )
 		end 
 	end 
 end 

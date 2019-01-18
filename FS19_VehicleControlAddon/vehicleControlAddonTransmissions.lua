@@ -256,7 +256,7 @@ function vehicleControlAddonTransmissionBase:getNumberOfRatios( )
 end 
 
 function vehicleControlAddonTransmissionBase:getRatioIndex( gear, range )
-	if self.rangeGearFromTo[range] == nil then 
+	if gear == nil or range == nil or self.rangeGearFromTo[range] == nil then 
 		return 0
 	end
 	return self.rangeGearFromTo[range].ofs + gear 
