@@ -26,6 +26,8 @@ I tried to publish version 0.0.3.1 on Modhub but I got it back for review. The a
 
 To overcome some of the problems I renamed the mod. The last verion of FS19_KeyboardSteer is available in branch 'keyboardSteerMogli'. The new name is FS19_VehicleControlAddon. I will update the rest of the texts in time.
 
+Multiplayer is not supported anymore due to strange problems on the Dedi server. There are no errrors in the log but some cannot drive anymore after sleeping. Since this is a show stopper for publishing on ModHub this means the project is dead!
+
 ## Motivation
 Although I have a steering wheel, but almost always play with the keyboard. On winding roads, I am again and again landed in the ditch in front of nights or power poles.
 
