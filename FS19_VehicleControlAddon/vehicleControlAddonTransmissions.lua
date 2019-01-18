@@ -1,5 +1,3 @@
-
-
 vehicleControlAddonTransmissionBase = {}
 vehicleControlAddonTransmissionBase_mt = Class(vehicleControlAddonTransmissionBase)
 
@@ -22,7 +20,7 @@ function vehicleControlAddonTransmissionBase:new( mt, name, noGears, timeGears, 
 	local ft = { from = 1, to = self.numberOfGears, ofs = 0 }
 	local i  = 1
 	while true do 
-		table.insert( self.rangeGearFromTo, { from = ft.from, to = ft.to, ofs = ft.ofs } )
+		table.insert( self.rangeGearFromTo, { from = ft.from, to = ft.to, ofs = ft.ofs, overlap = rangeGearOverlap[i] } )
 		if rangeGearOverlap[i] == nil then 
 			break 
 		end 
@@ -31,10 +29,22 @@ function vehicleControlAddonTransmissionBase:new( mt, name, noGears, timeGears, 
 		ft.ofs  = ft.ofs  + self.numberOfGears - rangeGearOverlap[i]
 		i       = i + 1
 	end 
-	self.rangeGearOverlap = rangeGearOverlap
 	self.changeTimeGears  = timeGears
 	self.changeTimeRanges = timeRanges
-	self.gearRatios       = Utils.getNoNil( gearRatios, vehicleControlAddonTransmissionBase.gearRatios )
+	local n = self.rangeGearFromTo[self.numberOfRanges].ofs + self.numberOfGears 
+	self.gearRatios       = {}
+	for i=1,n do 		
+		if gearRatios == nil then 
+			r = vehicleControlAddonTransmissionBase.gearRatios[i] 
+		else 
+			r = gearRatios[i]
+		end 
+		if r == nil then	
+			print("Error: not enough gear ratios provided for transmission "..tostring(name))
+			r = 1
+		end 
+		table.insert( self.gearRatios, r )
+	end 
 
 	if gearTexts == nil then 
 		if     self.numberOfGears <= 1 then 
@@ -131,7 +141,7 @@ end
 
 function vehicleControlAddonTransmissionBase:rangeUp( vehicle )
 	if vehicle.vcaRange < self.numberOfRanges then 
-		local o = self.rangeGearOverlap[vehicle.vcaRange]
+		local o = self.rangeGearFromTo[vehicle.vcaRange].overlap
 		vehicle:vcaSetState( "vcaRange", vehicle.vcaRange + 1 )
 		if o ~= nil and o ~= 0 and vehicle.vcaShifterIndex <= 0 then 
 			vehicle:vcaSetState( "vcaGear", math.max( 1, vehicle.vcaGear - o ) )
@@ -142,7 +152,7 @@ end
 function vehicleControlAddonTransmissionBase:rangeDown( vehicle )
 	if vehicle.vcaRange > 1 then 
 		vehicle:vcaSetState( "vcaRange", vehicle.vcaRange - 1 )
-		local o = self.rangeGearOverlap[vehicle.vcaRange]
+		local o = self.rangeGearFromTo[vehicle.vcaRange].overlap
 		if o ~= nil and o ~= 0 and vehicle.vcaShifterIndex <= 0 then 
 			vehicle:vcaSetState( "vcaGear", math.min( self.numberOfGears, vehicle.vcaGear + o ) )
 		end 
