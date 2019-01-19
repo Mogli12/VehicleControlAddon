@@ -1,5 +1,12 @@
+function vcaClass(subClass, baseClass)
+	if baseClass == nil then 
+		return { __metatable = subClass, __index  = subClass }
+	end 
+	return { __metatable = subClass, __index = baseClass }
+end
+
 vehicleControlAddonTransmissionBase = {}
-vehicleControlAddonTransmissionBase_mt = Class(vehicleControlAddonTransmissionBase)
+vehicleControlAddonTransmissionBase_mt = vcaClass(vehicleControlAddonTransmissionBase)
 
 vehicleControlAddonTransmissionBase.gearRatios = { 0.120, 0.145, 0.176, 0.213, 0.259, 0.314, 0.381, 0.462, 0.560, 0.680, 0.824, 1.000 }
 
@@ -126,9 +133,11 @@ function vehicleControlAddonTransmissionBase:getGearText( gear, range )
 end 
 
 function vehicleControlAddonTransmissionBase:gearUp( vehicle )
+	vehicleControlAddon.debugPrint(tostring(self.name)..", gearUp: "..tostring(vehicle.vcaGear)..", "..tostring(self.numberOfGears))
 	vehicle:vcaSetState("vcaShifterIndex", 0)
 	if vehicle.vcaGear < self.numberOfGears then 
 		vehicle:vcaSetState( "vcaGear", vehicle.vcaGear + 1 )
+		vehicleControlAddon.debugPrint(tostring(self.name)..", result: "..tostring(vehicle.vcaGear)..", "..tostring(self.numberOfGears))
 	end 
 end 
 
@@ -140,20 +149,30 @@ function vehicleControlAddonTransmissionBase:gearDown( vehicle )
 end 
 
 function vehicleControlAddonTransmissionBase:rangeUp( vehicle )
+	vehicleControlAddon.debugPrint(tostring(self.name)..", rangeUp: "..tostring(vehicle.vcaRange)..", "..tostring(self.numberOfRanges))
 	if vehicle.vcaRange < self.numberOfRanges then 
-		local o = self.rangeGearFromTo[vehicle.vcaRange].overlap
+		local o
+		if vehicle.vcaShifterIndex <= 0 and self.rangeGearFromTo[vehicle.vcaRange] ~= nil then 
+			o = self.rangeGearFromTo[vehicle.vcaRange].overlap
+		end 
 		vehicle:vcaSetState( "vcaRange", vehicle.vcaRange + 1 )
-		if o ~= nil and o ~= 0 and vehicle.vcaShifterIndex <= 0 then 
+		if o ~= nil then 
+			o = self.numberOfGears - o - 1
 			vehicle:vcaSetState( "vcaGear", math.max( 1, vehicle.vcaGear - o ) )
 		end 
+		vehicleControlAddon.debugPrint(tostring(self.name)..", result: "..tostring(vehicle.vcaRange)..", "..tostring(self.numberOfRanges))
 	end 
 end 
 
 function vehicleControlAddonTransmissionBase:rangeDown( vehicle )
 	if vehicle.vcaRange > 1 then 
 		vehicle:vcaSetState( "vcaRange", vehicle.vcaRange - 1 )
-		local o = self.rangeGearFromTo[vehicle.vcaRange].overlap
-		if o ~= nil and o ~= 0 and vehicle.vcaShifterIndex <= 0 then 
+		local o
+		if vehicle.vcaShifterIndex <= 0 and self.rangeGearFromTo[vehicle.vcaRange] ~= nil then 
+			o = self.rangeGearFromTo[vehicle.vcaRange].overlap
+		end 
+		if o ~= nil then 
+			o = self.numberOfGears - o - 1
 			vehicle:vcaSetState( "vcaGear", math.min( self.numberOfGears, vehicle.vcaGear + o ) )
 		end 
 	end 
@@ -325,6 +344,7 @@ function vehicleControlAddonTransmissionBase:getRatioIndexListOfRange( range )
 end 
 
 function vehicleControlAddonTransmissionBase:actionCallback( vehicle, actionName, keyStatus )
+	vehicleControlAddon.debugPrint(tostring(self.name)..": "..actionName)
 	if     actionName == "vcaGearUp"   then
 		self:gearUp( vehicle )
 	elseif actionName == "vcaGearDown" then
@@ -357,25 +377,25 @@ end
 
 vehicleControlAddonTransmissionIVT = {}
 function vehicleControlAddonTransmissionIVT:new()
-	local self = vehicleControlAddonTransmissionBase:new( Class(vehicleControlAddonTransmissionIVT,vehicleControlAddonTransmissionBase), "IVT", 1, 0, {}, 0 )
+	local self = vehicleControlAddonTransmissionBase:new( vcaClass(vehicleControlAddonTransmissionIVT,vehicleControlAddonTransmissionBase), "IVT", 1, 0, {}, 0 )
 	return self 
 end 
 
 vehicleControlAddonTransmission4x4 = {}
 function vehicleControlAddonTransmission4x4:new()
-	local self = vehicleControlAddonTransmissionBase:new( Class(vehicleControlAddonTransmission4x4,vehicleControlAddonTransmissionBase), "4X4", 4, 750, {2,1,1}, 1000 )
+	local self = vehicleControlAddonTransmissionBase:new( vcaClass(vehicleControlAddonTransmission4x4,vehicleControlAddonTransmissionBase), "4X4", 4, 750, {2,1,1}, 1000 )
 	return self 
 end 
 
 vehicleControlAddonTransmission4PS = {}
 function vehicleControlAddonTransmission4PS:new()
-	local self = vehicleControlAddonTransmissionBase:new( Class(vehicleControlAddonTransmission4PS,vehicleControlAddonTransmissionBase), "4PS", 4, 0, {2,1,1}, 750 )
+	local self = vehicleControlAddonTransmissionBase:new( vcaClass(vehicleControlAddonTransmission4PS,vehicleControlAddonTransmissionBase), "4PS", 4, 0, {2,1,1}, 750 )
 	return self 
 end 
 
 vehicleControlAddonTransmission2x6 = {}
 function vehicleControlAddonTransmission2x6:new()
-	local self = vehicleControlAddonTransmissionBase:new( Class(vehicleControlAddonTransmission2x6,vehicleControlAddonTransmissionBase), "2X6", 6, 750, {0}, 1000 )
+	local self = vehicleControlAddonTransmissionBase:new( vcaClass(vehicleControlAddonTransmission2x6,vehicleControlAddonTransmissionBase), "2X6", 6, 750, {0}, 1000 )
 	return self 
 end 
 function vehicleControlAddonTransmission2x6:splitGearsForShifter()
@@ -384,13 +404,13 @@ end
 
 vehicleControlAddonTransmissionFPS = {}
 function vehicleControlAddonTransmissionFPS:new()
-	local self = vehicleControlAddonTransmissionBase:new( Class(vehicleControlAddonTransmissionFPS,vehicleControlAddonTransmissionBase), "FPS", 12, 0, {}, 0 )
+	local self = vehicleControlAddonTransmissionBase:new( vcaClass(vehicleControlAddonTransmissionFPS,vehicleControlAddonTransmissionBase), "FPS", 12, 0, {}, 0 )
 	return self 
 end 
 
 vehicleControlAddonTransmission6PS = {}
 function vehicleControlAddonTransmission6PS:new()
-	local self = vehicleControlAddonTransmissionBase:new( Class(vehicleControlAddonTransmission6PS,vehicleControlAddonTransmissionBase), "6PS", 2, 0, {0,0,0,0,0}, 750 )
+	local self = vehicleControlAddonTransmissionBase:new( vcaClass(vehicleControlAddonTransmission6PS,vehicleControlAddonTransmissionBase), "6PS", 2, 0, {0,0,0,0,0}, 750 )
 	return self 
 end 
 

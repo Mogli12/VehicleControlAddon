@@ -33,11 +33,11 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 	</description>
 	<multiplayer supported="false"/>   
 	<iconFilename>store.dds</iconFilename>
-	<version>Final</version>
+	<version>FinalBugFix</version>
 	<l10n filenamePrefix="modDesc_l10n">
 		<text name="vcaVERSION">
-			<de>VehicleControlAddon Final</de>
-			<en>VehicleControlAddon Final</en>
+			<de>VehicleControlAddon FinalBugFix</de>
+			<en>VehicleControlAddon FinalBugFix</en>
 		</text>
 	</l10n>
 	

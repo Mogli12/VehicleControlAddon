@@ -202,8 +202,8 @@ function vehicleControlAddon:onLoad(savegame)
 	vehicleControlAddon.registerState( self, "vcaBrakeForce",   VCAGlobals.brakeForceFactor )
 	vehicleControlAddon.registerState( self, "vcaTransmission", vehicleControlAddon.getDefaultTransmission( self ) )
 	vehicleControlAddon.registerState( self, "vcaMaxSpeed",     vehicleControlAddon.getDefaultMaxSpeed( self ) )
-	vehicleControlAddon.registerState( self, "vcaGear",         0 )
-	vehicleControlAddon.registerState( self, "vcaRange",        0 )
+	vehicleControlAddon.registerState( self, "vcaGear",         0 ) --, vehicleControlAddon.vcaOnSetGear )
+	vehicleControlAddon.registerState( self, "vcaRange",        0 ) --, vehicleControlAddon.vcaOnSetRange )
 	vehicleControlAddon.registerState( self, "vcaNeutral",      false )
 	vehicleControlAddon.registerState( self, "vcaAutoShift",    true )
 	vehicleControlAddon.registerState( self, "vcaShifterIndex", 0 )
@@ -1235,6 +1235,17 @@ function vehicleControlAddon:onDraw()
 		setTextAlignment( RenderText.ALIGN_CENTER ) 
 		setTextVerticalAlignment( RenderText.VERTICAL_ALIGN_MIDDLE )
 		setTextColor(1, 1, 1, 1) 
+		
+		self.vcaDebugT = nil 
+		if self.vcaTransmission ~= nil then 
+			local t = vehicleControlAddon.transmissions[self.vcaTransmission]
+			if t ~= nil then 
+				self.vcaDebugT = "I: "..tostring(self.vcaTransmission)
+											.." T: "..tostring(t:getName())
+											.." G: "..tostring(t.numberOfGears)
+											.." R: "..tostring(t.numberOfRanges)
+			end 
+		end 
 
 		if self.vcaShuttleCtrl or self.vcaTransmission ~= nil and self.vcaTransmission >= 2 then  
 			setTextAlignment( RenderText.ALIGN_CENTER ) 
@@ -1288,7 +1299,6 @@ function vehicleControlAddon:onDraw()
 				local text 
 				local l2    = l
 				if gear ~= nil and ratio ~= nil and self.vcaMaxSpeed ~= nil then 
-					transmission:initGears( self )
 					maxSpeed = 3.6 * ratio * self.vcaMaxSpeed
 					text = transmission:getGearText( self.vcaGear, self.vcaRange )	
 					
@@ -1884,9 +1894,8 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		local ratio = transmission:getGearRatio( gear )
 		if ratio == nil then 
 			print("Error in vehicleControlAddonTransmission: ratio is nil")
-			transmission:initGears( self.vehicle )
-			gear      = transmission:getRatioIndex( self.vehicle.vcaGear, self.vehicle.vcaRange )		
-			ratio     = transmission:getGearRatio( gear )ratio = 0.3
+			gear  = 1	
+			ratio = 0.3
 		end 
 		local maxSpeed  = ratio * self.vehicle.vcaMaxSpeed 
 		local wheelRpm  = self.vehicle.lastSpeedReal * 1000 * self.maxRpm / maxSpeed 
@@ -1978,12 +1987,14 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			self.vcaAutoDownTimer = 1000
 		end 
 		
+		local setLaunchGear = ( initGear or lastFwd ~= fwd or self.vehicle.vcaNeutral or self.vcaAutoStop )
 		local newGear  = gear 
 		if initGear then 
 			newGear = self.vehicle.vcaLaunchGear
 		elseif  self.vehicle.vcaAutoShift 
 				and gear > self.vehicle.vcaLaunchGear
-				and ( lastFwd ~= fwd or self.vehicle.vcaNeutral or self.vcaAutoStop ) then 
+				and setLaunchGear
+				and not ( self.vcaSetLaunchGear ) then 
 			if self.vehicle.vcaShifterIndex <= 0 then 
 				newGear = self.vehicle.vcaLaunchGear
 			end 
@@ -2060,7 +2071,9 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 				self.vehicle.vcaDebugA = string.format( "%3.0f%%; %3.0f%%; %4.0f..%4.0f; %4.0f -> %4.0f; %d -> %d; %5.0f -> %5.0f",
 																								curAcc*100,self.vcaLoad*100,autoMinRpm,autoMaxRpm,wheelRpm, rr,gear,newGear,d1,d )
 			end 
-		end 
+		end
+
+		self.vcaSetLaunchGear = setLaunchGear
 		
 		if gear ~= newGear then 
 			if self.vehicle.vcaDebugA ~= nil then 
@@ -2285,6 +2298,18 @@ function vehicleControlAddon:vcaOnSetGearChanged( old, new, noEventSend )
 	end 
 	self.vcaBOVVolume = new 
 end 
+
+function vehicleControlAddon:vcaOnSetGear( old, new, noEventSend )
+	print("vcaOnSetGear: "..string(old).."->"..tostring(new))
+	self.vcaGear = new 
+	printCallstack()
+end
+ 
+function vehicleControlAddon:vcaOnSetRange( old, new, noEventSend )
+	print("vcaOnSetRange: "..string(old).."->"..tostring(new))
+	self.vcaRange = new 
+	printCallstack()
+end
 
 function vehicleControlAddon:vcaOnSetWarningText( old, new, noEventSend )
 	self.vcaWarningText  = new
