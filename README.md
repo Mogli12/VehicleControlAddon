@@ -1,5 +1,8 @@
 # VehicleControlAddon for Farming Simulator 2019
 
+## Status
+since some versions there are problems if you use VCA and sleep on dedi server. My plan was to finish this mod as farewell present for you. But with this bug on the dedi server it is impossible to publish VCA on ModHub. So I took my consequences and stopped now. In German we say "Lieber ein Ende mit Schrecken als Schrecken ohne Ende!"
+
 ## VehicleControlAddon is the new KeyboardSteer
 Please check section status why I renamed the mod. Please use VCA as abreviation.
 
@@ -20,13 +23,6 @@ Be as specific as possible:
 * Post! The! Log! to [Gist](https://gist.github.com/) or [PasteBin](http://pastebin.com/)
 
 From today on I will close all new issues without the above information!
-
-## Status
-I tried to publish version 0.0.3.1 on Modhub but I got it back for review. The automatic camera reversal if one switches the driving direction seems to be too disturbing. 
-
-To overcome some of the problems I renamed the mod. The last verion of FS19_KeyboardSteer is available in branch 'keyboardSteerMogli'. The new name is FS19_VehicleControlAddon. I will update the rest of the texts in time.
-
-Multiplayer is not supported anymore due to strange problems on the Dedi server. There are no errrors in the log but some cannot drive anymore after sleeping. Since this is a show stopper for publishing on ModHub this means the project is dead!
 
 ## Motivation
 Although I have a steering wheel, but almost always play with the keyboard. On winding roads, I am again and again landed in the ditch in front of nights or power poles.
