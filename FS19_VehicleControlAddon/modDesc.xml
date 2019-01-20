@@ -31,13 +31,13 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 [Leertaste]: Fahrtrichtung wechseln
 		]]></de>
 	</description>
-	<multiplayer supported="false"/>   
+	<multiplayer supported="true"/>   
 	<iconFilename>store.dds</iconFilename>
-	<version>FinalBugFix</version>
+	<version>FinalMP</version>
 	<l10n filenamePrefix="modDesc_l10n">
 		<text name="vcaVERSION">
-			<de>VehicleControlAddon FinalBugFix</de>
-			<en>VehicleControlAddon FinalBugFix</en>
+			<de>VehicleControlAddon FinalMP</de>
+			<en>VehicleControlAddon FinalMP</en>
 		</text>
 	</l10n>
 	

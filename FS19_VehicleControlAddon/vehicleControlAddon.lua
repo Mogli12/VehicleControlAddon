@@ -1661,10 +1661,10 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	self.vcaFakeRpm   = nil
 	local speed       = math.abs( self.vehicle.lastSpeedReal ) *3600
 	local motorPtoRpm = math.min(PowerConsumer.getMaxPtoRpm(self.vehicle)*self.ptoMotorRpmRatio, self.maxRpm)
-	
+		
 	if not ( self.vehicle:getIsVehicleControlledByPlayer() 
-			and ( self.vehicle.vcaTransmission ~= nil	
-				 or self.vehicle.vcaNeutral ) ) then 
+			 and ( self.vehicle.vcaTransmission ~= nil	
+					or self.vehicle.vcaNeutral ) ) then 
 		return superFunc( self, acceleratorPedal, dt )
 	end 
 
@@ -1743,7 +1743,16 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	
 	local transmission = vehicleControlAddon.transmissions[self.vehicle.vcaTransmission]
 	
-	if     self.vehicle.vcaTransmission == 1 then 
+	if transmission == nil or not self.vehicle:getIsMotorStarted() or dt < 0 then 
+		self.vcaClutchTimer   = nil
+		self.vcaAutoDownTimer = nil
+		self.vcaAutoUpTimer   = nil
+		self.vcaAutoLowTimer  = nil
+		self.vcaBrakeTimer    = nil
+		self.vcaLoad          = nil
+		self.vcaIncreaseRpm   = nil
+		self.vcaAutoStop      = nil
+	elseif self.vehicle.vcaTransmission == 1 then 
 	--****************************************	
 	-- IVT
 		if motorPtoRpm > 0 then 
