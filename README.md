@@ -3,6 +3,8 @@
 ## Status
 Since some versions there are problems if you use VCA and sleep on dedi server. My plan was to finish this mod as farewell present for you. But with this bug on the dedi server it is impossible to publish VCA on ModHub. So I took my consequences and stopped now. In German we say "Lieber ein Ende mit Schrecken als Schrecken ohne Ende!"
 
+Thanks to Herbert & Timmi I was able to avoid the dedi server sleep problem somehow. It will still produce entries in log.txt like "Error: mogliBase30Request received invalid NodeObject" or "Error: mogliBase30Event received invalid NodeObject". If you do not experience other problems you can ignore these messages.
+
 ## VehicleControlAddon is the new KeyboardSteer
 Please check section status why I renamed the mod. Please use VCA as abreviation.
 
