@@ -789,7 +789,7 @@ function vehicleControlAddon:onUpdate(dt)
 		self.vcaAutoRotateBackSpeed   = nil 
 	end 
 	
-	if self.vcaInchingIsOn and self:getIsVehicleControlledByPlayer() and self.spec_drivable.cruiseControl.state == 1 then
+	if self.vcaInchingIsOn and self:getIsVehicleControlledByPlayer() and not g_gui:getIsGuiVisible() and self.spec_drivable.cruiseControl.state == 1 then
 		local limitThrottleRatio     = 0.75
 		if self.vcaLimitThrottle < 11 then
 			limitThrottleRatio     = 0.45 + 0.05 * self.vcaLimitThrottle
@@ -850,81 +850,72 @@ function vehicleControlAddon:onUpdate(dt)
 	self.vcaAxisSideLast  = nil
 	self.vcaLastSnapAngle = nil 
 	
-	if self.isClient and self.vcaSnapIsOn then 
-		if self:getIsVehicleControlledByPlayer() and not g_gui:getIsGuiVisible() then 
+	if self.isClient and self.vcaSnapIsOn and self:getIsVehicleControlledByPlayer() and not g_gui:getIsGuiVisible() then 
+		local lx,_,lz = localDirectionToWorld( self.components[1].node, 0, 0, 1 )			
+		if lx*lx+lz*lz > 1e-6 then 
+			local rot    = math.atan2( lx, lz )
+			local d      = vehicleControlAddon.snapAngles[self.vcaSnapAngle]
 			
-			local lx,_,lz = localDirectionToWorld( self.components[1].node, 0, 0, 1 )			
-			if lx*lx+lz*lz > 1e-6 then 
-				local rot    = math.atan2( lx, lz )
-				local d      = vehicleControlAddon.snapAngles[self.vcaSnapAngle]
-				
-				if snapAngleLast == nil then  
-					local target = 0
-					local diff   = math.pi+math.pi
-					if d == nil then 
-						if self.vcaSnapAngle < 1 then 
-							d = vehicleControlAddon.snapAngles[1] 
-						else 
-							d = 90 
-						end 
-					end 
-					for i=0,360,d do 
-						local a = math.rad( i )
-						local b = math.abs( vehicleControlAddon.normalizeAngle( a - rot ) )
-						if b < diff then 
-							target = a 
-							diff   = b
-						end 
-					end 
-					
-					self.vcaLastSnapAngle = vehicleControlAddon.normalizeAngle( target )
-				else 
-					self.vcaLastSnapAngle = snapAngleLast 
-				end 
-				
-				d = 0.5 * d 
-				
-				if d > 10 then d = 10 end 
-				d = math.rad( d )
-					
-				local a = vehicleControlAddon.mbClamp( vehicleControlAddon.normalizeAngle( rot - self.vcaLastSnapAngle ) / d, -1, 1 ) 
-				if a < 0 then 
-					a = 0.5 * ( a - a*a )
-				else 
-					a = 0.5 * ( a + a*a ) 
-				end 
-				
-				if self.vcaMovingDir < 0 then 
-					a = -a 
-				end 
-				
-				if math.abs( a ) < 0.005 then 
-					a = 0
-				elseif math.abs( a ) < 0.05 then 
-					if a < 0 then 
-						a = -0.05
+			if snapAngleLast == nil then  
+				local target = 0
+				local diff   = math.pi+math.pi
+				if d == nil then 
+					if self.vcaSnapAngle < 1 then 
+						d = vehicleControlAddon.snapAngles[1] 
 					else 
-						a = 0.05
+						d = 90 
+					end 
+				end 
+				for i=0,360,d do 
+					local a = math.rad( i )
+					local b = math.abs( vehicleControlAddon.normalizeAngle( a - rot ) )
+					if b < diff then 
+						target = a 
+						diff   = b
 					end 
 				end 
 				
-				d = 0.001 * dt
-				
-				if axisSideLast == nil then 
-					axisSideLast = self.spec_drivable.axisSideLast 
-				end 
-				
-				self.spec_drivable.axisSide = axisSideLast + vehicleControlAddon.mbClamp( a - axisSideLast, -d, d )
-
-				
-				self.vcaAxisSideLast = self.spec_drivable.axisSide
-				
-			--vehicleControlAddon.debugPrint( string.format( "%4d° -> %4d° => %4d%% (%4d%%, %4d%%)",
-			--															 math.deg( rot ), math.deg( self.vcaLastSnapAngle ),
-			--															 a*100, self.spec_drivable.axisSide*100, axisSideLast*100 ) )				
+				self.vcaLastSnapAngle = vehicleControlAddon.normalizeAngle( target )
+			else 
+				self.vcaLastSnapAngle = snapAngleLast 
 			end 
-		else 
-			self:vcaSetState("vcaSnapIsOn", false ) 
+			
+			d = 0.5 * d 
+			
+			if d > 10 then d = 10 end 
+			d = math.rad( d )
+				
+			local a = vehicleControlAddon.mbClamp( vehicleControlAddon.normalizeAngle( rot - self.vcaLastSnapAngle ) / d, -1, 1 ) 
+			if a < 0 then 
+				a = 0.5 * ( a - a*a )
+			else 
+				a = 0.5 * ( a + a*a ) 
+			end 
+			
+			if self.vcaMovingDir < 0 then 
+				a = -a 
+			end 
+			
+			if math.abs( a ) < 0.005 then 
+				a = 0
+			elseif math.abs( a ) < 0.05 then 
+				if a < 0 then 
+					a = -0.05
+				else 
+					a = 0.05
+				end 
+			end 
+			
+			d = 0.001 * dt
+			
+			if axisSideLast == nil then 
+				axisSideLast = self.spec_drivable.axisSideLast 
+			end 
+			
+			self.spec_drivable.axisSide = axisSideLast + vehicleControlAddon.mbClamp( a - axisSideLast, -d, d )
+
+			
+			self.vcaAxisSideLast = self.spec_drivable.axisSide
 		end 
 	end 
 	

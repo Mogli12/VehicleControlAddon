@@ -919,7 +919,14 @@ else
 		self.object    = NetworkUtil.readNodeObject( streamId )				
 		self.className = streamReadString(streamId)
 		self.level1, self.value = _G[mogliBaseClass].readStreamEx( streamId )
-		self:run(connection) 
+		if self.object == nil then 
+			print("Error: mogliBase30Event received invalid NodeObject")
+		else 
+			local state, message = pcall( mogliBase30Event.run, self, connection )
+			if not state then
+				print("Error: "..tostring(message)) 
+			end 
+		end 
 	end 
 	
 --=======================================================================================
@@ -968,7 +975,14 @@ else
 	function mogliBase30Request:readStream(streamId, connection)
 		self.object    = NetworkUtil.readNodeObject( streamId )				
 		self.className = streamReadString(streamId)
-		self:run(connection) 
+		if self.object == nil then 
+			print("Error: mogliBase30Request received invalid NodeObject")
+		else 
+			local state, message = pcall( mogliBase30Request.run, self, connection )
+			if not state then
+				print("Error: "..tostring(message)) 
+			end 		
+		end 
 	end
 	function mogliBase30Request:writeStream(streamId, connection)
 		NetworkUtil.writeNodeObject( streamId, self.object )
@@ -1001,14 +1015,20 @@ else
 	function mogliBase30Reply:readStream(streamId, connection)
 		self.object = NetworkUtil.readNodeObject( streamId )		
 		self.className, self.document = mogliBase30.readStreamEx( streamId )
-		self:run(connection) 
+		if self.object == nil then 
+			print("Error: mogliBase30Reply received invalid NodeObject")
+		else 
+			local state, message = pcall( mogliBase30Reply.run, self, connection )
+			if not state then
+				print("Error: "..tostring(message)) 
+			end 
+		end 
 	end
 	function mogliBase30Reply:writeStream(streamId, connection)
 		NetworkUtil.writeNodeObject( streamId, self.object )
 		mogliBase30.writeStreamEx( streamId, self.className, self.document )
 	end
 	function mogliBase30Reply:run(connection)
-	--print(tostring(self.className).." / "..tostring(self.object.configFileName)..": synced via event")
 		_G[self.className].fromMbDocument( self.object, self.document )
 		self.object[self.className.."SyncReceived"] = true
 	end
