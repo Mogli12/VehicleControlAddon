@@ -1,9 +1,7 @@
 # VehicleControlAddon for Farming Simulator 2019
 
 ## Status
-I decided to continue with FS19_VehicleControlAddon but just for my own. So I might push new version from time to time. Please do not expect support for problems.
-
-Thanks to Herbert & Timmi I was able to avoid the dedi server sleep problem somehow. It will still produce entries in log.txt like "Error: mogliBase30Request received invalid NodeObject" or "Error: mogliBase30Event received invalid NodeObject". If you do not experience other problems you can ignore these messages.
+I will not publish FS19_VehicleControlAddon anymore. I continue to work on this mod only for my own purpose. Do not expect that I will fix problems you find.
 
 ## VehicleControlAddon is the new KeyboardSteer
 Please check section status why I renamed the mod. Please use VCA as abreviation.
