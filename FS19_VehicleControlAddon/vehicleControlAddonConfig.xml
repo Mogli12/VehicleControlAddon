@@ -12,7 +12,7 @@
 	<drawHud             type="bool"  value="true"/>
 	<transmission        type="int"   value="1"/>  <!-- 0 = Giants, 1 = IVT, 2 = 4x4, 3 = 4x4 PowerShift, 4 = 2x6, 5 = FullPowerShift -->
 	<launchGear          type="float" value="6"/>  
-	<clutchTimer         type="int"   value="5000"/> <!-- ms -->
+	<clutchTimer         type="int"   value="3000"/> <!-- ms -->
 	
 	<!-- defaults -->
 	<adaptiveSteering    type="bool"  value="true"/>
