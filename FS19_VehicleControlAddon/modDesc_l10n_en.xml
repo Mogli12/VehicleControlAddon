@@ -46,6 +46,7 @@
 		<text name="input_vcaFORWARD"   text="VCA: drive forwards"/>
 		<text name="input_vcaREVERSE"   text="VCA: drive backwards"/>
 		<text name="input_vcaSNAP"      text="VCA: snap driving direction"/>
+		<text name="input_vcaSNAPRESET" text="VCA: reset snap driving direction"/>
 		<text name="input_vcaNO_ARB"    text="VCA: no auto rotate back"/>
 		<text name="input_vcaINCHING"   text="VCA: inching"/>
 		<text name="input_vcaKEEPSPEED" text="VCA: keep speed"/>
@@ -55,6 +56,7 @@
 		<text name="input_vcaRangeUp"   text="VCA: range up"/>
 		<text name="input_vcaRangeDown" text="VCA: range down"/>
 		<text name="input_vcaNeutral"   text="VCA: neutral on/off"/>
+		<text name="input_vcaClutch"    text="VCA: clutch axis"/>
 		<text name="input_vcaShifter1"  text="VCA: G27/G29 gear 1"/>
 		<text name="input_vcaShifter2"  text="VCA: G27/G29 gear 2"/>
 		<text name="input_vcaShifter3"  text="VCA: G27/G29 gear 3"/>

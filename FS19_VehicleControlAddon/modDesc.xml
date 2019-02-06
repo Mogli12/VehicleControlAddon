@@ -33,11 +33,11 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>store.dds</iconFilename>
-	<version>FinalMPFix</version>
+	<version>0.0.1.0</version>
 	<l10n filenamePrefix="modDesc_l10n">
 		<text name="vcaVERSION">
-			<de>VehicleControlAddon FinalMPFix</de>
-			<en>VehicleControlAddon FinalMPFix</en>
+			<de>Vehicle Control Addon 0.0.1.0</de>
+			<en>Vehicle Control Addon 0.0.1.0</en>
 		</text>
 	</l10n>
 	
@@ -51,6 +51,7 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 		<action name="vcaFORWARD"   category="VEHICLE"/>
 		<action name="vcaREVERSE"   category="VEHICLE"/>
 		<action name="vcaSNAP"      category="VEHICLE"/>
+		<action name="vcaSNAPRESET" category="VEHICLE"/>
 		<action name="vcaNO_ARB"    category="VEHICLE"/>
 		<action name="vcaINCHING"   category="VEHICLE"/>
 		<action name="vcaKEEPSPEED" category="VEHICLE"/>
@@ -68,6 +69,7 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 		<action name="vcaShifter6"  category="VEHICLE"/>
 		<action name="vcaShifter7"  category="VEHICLE"/>
 		<action name="vcaShifterLH" category="VEHICLE"/>
+		<action name="vcaClutch"    category="VEHICLE"/>
 	</actions>
 	<inputBinding>
 		<actionBinding action="vcaSETTINGS">	
@@ -91,6 +93,9 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 		<actionBinding action="vcaSNAP">	
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_w"      axisComponent="+" inputComponent="+" index="1"/>
 		</actionBinding>	
+		<actionBinding action="vcaSNAPRESET">	
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_lalt KEY_w"       axisComponent="+" inputComponent="+" index="1"/>
+		</actionBinding>	
 		<actionBinding action="vcaINCHING">	
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_lshift"           axisComponent="+" inputComponent="+" index="1"/>
 		</actionBinding>	
@@ -108,6 +113,9 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 		</actionBinding>	
 		<actionBinding action="vcaNeutral">
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_semicolon"        axisComponent="+" inputComponent="+" index="1"/>
+		</actionBinding>	
+		<actionBinding action="vcaClutch">
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_period"        		axisComponent="+" inputComponent="+" index="1"/>
 		</actionBinding>	
 		<actionBinding action="vcaKEEPSPEED">
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_delete"           axisComponent="+" inputComponent="+" index="1"/>

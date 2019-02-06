@@ -1,7 +1,7 @@
 # VehicleControlAddon for Farming Simulator 2019
 
 ## Status
-Since some versions there are problems if you use VCA and sleep on dedi server. My plan was to finish this mod as farewell present for you. But with this bug on the dedi server it is impossible to publish VCA on ModHub. So I took my consequences and stopped now. In German we say "Lieber ein Ende mit Schrecken als Schrecken ohne Ende!"
+I decided to continue with FS19_VehicleControlAddon but just for my own. So I might push new version from time to time. Please do not expect support for problems.
 
 ## VehicleControlAddon is the new KeyboardSteer
 Please check section status why I renamed the mod. Please use VCA as abreviation.

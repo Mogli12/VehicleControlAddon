@@ -46,6 +46,7 @@
 		<text name="input_vcaFORWARD"   text="VCA: Fahrtrichtung vorwärts"/>
 		<text name="input_vcaREVERSE"   text="VCA: Fahrtrichtung rückwärts"/>
 		<text name="input_vcaSNAP"      text="VCA: Fahrtrichtung am Raster ausrichten"/>
+		<text name="input_vcaSNAPRESET" text="VCA: Fahrtrichtung neu am Raster ausrichten"/>
 		<text name="input_vcaNO_ARB"    text="VCA: Kein zurück Lenken"/>
 		<text name="input_vcaINCHING"   text="VCA: Langsamer"/>
 		<text name="input_vcaKEEPSPEED" text="VCA: Geschwindigkeit halten"/>
@@ -55,7 +56,7 @@
 		<text name="input_vcaRangeUp"   text="VCA: Gruppe hoch"/>
 		<text name="input_vcaRangeDown" text="VCA: Gruppe runter"/>
 		<text name="input_vcaNeutral"   text="VCA: Leerlauf an/aus"/>
-		<text name="input_vcaClutchKey" text="VCA: Einfache Kupplung"/>
+		<text name="input_vcaClutch"    text="VCA: Kupplungsachse"/>
 		<text name="input_vcaShifter1"  text="VCA: G27/G29 Gang 1"/>
 		<text name="input_vcaShifter2"  text="VCA: G27/G29 Gang 2"/>
 		<text name="input_vcaShifter3"  text="VCA: G27/G29 Gang 3"/>
