@@ -440,14 +440,24 @@ end
 
 function vehicleControlAddon:saveToXMLFile(xmlFile, xmlKey)
 	local u = 0 
-	for name,settings in pairs( self.vcaUserSettings ) do 
+	if     self.vcaUserSettings == nil then 
+		self.vcaUserSettings = {}
+	end 
+	if table.getn( self.vcaUserSettings ) < 1 then 
+		self.vcaUserSettings[""] = { isMain = true }
+	end 
+	for name,set in pairs( self.vcaUserSettings ) do 
 		local key = xmlKey 
-		if not ( settings.isMain ) then 
+		local setting 
+		if not ( set.isMain ) then 
 			key = string.format( "%s.users(%d)", xmlKey, u ) 
 			u = u + 1  
+			setting = set 
+			setXMLString(xmlFile, key.."#user", name)
+		else 
+			setting = self 
 		end 	
 
-		setXMLString(xmlFile, key.."#user", name)
 	
 		if setting.vcaSteeringIsOn ~= nil and setting.vcaSteeringIsOn ~= VCAGlobals.adaptiveSteering then
 			setXMLBool(xmlFile, key.."#steering", setting.vcaSteeringIsOn)
@@ -787,7 +797,7 @@ function vehicleControlAddon:onUpdate(dt)
 		end 
 		if lastControllerName ~= nil and lastControllerName ~= "" and self.vcaUserSettings[lastControllerName] == nil then 
 			self.vcaUserSettings[lastControllerName] = {} 
-			self.vcaUserSettings[lastControllerName].isMain = self.isClient
+		--self.vcaUserSettings[lastControllerName].isMain = self.isClient
 		end 
 		for _,name in pairs( { "vcaSteeringIsOn", 
 													 "vcaShuttleCtrl",  
