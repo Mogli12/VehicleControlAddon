@@ -3,6 +3,8 @@
 ## Status
 I will not publish FS19_VehicleControlAddon anymore. I continue to work on this mod only for my own purpose. Do not expect that I will fix problems you find.
 
+Saving settings is now user dependent. I hope it does not break loading of saving games in MP. Please follow up in [#143](https://github.com/Mogli12/VehicleControlAddon/issues/143).
+
 ## VehicleControlAddon is the new KeyboardSteer
 Please check section status why I renamed the mod. Please use VCA as abreviation.
 
