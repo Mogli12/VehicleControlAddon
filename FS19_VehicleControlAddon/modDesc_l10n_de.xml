@@ -4,11 +4,14 @@
 	<description><![CDATA[Fügt allen Fahrzeugen eine adaptive Lenkung hinzu]]></description>
 
 	<texts>
-		<text name="vcaCAMERA"          text="Kamerabewegung"/>
+		<text name="vcaCAMERAI"         text="Innere Kamerabewegung"/>
+		<text name="vcaCAMERAO"         text="Äußere Kamerabewegung"/>
 		<text name="vcaEXPONENT"        text="Geschwindigkeitsabhängigkeit"/>
 		<text name="vcaSTEERING"        text="Adaptive Lenkung"/>
 		<text name="vcaSHUTTLE"         text="Shuttle Control"/>
 		<text name="vcaREVERSE"         text="Zurückblicken"/>
+		<text name="vcaREVERSEI"        text="Zurückblicken (innen)"/>
+		<text name="vcaREVERSEO"        text="Zurückblicken (außen)"/>
 		<text name="vcaLIMIT"           text="Gasbegrenzer"/>
 		<text name="vcaPEEKLR"          text="Nur ein kurzer Blick"/>
 		<text name="vcaANGLE"           text="Rastersteuerung"/>
@@ -21,11 +24,13 @@
 		<text name="vcaKEEPSPEED"       text="Geschwindigkeit permanent halten"/>
 		<text name="vcaSETTINGS"        text="Einstellungen"/>
 		                                
-		<text name="vca_tip_CAMERA"     text="Die Kamera dreht sich passend zum Lenkeinschlag automatisch mit."/>
+		<text name="vca_tip_CAMERAI"    text="Die innere Kamera dreht sich passend zum Lenkeinschlag automatisch mit."/>
+		<text name="vca_tip_CAMERAO"    text="Die äußere Kamera dreht sich passend zum Lenkeinschlag automatisch mit."/>
 		<text name="vca_tip_EXPONENT"   text="Geschwindigkeitsabhängigkeit der adaptiven Lenkung"/>
 		<text name="vca_tip_STEERING"   text="Die adaptive Lenkung verändert je nach Geschwindigkeit die Rückstellgeschwindigkeit und den maximalen Lenkwinkel"/>
 		<text name="vca_tip_SHUTTLE"    text="Fahrtrichtung mit Leertaste wechseln"/>
-		<text name="vca_tip_REVERSE"    text="Beim Wechsel zwischen Vorwärts- und Rückwärtsfahrt wird automatisch die Kamera um 180° gedrecht"/>
+		<text name="vca_tip_REVERSEI"   text="Beim Wechsel zwischen Vorwärts- und Rückwärtsfahrt wird automatisch die innere Kamera um 180° gedrecht"/>
+		<text name="vca_tip_REVERSEO"   text="Beim Wechsel zwischen Vorwärts- und Rückwärtsfahrt wird automatisch die äußere Kamera um 180° gedrecht"/>
 		<text name="vca_tip_LIMIT"      text="Gasbegrenzer mit linker Umschalttaste"/>
 		<text name="vca_tip_PEEKLR"     text="Mit Umschalt-Rechts und Pfeiltasten nur einen kurzen Blick nach hinten/rechts/links werfen"/>
 		<text name="vca_tip_ANGLE"      text="Automatisch in Richtung des Einrastwinkels lenken"/>

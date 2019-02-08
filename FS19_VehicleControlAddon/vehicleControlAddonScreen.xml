@@ -8,21 +8,39 @@
 		
 		<GuiElement type="boxLayout" profile="settingsBox" size="390px 688px" position="20px 88px" positionOrigin="bottomLeft">	
 		
-			<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="vcaCameraIsOn" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_vca_tip_CAMERA"  onCreate="onCreateSubElement"
-											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="110" focusChangeTop="502" focusChangeBottom="120">										
+			<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="vcaCamRotInside" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_vca_tip_CAMERAI"  onCreate="onCreateSubElement"
+											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="110" focusChangeTop="502" focusChangeBottom="111">										
 				<GuiElement type="button" profile="multiTextOptionLeft" />
 				<GuiElement type="button" profile="multiTextOptionRight"/>
 				<GuiElement type="text" profile="multiTextOptionText" />
-				<GuiElement type="text" profile="multiTextOptionTitle" text="$mogli_vcaCAMERA"/>
+				<GuiElement type="text" profile="multiTextOptionTitle" text="$mogli_vcaCAMERAI"/>
 				<GuiElement type="bitmap" profile="multiTextOptionBg" />
 			</GuiElement>
 				
-			<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="vcaReverseIsOn" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_vca_tip_REVERSE"  onCreate="onCreateSubElement" 
-											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="120" focusChangeTop="110" focusChangeBottom="130">										
+			<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="vcaCamRotOutside" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_vca_tip_CAMERAO"  onCreate="onCreateSubElement"
+											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="111" focusChangeTop="110" focusChangeBottom="120">										
 				<GuiElement type="button" profile="multiTextOptionLeft" />
 				<GuiElement type="button" profile="multiTextOptionRight"/>
 				<GuiElement type="text" profile="multiTextOptionText" />
-				<GuiElement type="text" profile="multiTextOptionTitle" text="$mogli_vcaREVERSE"/>
+				<GuiElement type="text" profile="multiTextOptionTitle" text="$mogli_vcaCAMERAO"/>
+				<GuiElement type="bitmap" profile="multiTextOptionBg" />
+			</GuiElement>
+				
+			<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="vcaCamRevInside" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_vca_tip_REVERSEI"  onCreate="onCreateSubElement" 
+											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="120" focusChangeTop="111" focusChangeBottom="121">										
+				<GuiElement type="button" profile="multiTextOptionLeft" />
+				<GuiElement type="button" profile="multiTextOptionRight"/>
+				<GuiElement type="text" profile="multiTextOptionText" />
+				<GuiElement type="text" profile="multiTextOptionTitle" text="$mogli_vcaREVERSEI"/>
+				<GuiElement type="bitmap" profile="multiTextOptionBg" />
+			</GuiElement>
+			
+			<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="vcaCamRevOutside" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_vca_tip_REVERSEO"  onCreate="onCreateSubElement" 
+											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="121" focusChangeTop="120" focusChangeBottom="130">										
+				<GuiElement type="button" profile="multiTextOptionLeft" />
+				<GuiElement type="button" profile="multiTextOptionRight"/>
+				<GuiElement type="text" profile="multiTextOptionText" />
+				<GuiElement type="text" profile="multiTextOptionTitle" text="$mogli_vcaREVERSEO"/>
 				<GuiElement type="bitmap" profile="multiTextOptionBg" />
 			</GuiElement>
 			

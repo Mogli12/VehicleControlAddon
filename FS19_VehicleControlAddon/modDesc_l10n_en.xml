@@ -4,11 +4,13 @@
 	<description><![CDATA[Adds the specialization for adaptive keyboard steering]]></description>
 
 	<texts>
-		<text name="vcaCAMERA"          text="Camera Rotation"/>
+		<text name="vcaCAMERAI"         text="Interior Camera Rotation"/>
+		<text name="vcaCAMERAO"         text="Exterior Camera Rotation"/>
 		<text name="vcaEXPONENT"        text="Sensitivity"/>
 		<text name="vcaSTEERING"        text="Adaptive Steering"/>
 		<text name="vcaSHUTTLE"         text="Shuttle"/>
-		<text name="vcaREVERSE"         text="Look Backwards"/>
+		<text name="vcaREVERSEI"        text="Look Backwards (inside)"/>
+		<text name="vcaREVERSEO"        text="Look Backwards (outside)"/>
 		<text name="vcaLIMIT"           text="Throttle Limiter"/>
 		<text name="vcaPEEKLR"          text="Peek Sideways"/>
 		<text name="vcaANGLE"           text="Snap Angle"/>
@@ -21,11 +23,13 @@
 		<text name="vcaKEEPSPEED"       text="Permanent keep speed"/>
 		<text name="vcaSETTINGS"        text="Settings"/>
 		                                
-		<text name="vca_tip_CAMERA"     text="The camera rotates automatically according to the steering angle"/>
+		<text name="vca_tip_CAMERAI"    text="The interior camera rotates automatically according to the steering angle"/>
+		<text name="vca_tip_CAMERAO"    text="The exterior camera rotates automatically according to the steering angle"/>
 		<text name="vca_tip_EXPONENT"   text="Sensitivity of the adaptive steering with respect to ground speed"/>
 		<text name="vca_tip_STEERING"   text="The adaptive steering adjusts the automatic back rotation and the maximum steering angle"/>
 		<text name="vca_tip_SHUTTLE"    text="Change driving direction with <space>"/>
-		<text name="vca_tip_REVERSE"    text="If the vehicle changes direction the camera is rotated by 180°"/>
+		<text name="vca_tip_REVERSEI"   text="If the vehicle changes direction the interior camera is rotated by 180°"/>
+		<text name="vca_tip_REVERSEO"   text="If the vehicle changes direction the exterior camera is rotated by 180°"/>
 		<text name="vca_tip_LIMIT"      text="Limiter of the throttle without and with left shift key"/>
 		<text name="vca_tip_PEEKLR"     text="Take a quick look with Shift-Right and the left/right arrow keys"/>
 		<text name="vca_tip_ANGLE"      text="Steer automatically to follow snap angle"/>

@@ -75,7 +75,7 @@ function vehicleControlAddon.debugPrint( ... )
 	end
 end
 
-function vehicleControlAddon:vcaIsValidCam( index, createIfMissing )
+function vehicleControlAddon:vcaIsValidCam( index )
 	local i = Utils.getNoNil( index, self.spec_enterable.camIndex )
 	
 	if      self.spec_enterable            ~= nil 
@@ -84,16 +84,6 @@ function vehicleControlAddon:vcaIsValidCam( index, createIfMissing )
 			and self.spec_enterable.cameras[i] ~= nil 
 			and self.spec_enterable.cameras[i].vehicle == self
 			and self.spec_enterable.cameras[i].isRotatable then
-		if self.vcaCameras[i] == nil then
-			if createIfMissing then
-				self.vcaCameras[i] = { rotation = vehicleControlAddon.getDefaultRotation( self, i ),
-															 rev      = vehicleControlAddon.getDefaultReverse( self, i ),
-															 zero     = self.spec_enterable.cameras[i].rotY,
-															 last     = self.spec_enterable.cameras[i].rotY }
-			else
-				return false
-			end
-		end
 		return true
 	end
 	
@@ -163,7 +153,7 @@ function vehicleControlAddon:onLoad(savegame)
 	self.vcaScaleFx          = vehicleControlAddon.vcaScaleFx
 	self.vcaSetState         = vehicleControlAddon.mbSetState
 	self.vcaIsValidCam       = vehicleControlAddon.vcaIsValidCam
-	self.vcaGetCurrentCamRot = vehicleControlAddon.vcaGetCurrentCamRot
+	self.vcaIsActive         = vehicleControlAddon.vcaIsActive
 	
 	--********************************************************************************************
 	-- functions for others mods 
@@ -189,8 +179,10 @@ function vehicleControlAddon:onLoad(savegame)
 	vehicleControlAddon.registerState( self, "vcaShuttleFwd",   true, vehicleControlAddon.vcaOnSetDirection )
 	vehicleControlAddon.registerState( self, "vcaExternalDir",  0 )
 	vehicleControlAddon.registerState( self, "vcaCamFwd"      , true )
-	vehicleControlAddon.registerState( self, "vcaCameraIsOn"  , false, vehicleControlAddon.vcaOnSetCamera )
-	vehicleControlAddon.registerState( self, "vcaReverseIsOn" , false, vehicleControlAddon.vcaOnSetReverse )
+	vehicleControlAddon.registerState( self, "vcaCamRotInside", VCAGlobals.camInsideRotation )
+	vehicleControlAddon.registerState( self, "vcaCamRotOutside",VCAGlobals.camOutsideRotation )
+	vehicleControlAddon.registerState( self, "vcaCamRevInside", vehicleControlAddon.getDefaultReverse( self, true ) )
+	vehicleControlAddon.registerState( self, "vcaCamRevOutside",vehicleControlAddon.getDefaultReverse( self, false ) )
 	vehicleControlAddon.registerState( self, "vcaExponent"    , 1    , vehicleControlAddon.vcaOnSetFactor )
 	vehicleControlAddon.registerState( self, "vcaWarningText" , ""   , vehicleControlAddon.vcaOnSetWarningText )
 	vehicleControlAddon.registerState( self, "vcaLimitThrottle",VCAGlobals.limitThrottle )
@@ -228,12 +220,6 @@ function vehicleControlAddon:onLoad(savegame)
 	self.vcaWarningTimer  = 0
 	self.vcaShifter7isR1  = nil 
 	self.vcaGearbox       = nil
-	
-	self.vcaCameras = {}
-	
-	for i,c in pairs(self.spec_enterable.cameras) do
-		self:vcaIsValidCam( i, true )
-	end
 
 	if self.isClient then 
 		if vehicleControlAddon.snapOnSample == nil then 
@@ -281,145 +267,170 @@ function vehicleControlAddon:onPostLoad(savegame)
 	if savegame ~= nil then
 		local xmlFile = savegame.xmlFile
 		
-		for t,specName in pairs({"zzzKeyboardSteerMogli",vehicleControlAddon_Register.specName }) do
-			local key     = savegame.key .."."..specName
-			local b, i, f
+		
+		local u = -1 
+		while true do 
+			local key  = string.format( "%s.%s", savegame.key, vehicleControlAddon_Register.specName, xmlKey )
+			local name = nil 
+			if u < 0 then 
+				u   = 0 
+			else 
+				key  = string.format( "%s.users(%d)", key, u )
+				name = getXMLBool(xmlFile, key.."#user")
+				if name == nil then 
+					break 
+				end 
+				if self.vcaUserSettings == nil then 
+					self.vcaUserSettings = {} 
+				end 
+				self.vcaUserSettings[name] = {} 
+			  u = u + 1 
+			end 
+
+			local function setProp( id, value ) 
+				if name == nil then
+					self:vcaSetState( id, value )
+				else 
+					self.vcaUserSettings[name][id] = value 
+				end 
+			end 			
 			
 			vehicleControlAddon.debugPrint("loading... ("..tostring(key)..")")
 			
 			b = getXMLBool(xmlFile, key.."#steering")
 			vehicleControlAddon.debugPrint("steering: "..tostring(b))
 			if b ~= nil then 
-				self:vcaSetState( "vcaSteeringIsOn", b )
+				setProp( "vcaSteeringIsOn", b )
 			end 
 			
 			b = getXMLBool(xmlFile, key.."#shuttle")
 			vehicleControlAddon.debugPrint("shuttle: "..tostring(b))
 			if b ~= nil then 
-				self:vcaSetState( "vcaShuttleCtrl", b )
+				setProp( "vcaShuttleCtrl", b )
 			end 
 			
 			b = getXMLBool(xmlFile, key.."#peek")
 			vehicleControlAddon.debugPrint("peek: "..tostring(b))
 			if b ~= nil then 
-				self:vcaSetState( "vcaPeekLeftRight", b )
+				setProp( "vcaPeekLeftRight", b )
 			end 
 			
 			b = getXMLBool(xmlFile, key.."#autoShift")
 			vehicleControlAddon.debugPrint("autoShift: "..tostring(b))
 			if b ~= nil then 
-				self:vcaSetState( "vcaAutoShift", b )
+				setProp( "vcaAutoShift", b )
 			end 
 			
 			b = getXMLBool(xmlFile, key.."#limitSpeed")
 			vehicleControlAddon.debugPrint("limitSpeed: "..tostring(b))
 			if b ~= nil then 
-				self:vcaSetState( "vcaLimitSpeed", b )
+				setProp( "vcaLimitSpeed", b )
 			end 
 			
 			b = getXMLBool(xmlFile, key.."#keepSpeed")
 			vehicleControlAddon.debugPrint("keepSpeed: "..tostring(b))
 			if b ~= nil then 
-				self:vcaSetState( "vcaKSToggle", b )
+				setProp( "vcaKSToggle", b )
+			end 
+			
+			b = getXMLBool(xmlFile, key.."#camRotInside")
+			vehicleControlAddon.debugPrint("camRotInside: "..tostring(b))
+			if b ~= nil then 
+				setProp( "vcaCamRotInside", b )
+			end 
+			
+			b = getXMLBool(xmlFile, key.."#camRotOutside")
+			vehicleControlAddon.debugPrint("camRotOutside: "..tostring(b))
+			if b ~= nil then 
+				setProp( "vcaCamRotOutside", b )
+			end 
+			
+			b = getXMLBool(xmlFile, key.."#camRevInside")
+			vehicleControlAddon.debugPrint("camRevInside: "..tostring(b))
+			if b ~= nil then 
+				setProp( "vcaCamRevInside", b )
+			end 
+			
+			b = getXMLBool(xmlFile, key.."#camRevOutside")
+			vehicleControlAddon.debugPrint("camRevOutside: "..tostring(b))
+			if b ~= nil then 
+				setProp( "vcaCamRevOutside", b )
 			end 
 			
 			i = getXMLInt(xmlFile, key.."#exponent")
 			vehicleControlAddon.debugPrint("exponent: "..tostring(i))
 			if i ~= nil then 
-				self:vcaSetState( "vcaExponent", i )
+				setProp( "vcaExponent", i )
 			end 
 			
 			i = getXMLInt(xmlFile, key.."#throttle")
 			vehicleControlAddon.debugPrint("throttle: "..tostring(i))
 			if i ~= nil then 
-				self:vcaSetState( "vcaLimitThrottle", i )
+				setProp( "vcaLimitThrottle", i )
 			end 
 			
 			i = getXMLInt(xmlFile, key.."#snapAngle")
 			vehicleControlAddon.debugPrint("snapAngle: "..tostring(i))
 			if i ~= nil then 
-				self:vcaSetState( "vcaSnapAngle", i )
+				setProp( "vcaSnapAngle", i )
 			end 
 			
 			f = getXMLFloat(xmlFile, key.."#brakeForce")
 			vehicleControlAddon.debugPrint("brakeForce: "..tostring(f))
 			if f ~= nil then 
-				self:vcaSetState( "vcaBrakeForce", f )
+				setProp( "vcaBrakeForce", f )
 			end 
 			
 			i = getXMLInt(xmlFile, key.."#launchGear")
 			vehicleControlAddon.debugPrint("launchGear: "..tostring(i))
 			if i ~= nil then 
-				self:vcaSetState( "vcaLaunchGear", i )
+				setProp( "vcaLaunchGear", i )
 			end 
 			
 			i = getXMLInt(xmlFile, key.."#transmission")
 			vehicleControlAddon.debugPrint("transmission: "..tostring(i))
 			if i ~= nil then 
-				self:vcaSetState( "vcaTransmission", i )
+				setProp( "vcaTransmission", i )
 			end 
 			
 			f = getXMLFloat(xmlFile, key.."#maxSpeed")
 			vehicleControlAddon.debugPrint("maxSpeed: "..tostring(f))
 			if f ~= nil then 
-				self:vcaSetState( "vcaMaxSpeed", f )
+				setProp( "vcaMaxSpeed", f )
 			end 
 					
 			f = getXMLFloat(xmlFile, key.."#ccSpeed2")
 			vehicleControlAddon.debugPrint("ccSpeed2: "..tostring(f))
 			if f ~= nil then 
-				self:vcaSetState( "vcaCCSpeed2", f )
+				setProp( "vcaCCSpeed2", f )
 			end 
 					
 			f = getXMLFloat(xmlFile, key.."#ccSpeed3")
 			vehicleControlAddon.debugPrint("ccSpeed3: "..tostring(f))
 			if f ~= nil then 
-				self:vcaSetState( "vcaCCSpeed3", f )
+				setProp( "vcaCCSpeed3", f )
 			end 
 	
 			f = getXMLFloat(xmlFile, key.."#snapDist")
 			vehicleControlAddon.debugPrint("snapDist: "..tostring(f))
 			if f ~= nil then 
-				self:vcaSetState( "vcaSnapDistance", f )
+				setProp( "vcaSnapDistance", f )
 			end 
 	
 			f = getXMLFloat(xmlFile, key.."#snapDir")
 			vehicleControlAddon.debugPrint("snapDir: "..tostring(f))
 			if f ~= nil then 
-				self:vcaSetState( "vcaLastSnapAngle", f )
+				setProp( "vcaLastSnapAngle", f )
 			end 
 			f = getXMLFloat(xmlFile, key.."#snapPosX")
 			vehicleControlAddon.debugPrint("snapPosX: "..tostring(f))
 			if f ~= nil then 
-				self:vcaSetState( "vcaLastSnapPosX", f )
+				setProp( "vcaLastSnapPosX", f )
 			end 
 			f = getXMLFloat(xmlFile, key.."#snapPosZ")
 			vehicleControlAddon.debugPrint("snapPosZ: "..tostring(f))
 			if f ~= nil then 
-				self:vcaSetState( "vcaLastSnapPosZ", f )
-			end 
-					
-			i = 0
-			while true do 
-				local cKey = string.format( "%s.camera(%d)", key, i )
-				i = i + 1
-				local j = getXMLInt(xmlFile, cKey.."#index")
-				if j == nil then	
-					break 
-				end 
-				if self:vcaIsValidCam( j, true ) then
-					b = getXMLBool(xmlFile, cKey.."#rotation")
-					vehicleControlAddon.debugPrint("rotation["..tostring(j).."]: "..tostring(b))
-					if b ~= nil then 
-						self.vcaCameras[j].rotation = b
-					end 
-					
-					b = getXMLBool(xmlFile, cKey.."#reverse")
-					vehicleControlAddon.debugPrint("reverse["..tostring(j).."]: "..tostring(b))
-					if b ~= nil then 
-						self.vcaCameras[j].rev = b
-					end 
-				end 
+				setProp( "vcaLastSnapPosZ", f )
 			end 
 		end 
 	end 
@@ -427,84 +438,85 @@ function vehicleControlAddon:onPostLoad(savegame)
 	self:vcaSetState( "vcaKSIsOn", self.vcaKSToggle )
 end 
 
-function vehicleControlAddon:saveToXMLFile(xmlFile, key)
-	if self.vcaSteeringIsOn ~= nil and self.vcaSteeringIsOn ~= VCAGlobals.adaptiveSteering then
-		setXMLBool(xmlFile, key.."#steering", self.vcaSteeringIsOn)
-	end
-	if self.vcaShuttleCtrl ~= nil and self.vcaShuttleCtrl ~= VCAGlobals.shuttleControl then
-		setXMLBool(xmlFile, key.."#shuttle", self.vcaShuttleCtrl)
-	end
-	if self.vcaPeekLeftRight ~= nil and self.vcaPeekLeftRight ~= VCAGlobals.peekLeftRight then
-		setXMLBool(xmlFile, key.."#peek", self.vcaPeekLeftRight)
-	end
-	if not self.vcaAutoShift then
-		setXMLBool(xmlFile, key.."#autoShift", self.vcaAutoShift)
-	end
-	if not self.vcaLimitSpeed then
-		setXMLBool(xmlFile, key.."#limitSpeed", self.vcaLimitSpeed)
-	end
-	if self.vcaKSToggle then
-		setXMLBool(xmlFile, key.."#keepSpeed", self.vcaKSToggle)
-	end
-	if self.vcaExponent ~= nil and math.abs( self.vcaExponent - 1 ) > 1E-3 then
-		setXMLInt(xmlFile, key.."#exponent", self.vcaExponent)
-	end
-	if self.vcaLimitThrottle ~= nil and math.abs( self.vcaLimitThrottle - VCAGlobals.limitThrottle ) > 1E-3 then
-		setXMLInt(xmlFile, key.."#throttle", self.vcaLimitThrottle)
-	end
-	if self.vcaSnapAngle ~= nil and math.abs( self.vcaSnapAngle - VCAGlobals.snapAngle ) > 1E-3 then
-		setXMLInt(xmlFile, key.."#snapAngle", self.vcaSnapAngle)
-	end
-	if self.vcaBrakeForce ~= nil and math.abs( self.vcaBrakeForce - VCAGlobals.brakeForceFactor ) > 1E-3 then
-		setXMLFloat(xmlFile, key.."#brakeForce", self.vcaBrakeForce)
-	end
-	if self.vcaLaunchGear ~= nil and math.abs( self.vcaLaunchGear - VCAGlobals.launchGear ) > 1E-3 then
-		setXMLInt(xmlFile, key.."#launchGear", self.vcaLaunchGear)
-	end
-	if self.vcaTransmission ~= nil and math.abs( self.vcaTransmission - vehicleControlAddon.getDefaultTransmission( self ) ) > 1E-3 then
-		setXMLInt(xmlFile, key.."#transmission", self.vcaTransmission)
-	end
-	if self.vcaMaxSpeed ~= nil and math.abs( self.vcaMaxSpeed - vehicleControlAddon.getDefaultMaxSpeed( self ) ) > 1E-3 then
-		setXMLFloat(xmlFile, key.."#maxSpeed", self.vcaMaxSpeed)
-	end
-	if self.vcaCCSpeed2 ~= nil and math.abs( self.vcaCCSpeed2 - 10 ) > 0.25 then
-		setXMLFloat(xmlFile, key.."#ccSpeed2", self.vcaCCSpeed2)
-	end
-	if self.vcaCCSpeed3 ~= nil and math.abs( self.vcaCCSpeed3 - 10 ) > 0.25 then
-		setXMLFloat(xmlFile, key.."#ccSpeed2", self.vcaCCSpeed3)
-	end
-	if self.vcaSnapDistance ~= nil and math.abs( self.vcaSnapDistance - 3 ) > 0.125 then
-		setXMLFloat(xmlFile, key.."#snapDist", self.vcaSnapDistance)
-	end
-	if      self.vcaLastSnapAngle ~= nil 
-			and self.vcaLastSnapPosX  ~= nil 
-			and self.vcaLastSnapPosZ  ~= nil then 
-		setXMLFloat(xmlFile, key.."#snapDir", self.vcaLastSnapAngle )
-		setXMLFloat(xmlFile, key.."#snapPosX", self.vcaLastSnapPosX )
-		setXMLFloat(xmlFile, key.."#snapPosZ", self.vcaLastSnapPosZ )
-	end
+function vehicleControlAddon:saveToXMLFile(xmlFile, xmlKey)
+	local u = 0 
+	for name,settings in pairs( self.vcaUserSettings ) do 
+		local key = xmlKey 
+		if not ( settings.isMain ) then 
+			key = string.format( "%s.users(%d)", xmlKey, u ) 
+			u = u + 1  
+		end 	
+
+		setXMLString(xmlFile, key.."#user", name)
 	
-	local i = 0
-	for j,b in pairs(self.vcaCameras) do
-		local addI = true  
-		local cKey = string.format( "%s.camera(%d)", key, i )
-		if b.rotation ~= vehicleControlAddon.getDefaultRotation( self, j ) then
-			if addI then 
-				addI = false 
-				i = i + 1
-				setXMLInt(xmlFile, cKey.."#index", j)
-			end 
-			setXMLBool(xmlFile, cKey.."#rotation", b.rotation)
+		if setting.vcaSteeringIsOn ~= nil and setting.vcaSteeringIsOn ~= VCAGlobals.adaptiveSteering then
+			setXMLBool(xmlFile, key.."#steering", setting.vcaSteeringIsOn)
 		end
-		if b.rev ~= vehicleControlAddon.getDefaultReverse( self, j ) then
-			if addI then 
-				addI = false 
-				i = i + 1
-				setXMLInt(xmlFile, cKey.."#index", j)
-			end 
-			setXMLBool(xmlFile, cKey.."#reverse", b.rev)
+		if setting.vcaShuttleCtrl ~= nil and setting.vcaShuttleCtrl ~= VCAGlobals.shuttleControl then
+			setXMLBool(xmlFile, key.."#shuttle", setting.vcaShuttleCtrl)
 		end
-	end
+		if setting.vcaPeekLeftRight ~= nil and setting.vcaPeekLeftRight ~= VCAGlobals.peekLeftRight then
+			setXMLBool(xmlFile, key.."#peek", setting.vcaPeekLeftRight)
+		end
+		if not setting.vcaAutoShift then
+			setXMLBool(xmlFile, key.."#autoShift", setting.vcaAutoShift)
+		end
+		if not setting.vcaLimitSpeed then
+			setXMLBool(xmlFile, key.."#limitSpeed", setting.vcaLimitSpeed)
+		end
+		if setting.vcaKSToggle then
+			setXMLBool(xmlFile, key.."#keepSpeed", setting.vcaKSToggle)
+		end 
+		if setting.vcaCamRotInside  ~= VCAGlobals.camInsideRotation then 
+			setXMLBool(xmlFile, key.."#camRotInside",  setting.vcaCamRotInside)
+		end
+		if setting.vcaCamRotOutside ~= VCAGlobals.camOutsideRotation then 
+			setXMLBool(xmlFile, key.."#camRotOutside", setting.vcaCamRotOutside)
+		end 
+		if setting.vcaCamRevInside  ~= vehicleControlAddon.getDefaultReverse( self, true ) then 
+			setXMLBool(xmlFile, key.."#camRevInside",  setting.vcaCamRevInside)
+		end
+		if setting.vcaCamRevOutside ~= vehicleControlAddon.getDefaultReverse( self, false ) then 
+			setXMLBool(xmlFile, key.."#camRevOutside", setting.vcaCamRevOutside)
+		end 
+		if setting.vcaExponent ~= nil and math.abs( setting.vcaExponent - 1 ) > 1E-3 then
+			setXMLInt(xmlFile, key.."#exponent", setting.vcaExponent)
+		end
+		if setting.vcaLimitThrottle ~= nil and math.abs( setting.vcaLimitThrottle - VCAGlobals.limitThrottle ) > 1E-3 then
+			setXMLInt(xmlFile, key.."#throttle", setting.vcaLimitThrottle)
+		end
+		if setting.vcaSnapAngle ~= nil and math.abs( setting.vcaSnapAngle - VCAGlobals.snapAngle ) > 1E-3 then
+			setXMLInt(xmlFile, key.."#snapAngle", setting.vcaSnapAngle)
+		end
+		if setting.vcaBrakeForce ~= nil and math.abs( setting.vcaBrakeForce - VCAGlobals.brakeForceFactor ) > 1E-3 then
+			setXMLFloat(xmlFile, key.."#brakeForce", setting.vcaBrakeForce)
+		end
+		if setting.vcaLaunchGear ~= nil and math.abs( setting.vcaLaunchGear - VCAGlobals.launchGear ) > 1E-3 then
+			setXMLInt(xmlFile, key.."#launchGear", setting.vcaLaunchGear)
+		end
+		if setting.vcaTransmission ~= nil and math.abs( setting.vcaTransmission - vehicleControlAddon.getDefaultTransmission( self ) ) > 1E-3 then
+			setXMLInt(xmlFile, key.."#transmission", setting.vcaTransmission)
+		end
+		if setting.vcaMaxSpeed ~= nil and math.abs( setting.vcaMaxSpeed - vehicleControlAddon.getDefaultMaxSpeed( self ) ) > 1E-3 then
+			setXMLFloat(xmlFile, key.."#maxSpeed", setting.vcaMaxSpeed)
+		end
+		if setting.vcaCCSpeed2 ~= nil and math.abs( setting.vcaCCSpeed2 - 10 ) > 0.25 then
+			setXMLFloat(xmlFile, key.."#ccSpeed2", setting.vcaCCSpeed2)
+		end
+		if setting.vcaCCSpeed3 ~= nil and math.abs( setting.vcaCCSpeed3 - 10 ) > 0.25 then
+			setXMLFloat(xmlFile, key.."#ccSpeed2", setting.vcaCCSpeed3)
+		end
+		if setting.vcaSnapDistance ~= nil and math.abs( setting.vcaSnapDistance - 3 ) > 0.125 then
+			setXMLFloat(xmlFile, key.."#snapDist", setting.vcaSnapDistance)
+		end
+		if      setting.vcaLastSnapAngle ~= nil 
+				and setting.vcaLastSnapPosX  ~= nil 
+				and setting.vcaLastSnapPosZ  ~= nil then 
+			setXMLFloat(xmlFile, key.."#snapDir", setting.vcaLastSnapAngle )
+			setXMLFloat(xmlFile, key.."#snapPosX", setting.vcaLastSnapPosX )
+			setXMLFloat(xmlFile, key.."#snapPosZ", setting.vcaLastSnapPosZ )
+		end
+	end 
 end 
 
 function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicle)
@@ -747,6 +759,13 @@ function vehicleControlAddon:onLeaveVehicle()
 	self:vcaSetState( "vcaKSIsOn", self.vcaKSToggle )
 end 
 
+function vehicleControlAddon:vcaIsActive()
+	if self:getIsEntered() and self:getIsVehicleControlledByPlayer() then 
+		return true 
+	end 
+	return false
+end 
+
 function vehicleControlAddon:onUpdate(dt)
 
   if     self.spec_enterable         == nil
@@ -755,6 +774,56 @@ function vehicleControlAddon:onUpdate(dt)
 		return 
 	end
 	
+	lastControllerName = self.vcaControllerName
+	if self:getIsControlled() then 
+		self.vcaControllerName = self:getControllerName()		
+	else 
+		self.vcaControllerName = "" 
+	end 
+
+	if self.isServer and ( lastControllerName == nil or lastControllerName ~= self.vcaControllerName ) then 
+		if self.vcaUserSettings == nil then 
+			self.vcaUserSettings = {}
+		end 
+		if lastControllerName ~= nil and lastControllerName ~= "" and self.vcaUserSettings[lastControllerName] == nil then 
+			self.vcaUserSettings[lastControllerName] = {} 
+			self.vcaUserSettings[lastControllerName].isMain = self.isClient
+		end 
+		for _,name in pairs( { "vcaSteeringIsOn", 
+													 "vcaShuttleCtrl",  
+													 "vcaPeekLeftRight",
+													 "vcaShuttleFwd",   
+													 "vcaCamRotInside"  , 
+													 "vcaCamRotOutside"  , 
+													 "vcaCamRevInside"  , 
+													 "vcaCamRevOutside"  , 
+													 "vcaExponent"    , 
+													 "vcaLimitThrottle",
+													 "vcaSnapAngle"   , 
+													 "vcaSnapDistance", 
+													 "vcaDrawHud" ,     
+													 "vcaBrakeForce",   
+													 "vcaTransmission", 
+													 "vcaMaxSpeed",     
+													 "vcaGear",         
+													 "vcaRange",        
+													 "vcaNeutral",      
+													 "vcaAutoShift",    
+													 "vcaLimitSpeed",   
+													 "vcaLaunchGear",   
+													 "vcaKSToggle",     
+													 "vcaAutoClutch" }) do 
+			if lastControllerName ~= nil and lastControllerName ~= "" then 
+				self.vcaUserSettings[lastControllerName][name] = self[name] 
+			end 
+			if      self.vcaControllerName ~= ""
+					and self.vcaUserSettings[self.vcaControllerName] ~= nil 
+					and self.vcaUserSettings[self.vcaControllerName][name] ~= nil then 
+				self:vcaSetState( name, self.vcaUserSettings[self.vcaControllerName][name] )
+			end 
+		end 
+	end 
+
 	local newRotCursorKey = self.vcaNewRotCursorKey
 	local i               = self.spec_enterable.camIndex
 	local requestedBack   = nil
@@ -803,7 +872,7 @@ function vehicleControlAddon:onUpdate(dt)
 	end 
 	
 	if     self.spec_motorized.motor.lowBrakeForceScale == nil then
-	elseif self:getIsVehicleControlledByPlayer() and self.vcaBrakeForce <= 0.99 then 
+	elseif self:vcaIsActive() and self.vcaBrakeForce <= 0.99 then 
 		if self.vcaLowBrakeForceScale == nil then 
 			self.vcaLowBrakeForceScale                 = self.spec_motorized.motor.lowBrakeForceScale
 		end 
@@ -827,7 +896,7 @@ function vehicleControlAddon:onUpdate(dt)
 		self.vcaMaxBackwardSpeed = nil
 	end 
 
-	if self.vcaNoAutoRotBack and self:getIsVehicleControlledByPlayer() then
+	if self.vcaNoAutoRotBack and self:vcaIsActive() then
 		if self.vcaAutoRotateBackSpeed == nil then 
 			self.vcaAutoRotateBackSpeed = self.autoRotateBackSpeed
 		end 
@@ -838,7 +907,7 @@ function vehicleControlAddon:onUpdate(dt)
 		self.vcaAutoRotateBackSpeed   = nil 
 	end 
 	
-	if self.vcaInchingIsOn and self:getIsVehicleControlledByPlayer() and not g_gui:getIsGuiVisible() and self.spec_drivable.cruiseControl.state == 1 then
+	if self.vcaInchingIsOn and self:vcaIsActive() and not g_gui:getIsGuiVisible() and self.spec_drivable.cruiseControl.state == 1 then
 		local limitThrottleRatio     = 0.75
 		if self.vcaLimitThrottle < 11 then
 			limitThrottleRatio     = 0.45 + 0.05 * self.vcaLimitThrottle
@@ -899,7 +968,7 @@ function vehicleControlAddon:onUpdate(dt)
 	self.vcaAxisSideLast     = nil
 	self.vcaSnapAngleTimer   = nil
 	
-	if self.isClient and self.vcaSnapIsOn and self:getIsVehicleControlledByPlayer() and not g_gui:getIsGuiVisible() then 
+	if self.isClient and self.vcaSnapIsOn and self:vcaIsActive() and not g_gui:getIsGuiVisible() then 
 		local lx, lz 
 		if self.vcaMovingDir < 0 then 
 			lx,_,lz = localDirectionToWorld( self.components[1].node, 0, 0, -1 )	
@@ -1007,7 +1076,7 @@ function vehicleControlAddon:onUpdate(dt)
 	
 	--*******************************************************************
 	-- Keep Speed 
-	if self.isClient and self.vcaKSIsOn and self:getIsVehicleControlledByPlayer() and not g_gui:getIsGuiVisible() then
+	if self.isClient and self.vcaKSIsOn and self:vcaIsActive() and not g_gui:getIsGuiVisible() then
 		if self.spec_drivable.cruiseControl.state > 0 then 
 			self:vcaSetState( "vcaKeepSpeed", self.lastSpeed * 3600 * self.movingDirection  )
 		elseif math.abs( self.spec_drivable.axisForward ) > 0.01 then 
@@ -1029,38 +1098,52 @@ function vehicleControlAddon:onUpdate(dt)
 			and self.isClient 
 --		and self.steeringEnabled 
 			and self:vcaIsValidCam() then
+			
+		local camera  = self.spec_enterable.cameras[i]
+		local rotIsOn = self.vcaCamRotOutside
+		local revIsOn = self.vcaCamRevOutside
+		
+		if camera.isInside then 
+			rotIsOn = self.vcaCamRotInside
+		  revIsOn = self.vcaCamRevInside
+		end 
+		
+	--vehicleControlAddon.debugPrint( "Cam: "..tostring(rotIsOn)..", "..tostring(revIsOn)..", "..tostring(self.vcaLastCamIndex)..", "..tostring(self.vcaLastCamFwd))
 
 		if     self.vcaLastCamIndex == nil 
 				or self.vcaLastCamIndex ~= i then
 				
-			self:vcaSetState( "vcaCameraIsOn",  self.vcaCameras[i].rotation )
-			self:vcaSetState( "vcaReverseIsOn", self.vcaCameras[i].rev )
+			if self.vcaLastCamIndex ~= nil and self.vcaZeroCamRotY and self:vcaIsValidCam( self.vcaLastCamIndex ) then
+				self.spec_enterable.cameras[self.vcaLastCamIndex].rotY = self.vcaZeroCamRotY 
+			end 
+				
 			self.vcaLastCamIndex = self.spec_enterable.camIndex
-			self.vcaCameras[i].zero       = self.spec_enterable.cameras[i].rotY
-			self.vcaCameras[i].lastCamFwd = nil
+			self.vcaZeroCamRotY  = camera.rotY
+			self.vcaLastCamRotY  = camera.rotY 
+			self.vcaLastCamFwd   = nil
 			
 		elseif  g_gameSettings:getValue("isHeadTrackingEnabled") 
 				and isHeadTrackingAvailable() 
-				and self.spec_enterable.cameras[i].isInside 
-				and self.spec_enterable.cameras[i].headTrackingNode ~= nil then
+				and camera.isInside 
+				and camera.headTrackingNode ~= nil then
 				
 			if requestedBack ~= nil then 
 				self.vcaCamBack = requestedBack 
 			end 
 			
-			if self.vcaReverseIsOn or self.vcaCamBack ~= nil then			
-				if self.spec_enterable.cameras[i].headTrackingMogliPF == nil then 
-					local p = getParent( self.spec_enterable.cameras[i].headTrackingNode )
-					self.spec_enterable.cameras[i].headTrackingMogliPF = createTransformGroup("headTrackingMogliPF")
-					link( p, self.spec_enterable.cameras[i].headTrackingMogliPF )
-					link( self.spec_enterable.cameras[i].headTrackingMogliPF, self.spec_enterable.cameras[i].headTrackingNode )
-					setRotation( self.spec_enterable.cameras[i].headTrackingMogliPF, 0, 0, 0 )
-					setTranslation( self.spec_enterable.cameras[i].headTrackingMogliPF, 0, 0, 0 )
-					self.spec_enterable.cameras[i].headTrackingMogliPR = false 
+			if revIsOn or self.vcaCamBack ~= nil then			
+				if camera.headTrackingMogliPF == nil then 
+					local p = getParent( camera.headTrackingNode )
+					camera.headTrackingMogliPF = createTransformGroup("headTrackingMogliPF")
+					link( p, camera.headTrackingMogliPF )
+					link( camera.headTrackingMogliPF, camera.headTrackingNode )
+					setRotation( camera.headTrackingMogliPF, 0, 0, 0 )
+					setTranslation( camera.headTrackingMogliPF, 0, 0, 0 )
+					camera.headTrackingMogliPR = false 
 				end 
 				
 				local targetBack = false 
-				if self.vcaReverseIsOn and not ( self.vcaCamFwd ) then 
+				if revIsOn and not ( self.vcaCamFwd ) then 
 					targetBack = true 
 				end 
 				
@@ -1073,58 +1156,58 @@ function vehicleControlAddon:onUpdate(dt)
 				end
 				
 				if targetBack then 
-					if not self.spec_enterable.cameras[i].headTrackingMogliPR then 
-						self.spec_enterable.cameras[i].headTrackingMogliPR = true 
-						setRotation( self.spec_enterable.cameras[i].headTrackingMogliPF, 0, math.pi, 0 )
+					if not camera.headTrackingMogliPR then 
+						camera.headTrackingMogliPR = true 
+						setRotation( camera.headTrackingMogliPF, 0, math.pi, 0 )
 					end 
 				else 
-					if self.spec_enterable.cameras[i].headTrackingMogliPR then 
-						self.spec_enterable.cameras[i].headTrackingMogliPR = false  
-						setRotation( self.spec_enterable.cameras[i].headTrackingMogliPF, 0, 0, 0 )
+					if camera.headTrackingMogliPR then 
+						camera.headTrackingMogliPR = false  
+						setRotation( camera.headTrackingMogliPF, 0, 0, 0 )
 					end 
 				end 
 			end 
 			
-		elseif self.vcaCameraIsOn 
-				or self.vcaReverseIsOn then
+		elseif rotIsOn 
+				or revIsOn then
 
 			local pi2 = math.pi / 2
 			local eps = 1e-6
-			oldRotY = self.spec_enterable.cameras[i].rotY
-			local diff = oldRotY - self.vcaCameras[i].last
+			oldRotY = camera.rotY
+			local diff = oldRotY - self.vcaLastCamRotY
 			
-			if self.vcaCameraIsOn then
+			if rotIsOn then
 				if newRotCursorKey ~= nil then
-					self.vcaCameras[i].zero = vehicleControlAddon.normalizeAngle( self.spec_enterable.cameras[i].origRotY + newRotCursorKey )
+					self.vcaZeroCamRotY = vehicleControlAddon.normalizeAngle( camera.origRotY + newRotCursorKey )
 				else
-					self.vcaCameras[i].zero = self.vcaCameras[i].zero + diff
+					self.vcaZeroCamRotY = self.vcaZeroCamRotY + diff
 				end
 			else
-				self.vcaCameras[i].zero = self.spec_enterable.cameras[i].rotY
+				self.vcaZeroCamRotY = camera.rotY
 			end
 				
 		--diff = math.abs( vehicleControlAddon.vcaGetAbsolutRotY( self, i ) )
 			local isRev = false
-			local aRotY = vehicleControlAddon.normalizeAngle( vehicleControlAddon.vcaGetAbsolutRotY( self, i ) - self.spec_enterable.cameras[i].rotY + self.vcaCameras[i].zero )
+			local aRotY = vehicleControlAddon.normalizeAngle( vehicleControlAddon.vcaGetAbsolutRotY( self, i ) - camera.rotY + self.vcaZeroCamRotY )
 			if -pi2 < aRotY and aRotY < pi2 then
 				isRev = true
 			end
 			
-			if self.vcaReverseIsOn then
+			if revIsOn then
 				if     newRotCursorKey ~= nil then
 				-- nothing
-				elseif self.vcaCameras[i].lastCamFwd == nil or self.vcaCameras[i].lastCamFwd ~= self.vcaCamFwd then
+				elseif self.vcaLastCamFwd == nil or self.vcaLastCamFwd ~= self.vcaCamFwd then
 					if isRev == self.vcaCamFwd then
-						self.vcaCameras[i].zero = vehicleControlAddon.normalizeAngle( self.vcaCameras[i].zero + math.pi )
+						self.vcaZeroCamRotY = vehicleControlAddon.normalizeAngle( self.vcaZeroCamRotY + math.pi )
 						isRev = not isRev						
 					end
 				end
-				self.vcaCameras[i].lastCamFwd = self.vcaCamFwd
+				self.vcaLastCamFwd = self.vcaCamFwd
 			end
 			
-			local newRotY = self.vcaCameras[i].zero
+			local newRotY = self.vcaZeroCamRotY
 			
-			if self.vcaCameraIsOn then
+			if rotIsOn then
 				
 				local f = 0
 				if     self.rotatedTime > 0 then
@@ -1162,10 +1245,9 @@ function vehicleControlAddon:onUpdate(dt)
 				self.vcaLastFactor = 0
 			end
 
-			self.spec_enterable.cameras[i].rotY = newRotY			
+			camera.rotY = newRotY			
 			
-			if math.abs( vehicleControlAddon.normalizeAngle( self.spec_enterable.cameras[i].rotY - newRotY ) ) > 0.5 * math.pi then
-				local camera = self.spec_enterable.cameras[i]
+			if math.abs( vehicleControlAddon.normalizeAngle( camera.rotY - newRotY ) ) > 0.5 * math.pi then
 				if camera.positionSmoothingParameter > 0 then
 					camera:updateRotateNodeRotation()
 					local xlook,ylook,zlook = getWorldTranslation(camera.rotateNode)
@@ -1181,7 +1263,15 @@ function vehicleControlAddon:onUpdate(dt)
 			end 			
 		end
 		
-		self.vcaCameras[i].last = self.spec_enterable.cameras[i].rotY
+		self.vcaLastCamRotY = camera.rotY
+	elseif self.vcaLastCamIndex ~= nil then 
+		if self.vcaZeroCamRotY and self:vcaIsValidCam( self.vcaLastCamIndex ) then
+			self.spec_enterable.cameras[self.vcaLastCamIndex].rotY = self.vcaZeroCamRotY 
+		end 
+		self.vcaLastCamIndex = nil
+		self.vcaZeroCamRotY  = nil
+		self.vcaLastCamRotY  = nil
+		self.vcaLastCamFwd   = nil
 	end	
 	
 	self.vcaWarningTimer = self.vcaWarningTimer - dt
@@ -1196,7 +1286,7 @@ function vehicleControlAddon:onUpdate(dt)
 	
 --******************************************************************************************************************************************
 -- adaptive steering 	
-	if self.vcaSteeringIsOn and not ( self.vcaSnapIsOn ) and self:getIsVehicleControlledByPlayer() then 
+	if self.vcaSteeringIsOn and not ( self.vcaSnapIsOn ) and self:vcaIsActive() then 
 		local speed = math.abs( self.lastSpeed * 3600 )
 		local f = 1
 		if     speed <= 12.5 then 
@@ -1244,7 +1334,7 @@ function vehicleControlAddon:onUpdate(dt)
 	
 --******************************************************************************************************************************************
 -- Reverse driving sound
-	if self.isClient and self:getIsVehicleControlledByPlayer() and self:getIsEntered() then 
+	if self.isClient and self:vcaIsActive() then 
 		if self.vcaShuttleCtrl and self.vcaReverseDriveSample ~= nil then 
 			local notRev = self.vcaShuttleFwd or self.vcaNeutral
 			if not g_soundManager:getIsSamplePlaying(self.vcaReverseDriveSample) and not notRev then
@@ -1264,8 +1354,10 @@ function vehicleControlAddon:onUpdate(dt)
 	                   "vcaShuttleFwd",  
 	                   "vcaExternalDir", 
 	                   "vcaCamFwd"      ,
-	                   "vcaCameraIsOn"  ,
-	                   "vcaReverseIsOn" ,
+	                   "vcaCamRotInside"  ,
+	                   "vcaCamRotOutside"  ,
+	                   "vcaCamRevInside"  ,
+	                   "vcaCamRevOutside"  ,
 	                   "vcaExponent"    ,
 	                   "vcaWarningText" ,
 	                   "vcaLimitThrottle",
@@ -1304,7 +1396,7 @@ function vehicleControlAddon:onUpdate(dt)
 end  
 
 function vehicleControlAddon:onDraw()
-	if self:getIsVehicleControlledByPlayer() and not g_gui:getIsGuiVisible() then
+	if self:vcaIsActive() and not g_gui:getIsGuiVisible() then
 		local x = g_currentMission.inGameMenu.hud.speedMeter.gaugeCenterX
 		local y = g_currentMission.inGameMenu.hud.speedMeter.gaugeCenterY + g_currentMission.inGameMenu.hud.speedMeter.fuelGaugeRadiusY * 1.6
 		local l = 0.025 * vehicleControlAddon.getUiScale()
@@ -1440,8 +1532,10 @@ end
 function vehicleControlAddon:onReadStream(streamId, connection)
 
 	self.vcaSteeringIsOn  = streamReadBool(streamId) 
-  self.vcaCameraIsOn    = streamReadBool(streamId) 
-  self.vcaReverseIsOn   = streamReadBool(streamId) 
+  self.vcaCamRotInside  = streamReadBool(streamId) 
+  self.vcaCamRotOutside = streamReadBool(streamId) 
+  self.vcaCamRevInside  = streamReadBool(streamId) 
+  self.vcaCamRevOutside = streamReadBool(streamId) 
   self.vcaCamFwd        = streamReadBool(streamId) 
   self.vcaShuttleCtrl   = streamReadBool(streamId) 
   self.vcaShuttleFwd    = streamReadBool(streamId) 
@@ -1450,7 +1544,6 @@ function vehicleControlAddon:onReadStream(streamId, connection)
 	self.vcaExternalDir   = streamReadInt16(streamId)     
 	self.vcaExponent      = streamReadInt16(streamId)     
 	self.vcaSnapAngle     = streamReadInt16(streamId)     
-	
 	self.vcaPeekLeftRight = streamReadBool(streamId) 
 	self.vcaAutoShift     = streamReadBool(streamId) 
 	self.vcaLimitSpeed    = streamReadBool(streamId) 
@@ -1464,44 +1557,29 @@ end
 
 function vehicleControlAddon:onWriteStream(streamId, connection)
 
-	streamWriteBool(streamId, self.vcaSteeringIsOn )
-	streamWriteBool(streamId, self.vcaCameraIsOn )
-	streamWriteBool(streamId, self.vcaReverseIsOn )
-	streamWriteBool(streamId, self.vcaCamFwd )     
-	streamWriteBool(streamId, self.vcaShuttleCtrl )     
-	streamWriteBool(streamId, self.vcaShuttleFwd )     
-	streamWriteBool(streamId, self.vcaNeutral )     
-	streamWriteBool(streamId, self.vcaDrawHud )     
-	streamWriteInt16(streamId,self.vcaExternalDir )     
-	streamWriteInt16(streamId,self.vcaExponent )     
-	streamWriteInt16(streamId,self.vcaSnapAngle )     
-	streamWriteBool(streamId,  self.vcaPeekLeftRight )
-	streamWriteBool(streamId,  self.vcaAutoShift     )
-	streamWriteBool(streamId,  self.vcaLimitSpeed    )
-	streamWriteInt16(streamId, self.vcaLimitThrottle )
-	streamWriteInt16(streamId, math.floor( 20 * self.vcaBrakeForce + 0.5 ) )
-	streamWriteInt16(streamId, self.vcaLaunchGear    )
-	streamWriteInt16(streamId, self.vcaTransmission  )
+	streamWriteBool(streamId,    self.vcaSteeringIsOn )
+	streamWriteBool(streamId,    self.vcaCamRotInside )
+	streamWriteBool(streamId,    self.vcaCamRotOutside )
+	streamWriteBool(streamId,    self.vcaCamRevInside )
+	streamWriteBool(streamId,    self.vcaCamRevOutside )
+	streamWriteBool(streamId,    self.vcaCamFwd )     
+	streamWriteBool(streamId,    self.vcaShuttleCtrl )     
+	streamWriteBool(streamId,    self.vcaShuttleFwd )     
+	streamWriteBool(streamId,    self.vcaNeutral )     
+	streamWriteBool(streamId,    self.vcaDrawHud )     
+	streamWriteInt16(streamId,   self.vcaExternalDir )     
+	streamWriteInt16(streamId,   self.vcaExponent )     
+	streamWriteInt16(streamId,   self.vcaSnapAngle )     
+	streamWriteBool(streamId,    self.vcaPeekLeftRight )
+	streamWriteBool(streamId,    self.vcaAutoShift     )
+	streamWriteBool(streamId,    self.vcaLimitSpeed    )
+	streamWriteInt16(streamId,   self.vcaLimitThrottle )
+	streamWriteInt16(streamId,   math.floor( 20 * self.vcaBrakeForce + 0.5 ) )
+	streamWriteInt16(streamId,   self.vcaLaunchGear    )
+	streamWriteInt16(streamId,   self.vcaTransmission  )
 	streamWriteFloat32(streamId, self.vcaMaxSpeed    )
 
 end 
-
-function vehicleControlAddon:getDefaultRotation( camIndex )
-	if     self.spec_enterable.cameras           == nil
-			or self.spec_enterable.cameras[camIndex] == nil then
-		vehicleControlAddon.debugPrint( "invalid camera" )
-		return false
-	elseif not ( self.spec_enterable.cameras[camIndex].isRotatable )
-			or self.spec_enterable.cameras[camIndex].vehicle ~= self then
-		vehicleControlAddon.debugPrint( "fixed camera" )
-		return false
-	elseif self.spec_enterable.cameras[camIndex].isInside then
-		vehicleControlAddon.debugPrint( "camera is inside" )
-		return VCAGlobals.camInsideRotation
-	end
-	
-	return VCAGlobals.camOutsideRotation
-end
 
 function vehicleControlAddon:getDefaultTransmission()
 	if VCAGlobals.transmission <= 0 then 
@@ -1538,14 +1616,8 @@ function vehicleControlAddon:getDefaultMaxSpeed()
 	return math.max( m, n )
 end 
 
-function vehicleControlAddon:getDefaultReverse( camIndex )
-	if     self.spec_enterable.cameras           == nil
-			or self.spec_enterable.cameras[camIndex] == nil then
-		return false
-	elseif not ( self.spec_enterable.cameras[camIndex].isRotatable )
-			or self.spec_enterable.cameras[camIndex].vehicle ~= self then
-		return false
-	elseif self.spec_enterable.cameras[camIndex].isInside then 
+function vehicleControlAddon:getDefaultReverse( isInside )
+	if isInside then 
 		if self.attacherJoints ~= nil then
 			for _,a in pairs( self.attacherJoints ) do
 				if a.jointType == JOINTTYPE_SEMITRAILER then
@@ -1567,22 +1639,6 @@ end
 function vehicleControlAddon:vcaScaleFx( fx, mi, ma )
 	return vehicleControlAddon.mbClamp( 1 + self.vcaFactor * ( fx - 1 ), mi, ma )
 end
-
-function vehicleControlAddon:vcaGetCurrentCamRot()
-	if self.spec_enterable == nil then 
-		return 0
-	end
-	local i = self.spec_enterable.camIndex
-	if     i == nil 
-			or self.spec_enterable.cameras == nil 
-			or self.spec_enterable.cameras[i] == nil
-			or self.spec_enterable.cameras[i].rotY == nil then 
-		return 0
-	end 
-	local a = vehicleControlAddon.normalizeAngle( self.spec_enterable.cameras[i].rotY )
-	print(math.deg(a))
-	return a
-end 
 
 --******************************************************************************************************************************************
 -- shuttle control and inching
@@ -2445,27 +2501,6 @@ end
 VehicleMotor.getMotorAppliedTorque = Utils.overwrittenFunction( VehicleMotor.getMotorAppliedTorque, vehicleControlAddon.vcaGetMotorAppliedTorque )
 --******************************************************************************************************************************************
 
-
-function vehicleControlAddon:vcaOnSetCamera( old, new, noEventSend ) 
-	self.vcaCameraIsOn = new
-	if self:vcaIsValidCam() then
-		self.vcaCameras[self.spec_enterable.camIndex].rotation = new
-		if new and not ( old ) then
-			self.vcaCameras[self.spec_enterable.camIndex].zero = self.spec_enterable.cameras[self.spec_enterable.camIndex].origRotY
-			self.vcaCameras[self.spec_enterable.camIndex].last = self.spec_enterable.cameras[self.spec_enterable.camIndex].rotY
-			self.vcaCameras[self.spec_enterable.camIndex].lastCamFwd = nil
-		end
-	end
-end
-
-function vehicleControlAddon:vcaOnSetReverse( old, new, noEventSend ) 
-	self.vcaReverseIsOn = new
-	if self:vcaIsValidCam() then
-		self.vcaCameras[self.spec_enterable.camIndex].rev = new
-		self.vcaCameras[self.spec_enterable.camIndex].lastCamFwd = nil
-	end
-end
-
 function vehicleControlAddon:vcaOnSetFactor( old, new, noEventSend )
 	self.vcaExponent = new
 	self.vcaFactor   = 1.1 ^ new
@@ -2486,8 +2521,7 @@ function vehicleControlAddon:vcaOnSetSnapIsOn( old, new, noEventSend )
 	
   if      ( old == nil or new ~= old )
 			and self.isClient
-			and self:getIsEntered()
-			and self:getIsVehicleControlledByPlayer() then
+			and self:vcaIsActive() then
 		if new and vehicleControlAddon.snapOnSample ~= nil then
       playSample(vehicleControlAddon.snapOnSample, 1, 0.2, 0, 0, 0)
 		elseif not new and vehicleControlAddon.snapOffSample ~= nil then
@@ -2543,8 +2577,7 @@ end
 function vehicleControlAddon:vcaOnSetGearChanged( old, new, noEventSend )
 	if      ( old == nil or new > old )
 			and self.isClient
-			and self:getIsEntered()
-			and self:getIsVehicleControlledByPlayer()
+			and self:vcaIsActive()
 			and vehicleControlAddon.bovSample ~= nil then 
 		local v = 0.2 * new 
 		if isSamplePlaying( vehicleControlAddon.bovSample ) then
