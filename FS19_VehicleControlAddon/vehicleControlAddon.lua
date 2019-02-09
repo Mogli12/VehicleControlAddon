@@ -19,6 +19,34 @@ function vehicleControlAddon.registerEventListeners(vehicleType)
 	end 
 end 
 
+local listOfProperties =
+	{ { getFunc=getXMLBool , setFunc=setXMLBool , xmlName="steering",      propName="vcaSteeringIsOn"  },
+		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="shuttle",       propName="vcaShuttleCtrl"   },
+		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="peek",          propName="vcaPeekLeftRight" },
+		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="autoShift",     propName="vcaLimitSpeed"    },
+		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="keepSpeed",     propName="vcaKSToggle"      },
+		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="camRotInside",  propName="vcaCamRotInside"  },
+		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="camRotOutside", propName="vcaCamRotOutside" },
+		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="camRevInside",  propName="vcaCamRevInside"  },
+		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="camRevOutside", propName="vcaCamRevOutside" },
+		{ getFunc=getXMLInt  , setFunc=setXMLInt  , xmlName="exponent",      propName="vcaExponent"      },
+		{ getFunc=getXMLInt  , setFunc=setXMLInt  , xmlName="throttle",      propName="vcaLimitThrottle" },
+		{ getFunc=getXMLInt  , setFunc=setXMLInt  , xmlName="snapAngle",     propName="vcaSnapAngle"     },
+		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="snapDist",      propName="vcaSnapDistance"  },
+		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="drawHud",       propName="vcaDrawHud"       }, 
+		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="brakeForce",    propName="vcaBrakeForce"    },
+		{ getFunc=getXMLInt  , setFunc=setXMLInt  , xmlName="launchGear",    propName="vcaLaunchGear"    },
+		{ getFunc=getXMLInt  , setFunc=setXMLInt  , xmlName="transmission",  propName="vcaTransmission"  },
+		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="autoShift",     propName="vcaAutoShift"     },
+		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="autoClutch",    propName="vcaAutoClutch"    },
+		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="maxSpeed",      propName="vcaMaxSpeed"      },
+		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="ccSpeed2",      propName="vcaCCSpeed2"      },
+		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="ccSpeed3",      propName="vcaCCSpeed3"      },
+		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="snapDir",       propName="vcaLastSnapAngle" },
+		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="snapPosX",      propName="vcaLastSnapPosX"  },
+		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="snapPosZ",      propName="vcaLastSnapPosZ"  } }
+
+
 VCAGlobals = {}
 vehicleControlAddon.snapAngles = { 5, 7.5, 15, 22.5, 45, 90 }
 vehicleControlAddon.factor30pi = 9.5492965855137201461330258023509
@@ -90,6 +118,27 @@ function vehicleControlAddon:vcaIsValidCam( index )
 	return false
 end
 
+function vehicleControlAddon:vcaIsNonDefaultProp( propName, setting )
+	if setting == nil then 
+		setting = self 
+	end 
+	if self.vcaDefaults == nil or setting[propName] == nil or self.vcaDefaults[propName] == nil then 
+		return false 
+	end 
+	if type( setting[propName] ) == "number" and type( self.vcaDefaults[propName] ) == "number" then 
+		if math.abs( setting[propName] - self.vcaDefaults[propName] ) < 1e-4 then 
+			return false 
+		end 
+		return true 
+	elseif setting[propName] == self.vcaDefaults[propName] then 
+		return false 
+	end 
+	return true  
+end 
+
+
+
+
 --********************************************************************************************
 -- functions for others mods 
 function vehicleControlAddon:vcaExternalSetShuttleCtrl( value )
@@ -149,11 +198,11 @@ end
 --********************************************************************************************
 
 function vehicleControlAddon:onLoad(savegame)
-	self.vcaDisabled         = false 
 	self.vcaScaleFx          = vehicleControlAddon.vcaScaleFx
 	self.vcaSetState         = vehicleControlAddon.mbSetState
 	self.vcaIsValidCam       = vehicleControlAddon.vcaIsValidCam
 	self.vcaIsActive         = vehicleControlAddon.vcaIsActive
+	self.vcaIsNonDefaultProp = vehicleControlAddon.vcaIsNonDefaultProp
 	
 	--********************************************************************************************
 	-- functions for others mods 
@@ -212,6 +261,9 @@ function vehicleControlAddon:onLoad(savegame)
 	vehicleControlAddon.registerState( self, "vcaAutoClutch",   true )
 	vehicleControlAddon.registerState( self, "vcaClutchPercent",0 )
 	vehicleControlAddon.registerState( self, "vcaClutchDisp",   0 )
+	vehicleControlAddon.registerState( self, "vcaLastSnapAngle",10 ) -- value should be between -pi and pi !!!
+	vehicleControlAddon.registerState( self, "vcaLastSnapPosX", 0 )
+	vehicleControlAddon.registerState( self, "vcaLastSnapPosZ", 0 )
 	
 	self.vcaFactor        = 1
 	self.vcaReverseTimer  = 1.5 / VCAGlobals.timer4Reverse
@@ -260,177 +312,49 @@ function vehicleControlAddon:onLoad(savegame)
 			vehicleControlAddon.ovHandBrakeUp    = createImageOverlay( Utils.getFilename( "hand_brake_up.dds",    vehicleControlAddon.baseDirectory ))
 			vehicleControlAddon.ovHandBrakeDown  = createImageOverlay( Utils.getFilename( "hand_brake_down.dds",  vehicleControlAddon.baseDirectory ))
 		end 
-	end 	
+	end 
+
+	self.vcaDefaults = {}
+	for _,prop in pairs( listOfProperties ) do 
+		self.vcaDefaults[prop.propName] = self[prop.propName]
+	end
 end
 
 function vehicleControlAddon:onPostLoad(savegame)
 	if savegame ~= nil then
 		local xmlFile = savegame.xmlFile
-		
-		
-		local u = -1 
-		while true do 
-			local key  = string.format( "%s.%s", savegame.key, vehicleControlAddon_Register.specName, xmlKey )
-			local name = nil 
-			if u < 0 then 
-				u   = 0 
-			else 
-				key  = string.format( "%s.users(%d)", key, u )
-				name = getXMLBool(xmlFile, key.."#user")
-				if name == nil then 
-					break 
-				end 
-				if self.vcaUserSettings == nil then 
-					self.vcaUserSettings = {} 
-				end 
-				self.vcaUserSettings[name] = {} 
-			  u = u + 1 
-			end 
 
-			local function setProp( id, value ) 
-				if name == nil then
-					self:vcaSetState( id, value )
+		vehicleControlAddon.debugPrint("Loading: "..tostring(savegame.key).."...")
+		
+		for _,prop in pairs( listOfProperties ) do 
+			local v = prop.getFunc( savegame.xmlFile, savegame.key.."."..vehicleControlAddon_Register.specName.."#"..prop.xmlName )
+			vehicleControlAddon.debugPrint(tostring(prop.xmlName)..": "..tostring(v))
+			if v ~= nil then 
+				self:vcaSetState( prop.propName, v ) 
+			end 
+		end 
+		
+		local u = 0 
+		while true do 
+			local key  = string.format( "%s.%s.users(%d)", savegame.key, vehicleControlAddon_Register.specName, u )
+			u = u + 1 
+			local name = getXMLString(xmlFile, key.."#user")
+			if name == nil then 
+				break 
+			end 
+			if self.vcaUserSettings == nil then 
+				self.vcaUserSettings = {} 
+			end 
+			self.vcaUserSettings[name] = {} 
+
+			for _,prop in pairs( listOfProperties ) do 
+				local v = prop.getFunc( savegame.xmlFile, key.."#"..prop.xmlName )
+				vehicleControlAddon.debugPrint("User: "..tostring(name).."; "..tostring(prop.xmlName)..": "..tostring(v))
+				if v == nil then 
+					self.vcaUserSettings[name][prop.propName] = self.vcaDefaults[prop.propName] 
 				else 
-					self.vcaUserSettings[name][id] = value 
+					self.vcaUserSettings[name][prop.propName] = v 
 				end 
-			end 			
-			
-			vehicleControlAddon.debugPrint("loading... ("..tostring(key)..")")
-			
-			b = getXMLBool(xmlFile, key.."#steering")
-			vehicleControlAddon.debugPrint("steering: "..tostring(b))
-			if b ~= nil then 
-				setProp( "vcaSteeringIsOn", b )
-			end 
-			
-			b = getXMLBool(xmlFile, key.."#shuttle")
-			vehicleControlAddon.debugPrint("shuttle: "..tostring(b))
-			if b ~= nil then 
-				setProp( "vcaShuttleCtrl", b )
-			end 
-			
-			b = getXMLBool(xmlFile, key.."#peek")
-			vehicleControlAddon.debugPrint("peek: "..tostring(b))
-			if b ~= nil then 
-				setProp( "vcaPeekLeftRight", b )
-			end 
-			
-			b = getXMLBool(xmlFile, key.."#autoShift")
-			vehicleControlAddon.debugPrint("autoShift: "..tostring(b))
-			if b ~= nil then 
-				setProp( "vcaAutoShift", b )
-			end 
-			
-			b = getXMLBool(xmlFile, key.."#limitSpeed")
-			vehicleControlAddon.debugPrint("limitSpeed: "..tostring(b))
-			if b ~= nil then 
-				setProp( "vcaLimitSpeed", b )
-			end 
-			
-			b = getXMLBool(xmlFile, key.."#keepSpeed")
-			vehicleControlAddon.debugPrint("keepSpeed: "..tostring(b))
-			if b ~= nil then 
-				setProp( "vcaKSToggle", b )
-			end 
-			
-			b = getXMLBool(xmlFile, key.."#camRotInside")
-			vehicleControlAddon.debugPrint("camRotInside: "..tostring(b))
-			if b ~= nil then 
-				setProp( "vcaCamRotInside", b )
-			end 
-			
-			b = getXMLBool(xmlFile, key.."#camRotOutside")
-			vehicleControlAddon.debugPrint("camRotOutside: "..tostring(b))
-			if b ~= nil then 
-				setProp( "vcaCamRotOutside", b )
-			end 
-			
-			b = getXMLBool(xmlFile, key.."#camRevInside")
-			vehicleControlAddon.debugPrint("camRevInside: "..tostring(b))
-			if b ~= nil then 
-				setProp( "vcaCamRevInside", b )
-			end 
-			
-			b = getXMLBool(xmlFile, key.."#camRevOutside")
-			vehicleControlAddon.debugPrint("camRevOutside: "..tostring(b))
-			if b ~= nil then 
-				setProp( "vcaCamRevOutside", b )
-			end 
-			
-			i = getXMLInt(xmlFile, key.."#exponent")
-			vehicleControlAddon.debugPrint("exponent: "..tostring(i))
-			if i ~= nil then 
-				setProp( "vcaExponent", i )
-			end 
-			
-			i = getXMLInt(xmlFile, key.."#throttle")
-			vehicleControlAddon.debugPrint("throttle: "..tostring(i))
-			if i ~= nil then 
-				setProp( "vcaLimitThrottle", i )
-			end 
-			
-			i = getXMLInt(xmlFile, key.."#snapAngle")
-			vehicleControlAddon.debugPrint("snapAngle: "..tostring(i))
-			if i ~= nil then 
-				setProp( "vcaSnapAngle", i )
-			end 
-			
-			f = getXMLFloat(xmlFile, key.."#brakeForce")
-			vehicleControlAddon.debugPrint("brakeForce: "..tostring(f))
-			if f ~= nil then 
-				setProp( "vcaBrakeForce", f )
-			end 
-			
-			i = getXMLInt(xmlFile, key.."#launchGear")
-			vehicleControlAddon.debugPrint("launchGear: "..tostring(i))
-			if i ~= nil then 
-				setProp( "vcaLaunchGear", i )
-			end 
-			
-			i = getXMLInt(xmlFile, key.."#transmission")
-			vehicleControlAddon.debugPrint("transmission: "..tostring(i))
-			if i ~= nil then 
-				setProp( "vcaTransmission", i )
-			end 
-			
-			f = getXMLFloat(xmlFile, key.."#maxSpeed")
-			vehicleControlAddon.debugPrint("maxSpeed: "..tostring(f))
-			if f ~= nil then 
-				setProp( "vcaMaxSpeed", f )
-			end 
-					
-			f = getXMLFloat(xmlFile, key.."#ccSpeed2")
-			vehicleControlAddon.debugPrint("ccSpeed2: "..tostring(f))
-			if f ~= nil then 
-				setProp( "vcaCCSpeed2", f )
-			end 
-					
-			f = getXMLFloat(xmlFile, key.."#ccSpeed3")
-			vehicleControlAddon.debugPrint("ccSpeed3: "..tostring(f))
-			if f ~= nil then 
-				setProp( "vcaCCSpeed3", f )
-			end 
-	
-			f = getXMLFloat(xmlFile, key.."#snapDist")
-			vehicleControlAddon.debugPrint("snapDist: "..tostring(f))
-			if f ~= nil then 
-				setProp( "vcaSnapDistance", f )
-			end 
-	
-			f = getXMLFloat(xmlFile, key.."#snapDir")
-			vehicleControlAddon.debugPrint("snapDir: "..tostring(f))
-			if f ~= nil then 
-				setProp( "vcaLastSnapAngle", f )
-			end 
-			f = getXMLFloat(xmlFile, key.."#snapPosX")
-			vehicleControlAddon.debugPrint("snapPosX: "..tostring(f))
-			if f ~= nil then 
-				setProp( "vcaLastSnapPosX", f )
-			end 
-			f = getXMLFloat(xmlFile, key.."#snapPosZ")
-			vehicleControlAddon.debugPrint("snapPosZ: "..tostring(f))
-			if f ~= nil then 
-				setProp( "vcaLastSnapPosZ", f )
 			end 
 		end 
 	end 
@@ -439,93 +363,31 @@ function vehicleControlAddon:onPostLoad(savegame)
 end 
 
 function vehicleControlAddon:saveToXMLFile(xmlFile, xmlKey)
-	local u = 0 
-	if     self.vcaUserSettings == nil then 
-		self.vcaUserSettings = {}
-	end 
-	if table.getn( self.vcaUserSettings ) < 1 then 
-		self.vcaUserSettings[""] = { isMain = true }
-	end 
-	for name,set in pairs( self.vcaUserSettings ) do 
-		local key = xmlKey 
-		local setting 
-		if not ( set.isMain ) then 
-			key = string.format( "%s.users(%d)", xmlKey, u ) 
-			u = u + 1  
-			setting = set 
-			setXMLString(xmlFile, key.."#user", name)
-		else 
-			setting = self 
-		end 	
 
+	for _,prop in pairs( listOfProperties ) do 
+		if self:vcaIsNonDefaultProp( prop.propName ) then 
+			prop.setFunc( xmlFile, xmlKey.."#"..prop.xmlName, self[prop.propName] )
+		end 
+	end 
 	
-		if setting.vcaSteeringIsOn ~= nil and setting.vcaSteeringIsOn ~= VCAGlobals.adaptiveSteering then
-			setXMLBool(xmlFile, key.."#steering", setting.vcaSteeringIsOn)
-		end
-		if setting.vcaShuttleCtrl ~= nil and setting.vcaShuttleCtrl ~= VCAGlobals.shuttleControl then
-			setXMLBool(xmlFile, key.."#shuttle", setting.vcaShuttleCtrl)
-		end
-		if setting.vcaPeekLeftRight ~= nil and setting.vcaPeekLeftRight ~= VCAGlobals.peekLeftRight then
-			setXMLBool(xmlFile, key.."#peek", setting.vcaPeekLeftRight)
-		end
-		if not setting.vcaAutoShift then
-			setXMLBool(xmlFile, key.."#autoShift", setting.vcaAutoShift)
-		end
-		if not setting.vcaLimitSpeed then
-			setXMLBool(xmlFile, key.."#limitSpeed", setting.vcaLimitSpeed)
-		end
-		if setting.vcaKSToggle then
-			setXMLBool(xmlFile, key.."#keepSpeed", setting.vcaKSToggle)
+	if self.vcaUserSettings ~= nil and table.getn( self.vcaUserSettings ) > 1 then 
+		local u = 0
+		for name,setting in pairs( self.vcaUserSettings ) do 
+			local ins = true 
+			local key = string.format( "%s.users(%d)", xmlKey, u ) 
+			
+			for _,prop in pairs( listOfProperties ) do 
+				if self:vcaIsNonDefaultProp( prop.propName, setting ) then
+					if ins then 
+					-- store setting for this user 
+						ins = false 
+						u   = u + 1 
+						setXMLString( xmlFile, key.."#user", name )
+					end 
+					prop.setFunc( xmlFile, key.."#"..prop.xmlName, setting[prop.propName] )
+				end 
+			end 
 		end 
-		if setting.vcaCamRotInside  ~= VCAGlobals.camInsideRotation then 
-			setXMLBool(xmlFile, key.."#camRotInside",  setting.vcaCamRotInside)
-		end
-		if setting.vcaCamRotOutside ~= VCAGlobals.camOutsideRotation then 
-			setXMLBool(xmlFile, key.."#camRotOutside", setting.vcaCamRotOutside)
-		end 
-		if setting.vcaCamRevInside  ~= vehicleControlAddon.getDefaultReverse( self, true ) then 
-			setXMLBool(xmlFile, key.."#camRevInside",  setting.vcaCamRevInside)
-		end
-		if setting.vcaCamRevOutside ~= vehicleControlAddon.getDefaultReverse( self, false ) then 
-			setXMLBool(xmlFile, key.."#camRevOutside", setting.vcaCamRevOutside)
-		end 
-		if setting.vcaExponent ~= nil and math.abs( setting.vcaExponent - 1 ) > 1E-3 then
-			setXMLInt(xmlFile, key.."#exponent", setting.vcaExponent)
-		end
-		if setting.vcaLimitThrottle ~= nil and math.abs( setting.vcaLimitThrottle - VCAGlobals.limitThrottle ) > 1E-3 then
-			setXMLInt(xmlFile, key.."#throttle", setting.vcaLimitThrottle)
-		end
-		if setting.vcaSnapAngle ~= nil and math.abs( setting.vcaSnapAngle - VCAGlobals.snapAngle ) > 1E-3 then
-			setXMLInt(xmlFile, key.."#snapAngle", setting.vcaSnapAngle)
-		end
-		if setting.vcaBrakeForce ~= nil and math.abs( setting.vcaBrakeForce - VCAGlobals.brakeForceFactor ) > 1E-3 then
-			setXMLFloat(xmlFile, key.."#brakeForce", setting.vcaBrakeForce)
-		end
-		if setting.vcaLaunchGear ~= nil and math.abs( setting.vcaLaunchGear - VCAGlobals.launchGear ) > 1E-3 then
-			setXMLInt(xmlFile, key.."#launchGear", setting.vcaLaunchGear)
-		end
-		if setting.vcaTransmission ~= nil and math.abs( setting.vcaTransmission - vehicleControlAddon.getDefaultTransmission( self ) ) > 1E-3 then
-			setXMLInt(xmlFile, key.."#transmission", setting.vcaTransmission)
-		end
-		if setting.vcaMaxSpeed ~= nil and math.abs( setting.vcaMaxSpeed - vehicleControlAddon.getDefaultMaxSpeed( self ) ) > 1E-3 then
-			setXMLFloat(xmlFile, key.."#maxSpeed", setting.vcaMaxSpeed)
-		end
-		if setting.vcaCCSpeed2 ~= nil and math.abs( setting.vcaCCSpeed2 - 10 ) > 0.25 then
-			setXMLFloat(xmlFile, key.."#ccSpeed2", setting.vcaCCSpeed2)
-		end
-		if setting.vcaCCSpeed3 ~= nil and math.abs( setting.vcaCCSpeed3 - 10 ) > 0.25 then
-			setXMLFloat(xmlFile, key.."#ccSpeed2", setting.vcaCCSpeed3)
-		end
-		if setting.vcaSnapDistance ~= nil and math.abs( setting.vcaSnapDistance - 3 ) > 0.125 then
-			setXMLFloat(xmlFile, key.."#snapDist", setting.vcaSnapDistance)
-		end
-		if      setting.vcaLastSnapAngle ~= nil 
-				and setting.vcaLastSnapPosX  ~= nil 
-				and setting.vcaLastSnapPosZ  ~= nil then 
-			setXMLFloat(xmlFile, key.."#snapDir", setting.vcaLastSnapAngle )
-			setXMLFloat(xmlFile, key.."#snapPosX", setting.vcaLastSnapPosX )
-			setXMLFloat(xmlFile, key.."#snapPosZ", setting.vcaLastSnapPosZ )
-		end
 	end 
 end 
 
@@ -742,9 +604,9 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus)
 		self:vcaSetState( "vcaShuttleFwd", false )
 	elseif actionName == "vcaSNAPRESET" then
 		if not ( self.vcaSnapIsOn ) then 
-			self.vcaLastSnapAngle = nil
-			self.vcaLastSnapPosX  = nil
-			self.vcaLastSnapPosZ  = nil
+			self:vcaSetState( "vcaLastSnapAngle", 10 )
+			self:vcaSetState( "vcaLastSnapPosX", 0 )
+			self:vcaSetState( "vcaLastSnapPosZ", 0 )
 		end 
 		self:vcaSetState( "vcaSnapIsOn", not self.vcaSnapIsOn )
 	elseif actionName == "vcaSNAP" then
@@ -778,58 +640,53 @@ end
 
 function vehicleControlAddon:onUpdate(dt)
 
-  if     self.spec_enterable         == nil
-			or self.spec_enterable.cameras == nil then 
-		self.vcaDisabled =true
-		return 
-	end
-	
 	lastControllerName = self.vcaControllerName
 	if self:getIsControlled() then 
-		self.vcaControllerName = self:getControllerName()		
-	else 
+		self.vcaControllerName = self:getControllerName()
+		if lastControllerName == nil or lastControllerName ~= self.vcaControllerName then 
+			vehicleControlAddon.debugPrint("New controller of vehicle is: "..self.vcaControllerName)
+		end 
+	elseif lastControllerName ~= nil then 
+		if lastControllerName ~= "" then 
+			vehicleControlAddon.debugPrint(lastControllerName.." left vehicle")
+		end 
 		self.vcaControllerName = "" 
 	end 
-
-	if self.isServer and ( lastControllerName == nil or lastControllerName ~= self.vcaControllerName ) then 
-		if self.vcaUserSettings == nil then 
-			self.vcaUserSettings = {}
-		end 
-		if lastControllerName ~= nil and lastControllerName ~= "" and self.vcaUserSettings[lastControllerName] == nil then 
-			self.vcaUserSettings[lastControllerName] = {} 
-		--self.vcaUserSettings[lastControllerName].isMain = self.isClient
-		end 
-		for _,name in pairs( { "vcaSteeringIsOn", 
-													 "vcaShuttleCtrl",  
-													 "vcaPeekLeftRight",
-													 "vcaShuttleFwd",   
-													 "vcaCamRotInside"  , 
-													 "vcaCamRotOutside"  , 
-													 "vcaCamRevInside"  , 
-													 "vcaCamRevOutside"  , 
-													 "vcaExponent"    , 
-													 "vcaLimitThrottle",
-													 "vcaSnapAngle"   , 
-													 "vcaSnapDistance", 
-													 "vcaDrawHud" ,     
-													 "vcaBrakeForce",   
-													 "vcaTransmission", 
-													 "vcaMaxSpeed",     
-													 "vcaGear",         
-													 "vcaRange",        
-													 "vcaNeutral",      
-													 "vcaAutoShift",    
-													 "vcaLimitSpeed",   
-													 "vcaLaunchGear",   
-													 "vcaKSToggle",     
-													 "vcaAutoClutch" }) do 
-			if lastControllerName ~= nil and lastControllerName ~= "" then 
-				self.vcaUserSettings[lastControllerName][name] = self[name] 
+	
+	if self.isServer and self.vcaControllerName ~= nil then 
+		if lastControllerName ~= nil and lastControllerName ~= "" and self.vcaUserSettings[lastControllerName] ~= nil then 
+		-- remember previous user settings 
+			for _,prop in pairs( listOfProperties ) do 
+				self.vcaUserSettings[lastControllerName][prop.propName] = self[prop.propName] 
 			end 
-			if      self.vcaControllerName ~= ""
-					and self.vcaUserSettings[self.vcaControllerName] ~= nil 
-					and self.vcaUserSettings[self.vcaControllerName][name] ~= nil then 
-				self:vcaSetState( name, self.vcaUserSettings[self.vcaControllerName][name] )
+		end 
+	
+		if self.vcaControllerName ~= "" then 
+			if self.vcaUserSettings == nil then 
+				vehicleControlAddon.debugPrint("Initializing user settings")
+				self.vcaUserSettings = {} 
+			end
+			if self.vcaUserSettings[self.vcaControllerName] == nil then 
+			-- new user or no settings in save game => create setting from self
+				vehicleControlAddon.debugPrint("Creating settings for user "..self.vcaControllerName)
+				self.vcaUserSettings[self.vcaControllerName] = {} 
+				for _,prop in pairs( listOfProperties ) do 
+					self.vcaUserSettings[self.vcaControllerName][prop.propName] = self[prop.propName]
+				end 
+			elseif lastControllerName == nil or lastControllerName ~= self.vcaControllerName then 
+			-- changed user => restore user settings 
+				vehicleControlAddon.debugPrint("Restoring settings for user "..self.vcaControllerName)
+				for _,prop in pairs( listOfProperties ) do 
+					if self.vcaUserSettings[self.vcaControllerName][prop.propName] ~= nil then 
+						self:vcaSetState( prop.propName, self.vcaUserSettings[self.vcaControllerName][prop.propName] )
+					else 
+						self:vcaSetState( prop.propName, self.vcaDefaults[prop.propName] )
+					end 
+					vehicleControlAddon.debugPrint( prop.propName.." of "..self.vcaControllerName..": "..tostring( self[prop.propName]) .." ("..tostring(self.vcaUserSettings[self.vcaControllerName][prop.propName])..")")
+				end 
+			end 
+			if self.isClient and self.isEntered then 
+				self.vcaUserSettings[self.vcaControllerName].isMain = true 
 			end 
 		end 
 	end 
@@ -990,9 +847,9 @@ function vehicleControlAddon:onUpdate(dt)
 			local rot    = math.atan2( lx, lz )
 			local d      = vehicleControlAddon.snapAngles[self.vcaSnapAngle]
 			
-			if self.vcaLastSnapAngle == nil then 
-				self.vcaLastSnapPosX = wx
-				self.vcaLastSnapPosZ = wz
+			if not ( -4 <= self.vcaLastSnapAngle and self.vcaLastSnapAngle <= 4 ) then 
+				self:vcaSetState( "vcaLastSnapPosX", wx )
+				self:vcaSetState( "vcaLastSnapPosZ", wz )
 				local target = 0
 				local diff   = math.pi+math.pi
 				if d == nil then 
@@ -1011,9 +868,7 @@ function vehicleControlAddon:onUpdate(dt)
 					end 
 				end 
 				
-				self.vcaLastSnapAngle = vehicleControlAddon.normalizeAngle( target )
-			else 
-				self.vcaLastSnapAngle = self.vcaLastSnapAngle 
+				self:vcaSetState( "vcaLastSnapAngle", vehicleControlAddon.normalizeAngle( target ) )
 			end 
 			
 			local curSnapAngle
@@ -1519,7 +1374,7 @@ function vehicleControlAddon:onDraw()
 			if lx*lx+lz*lz > 1e-6 then 
 				d = math.deg( math.pi - math.atan2( lx, lz ) )
 			end 
-			if self.vcaLastSnapAngle ~= nil then 
+			if -4 <= self.vcaLastSnapAngle and self.vcaLastSnapAngle <= 4 then 
 				renderText(x, y, l, string.format( "%4.1f° / %4.1f°", math.deg( math.pi - self.vcaLastSnapAngle ),d))
 				y = y + l * 1.2	
 			else
