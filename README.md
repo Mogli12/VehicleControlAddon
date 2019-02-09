@@ -1,5 +1,9 @@
 # VehicleControlAddon for Farming Simulator 2019
 
+## How to download?
+
+Just click here: [Latest version](https://github.com/Mogli12/VehicleControlAddon/blob/master/FS19_VehicleControlAddon.zip?raw=true)
+
 ## Status
 I will not publish FS19_VehicleControlAddon anymore. I continue to work on this mod only for my own purpose. Do not expect that I will fix problems you find.
 
