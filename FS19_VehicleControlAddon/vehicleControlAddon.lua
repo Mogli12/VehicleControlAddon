@@ -708,6 +708,15 @@ function vehicleControlAddon:onUpdate(dt)
 	end
 	
 	--*******************************************************************
+	-- disable shuttle and transmission in case of FS19_RealManualTransmission
+	if self.hasRMT then 
+		self:vcaSetState( "vcaShuttleCtrl", false )
+	end 
+	if self.rmtIsOn then 
+		self:vcaSetState( "vcaTransmission", 0 )
+	end 
+
+	--*******************************************************************
 	-- overwrite or reset some values 
 	if self.vcaShuttleCtrl then 
 		if     self.spec_reverseDriving  ~= nil then 
