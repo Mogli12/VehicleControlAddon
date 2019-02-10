@@ -431,7 +431,7 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
 																"AXIS_ACCELERATE_VEHICLE",
 																"AXIS_MOVE_SIDE_VEHICLE" }) do
 																
-			local isPressed = false 
+			local pBool1, pBool2, pBool3, pBool4 = false, true, false, true 
 			if     actionName == "AXIS_MOVE_SIDE_VEHICLE"
 					or actionName == "AXIS_BRAKE_VEHICLE"
 					or actionName == "AXIS_ACCELERATE_VEHICLE"
@@ -448,14 +448,15 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
 					or actionName == "vcaShifter5"
 					or actionName == "vcaShifter6"
 					or actionName == "vcaShifter7"
-					or actionName == "vcaClutch"
 					or actionName == "vcaNO_ARB" then 
-				isPressed = true 
+				pBool1 = true 
+			elseif actionName == "vcaClutch" then 
+				pBool2 = false 
+				pBool3 = true 
 			end 
 			
-			local _, eventName = self:addActionEvent(self.vcaActionEvents, InputAction[actionName], self, vehicleControlAddon.actionCallback, isPressed, true, false, true, nil);
+			local _, eventName = self:addActionEvent(self.vcaActionEvents, InputAction[actionName], self, vehicleControlAddon.actionCallback, pBool1, pBool2, pBool3, pBool4, nil);
 
-		--local __, eventName = InputBinding.registerActionEvent(g_inputBinding, actionName, self, vehicleControlAddon.actionCallback ,false ,true ,false ,true)
 			if      g_inputBinding                   ~= nil 
 					and g_inputBinding.events            ~= nil 
 					and g_inputBinding.events[eventName] ~= nil
@@ -471,7 +472,7 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
 	end
 end
 
-function vehicleControlAddon:actionCallback(actionName, keyStatus)
+function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState, isAnalog, isMouse, deviceCategory)
 
 	if actionName ~= "AXIS_MOVE_SIDE_VEHICLE" then 
 		vehicleControlAddon.debugPrint( 'vehicleControlAddon:actionCallback( "'..tostring(actionName)..'", '..tostring(keyStatus)..' )' )
