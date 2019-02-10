@@ -48,7 +48,8 @@ Additionally, there is a simple gear box. It was never planned to make a super r
 
 All functions are switchable with the following default key combinations:
 * Ctrl Left + C: Settings
-* Ctrl Left + W: Snap Angle
+* Ctrl Left + W: Snap Angle (continue)
+* Alt Left + W: Snap Angle (reset)
 * Shift Left: Throttle limiter / reduced cruise control speed
 * Shift Right + Cursor: look forward, backwards, left right
 * Space: Change direction (aka shuttle control)
