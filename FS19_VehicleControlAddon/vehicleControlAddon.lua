@@ -14,7 +14,7 @@ function vehicleControlAddon.prerequisitesPresent(specializations)
 end
 
 function vehicleControlAddon.registerEventListeners(vehicleType)
-	for _,n in pairs( { "onLoad", "onPostLoad", "onUpdate", "onDraw", "onLeaveVehicle", "onReadStream", "onWriteStream", "saveToXMLFile", "onRegisterActionEvents" } ) do
+	for _,n in pairs( { "onLoad", "onPostLoad", "onUpdate", "onDraw", "onLeaveVehicle", "onReadStream", "onWriteStream", "saveToXMLFile", "onRegisterActionEvents", "onStartReverseDirectionChange" } ) do
 		SpecializationUtil.registerEventListener(vehicleType, n, vehicleControlAddon)
 	end 
 end 
@@ -903,7 +903,7 @@ function vehicleControlAddon:onUpdate(dt)
 			end 
 			
 			local alpha = math.asin( vehicleControlAddon.mbClamp( 0.15 * dist, -1, 1 ) )
-			vehicleControlAddon.debugPrint(math.deg( diffR ).."°; "..tostring(dist).." => "..math.deg( alpha ).."°")	
+		--vehicleControlAddon.debugPrint(math.deg( diffR ).."°; "..tostring(dist).." => "..math.deg( alpha ).."°")	
 			
 			diffR = diffR + alpha
 			
@@ -1444,6 +1444,12 @@ function vehicleControlAddon:onWriteStream(streamId, connection)
 	streamWriteInt16(streamId,   self.vcaTransmission  )
 	streamWriteFloat32(streamId, self.vcaMaxSpeed    )
 
+end 
+
+function vehicleControlAddon:onStartReverseDirectionChange()
+	if self.vcaShuttleCtrl then 
+		self:vcaSetState( "vcaShuttleFwd", not self.vcaShuttleFwd )
+	end 
 end 
 
 function vehicleControlAddon:getDefaultTransmission()
