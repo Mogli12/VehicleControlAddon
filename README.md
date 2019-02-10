@@ -9,6 +9,8 @@ I will not publish FS19_VehicleControlAddon anymore. I continue to work on this 
 
 Saving settings is now user dependent. I hope it does not break loading of saving games in MP. Please follow up in [#143](https://github.com/Mogli12/VehicleControlAddon/issues/143).
 
+If you are looking for a realistic manual transmisison please visit [FS19_realManualTransmission](https://github.com/modelleicher/FS19_realManualTransmission)
+
 ## VehicleControlAddon is the new KeyboardSteer
 Please check section status why I renamed the mod. Please use VCA as abreviation.
 
