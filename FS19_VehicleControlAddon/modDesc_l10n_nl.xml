@@ -4,28 +4,32 @@
 	<description><![CDATA[Voegt specialisatie toe voor adaptieve toetsenbord besturing]]></description>
 
 	<texts>
-		<text name="vcaCAMERA"          text="Camera Rotatie"/>
+		<text name="vcaCAMERAI"         text="Camera Rotatie (binnen)"/>
+		<text name="vcaCAMERAO"         text="Camera Rotatie (buiten)"/>		
 		<text name="vcaEXPONENT"        text="Gevoeligheid"/>
 		<text name="vcaSTEERING"        text="Adaptieve Besturing"/>
 		<text name="vcaSHUTTLE"         text="Schakelen"/>
-		<text name="vcaREVERSE"         text="Kijk Achterwaarts"/>
+		<text name="vcaREVERSEI"        text="Kijk Achterwaarts (binnen)"/>
+		<text name="vcaREVERSEO"        text="Kijk Achterwaarts (buiten)"/>
 		<text name="vcaLIMIT"           text="Gasregelaar"/>
 		<text name="vcaPEEKLR"          text="Zijwaarts kijken"/>
 		<text name="vcaANGLE"           text="Snap Angle"/>
-		<text name="vcaBRAKE"           text="Low Brake Force"/>
+		<text name="vcaBRAKE"           text="Verminderde remkracht"/>
 		<text name="vcaTRANSMISSION"    text="Transmissie"/>
 		<text name="vcaMAXSPEED"        text="As Snelheid"/>
 		<text name="vcaLIMSPEED"        text="Snelheidsbeperking"/>
 		<text name="vcaAUTOSHIFT"       text="Automaat"/>
 		<text name="vcaLAUNCH"          text="Wegrij Versnelling"/>
+		<text name="vcaKEEPSPEED"       text="Permanente snelheid"/>	
 		<text name="vcaSETTINGS"        text="VCA: Instellingen"/>
-		<text name="vcaDIRECTION"	   text="Rijrichting"/>
 		                               
-		<text name="vca_tip_CAMERA"     text="De camera draait automatisch met de stuuruitslag"/>
+		<text name="vca_tip_CAMERAI"    text="De camera binnen draait automatisch met de stuuruitslag"/>
+		<text name="vca_tip_CAMERAO"    text="De camera buiten draait automatisch met de stuuruitslag"/>		
 		<text name="vca_tip_EXPONENT"   text="Gevoeligheid van de adaptieve besturing ten opzichte van de grondsnelheid"/>
 		<text name="vca_tip_STEERING"   text="Aanpassing van de automatisch terugsturing en maximale stuuruitslag van de adaptieve besturing"/>
 		<text name="vca_tip_SHUTTLE"    text="Verander de rijrichting met <spatiebalk>"/>
-		<text name="vca_tip_REVERSE"    text="Wanneer de rijrichting verandert, draait de camera 180°"/>
+		<text name="vca_tip_REVERSEI"   text="Wanneer de rijrichting verandert, draait de camera binnen 180°"/>
+		<text name="vca_tip_REVERSEO"   text="Wanneer de rijrichting verandert, draait de camera buiten 180°"/>
 		<text name="vca_tip_LIMIT"      text="Beperkt de snelheid met en zonder linker shift toets"/>
 		<text name="vca_tip_PEEKLR"     text="Kijk om de hoek met Shift-Rechts en de linker of rechter cursortoets"/>
 		<text name="vca_tip_ANGLE"      text="Stuur automatisch om de rasterhoek te volgen"/>
@@ -35,6 +39,7 @@
 		<text name="vca_tip_LIMSPEED"   text="Beperkt de maximum snelheid van het voertuig naar standaard waarde"/>
 		<text name="vca_tip_AUTOSHIFT"  text="Automatisch schakelen van versnellingen en bereik"/>
 		<text name="vca_tip_LAUNCH"     text="Nominale snelheid van de wegrijversnelling"/>
+		<text name="vca_tip_KEEPSPEED"  text="Wanneer permanente snelheid is geactiveerd dan gedraagd het gaspedaal zich als een joystick. Dit is als rijden met cruise control."/>
 		
 		<text name="input_vcaSETTINGS"  text="VCA: instellingen"/>
 		<text name="input_vcaUP"        text="VCA: Kijk vooruit"/>
@@ -45,13 +50,17 @@
 		<text name="input_vcaFORWARD"   text="VCA: Rij vooruit"/>
 		<text name="input_vcaREVERSE"   text="VCA: Rij achteruit"/>
 		<text name="input_vcaSNAP"      text="VCA: Rasterrijrichting"/>
+		<text name="input_vcaSNAPRESET" text="VCA: Reset rasterrijrichting"/>
 		<text name="input_vcaNO_ARB"    text="VCA: Niet automatisch terugsturen"/>
 		<text name="input_vcaINCHING"   text="VCA: inching"/>
+		<text name="input_vcaKEEPSPEED" text="VCA: Behoud snelheid"/>
+		<text name="input_vcaSWAPSPEED" text="VCA: Wissel snelheid"/>
 		<text name="input_vcaGearUp"    text="VCA: Opschakelen"/>
 		<text name="input_vcaGearDown"  text="VCA: Terugschakelen"/>
 		<text name="input_vcaRangeUp"   text="VCA: Bereik opschakelen"/>
 		<text name="input_vcaRangeDown" text="VCA: Bereik terugschakelen"/>
 		<text name="input_vcaNeutral"   text="VCA: Versnelling in neutraal aan/uit"/>
+		<text name="input_vcaClutch"    text="VCA: Koppelingspedaal"/>
 		<text name="input_vcaShifter1"  text="VCA: G27/G29 versn. 1"/>
 		<text name="input_vcaShifter2"  text="VCA: G27/G29 versn. 2"/>
 		<text name="input_vcaShifter3"  text="VCA: G27/G29 versn. 3"/>
@@ -60,8 +69,8 @@
 		<text name="input_vcaShifter6"  text="VCA: G27/G29 versn. 6 / Bereik omhoog"/>
 		<text name="input_vcaShifter7"  text="VCA: G27/G29 Achteruit"/>
 		<text name="input_vcaShifterLH" text="VCA: G27/G29 Versnelling Splitter"/>
-				
 	</texts>
+
 	<longTexts>
 		<longText name="vca_Help_1">
 <![CDATA[
