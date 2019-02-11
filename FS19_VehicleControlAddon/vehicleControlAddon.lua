@@ -14,7 +14,18 @@ function vehicleControlAddon.prerequisitesPresent(specializations)
 end
 
 function vehicleControlAddon.registerEventListeners(vehicleType)
-	for _,n in pairs( { "onLoad", "onPostLoad", "onUpdate", "onDraw", "onLeaveVehicle", "onReadStream", "onWriteStream", "saveToXMLFile", "onRegisterActionEvents", "onStartReverseDirectionChange" } ) do
+	for _,n in pairs( { "onLoad", 
+											"onPostLoad", 
+											"onUpdate", 
+											"onDraw",
+											"onLeaveVehicle",
+											"onReadStream", 
+											"onWriteStream", 
+											"onReadUpdateStream", 
+											"onWriteUpdateStream", 
+											"saveToXMLFile", 
+											"onRegisterActionEvents", 
+											"onStartReverseDirectionChange" } ) do
 		SpecializationUtil.registerEventListener(vehicleType, n, vehicleControlAddon)
 	end 
 end 
@@ -259,8 +270,6 @@ function vehicleControlAddon:onLoad(savegame)
 	vehicleControlAddon.registerState( self, "vcaCCSpeed2",     10 )
 	vehicleControlAddon.registerState( self, "vcaCCSpeed3",     15 )
 	vehicleControlAddon.registerState( self, "vcaAutoClutch",   true )
-	vehicleControlAddon.registerState( self, "vcaClutchPercent",0 )
-	vehicleControlAddon.registerState( self, "vcaClutchDisp",   0 )
 	vehicleControlAddon.registerState( self, "vcaLastSnapAngle",10 ) -- value should be between -pi and pi !!!
 	vehicleControlAddon.registerState( self, "vcaLastSnapPosX", 0 )
 	vehicleControlAddon.registerState( self, "vcaLastSnapPosZ", 0 )
@@ -272,6 +281,12 @@ function vehicleControlAddon:onLoad(savegame)
 	self.vcaWarningTimer  = 0
 	self.vcaShifter7isR1  = nil 
 	self.vcaGearbox       = nil
+	self.vcaTickDt        = 0
+
+	self.vcaClutchPercent = 0
+	self.vcaClutchPercentS= 0
+	self.vcaClutchDisp    = 0
+	self.vcaClutchDispS   = 0
 
 	if self.isClient then 
 		if vehicleControlAddon.snapOnSample == nil then 
@@ -499,7 +514,17 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 	if     actionName == "AXIS_MOVE_SIDE_VEHICLE"  and math.abs( keyStatus ) > 0.05 then 
 		self:vcaSetState( "vcaSnapIsOn", false )
 	elseif actionName == "vcaClutch" then 
-		self:vcaSetState( "vcaClutchPercent", math.min( 1, 1.2*math.max( keyStatus-0.1, 0 ) ) )
+		self.vcaCloseClutchNonAnalog = nil 
+		if     isAnalog then 
+			self.vcaClutchPercent = math.min( 1, 1.2*math.max( keyStatus-0.1, 0 ) )
+		elseif self.vcaAutoClutch then 
+			self.vcaClutchPercent = keyStatus
+		elseif keyStatus > 0.5 then 
+			self.vcaClutchPercent = math.min( 1, self.vcaClutchPercent + 0.004 * self.vcaTickDt )
+		else 
+			self.vcaCloseClutchNonAnalog = true 
+		end 
+			
 	elseif actionName == "vcaUP"
 			or actionName == "vcaDOWN"
 			or actionName == "vcaLEFT"
@@ -641,6 +666,8 @@ end
 
 function vehicleControlAddon:onUpdate(dt)
 
+	self.vcaTickDt = dt
+
 	lastControllerName = self.vcaControllerName
 	if self:getIsControlled() then 
 		self.vcaControllerName = self:getControllerName()
@@ -714,6 +741,14 @@ function vehicleControlAddon:onUpdate(dt)
 	end 
 	if self.rmtIsOn then 
 		self:vcaSetState( "vcaTransmission", 0 )
+	end 
+	
+	if self.vcaCloseClutchNonAnalog then 
+		self.vcaClutchPercent = self.vcaClutchPercent - 0.001 * dt
+		if self.vcaClutchPercent <= 0 then 
+			self.vcaClutchPercent = 0
+			self.vcaCloseClutchNonAnalog = nil 
+		end 
 	end 
 
 	--*******************************************************************
@@ -1366,7 +1401,7 @@ function vehicleControlAddon:onDraw()
 				
 				local c
 				if self.vcaAutoClutch then 
-					c = math.max( self.vcaClutchDisp, self.vcaClutchPercent )
+					c = self.vcaClutchDisp
 				else 
 					c = self.vcaClutchPercent 
 				end 
@@ -1455,6 +1490,40 @@ function vehicleControlAddon:onWriteStream(streamId, connection)
 	streamWriteFloat32(streamId, self.vcaMaxSpeed    )
 
 end 
+
+
+function vehicleControlAddon:onReadUpdateStream(streamId, timestamp, connection)
+	if streamReadBool(streamId) then
+		local clutch = streamReadUIntN(streamId, 10) / 1023 * 2 - 1
+		if not connection:getIsServer() then
+		-- receive vcaClutchPercent from client  
+			self.vcaClutchPercent = clutch 
+		else 
+		-- receive vcaClutchDisp from server 
+			self.vcaClutchDisp    = clutch 
+		end 
+	end
+end
+
+function vehicleControlAddon:onWriteUpdateStream(streamId, connection, dirtyMask)
+	local clutchCur, clutchLast = 0, 0
+	
+	if connection:getIsServer() then
+	-- send vcaClutchPercent to server 
+		clutchCur  = self.vcaClutchPercent
+		clutchLast = self.vcaClutchPercentS
+		self.vcaClutchPercentS = self.vcaClutchPercent
+	else 
+	-- send vcaClutchDisp to client
+		clutchCur  = self.vcaClutchDisp  
+		clutchLast = self.vcaClutchDispS
+		self.vcaClutchDispS = self.vcaClutchDisp  
+	end
+
+	if streamWriteBool(streamId, math.abs( clutchCur - clutchLast ) > 0.001) then
+		streamWriteUIntN(streamId, math.floor( clutchCur * 1023 + 0.5 ), 10)
+	end
+end
 
 function vehicleControlAddon:onStartReverseDirectionChange()
 	if self.vcaShuttleCtrl then 
@@ -1649,55 +1718,38 @@ function vehicleControlAddon:getRequiredMotorRpmRange( superFunc, ... )
 end 
 
 VehicleMotor.getRequiredMotorRpmRange = Utils.overwrittenFunction( VehicleMotor.getRequiredMotorRpmRange, vehicleControlAddon.getRequiredMotorRpmRange )
+
 --******************************************************************************************************************************************
-
-function vehicleControlAddon.getGearIndex( mode, gear, range )
-	local index 
-	if     mode <= 1 then 
-		index = 0
-	elseif mode >= 5 then 
-		index = gear 
-	elseif mode >= 4 then 
-		index = gear 
-		if range >= 2 then 
-			index = index + 6 
-		end 
-	elseif range <= 1 then 
-		index = gear 
-	elseif range == 2 then 
-		index = gear + 2
-	elseif range == 3 then 
-		index = gear + 5
-	else 
-		index = gear + 8 
-	end 
-	return index 
-end
-
 function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	
-	local lastMinRpm  = Utils.getNoNil( self.vcaMinRpm, self.minRpm )
-	local lastMaxRpm  = Utils.getNoNil( self.vcaMaxRpm, self.maxRpm )
-	local lastFakeRpm = Utils.getNoNil( self.vcaFakeRpm,self.equalizedMotorRpm ) 
-	self.vcaMinRpm    = nil 
-	self.vcaMaxRpm    = nil 
-	self.vcaFakeRpm   = nil
-	local speed       = math.abs( self.vehicle.lastSpeedReal ) *3600
-	local motorPtoRpm = math.min(PowerConsumer.getMaxPtoRpm(self.vehicle)*self.ptoMotorRpmRatio, self.maxRpm)
+	local lastMinRpm   = Utils.getNoNil( self.vcaMinRpm,   self.minRpm )
+	local lastMaxRpm   = Utils.getNoNil( self.vcaMaxRpm,   self.maxRpm )
+	local lastFakeRpm  = Utils.getNoNil( self.vcaFakeRpm,  math.max( self.equalizedMotorRpm, self.minRpm )) 
+	local lastClutchRpm= Utils.getNoNil( self.vcaClutchRpm,math.max( self.equalizedMotorRpm, self.minRpm )) 
+	self.vcaMinRpm     = nil 
+	self.vcaMaxRpm     = nil 
+	self.vcaFakeRpm    = nil
+	self.vcaClutchRpm  = nil 
+	local speed        = math.abs( self.vehicle.lastSpeedReal ) *3600
+	local motorPtoRpm  = math.min(PowerConsumer.getMaxPtoRpm(self.vehicle)*self.ptoMotorRpmRatio, self.maxRpm)
 	
-	if      self.vehicle.vcaForceStopMotor 
+	if      self.vehicle.vcaForceStopMotor ~= nil 
+			and self.vehicle.vcaForceStopMotor > 0		
 			and ( self.vehicle:getIsMotorStarted()
 				 or self.vehicle.vcaNeutral
 				 or self.vehicle.vcaAutoClutch 
 				 or ( self.vehicle.vcaClutchPercent ~= nil and self.vehicle.vcaClutchPercent > 0.5 ) ) then 
-		self.vehicle.vcaForceStopMotor = nil 
+		self.vehicle.vcaForceStopMotor = self.vehicle.vcaForceStopMotor - dt 
+		if self.vehicle.vcaForceStopMotor < 0 then 
+			self.vehicle.vcaForceStopMotor = nil 
+		end 
 	end 
 	
 	if not ( self.vehicle:getIsVehicleControlledByPlayer() 
 			 and ( self.vehicle.vcaTransmission ~= nil	
 					or self.vehicle.vcaNeutral ) ) then 
 		if self.vehicle.vcaClutchDisp ~= nil and self.vehicle.vcaClutchDisp ~= 0 then 
-			self.vehicle:vcaSetState( "vcaClutchDisp", 0 )
+			self.vehicle.vcaClutchDisp = 0
 		end 
 		return superFunc( self, acceleratorPedal, dt )
 	end 
@@ -1740,40 +1792,30 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	end 
 	
 	--****************************************
--- handbrake
+	-- neutral
+	local curAcc      = math.abs( newAcc )
+	local fakeAcc     = curAcc 
+	if self.vehicle.vcaShuttleCtrl and self.vehicle.vcaOldAcc ~= nil then 
+		fakeAcc         =  self.vehicle.vcaOldAcc
+	end
+	local rpmRange    = self.maxRpm - self.minRpm
+	local fakeRpm     = math.max( self.minRpm + fakeAcc * rpmRange, motorPtoRpm )
+	
 	if self.vehicle.vcaNeutral or self.vehicle.vcaClutchPercent >= 1 then 
-		local rpm = math.max( self.minRpm, motorPtoRpm )
-		local acc = math.abs( newAcc )
-		local add = self.maxRpm - self.minRpm
-		newAcc = 0
-				
-		if self.vehicle.vcaShuttleCtrl and self.vehicle.vcaOldAcc ~= nil then 
-			acc =  self.vehicle.vcaOldAcc
-		end
-			
-		if acc > 0 then 
-			rpm = rpm + acc * ( self.maxRpm - rpm )
-		end 
-		
-		if lastFakeRpm == nil then 
-			lastFakeRpm = self.equalizedMotorRpm 
-		end 
-		self.vcaFakeRpm   = vehicleControlAddon.mbClamp( rpm, lastFakeRpm - 0.001 * dt * add, lastFakeRpm + 0.001 * dt * add )		
+		self.vcaFakeRpm   = vehicleControlAddon.mbClamp( fakeRpm, lastFakeRpm - 0.001 * dt * rpmRange, lastFakeRpm + 0.001 * dt * rpmRange )		
 		self.vcaFakeTimer = 500 
 	elseif self.vcaFakeTimer ~= nil then 
 		if lastFakeRpm == nil then
 			self.vcaFakeTimer = nil 
 		else 
-			local add = self.maxRpm - self.minRpm	
-			self.vcaFakeRpm   = vehicleControlAddon.mbClamp( self.equalizedMotorRpm, lastFakeRpm - 0.001 * dt * add, lastFakeRpm + 0.001 * dt * add )	
+			local rpmRange = self.maxRpm - self.minRpm	
+			self.vcaFakeRpm   = vehicleControlAddon.mbClamp( self.equalizedMotorRpm, lastFakeRpm - 0.001 * dt * rpmRange, lastFakeRpm + 0.001 * dt * rpmRange )	
 			self.vcaFakeTimer = self.vcaFakeTimer - dt 
 			if self.vcaFakeTimer <= 0 then 
 				self.vcaFakeTimer = nil 
 			end 
 		end 
 	end 
-	
-	local curAcc      = math.abs( newAcc )
 	
 	local transmission = self.vehicle.vcaGearbox 
 	
@@ -1790,7 +1832,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	--****************************************	
 	-- IVT
 		if self.vehicle.vcaClutchDisp ~= 0 then 
-			self.vehicle:vcaSetState( "vcaClutchDisp", 0 )
+			self.vehiclevcaClutchDisp = 0
 		end 
 	
 		if motorPtoRpm > 0 then 
@@ -1885,7 +1927,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		
 		if     curAcc > 0.1 then 
 			self.vcaAutoStop = false 
-		elseif self.vehicle.vcaNeutral 
+		elseif ( self.vehicle.vcaNeutral and speed < 3 )
 				or ( g_gui:getIsGuiVisible() and self.vehicle.spec_drivable.cruiseControl.state == 0 )
 				or self.vcaAutoStop    == nil 
 				or lastFwd             ~= fwd then 
@@ -1902,10 +1944,9 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	
 		local initGear = transmission:initGears() 
 				
-		if     curAcc > 0.1 then 
+		if     curAcc > 0.1 and not self.vehicle.vcaNeutral then  
 			self.vcaAutoStop = false 
-		elseif self.vehicle.vcaNeutral 
-				or ( g_gui:getIsGuiVisible() and self.vehicle.spec_drivable.cruiseControl.state == 0 )
+		elseif ( g_gui:getIsGuiVisible() and self.vehicle.spec_drivable.cruiseControl.state == 0 )
 		    or self.vcaClutchTimer == nil 
 				or self.vcaAutoStop    == nil 
 				or lastFwd             ~= fwd then 
@@ -1946,7 +1987,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		local wheelRpm  = self.vehicle.lastSpeedReal * 1000 * self.maxRpm / maxSpeed 
 		local clutchRpm = wheelRpm
 		local slip      = 0
-		if self.gearChangeTimer <= 0 and not self.vcaAutoStop then 
+		if self.gearChangeTimer <= 0 and not self.vcaAutoStop and not self.vehicle.vcaNeutral then 
 			clutchRpm = self.differentialRotSpeed * self.minGearRatio * vehicleControlAddon.factor30pi
 			if clutchRpm > 0 or wheelRpm > 0 then 
 				slip = ( clutchRpm - wheelRpm ) / math.max( clutchRpm, wheelRpm )
@@ -2032,7 +2073,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			self.vcaAutoDownTimer = 1000
 		end 
 		
-		local setLaunchGear = ( initGear or lastFwd ~= fwd or self.vehicle.vcaNeutral or self.vcaAutoStop )
+		local setLaunchGear = ( initGear or lastFwd ~= fwd or self.vcaAutoStop )
 		local newGear  = gear 
 		if initGear then 
 			newGear = self.vehicle.vcaLaunchGear
@@ -2136,7 +2177,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		end 
 		
 		self.vehicle:vcaSetState("vcaBOVVolume",0)
-		if not self.vcaAutoStop then 
+		if not self.vcaAutoStop and not self.vehicle.vcaNeutral then 
 			local gearTime  = transmission.changeTimeGears
 			local rangeTime = transmission.changeTimeRanges
 			if gearTime < 1 then	
@@ -2175,8 +2216,8 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 				self.vcaAutoDownTimer = math.max( self.vcaAutoDownTimer, 500  + self.gearChangeTimer )
 			end
 		elseif motorRpm < 0.9 * self.minRpm and not self.vcaAutoStop then 
-			if self.vehicle.vcaAutoClutch then  
-				self.vcaClutchTimer = VCAGlobals.clutchTimer
+			if self.vehicle.vcaAutoShift then  
+				self.vcaClutchTimer = math.min( self.vcaClutchTimer + dt + dt, VCAGlobals.clutchTimer )
 			else 
 				if lastStallTimer == nil then 
 					self.vcaStallTimer = dt
@@ -2184,7 +2225,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 					self.vcaStallTimer = lastStallTimer + dt
 				end 
 				if self.vcaStallTimer > 1000 and motorRpm < 0.5 * self.minRpm then 
-					self.vehicle.vcaForceStopMotor = true
+					self.vehicle.vcaForceStopMotor = 2000
 				end 
 			end 
 		elseif wheelRpm < minRequiredRpm and curBrake > 0 then 
@@ -2224,49 +2265,51 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			self.vcaClutchTimer = 0
 			clutchFactor = self.vehicle.vcaClutchPercent
 		end 
+		self.vehicle.vcaClutchDisp =  clutchFactor
 
-		if self.gearChangeTimer > 0 or self.vcaAutoStop then 
-			if lastFakeRpm == nil then 
-				lastFakeRpm = self.equalizedMotorRpm 
-			end 
-			self.vcaFakeRpm     = vehicleControlAddon.mbClamp( math.max( self.minRpm, motorPtoRpm ), 
-																												lastFakeRpm - 0.001 * dt * ( self.maxRpm - self.minRpm ),
-																												lastFakeRpm + 0.002 * dt * ( self.maxRpm - self.minRpm ) )		
-			self.vcaFakeTimer   = 100 
+		if self.vcaAutoStop or self.vehicle.vcaNeutral or self.vehicle.vcaClutchPercent >= 1 then 
 			newAcc              = 0
-			self.minGearRatio   = 1
-			self.maxGearRatio   = 1000
 			self.vcaClutchTimer = VCAGlobals.clutchTimer
 			self.vcaMinRpm      = 0
-			self.vcaMaxRpm      = self.maxRpm
-			self.vehicle:vcaSetState( "vcaClutchDisp", 1 )
-		elseif clutchFactor > 0 then 
-			self.vcaMinRpm      = clutchFactor * math.max( self.minRpm, motorPtoRpm )
-			self.vcaMaxRpm      = self.maxRpm
-			self.maxGearRatio   = math.max( self.minGearRatio, math.min( 10000, self.minGearRatio / math.max( 1 - clutchFactor, 0.001 ) ) )
-			self.vehicle:vcaSetState( "vcaClutchDisp", clutchFactor )
-		else
+			self.vcaMaxRpm      = 1000000
+		elseif self.gearChangeTimer > 0 then 
+			self.vcaFakeRpm     = vehicleControlAddon.mbClamp( math.max( self.minRpm, motorPtoRpm ), 
+																												lastFakeRpm - 0.001 * dt * rpmRange,
+																												lastFakeRpm + 0.002 * dt * rpmRange )		
+			self.vcaFakeTimer   = 100 
+			newAcc              = 0
+			self.vcaClutchTimer = VCAGlobals.clutchTimer
 			self.vcaMinRpm      = 0
-			self.vcaMaxRpm      = self.maxRpm
-			self.vehicle:vcaSetState( "vcaClutchDisp", 0 )
-		end  
-		
-		if      wheelRpm < self.minRpm
-				and motorRpm < 1.05 * self.minRpm
-				and not ( self.vcaAutoStop ) 
-				and self.gearChangeTimer <= 0
-				and curBrake             <= 0 then 
-			if fwd then 
-				newAcc = 1
-			else 
-				newAcc = -1
-			end 
+			self.vcaMaxRpm      = 1000000
+		else
+			if clutchFactor > 0 then 
+			-- target RPM for clutch: at least wheelRpm so the vehicle does not brake
+														--  PTO rpm 
+														--  fakeRpm but not more than 20%
+				self.vcaClutchRpm   = vehicleControlAddon.mbClamp(math.max( wheelRpm, motorPtoRpm, math.min( fakeRpm, self.minRpm + 0.2 * rpmRange ) ), 
+																													lastClutchRpm - 0.001 * dt * rpmRange, lastClutchRpm + 0.002 * dt * rpmRange )
+				-- open the RPM range as maxGearRatio decreases																									
+				self.vcaMinRpm      = clutchFactor * self.vcaClutchRpm
+				self.vcaMaxRpm      = self.vcaClutchRpm + clutchFactor * math.max( self.maxRpm - self.vcaClutchRpm, 0 )
+				self.maxGearRatio   = math.max( self.minGearRatio, math.min( 10000, self.minGearRatio / math.max( 1 - clutchFactor, 0.0001 ) ) )
+			else
+				self.vcaMinRpm      = 0
+				self.vcaMaxRpm      = self.maxRpm
+			end  
+
+			if curBrake <= 0 and wheelRpm < self.minRpm and motorRpm < 1.05 * self.minRpm then 
+				if fwd then 
+					newAcc = 1
+				else 
+					newAcc = -1
+				end 
+			end 		
+	
+			if motorPtoRpm > 0 and self.vcaMaxRpm > motorPtoRpm then 
+				self.vcaMaxRpm = motorPtoRpm
+			end 		
 		end 		
 		
-		
-		if motorPtoRpm > 0 and self.vcaMaxRpm > motorPtoRpm then 
-			self.vcaMaxRpm = motorPtoRpm
-		end 
 		
 		if not fwd then 
 			self.minGearRatio = -self.minGearRatio
@@ -2300,25 +2343,22 @@ function vehicleControlAddon:vcaGetMaxClutchTorque( superFunc, ... )
 	if not ( self.vehicle:getIsVehicleControlledByPlayer() and self.vehicle.vcaTransmission ~= nil and self.vehicle.vcaTransmission > 0 ) then 
 		return superFunc( self, ... )
 	end 
-	if self.vehicle.vcaNeutral then 
+	if self.vehicle.vcaNeutral or self.gearChangeTimer > 0 or self.vehicle.vcaClutchDisp >= 1 then 
 		return 0
 	end 
 	
 	local c = 1
-	if self.vehicle.vcaTransmission > 1 and self.gearRatio > self.minGearRatio then 
-	--c = 1 - ( self.gearRatio - self.minGearRatio ) / ( self.maxForwardGearRatio - self.minGearRatio )
-		c = self.minGearRatio / self.gearRatio
+	if self.vehicle.vcaTransmission > 1 then 
+		c = 1 - self.vehicle.vcaClutchDisp
 	end 
 	
-	self.vehicle.vcaDebugC = string.format( "%3.0f%%", c * 100 )
-		
 	return math.min( self:getPeakTorque() * 0.75 * ( 1 - math.cos( math.pi * c ) ), superFunc( self, ... ) )
 end 
 
 VehicleMotor.getMaxClutchTorque = Utils.overwrittenFunction( VehicleMotor.getMaxClutchTorque, vehicleControlAddon.vcaGetMaxClutchTorque )
 
 function vehicleControlAddon:vcaGetCanMotorRun( superFunc, ... )
-	if self.vcaForceStopMotor then 
+	if self.vcaForceStopMotor ~= nil and self.vcaForceStopMotor > 0 then 
 		return false 
 	end 
 	return superFunc( self, ... )
