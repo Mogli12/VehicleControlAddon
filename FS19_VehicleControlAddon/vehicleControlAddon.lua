@@ -1742,12 +1742,13 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 		self.spec_lights = nil
 	end 
 	
-	if      math.abs( acceleration ) < 0.001 
+	if  		self:getIsMotorStarted()
+			and math.abs( acceleration ) < 0.001 
 			and not doHandbrake
 			and self.vcaTransmission ~= nil 
-			and ( self.vcaNeutral 
-				 or self.vcaClutchDisp > 0.2 
-				 or self.spec_motorized.motor.motorRotSpeed * vehicleControlAddon.factor30pi < self.spec_motorized.motor.minRpm ) then 
+			and ( ( self.vcaNeutral and currentSpeed * 3600 > 1 )
+				 or ( self.vcaTransmission == 1 and not self.spec_motorized.motor.vcaAutoStop and currentSpeed * 1000 < 1 )
+				 or ( self.spec_motorized.motor.vcaIdleAcc ~= nil and self.spec_motorized.motor.vcaIdleAcc > 0 ) ) then 
 		if self.vcaShuttleCtrl then 
 			acceleration = 0.002 
 		elseif self.movingDirection * self.spec_drivable.reverserDirection < 0 then 
@@ -1896,7 +1897,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	
 	local transmission = self.vehicle.vcaGearbox 
 	
-	if transmission == nil or not self.vehicle:getIsMotorStarted() or dt < 0 then 
+	if not self.vehicle:getIsMotorStarted() or dt < 0 then 
 		self.vcaClutchTimer   = nil
 		self.vcaAutoDownTimer = nil
 		self.vcaAutoUpTimer   = nil
