@@ -4,11 +4,13 @@
 	<description><![CDATA[Добавляет специализацию для адаптивного рулевого управления с клавиатуры]]></description>
 
 	<texts>
-		<text name="vcaCAMERA"              text="Подруливание камеры"/>
+		<text name="vcaCAMERAI"             text="Подруливание внутренней камеры"/>
+		<text name="vcaCAMERAO"             text="Подруливание внешней камеры"/>
 		<text name="vcaEXPONENT"            text="Чувствительность к скорости"/>
 		<text name="vcaSTEERING"            text="Адаптивное рулевое управление"/>
 		<text name="vcaSHUTTLE"             text="Изменение направления"/>
-		<text name="vcaREVERSE"             text="Автооборачивание при реверсе"/>
+		<text name="vcaREVERSEI"            text="Автооборачивание (внутренняя)"/>
+		<text name="vcaREVERSEO"            text="Автооборачивание (внешняя)"/>
 		<text name="vcaLIMIT"               text="Ограничитель газа"/>
 		<text name="vcaPEEKLR"              text="Быстрый взгляд в сторону"/>
 		<text name="vcaANGLE"               text="Привязка к сетке"/>
@@ -21,14 +23,16 @@
 		<text name="vcaKEEPSPEED"           text="Удерживать скорость"/>
 		<text name="vcaSETTINGS"            text="VCA: Настройки"/>
 
-		<text name="vca_tip_CAMERA"         text="Камера автоматически поворачивается в соответствии с углом поворота рулевого колеса"/>
+		<text name="vca_tip_CAMERAI"        text="Внутренняя камера автоматически поворачивается в соответствии с углом поворота рулевого колеса"/>
+		<text name="vca_tip_CAMERAO"        text="Внешняя камера автоматически поворачивается в соответствии с углом поворота рулевого колеса"/>
 		<text name="vca_tip_EXPONENT"       text="Зависимость скорости рулевого управления от скорости движения"/>
 		<text name="vca_tip_STEERING"       text="Адаптивное рулевое управление изменяет скорость возврата и максимальный угол поворота в зависимости от скорости"/>
-		<text name="vca_tip_SHUTTLE"        text="Изменить направление с помощью пробела"/>
-		<text name="vca_tip_REVERSE"        text="При изменении направления движения камера автоматически поворачивается на 180°"/>
+		<text name="vca_tip_SHUTTLE"        text="Изменять направление вперёд/назад с помощью клавиши Пробел"/>
+		<text name="vca_tip_REVERSEI"       text="При изменении направления движения вперёд/назад внутренняя камера автоматически разворачивается на 180°"/>
+		<text name="vca_tip_REVERSEO"       text="При изменении направления движения вперёд/назад внешняя камера автоматически разворачивается на 180°"/>
 		<text name="vca_tip_LIMIT"          text="Ограничивает педаль газа при нажатии Left-Shift"/>
 		<text name="vca_tip_PEEKLR"         text="Взглянуть по клавише Right-Shift + стрелка в сторону"/>
-		<text name="vca_tip_ANGLE"          text="Выравнивание движения техники по заданному направлению"/>
+		<text name="vca_tip_ANGLE"          text="Выравнивание направления движения техники по заданному направлению"/>
 		<text name="vca_tip_BRAKE"          text="Уменьшение уровня сопротивления качению (%)"/>
 		<text name="vca_tip_TRANSMISSION"   text="Тип коробки передач: IVT - бесступенчатая коробка передач, остальные передачи имеют 12 передач, 2x6 лучше всего подходит для грузовых автомобилей."/>
 		<text name="vca_tip_MAXSPEED"       text="Максимальная скорость, которая может быть достигнута на высшей передаче"/>
@@ -46,6 +50,7 @@
 		<text name="input_vcaFORWARD"       text="VCA: Направление движения вперед"/>
 		<text name="input_vcaREVERSE"       text="VCA: Направление движения назад"/>
 		<text name="input_vcaSNAP"          text="VCA: Выровнять направление по сетке"/>
+		<text name="input_vcaSNAPRESET"     text="VCA: Сбросить выравнивание направление по сетке"/>
 		<text name="input_vcaNO_ARB"        text="VCA: Без автоповорота камеры назад"/>
 		<text name="input_vcaINCHING"       text="VCA: Сцепление"/>
 		<text name="input_vcaKEEPSPEED"     text="VCA: Удерживать скорость"/>
@@ -55,7 +60,7 @@
 		<text name="input_vcaRangeUp"       text="VCA: Диапазон вверх"/>
 		<text name="input_vcaRangeDown"     text="VCA: Диапазон вниз"/>
 		<text name="input_vcaNeutral"       text="VCA: Нейтральная вкл/выкл"/>
-		<text name="input_vcaClutchKey"     text="VCA: Одинарный выжим"/>
+		<text name="input_vcaClutch"        text="VCA: Одинарный выжим"/>
 		<text name="input_vcaShifter1"      text="VCA: G27/G29 Передача 1"/>
 		<text name="input_vcaShifter2"      text="VCA: G27/G29 Передача 2"/>
 		<text name="input_vcaShifter3"      text="VCA: G27/G29 Передача 3"/>
@@ -63,6 +68,7 @@
 		<text name="input_vcaShifter5"      text="VCA: G27/G29 Передача 5 / Диапазон вверх"/>
 		<text name="input_vcaShifter6"      text="VCA: G27/G29 Передача 6 / Диапазон вниз"/>
 		<text name="input_vcaShifter7"      text="VCA: G27/G29 ЗХ"/>
+		<text name="input_vcaShifterLH"     text="VCA: G27/G29 делитель"/>
 	</texts>
 	
 	<longTexts>
