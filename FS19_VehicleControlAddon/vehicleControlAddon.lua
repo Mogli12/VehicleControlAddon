@@ -2022,13 +2022,15 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	
 		local initGear = transmission:initGears() 
 				
-		if     curAcc > 0.1 and not self.vehicle.vcaNeutral then  
-			self.vcaAutoStop = false 
-		elseif ( g_gui:getIsGuiVisible() and self.vehicle.spec_drivable.cruiseControl.state == 0 )
+		if     ( g_gui:getIsGuiVisible() and self.vehicle.spec_drivable.cruiseControl.state == 0 )
 		    or self.vcaClutchTimer == nil 
 				or self.vcaAutoStop    == nil 
-				or lastFwd             ~= fwd then 
+				or lastFwd             ~= fwd
+				or ( fwd and self.vehicle.movingDirection < 0 )
+				or ( not fwd and self.vehicle.movingDirection > 0 ) then 
 			self.vcaAutoStop = true
+		elseif curAcc > 0.1 and not self.vehicle.vcaNeutral then  
+			self.vcaAutoStop = false 
 		elseif  motorRpm < 0.9 * self.minRpm 
 				and curBrake > 0.1 
 				and ( self.vehicle.vcaAutoClutch
@@ -2406,7 +2408,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 				self.vcaFakeTimer = 10
 			end 
 	
-			if motorPtoRpm > 0 and self.vcaMaxRpm > motorPtoRpm then 
+			if not self.vehicle.vcaAutoShift and motorPtoRpm > 0 and self.vcaMaxRpm > motorPtoRpm then 
 				self.vcaMaxRpm = motorPtoRpm
 			end 		
 		end 		
