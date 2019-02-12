@@ -12,11 +12,13 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 	</description>
 
 	<texts>
-		<text name="vcaCAMERA"          text="Obrót kamery"/>
+		<text name="vcaCAMERAI"         text="Obrót kamery wewnętrznej"/>
+		<text name="vcaCAMERAO"         text="Obrót kamery zewnętrznej"/>
 		<text name="vcaEXPONENT"        text="Czułość"/>
 		<text name="vcaSTEERING"        text="Sterowanie adaptacyjne"/>
 		<text name="vcaSHUTTLE"         text="Rewers"/>
-		<text name="vcaREVERSE"         text="Widok do tyłu"/>
+		<text name="vcaREVERSEI"        text="Widok do tyłu (wewnątrz)"/>
+		<text name="vcaREVERSEO"        text="Widok do tyłu (na zewnątrz)"/>
 		<text name="vcaLIMIT"           text="Tempomat"/>
 		<text name="vcaPEEKLR"          text="Zerknięcie w bok"/>
 		<text name="vcaANGLE"           text="Przeskok kątu wyrównania"/>
@@ -28,12 +30,14 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vcaLAUNCH"          text="Załączony bieg"/>
 		<text name="vcaKEEPSPEED"       text="Stała prędkość tempomatu"/>
 		<text name="vcaSETTINGS"        text="Ustawienia"/>
-		                                
-		<text name="vca_tip_CAMERA"     text="Kamera obraca się automatycznie zgodnie z kątem skrętu"/>
+
+		<text name="vca_tip_CAMERAI"    text="Kamera wewnętrzna obraca się automatycznie zgodnie z kątem skrętu"/>
+		<text name="vca_tip_CAMERAO"    text="Kamera zewnętrzna obraca się automatycznie zgodnie z kątem skrętu"/>
 		<text name="vca_tip_EXPONENT"   text="Czułość sterowania adaptacyjnego w odniesieniu do prędkości jazdy"/>
 		<text name="vca_tip_STEERING"   text="Sterowanie adaptacyjne automatycznie dostosowuje centrowanie kół i maksymalny kąt skrętu"/>
 		<text name="vca_tip_SHUTTLE"    text="Zmiana kierunku jazdy (Spacja)"/>
-		<text name="vca_tip_REVERSE"    text="Przy zmianie kierunku jazdy do tyłu, kamera zostaje obrócona o 180°"/>		
+		<text name="vca_tip_REVERSEI"   text="Przy zmianie kierunku jazdy do tyłu, kamera wewnętrzna zostaje obrócona o 180°"/>
+		<text name="vca_tip_REVERSEO"   text="Przy zmianie kierunku jazdy do tyłu, kamera zewnętrzna zostaje obrócona o 180°"/>
 		<text name="vca_tip_LIMIT"      text="Kontrola prędkości tempomatu (bez/z Lewy Shift)"/>
 		<text name="vca_tip_PEEKLR"     text="Zerknij się szybko w bok (Prawy Shift + strzałki w bok)"/>
 		<text name="vca_tip_ANGLE"      text="Najnowsza funkcja"/>
@@ -44,7 +48,7 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vca_tip_AUTOSHIFT"  text="Automatyczna zmiana biegów i zakresów"/>
 		<text name="vca_tip_LAUNCH"     text="Prędkość znamionowa włączenia biegu"/>
 		<text name="vca_tip_KEEPSPEED"  text="Jeśli włączona jest stała prędkość tempomatu, pedał przyspieszenia zachowuje się jak joystick. Podobnie jak jazda z tempomatem."/>
-		                               
+
 		<text name="input_vcaSETTINGS"  text="VCA: Ustawienia"/>
 		<text name="input_vcaUP"        text="VCA: Zmiana widok / Widok w przód"/>
 		<text name="input_vcaDOWN"      text="VCA: Zmiana zerknięcia / Widok w tył"/>
