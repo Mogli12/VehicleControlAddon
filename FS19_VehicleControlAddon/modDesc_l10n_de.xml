@@ -51,7 +51,7 @@
 		<text name="input_vcaFORWARD"   text="VCA: Fahrtrichtung vorwärts"/>
 		<text name="input_vcaREVERSE"   text="VCA: Fahrtrichtung rückwärts"/>
 		<text name="input_vcaSNAP"      text="VCA: Fahrtrichtung am Raster ausrichten"/>
-		<text name="input_vcaSNAPRESET" text="VCA: Fahrtrichtung neu am Raster ausrichten"/>
+		<text name="input_vcaSNAPRESET" text="VCA: Fahrtrichtung nicht am Raster ausrichten"/>
 		<text name="input_vcaNO_ARB"    text="VCA: Kein zurück Lenken"/>
 		<text name="input_vcaINCHING"   text="VCA: Langsamer"/>
 		<text name="input_vcaKEEPSPEED" text="VCA: Geschwindigkeit halten"/>

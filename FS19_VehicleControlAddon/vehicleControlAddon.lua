@@ -273,6 +273,7 @@ function vehicleControlAddon:onLoad(savegame)
 	vehicleControlAddon.registerState( self, "vcaLastSnapAngle",10 ) -- value should be between -pi and pi !!!
 	vehicleControlAddon.registerState( self, "vcaLastSnapPosX", 0 )
 	vehicleControlAddon.registerState( self, "vcaLastSnapPosZ", 0 )
+	vehicleControlAddon.registerState( self, "vcaIsEnteredMP",  false )
 	
 	self.vcaFactor        = 1
 	self.vcaReverseTimer  = 1.5 / VCAGlobals.timer4Reverse
@@ -282,6 +283,7 @@ function vehicleControlAddon:onLoad(savegame)
 	self.vcaShifter7isR1  = nil 
 	self.vcaGearbox       = nil
 	self.vcaTickDt        = 0
+	self.vcaIsEntered     = false
 
 	self.vcaClutchPercent = 0
 	self.vcaClutchPercentS= 0
@@ -632,14 +634,12 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 		self.vcaShifter7isR1 = false 
 		self:vcaSetState( "vcaShuttleFwd", false )
 	elseif actionName == "vcaSNAPRESET" then
-		if not ( self.vcaSnapIsOn ) then 
-			self:vcaSetState( "vcaLastSnapAngle", 10 )
-			self:vcaSetState( "vcaLastSnapPosX", 0 )
-			self:vcaSetState( "vcaLastSnapPosZ", 0 )
-		end 
-		self:vcaSetState( "vcaSnapIsOn", not self.vcaSnapIsOn )
+		self:vcaSetState( "vcaLastSnapAngle", 10 )
+		self:vcaSetState( "vcaLastSnapPosX", 0 )
+		self:vcaSetState( "vcaLastSnapPosZ", 0 )
+		self:vcaSetState( "vcaSnapIsOn", false )
 	elseif actionName == "vcaSNAP" then
-		self:vcaSetState( "vcaSnapIsOn", true )
+		self:vcaSetState( "vcaSnapIsOn", not self.vcaSnapIsOn )
  	elseif actionName == "vcaNeutral" then
 		if self.vcaNeutral and self.vcaShifterIndex > 0 then 
 			self:vcaSetState( "vcaShifterIndex", 0 )
@@ -658,6 +658,8 @@ function vehicleControlAddon:onLeaveVehicle()
 	self:vcaSetState( "vcaSnapIsOn", false )
 	self:vcaSetState( "vcaShifterIndex", 0 )
 	self:vcaSetState( "vcaKSIsOn", self.vcaKSToggle )
+	self:vcaSetState( "vcaIsEnteredMP", false )
+	self.vcaIsEntered = false 
 end 
 
 function vehicleControlAddon:vcaIsActive()
@@ -716,11 +718,18 @@ function vehicleControlAddon:onUpdate(dt)
 					vehicleControlAddon.debugPrint( prop.propName.." of "..self.vcaControllerName..": "..tostring( self[prop.propName]) .." ("..tostring(self.vcaUserSettings[self.vcaControllerName][prop.propName])..")")
 				end 
 			end 
-			if self.isClient and self.isEntered then 
+			if self.isClient and self:getIsEntered() then 
 				self.vcaUserSettings[self.vcaControllerName].isMain = true 
 			end 
 		end 
 	end 
+	
+	if self.isClient and self:getIsControlled() and self:getIsEntered() then 
+		self.vcaIsEntered = not g_gui:getIsGuiVisible()
+		self:vcaSetState( "vcaIsEnteredMP", self.vcaIsEntered or self.spec_drivable.cruiseControl.state == 1 )
+	else 
+		self.vcaIsEntered = false 
+	end 	
 
 	local newRotCursorKey = self.vcaNewRotCursorKey
 	local i               = self.spec_enterable.camIndex
@@ -822,7 +831,7 @@ function vehicleControlAddon:onUpdate(dt)
 		self.vcaAutoRotateBackSpeed   = nil 
 	end 
 	
-	if self.vcaInchingIsOn and self:vcaIsActive() and not g_gui:getIsGuiVisible() and self.spec_drivable.cruiseControl.state == 1 then
+	if self.vcaInchingIsOn and self.vcaIsEntered and self.spec_drivable.cruiseControl.state == 1 then
 		local limitThrottleRatio     = 0.75
 		if self.vcaLimitThrottle < 11 then
 			limitThrottleRatio     = 0.45 + 0.05 * self.vcaLimitThrottle
@@ -883,7 +892,7 @@ function vehicleControlAddon:onUpdate(dt)
 	self.vcaAxisSideLast     = nil
 	self.vcaSnapAngleTimer   = nil
 	
-	if self.isClient and self.vcaSnapIsOn and self:vcaIsActive() and not g_gui:getIsGuiVisible() then 
+	if self.vcaSnapIsOn and self.vcaIsEntered then 
 		local lx, lz 
 		if self.vcaMovingDir < 0 then 
 			lx,_,lz = localDirectionToWorld( self.components[1].node, 0, 0, -1 )	
@@ -989,7 +998,7 @@ function vehicleControlAddon:onUpdate(dt)
 	
 	--*******************************************************************
 	-- Keep Speed 
-	if self.isClient and self.vcaKSIsOn and self:vcaIsActive() and not g_gui:getIsGuiVisible() then
+	if self.vcaKSIsOn and self.vcaIsEntered then
 		if self.spec_drivable.cruiseControl.state > 0 then 
 			self:vcaSetState( "vcaKeepSpeed", self.lastSpeed * 3600 * self.movingDirection  )
 		elseif math.abs( self.spec_drivable.axisForward ) > 0.01 then 
@@ -1356,7 +1365,7 @@ function vehicleControlAddon:onUpdate(dt)
 end  
 
 function vehicleControlAddon:onDraw()
-	if self:vcaIsActive() and not g_gui:getIsGuiVisible() then
+	if self.vcaIsEntered then
 		local x = g_currentMission.inGameMenu.hud.speedMeter.gaugeCenterX
 		local y = g_currentMission.inGameMenu.hud.speedMeter.gaugeCenterY + g_currentMission.inGameMenu.hud.speedMeter.fuelGaugeRadiusY * 1.6
 		local l = 0.025 * vehicleControlAddon.getUiScale()
@@ -1693,7 +1702,7 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 			if not self:getIsMotorStarted() then 
 				acceleration = 0
 				doHandbrake  = true 
-			elseif g_gui:getIsGuiVisible() and self.spec_drivable.cruiseControl.state == 0 then 
+			elseif not self.vcaIsEnteredMP then 
 				acceleration = 0
 				doHandbrake  = true 
 			elseif acceleration < -0.01 then 
@@ -1864,7 +1873,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			speed = -speed 
 		end 
 	end 
-	if g_gui:getIsGuiVisible() and self.vehicle.spec_drivable.cruiseControl.state == 0 then 
+	if not self.vehicle.vcaIsEnteredMP then 
 		newAcc = 0
 	end 
 	
@@ -2006,7 +2015,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		if     curAcc > 0.1 then 
 			self.vcaAutoStop = false 
 		elseif ( self.vehicle.vcaNeutral and speed < 3 )
-				or ( g_gui:getIsGuiVisible() and self.vehicle.spec_drivable.cruiseControl.state == 0 )
+				or not self.vehicle.vcaIsEnteredMP
 				or self.vcaAutoStop    == nil 
 				or lastFwd             ~= fwd then 
 			self.vcaAutoStop = true
@@ -2022,7 +2031,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	
 		local initGear = transmission:initGears() 
 				
-		if     ( g_gui:getIsGuiVisible() and self.vehicle.spec_drivable.cruiseControl.state == 0 )
+		if     not self.vehicle.vcaIsEnteredMP
 		    or self.vcaClutchTimer == nil 
 				or self.vcaAutoStop    == nil 
 				or lastFwd             ~= fwd
@@ -2732,7 +2741,7 @@ function vehicleControlAddon:vcaShowSettingsUI()
 	self.vcaUI.vcaSnapDistance   = {}
 	for i,v in pairs( { 2, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 
 											3, 3.1, 3.2, 3.4, 3.6, 3.8, 4, 4.2, 4.5, 4.8, 
-											5, 5.5, 6, 7, 7.5, 9, 12, 13.5, 15, 18, 24, 30 } ) do
+											5, 5.5, 6, 7, 7.5, 9, 12, 13.5, 15, 18, 24, 30, 36, 40, 48 } ) do
 		self.vcaUI.vcaSnapDistance_V[i] = v
 		self.vcaUI.vcaSnapDistance[i]   = string.format( "%4.1fm",v )
 	end 
