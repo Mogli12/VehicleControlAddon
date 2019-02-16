@@ -2046,7 +2046,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			self.vcaAutoStop = true
 		elseif curAcc > 0.1 and not self.vehicle.vcaNeutral then  
 			self.vcaAutoStop = false 
-		elseif  motorRpm < 0.9 * self.minRpm 
+		elseif  ( motorRpm < 0.9 * self.minRpm or speed < 2 ) 
 				and curBrake > 0.1 
 				and ( self.vehicle.vcaAutoClutch
 					 or self.vehicle.vcaAutoShift
