@@ -1745,10 +1745,10 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 	
 	self.vcaNewAcc       = acceleration
 	self.vcaNewHandbrake = doHandbrake
-	stopAndGoBraking = true 
 	
 	if self.vcaShuttleCtrl then 
-		self.spec_lights = nil
+		self.spec_lights   = nil
+		stopAndGoBraking   = true 
 	end 
 	
 	if  		self:getIsMotorStarted()
@@ -1839,7 +1839,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		end 
 		return superFunc( self, acceleratorPedal, dt )
 	end 
-
+	
 	local fwd, curBrake
 	local lastFwd  = Utils.getNoNil( self.vcaLastFwd )
 	if self.vehicle.vcaShuttleCtrl then 
@@ -1851,6 +1851,12 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	elseif acceleratorPedal > 0 then 
 		fwd      = true 
 		curBrake = 0
+	elseif self.vehicle.nextMovingDirection < 0 then 
+		fwd      = false 
+		curBrake = 1
+	elseif self.vehicle.nextMovingDirection > 0 then 
+		fwd      = true 
+		curBrake = 1
 	else
 		fwd      = lastFwd
 		curBrake = Utils.getNoNil( self.vcaLastRealBrake, 0 )
