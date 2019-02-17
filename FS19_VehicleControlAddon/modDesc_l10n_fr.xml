@@ -4,26 +4,43 @@
 	<description><![CDATA[Ajoute la spécialisation pour la conduite adaptative au clavier]]></description>
 
 	<texts>
-		<text name="vcaCAMERA"          text="Mouvement de caméra"/>
+		<text name="vcaCAMERAI"         text="Mouvements de caméra interne"/>
+		<text name="vcaCAMERAO"         text="Mouvements de caméra externe"/>
 		<text name="vcaEXPONENT"        text="Adaptation à la vitesse"/>
 		<text name="vcaSTEERING"        text="Direction adaptative"/>
 		<text name="vcaSHUTTLE"         text="Shuttle Control"/>
 		<text name="vcaREVERSE"         text="Caméra de recul"/>
+		<text name="vcaREVERSEI"        text="Caméra de recul intérieure"/>
+		<text name="vcaREVERSEO"        text="Caméra de recul extérieure"/>
 		<text name="vcaLIMIT"           text="Limitateur de vitesse"/>
 		<text name="vcaPEEKLR"          text="Coup d'oeil rapide"/>
 		<text name="vcaANGLE"           text="Pas de verrouillage de la direction"/>
 		<text name="vcaBRAKE"           text="Réduction puissance de freinage"/>
+		<text name="vcaTRANSMISSION"    text="Transmission"/>
+		<text name="vcaMAXSPEED"        text="Vitesse d'avancement maximale"/>
+		<text name="vcaLIMSPEED"        text="Limiter la vitesse maximale"/>
+		<text name="vcaAUTOSHIFT"       text="Automatique"/>
+		<text name="vcaLAUNCH"          text="Vitesse de départ"/>
+		<text name="vcaKEEPSPEED" 		text="Conserver la vitesse d'avancement"/>
 		<text name="vcaSETTINGS"        text="Paramétrage"/>
 		                                
-		<text name="vca_tip_CAMERA"     text="La caméra tourne automatiquement en fonction de l'angle de direction."/>
+		<text name="vca_tip_CAMERAI"    text="La caméra intérieure tourne automatiquement en fonction de l'angle de direction."/>
+		<text name="vca_tip_CAMERAO"    text="La caméra extérieure tourne automatiquement en fonction de l'angle de direction."/>
 		<text name="vca_tip_EXPONENT"   text="Adaptation de la direction en fonction de la vitesse."/>
 		<text name="vca_tip_STEERING"   text="La direction adaptative modifie l'angle et la vitesse de retour de la direction en fonction de la vitesse d'avancement."/>
 		<text name="vca_tip_SHUTTLE"    text="Modifier le sens d'avancement avec la touche 'Espace'."/>
-		<text name="vca_tip_REVERSE"    text="La caméra tourne automatiquement en fonction du sens d'avancement."/>
-		<text name="vca_tip_LIMIT"      text="Limitateur de vitesse d'avancement avec la touche 'Shift' gauche."/>
+		<text name="vca_tip_REVERSEI"   text="La caméra intérieure tourne automatiquement en fonction du sens d'avancement."/>
+		<text name="vca_tip_REVERSEO"   text="La caméra extérieure tourne automatiquement en fonction du sens d'avancement."/>
+		<text name="vca_tip_LIMIT"      text="Limiteur de vitesse d'avancement avec la touche 'Shift' gauche."/>
 		<text name="vca_tip_PEEKLR"     text="'Shift' droit et les flèches de direction permettent de jeter un coup d'oeil dans la direction choisie."/>
-		<text name="vca_tip_ANGLE"      text="Verrouille la direction sur l'orientation choisie en fonction du pas sélectionné."/>
-		<text name="vca_tip_BRAKE"      text="Réduction puissance de freinage en % / Résistance au roulement"/>
+		<text name="vca_tip_ANGLE"      text="Verrouille la direction dans la position actuelle (en fonction du pas sélectionné)."/>
+		<text name="vca_tip_BRAKE"      text="Réduction de la puissance de freinage en % / Résistance au roulement"/>
+		<text name="vca_tip_TRANSMISSION" text="Type de transmission ; IVT en une transmission variation continue, les autres transmissions ont 12 vitesses, 2x6 est la plus appropriée pour les camions"/>
+		<text name="vca_tip_MAXSPEED"   text="Vitesse d'avancement maximale pouvant être atteinte avec la plus grande vitesse"/>
+		<text name="vca_tip_LIMSPEED"   text="Limitation de la vitesse d'avancement maximale à la valeur standard du véhicule"/>
+		<text name="vca_tip_AUTOSHIFT"  text="Passage automatique des vitesses et des groupes"/>
+		<text name="vca_tip_LAUNCH"     text="Vitesse d'avancement de la vitesse utilisée pour démarrer"/>
+		<text name="vca_tip_KEEPSPEED"	text="En cas d'acvitation, le véhicule roulera la plupart du temps avec le régulateur de vitesse"/>
 		                                
 		<text name="input_vcaSETTINGS"  text="VCA: Paramétrage"/>
 		<text name="input_vcaUP"        text="VCA: Basculer entre vue avant et arrière"/>
@@ -34,8 +51,26 @@
 		<text name="input_vcaFORWARD"   text="VCA: Marche avant"/>
 		<text name="input_vcaREVERSE"   text="VCA: Marche arrière"/>
 		<text name="input_vcaSNAP"      text="VCA: Verrouiller la direction"/>
+		<text name="input_vcaSNAPRESET" text="VCA: Ne pas verrouiller la direction"/>
 		<text name="input_vcaNO_ARB"    text="VCA: Retour autom. de la direction"/>
 		<text name="input_vcaINCHING"   text="VCA: Limitateur de vitesse"/>
+		<text name="input_vcaKEEPSPEED" text="VCA: Régulateur de vitesse"/>
+		<text name="input_vcaSWAPSPEED" text="VCA: Modifier vitesse du régulateur"/>
+		<text name="input_vcaGearUp"    text="VCA: Vitesse supérieure"/>
+		<text name="input_vcaGearDown"  text="VCA: Vitesse inférieure"/>
+		<text name="input_vcaRangeUp"   text="VCA: Groupe supérieur"/>
+		<text name="input_vcaRangeDown" text="VCA: Groupe inférieur"/>
+		<text name="input_vcaNeutral"   text="VCA: Point mort"/>
+		<text name="input_vcaClutch"    text="VCA: Embrayage"/>
+		<text name="input_vcaShifter1"  text="VCA: G27/G29 Vitesse 1"/>
+		<text name="input_vcaShifter2"  text="VCA: G27/G29 Vitesse 2"/>
+		<text name="input_vcaShifter3"  text="VCA: G27/G29 Vitesse 3"/>
+		<text name="input_vcaShifter4"  text="VCA: G27/G29 Vitesse 4"/>
+		<text name="input_vcaShifter5"  text="VCA: G27/G29 Vitesse 5 / Groupe inférieur"/>
+		<text name="input_vcaShifter6"  text="VCA: G27/G29 Vitesse 6 / Groupe supérieur"/>
+		<text name="input_vcaShifter7"  text="VCA: G27/G29 Marche arrière"/>
+		<text name="input_vcaShifterLH" text="VCA: G27/G29 Gear Splitter"/>
+
 	</texts>   
 
 	<longTexts>
