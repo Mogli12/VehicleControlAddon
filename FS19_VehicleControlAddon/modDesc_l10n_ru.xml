@@ -50,7 +50,7 @@
 		<text name="input_vcaFORWARD"       text="VCA: Направление движения вперед"/>
 		<text name="input_vcaREVERSE"       text="VCA: Направление движения назад"/>
 		<text name="input_vcaSNAP"          text="VCA: Выровнять направление по сетке"/>
-		<text name="input_vcaSNAPRESET"     text="VCA: Сбросить выравнивание направление по сетке"/>
+		<text name="input_vcaSNAPRESET"     text="VCA: Отменить выравнивание направления по сетке"/>
 		<text name="input_vcaNO_ARB"        text="VCA: Без автоповорота камеры назад"/>
 		<text name="input_vcaINCHING"       text="VCA: Сцепление"/>
 		<text name="input_vcaKEEPSPEED"     text="VCA: Удерживать скорость"/>
