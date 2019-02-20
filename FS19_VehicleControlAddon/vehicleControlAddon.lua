@@ -189,7 +189,7 @@ function vehicleControlAddon:vcaExternalGetHudPosition()
 		return 0, 0, 0, 0
 	end 
 	
-	local l = 0.025 * vehicleControlAddon.getUiScale()
+	local l = getCorrectTextSize(0.02)
 
 	-- since we use align center it is hard to estimate the correct size
 	-- let's assume that it is 10 characters wide and 3.6 characters high	
@@ -274,6 +274,7 @@ function vehicleControlAddon:onLoad(savegame)
 	vehicleControlAddon.registerState( self, "vcaLastSnapPosX", 0 )
 	vehicleControlAddon.registerState( self, "vcaLastSnapPosZ", 0 )
 	vehicleControlAddon.registerState( self, "vcaIsEnteredMP",  false )
+	vehicleControlAddon.registerState( self, "vcaSnapDraw",     1 )
 	
 	self.vcaFactor        = 1
 	self.vcaReverseTimer  = 1.5 / VCAGlobals.timer4Reverse
@@ -959,7 +960,7 @@ function vehicleControlAddon:onUpdate(dt)
 				dist = dist + self.vcaSnapDistance
 			end 
 			
-			local alpha = math.asin( vehicleControlAddon.mbClamp( 0.15 * dist, -1, 1 ) )
+			local alpha = math.asin( vehicleControlAddon.mbClamp( 0.15 * dist, -0.851, 0.851 ) )
 		--vehicleControlAddon.debugPrint(math.deg( diffR ).."°; "..tostring(dist).." => "..math.deg( alpha ).."°")	
 			
 			diffR = diffR + alpha
@@ -1374,14 +1375,16 @@ function vehicleControlAddon:onUpdate(dt)
 end  
 
 function vehicleControlAddon:onDraw()
+
 	if self.vcaIsEntered then
 		local x = g_currentMission.inGameMenu.hud.speedMeter.gaugeCenterX
 		local y = g_currentMission.inGameMenu.hud.speedMeter.gaugeCenterY + g_currentMission.inGameMenu.hud.speedMeter.fuelGaugeRadiusY * 1.6
-		local l = 0.025 * vehicleControlAddon.getUiScale()
+		local l = getCorrectTextSize(0.02)
 		
 		setTextAlignment( RenderText.ALIGN_CENTER ) 
 		setTextVerticalAlignment( RenderText.VERTICAL_ALIGN_MIDDLE )
 		setTextColor(1, 1, 1, 1) 
+		setTextBold(false)
 		
 		self.vcaDebugT = nil 
 		if self.vcaGearbox ~= nil then 
@@ -1501,10 +1504,77 @@ function vehicleControlAddon:onDraw()
 			end
 
 		end 
-	
+			
+		local snapDraw = false 
+		if     self.vcaSnapDraw >= 2 then 
+			snapDraw = true 
+		elseif self.vcaSnapDraw >= 1 and not self.vcaSnapIsOn then  
+			snapDraw = true 
+			self.vcaSnapDrawTimer = 3000
+		elseif self.vcaSnapDrawTimer ~= nil then 
+			self.vcaSnapDrawTimer = self.vcaSnapDrawTimer - self.vcaTickDt 
+			if self.vcaSnapDrawTimer < 0 then 
+				self.vcaSnapDrawTimer = nil 
+			else 
+				snapDraw = true 
+			end 
+		end 		
+		if snapDraw and -4 <= self.vcaLastSnapAngle and self.vcaLastSnapAngle <= 4 then
+			local wx,wy,wz = getWorldTranslation( self.components[1].node )
+			
+			local curSnapAngle
+			if self.vcaMovingDir < 0 then 
+				curSnapAngle = -self.vcaLastSnapAngle
+			else
+				curSnapAngle = self.vcaLastSnapAngle
+			end 
+
+			local dist  = 0
+		
+			local dx    = math.sin( curSnapAngle )
+			local dz    = math.cos( curSnapAngle )			
+			local distX = wx - self.vcaLastSnapPosX
+			local distZ = wz - self.vcaLastSnapPosZ 			
+			local dist  = dist + distX * dz - distZ * dx
+
+			while dist+dist > self.vcaSnapDistance do 
+				dist = dist - self.vcaSnapDistance
+			end 
+			while dist+dist <-self.vcaSnapDistance do 
+				dist = dist + self.vcaSnapDistance
+			end 
+
+			setTextAlignment( RenderText.ALIGN_CENTER ) 
+			setTextVerticalAlignment( RenderText.VERTICAL_ALIGN_MIDDLE )
+			
+			if self.vcaSnapIsOn then 
+				setTextColor(0, 1, 0, 0.5) 
+			else 
+				setTextColor(1, 0, 0, 1) 
+			end 
+			
+			for z=-10,10,0.25 do 
+				for x=-1,1 do 
+					local px = wx - dist * dz + z * dx - x * 0.5 * self.vcaSnapDistance * dz
+					local pz = wz + dist * dx + z * dz + x * 0.5 * self.vcaSnapDistance * dx
+					local py = getTerrainHeightAtWorldPos( g_currentMission.terrainRootNode, px, 0, pz ) + 0.1
+					local sx,sy,sz = project(px,py,pz)
+					local text = "."
+					if x == 0 then 
+						text = ":"
+					end 
+					if 0 < sz and sz <= 2 and 0 <= sx and sx <= 1 and 0 <= sy and sy <= 1 then 
+						renderText(sx, sy, getCorrectTextSize(0.04) * sz, text)					
+					end 
+				end 
+			end 
+		end 
+		
+		
 		setTextAlignment( RenderText.ALIGN_LEFT ) 
 		setTextVerticalAlignment( RenderText.VERTICAL_ALIGN_BASELINE )
-	end 
+		setTextColor(1, 1, 1, 1) 
+	end 	
 end
 
 function vehicleControlAddon:onReadStream(streamId, connection)
@@ -2791,6 +2861,8 @@ function vehicleControlAddon:vcaShowSettingsUI()
 		self.vcaUI.vcaSnapDistance_V[i] = v
 		self.vcaUI.vcaSnapDistance[i]   = string.format( "%4.1fm",v )
 	end 
+	
+	self.vcaUI.vcaSnapDraw = { "off", "only if inactive", "always" }
 	
 	g_vehicleControlAddonScreen:setVehicle( self )
 	g_gui:showGui( "vehicleControlAddonScreen" )

@@ -183,11 +183,20 @@
 			</GuiElement>	
 		
 			<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="vcaSnapDistance" toolTipElementId="mogliToolTipBoxText" toolTipText="Distance" onCreate="onCreateSubElement" onCreateArgs="list"
-											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="420" focusChangeTop="410" focusChangeBottom="501">
+											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="420" focusChangeTop="410" focusChangeBottom="430">
 				<GuiElement type="button" profile="multiTextOptionLeft" />
 				<GuiElement type="button" profile="multiTextOptionRight"/>
 				<GuiElement type="text"   profile="multiTextOptionText" />
 				<GuiElement type="text"   profile="multiTextOptionTitle" text="Distance"/>
+				<GuiElement type="bitmap" profile="multiTextOptionBg" />
+			</GuiElement>
+			
+			<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="vcaSnapDraw" toolTipElementId="mogliToolTipBoxText" toolTipText="Draw Marker" onCreate="onCreateSubElement" onCreateArgs="list0"
+											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="430" focusChangeTop="420" focusChangeBottom="501">
+				<GuiElement type="button" profile="multiTextOptionLeft" />
+				<GuiElement type="button" profile="multiTextOptionRight"/>
+				<GuiElement type="text"   profile="multiTextOptionText" />
+				<GuiElement type="text"   profile="multiTextOptionTitle" text="Draw Marker"/>
 				<GuiElement type="bitmap" profile="multiTextOptionBg" />
 			</GuiElement>
 			
@@ -204,7 +213,7 @@
 		</GuiElement>
 
 		<GuiElement type="flowLayout" profile="buttonBoxDocked" id="buttonsPC" >
-			<GuiElement type="button" profile="buttonOK"   text="$l10n_button_ok"   onClick="onClickOk"    focusId="501" focusChangeTop="420" focusChangeBottom="502" />
+			<GuiElement type="button" profile="buttonOK"   text="$l10n_button_ok"   onClick="onClickOk"    focusId="501" focusChangeTop="430" focusChangeBottom="502" />
 			<GuiElement type="button" profile="buttonBack" text="$l10n_button_back" onClick="onClickBack"  focusId="502" focusChangeTop="501" focusChangeBottom="110" />
 		</GuiElement>
 	</GuiElement>
