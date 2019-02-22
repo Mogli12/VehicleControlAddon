@@ -960,31 +960,16 @@ function vehicleControlAddon:onUpdate(dt)
 				dist = dist + self.vcaSnapDistance
 			end 
 			
-			local alpha = math.asin( vehicleControlAddon.mbClamp( 0.15 * dist, -0.851, 0.851 ) )
-		--vehicleControlAddon.debugPrint(math.deg( diffR ).."°; "..tostring(dist).." => "..math.deg( alpha ).."°")	
+			local alpha = math.asin( vehicleControlAddon.mbClamp( 0.1 * dist, -0.851, 0.851 ) )
 			
 			diffR = diffR + alpha
-			
-			d = 0.5 * d 
 				
-			if d > 10 then d = 10 end 
-			d = math.rad( d )
-				
-			local a = vehicleControlAddon.mbClamp( diffR / d, -1, 1 ) 
+			local a = vehicleControlAddon.mbClamp( diffR / 0.174, -1, 1 ) 
 			if self.vcaMovingDir < 0 then 
 				a = -a 
 			end
 
-			if lastSnapAngleTimer == nil then  
-				self.vcaSnapAngleTimer = 0 
-				d = 0.001 * dt
-			elseif lastSnapAngleTimer < 1000 then 
-				self.vcaSnapAngleTimer = lastSnapAngleTimer + dt 
-				d = 0.001 * dt
-			else 
-				self.vcaSnapAngleTimer = lastSnapAngleTimer 
-				d = 0.001 * ( 1 + math.min( 20, self.lastSpeed * 3600 ) ) * dt
-			end
+			d = 0.00025 * ( 4 + math.min( 16, self.lastSpeed * 3600 ) ) * dt
 			
 			if axisSideLast == nil then 
 				axisSideLast = self.spec_drivable.axisSideLast 
@@ -2542,8 +2527,8 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 				self.vcaFakeTimer = 100
 			end 
 	
-			if not self.vehicle.vcaAutoShift and motorPtoRpm > 0 and self.vcaMaxRpm > motorPtoRpm then 
-				self.vcaMaxRpm = motorPtoRpm
+			if not self.vehicle.vcaAutoShift and motorPtoRpm >= self.minRpm then 
+				self.vcaMaxRpm = math.min( motorPtoRpm * 1.11, self.vcaMaxRpm )
 			end 		
 		end 		
 		
@@ -2828,7 +2813,7 @@ function vehicleControlAddon:vcaShowSettingsUI()
 	self.vcaUI.vcaTransmission = { "off", "IVT", "4x4", "4x4 PowerShift", "2x6", "FullPowerShift", "6 Gears with Splitter" }
 	
 	local m = vehicleControlAddon.getDefaultMaxSpeed( self )
-	self.vcaUI.vcaMaxSpeed_V = { 7, 8.889, 11.944, 16.111, 25, 33.333, 50 }
+	self.vcaUI.vcaMaxSpeed_V = { 7, 8.889, 11.944, 16.111, 18.056, 20.417, 25, 33.333, 50 }
 	local found = -1 
 	for i,v in pairs(self.vcaUI.vcaMaxSpeed_V) do
 		if math.abs( m-v ) < 1 then 
@@ -2861,7 +2846,7 @@ function vehicleControlAddon:vcaShowSettingsUI()
 	self.vcaUI.vcaSnapDistance   = {}
 	for i,v in pairs( { 2, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 
 											3, 3.1, 3.2, 3.4, 3.6, 3.8, 4, 4.2, 4.5, 4.8, 
-											5, 5.5, 6, 7, 7.5, 9, 10, 12, 13.5, 15, 
+											5, 5.5, 6, 7, 7.5, 8, 9, 10, 12, 13.5, 15, 
 											18, 24, 30, 36, 40, 48 } ) do
 		self.vcaUI.vcaSnapDistance_V[i] = v
 		self.vcaUI.vcaSnapDistance[i]   = string.format( "%4.1fm",v )
