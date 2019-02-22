@@ -977,13 +977,13 @@ function vehicleControlAddon:onUpdate(dt)
 
 			if lastSnapAngleTimer == nil then  
 				self.vcaSnapAngleTimer = 0 
-				d = 0.0005 * dt
+				d = 0.001 * dt
 			elseif lastSnapAngleTimer < 1000 then 
 				self.vcaSnapAngleTimer = lastSnapAngleTimer + dt 
-				d = 0.0005 * dt
+				d = 0.001 * dt
 			else 
 				self.vcaSnapAngleTimer = lastSnapAngleTimer 
-				d = 0.0005 * ( 1 + math.min( 20, self.lastSpeed * 3600 ) ) * dt
+				d = 0.001 * ( 1 + math.min( 20, self.lastSpeed * 3600 ) ) * dt
 			end
 			
 			if axisSideLast == nil then 
@@ -1469,6 +1469,8 @@ function vehicleControlAddon:onDraw()
 				else 
 					text = "nil"
 				end 
+
+				text = text .." "..string.format(" %3.0f km/h",maxSpeed )
 				
 				local c
 				if self.vcaAutoClutch then 
@@ -1477,9 +1479,8 @@ function vehicleControlAddon:onDraw()
 					c = self.vcaClutchPercent 
 				end 
 				if c > 0.01 then 
-					text = text .." "..string.format("%3.0f%%",c*100 )
+					text = text ..string.format(" %3.0f%%",c*100 )
 				else 
-					text = text .." "..string.format("%3.0f km/h",maxSpeed )
 				end 
 				renderText(x, y, l2, text)
 				y = y + l * 1.2	
@@ -1553,18 +1554,16 @@ function vehicleControlAddon:onDraw()
 				setTextColor(1, 0, 0, 1) 
 			end 
 			
-			for z=-10,10,0.25 do 
-				for x=-1,1 do 
-					local px = wx - dist * dz + z * dx - x * 0.5 * self.vcaSnapDistance * dz
-					local pz = wz + dist * dx + z * dz + x * 0.5 * self.vcaSnapDistance * dx
-					local py = getTerrainHeightAtWorldPos( g_currentMission.terrainRootNode, px, 0, pz ) + 0.1
-					local sx,sy,sz = project(px,py,pz)
-					local text = "."
-					if x == 0 then 
-						text = ":"
-					end 
-					if 0 < sz and sz <= 2 and 0 <= sx and sx <= 1 and 0 <= sy and sy <= 1 then 
-						renderText(sx, sy, getCorrectTextSize(0.04) * sz, text)					
+			for z=-20,20,0.5 do 
+				if math.abs( z ) >= 5 then 
+					for x=-1,1 do 
+						local px = wx - dist * dz + z * dx - x * 0.5 * self.vcaSnapDistance * dz
+						local pz = wz + dist * dx + z * dz + x * 0.5 * self.vcaSnapDistance * dx
+						local py = getTerrainHeightAtWorldPos( g_currentMission.terrainRootNode, px, 0, pz )
+						local sx,sy,sz = project(px,py,pz)
+						if 0 < sz and sz <= 2 and 0 <= sx and sx <= 1 and 0 <= sy and sy <= 1 then 
+							renderText(sx, sy, getCorrectTextSize(0.04) * sz, ".")					
+						end 
 					end 
 				end 
 			end 
@@ -2703,7 +2702,7 @@ function vehicleControlAddon:vcaOnSetTransmission( old, new, noEventSend )
 	if old ~= nil and new == old then 
 		return 
 	end 
-	
+		
 	if     self.vcaTransmission == 1 then
 		self.vcaGearbox = vehicleControlAddonTransmissionIVT:new()
 	elseif self.vcaTransmission == 2 then
@@ -2720,6 +2719,10 @@ function vehicleControlAddon:vcaOnSetTransmission( old, new, noEventSend )
 	
 	if self.vcaGearbox ~= nil then 
 		self.vcaGearbox:setVehicle( self )
+	end 
+	
+	if self.isServer and old == nil or old <= 1 then 
+		self:vcaSetState( "vcaLaunchGear", VCAGlobals.launchGear, noEventSend )
 	end 
 	
 	self:updateMotorProperties()
@@ -2849,9 +2852,11 @@ function vehicleControlAddon:vcaShowSettingsUI()
 	local transmission = self.vcaGearbox
 	if transmission ~= nil then 
 		for i=1,transmission:getNumberOfRatios() do
-			self.vcaUI.vcaLaunchGear[i] = string.format( "%3.0f km/h", transmission:getGearRatio( i )*3.6*self.vcaMaxSpeed )
+			self.vcaUI.vcaLaunchGear[i] = string.format( "%2d: %3.0f km/h", i, transmission:getGearRatio( i )*3.6*self.vcaMaxSpeed )
 		end 
 	end 
+	self.vcaUI.oldTransmission = self.vcaTransmission
+	
 	self.vcaUI.vcaSnapDistance_V = {}
 	self.vcaUI.vcaSnapDistance   = {}
 	for i,v in pairs( { 2, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 
@@ -2934,6 +2939,13 @@ end
 function vehicleControlAddon:vcaUISetvcaSnapDistance( value )
 	if self.vcaUI.vcaSnapDistance_V[value] ~= nil then
 		self:vcaSetState( "vcaSnapDistance", self.vcaUI.vcaSnapDistance_V[value] )
+	end
+end
+
+function vehicleControlAddon:vcaUISetvcaLaunchGear( value )
+	if      self.vcaUI.oldTransmission ~= nil 
+			and self.vcaUI.oldTransmission > 1 then  
+		self:vcaSetState( "vcaLaunchGear", value )
 	end
 end
 
