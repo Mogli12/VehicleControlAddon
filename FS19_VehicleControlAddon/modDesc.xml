@@ -35,11 +35,11 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>store.dds</iconFilename>
-	<version>0.0.3.2</version>
+	<version>0.0.3.3</version>
 	<l10n filenamePrefix="modDesc_l10n">
 		<text name="vcaVERSION">
-			<de>Vehicle Control Addon 0.0.3.2</de>
-			<en>Vehicle Control Addon 0.0.3.2</en>
+			<de>Vehicle Control Addon 0.0.3.3</de>
+			<en>Vehicle Control Addon 0.0.3.3</en>
 		</text>
 	</l10n>
 	
@@ -49,6 +49,10 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 		<action name="vcaDOWN"      category="VEHICLE"/>
 		<action name="vcaLEFT"      category="VEHICLE"/>
 		<action name="vcaRIGHT"     category="VEHICLE"/>
+		<action name="vcaSnapUP"    category="VEHICLE"/>
+		<action name="vcaSnapDOWN"  category="VEHICLE"/>
+		<action name="vcaSnapLEFT"  category="VEHICLE"/>
+		<action name="vcaSnapRIGHT" category="VEHICLE"/>
 		<action name="vcaDIRECTION" category="VEHICLE"/>
 		<action name="vcaFORWARD"   category="VEHICLE"/>
 		<action name="vcaREVERSE"   category="VEHICLE"/>
@@ -88,6 +92,18 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 		</actionBinding>	
 		<actionBinding action="vcaRIGHT">	
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_rshift KEY_right" axisComponent="+" inputComponent="+" index="1"/>
+		</actionBinding>	
+		<actionBinding action="vcaSnapUP">	
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_up"    axisComponent="+" inputComponent="+" index="1"/>
+		</actionBinding>	
+		<actionBinding action="vcaSnapDOWN">	
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_down"  axisComponent="+" inputComponent="+" index="1"/>
+		</actionBinding>	
+		<actionBinding action="vcaSnapLEFT">	
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_left"  axisComponent="+" inputComponent="+" index="1"/>
+		</actionBinding>	
+		<actionBinding action="vcaSnapRIGHT">	
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_right" axisComponent="+" inputComponent="+" index="1"/>
 		</actionBinding>	
 		<actionBinding action="vcaDIRECTION">	
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_space"            axisComponent="+" inputComponent="+" index="1"/>

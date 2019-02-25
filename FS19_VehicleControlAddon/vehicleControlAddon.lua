@@ -425,6 +425,10 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
                                 "vcaDOWN",      
                                 "vcaLEFT",      
                                 "vcaRIGHT",     
+                                "vcaSnapUP",        
+                                "vcaSnapDOWN",      
+                                "vcaSnapLEFT",      
+                                "vcaSnapRIGHT",     
                                 "vcaDIRECTION",     
                                 "vcaFORWARD",     
                                 "vcaREVERSE",
@@ -634,6 +638,46 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 	elseif actionName == "vcaREVERSE" then
 		self.vcaShifter7isR1 = false 
 		self:vcaSetState( "vcaShuttleFwd", false )
+		
+	elseif  -4 <= self.vcaLastSnapAngle and self.vcaLastSnapAngle <= 4
+			and self.vcaSnapDistance >= 1
+			and ( actionName == "vcaSnapUP"
+				or  actionName == "vcaSnapDOWN"
+				or  actionName == "vcaSnapLEFT"
+				or  actionName == "vcaSnapRIGHT" ) then
+		self.vcaSnapPosTimer = 3000
+		
+		local lx,_,lz = localDirectionToWorld( self.components[1].node, 0, 0, 1 )			
+		local d = 0
+		if lx*lx+lz*lz > 1e-6 then 
+			d = math.atan2( lx, lz )
+		end 
+		local a = self.vcaLastSnapAngle
+		while a - d <= -math.pi*0.25 do 
+			a = a + math.pi*0.5
+		end 
+		while a - d > math.pi*0.25 do 
+			a = a - math.pi*0.5
+		end		
+		
+		local dx = math.sin( a )
+		local dz = math.cos( a )			
+		local fx = 0
+		local fz = 0
+		
+		if     actionName == "vcaSnapUP"    then
+			fz = 0.1
+		elseif actionName == "vcaSnapDOWN"  then
+			fz = -0.1
+		elseif actionName == "vcaSnapLEFT"  then
+			fx = 0.1 
+		elseif actionName == "vcaSnapRIGHT" then
+			fx = -0.1 
+		end 
+
+		self:vcaSetState( "vcaLastSnapPosX", self.vcaLastSnapPosX + fz * dx + fx * dz )
+		self:vcaSetState( "vcaLastSnapPosZ", self.vcaLastSnapPosZ + fz * dz - fx * dx )
+		
 	elseif actionName == "vcaSNAPRESET" then
 		self:vcaSetState( "vcaLastSnapAngle", 10 )
 		self:vcaSetState( "vcaLastSnapPosX", 0 )
@@ -1415,9 +1459,16 @@ function vehicleControlAddon:onDraw()
 
 		end 
 			
-		local snapDraw = false 
-		if self.vcaSnapDistance  < 1 then 
+		local snapDraw = false
+		if not ( -4 <= self.vcaLastSnapAngle and self.vcaLastSnapAngle <= 4 ) then 		
+			self.vcaSnapDrawTimer = nil
+			self.vcaSnapPosTimer  = nil 
+		elseif self.vcaSnapDistance  < 1 then 
 			snapDraw = false
+			self.vcaSnapPosTimer  = nil 
+		elseif self.vcaSnapPosTimer ~= nil and self.vcaSnapDistance >= 1 then 
+			snapDraw = true
+			self.vcaSnapDrawTimer = 3000
 		elseif self.vcaSnapDraw >= 2 then 
 			snapDraw = true 
 		elseif self.vcaSnapDraw >= 1 and not self.vcaSnapIsOn then  
@@ -1433,7 +1484,7 @@ function vehicleControlAddon:onDraw()
 				snapDraw = true 
 			end 
 		end 		
-		if snapDraw and -4 <= self.vcaLastSnapAngle and self.vcaLastSnapAngle <= 4 then
+		if snapDraw then
 			local wx,wy,wz = getWorldTranslation( self.components[1].node )
 			
 			local curSnapAngle
@@ -1482,7 +1533,42 @@ function vehicleControlAddon:onDraw()
 			end 
 		end 
 		
+		if self.vcaSnapPosTimer ~= nil then 
+			self.vcaSnapPosTimer = self.vcaSnapPosTimer - self.vcaTickDt 
+			if self.vcaSnapPosTimer < 0 then 
+				self.vcaSnapPosTimer = nil 
+			end 
 		
+			local dx = math.sin( a )
+			local dz = math.cos( a )	
+			local df = 0.5 * self.vcaSnapDistance
+	
+			setTextColor(0, 0, 1, 1) 
+			
+			for f=-df,df,0.1 do 
+				for i=1,4 do 
+					local vx, vz = f, self.vcaSnapDistance + f 
+					if     i == 1 then 
+						vz = self.vcaSnapDistance + df
+					elseif i == 2 then 
+						vz = self.vcaSnapDistance - df
+					elseif i == 3 then 
+						vx = df
+					elseif i == 4 then 
+						vx = -df
+					end 
+				
+					local px = self.vcaLastSnapPosX + vz * dx + vx * dz 
+					local pz = self.vcaLastSnapPosZ + vz * dz - vx * dx 				
+					local py = getTerrainHeightAtWorldPos( g_currentMission.terrainRootNode, px, 0, pz )
+					local sx,sy,sz = project(px,py,pz)
+					if 0 < sz and sz <= 2 and 0 <= sx and sx <= 1 and 0 <= sy and sy <= 1 then 
+						renderText(sx, sy, getCorrectTextSize(0.04) * sz, ".")					
+					end 
+				end 
+			end 
+		end 
+
 		setTextAlignment( RenderText.ALIGN_LEFT ) 
 		setTextVerticalAlignment( RenderText.VERTICAL_ALIGN_BASELINE )
 		setTextColor(1, 1, 1, 1) 
