@@ -1320,6 +1320,20 @@ function vehicleControlAddon:onDraw()
 			end 
 		end 
 		
+		local lx,_,lz = localDirectionToWorld( self.components[1].node, 0, 0, 1 )			
+		local d = 0
+		if lx*lx+lz*lz > 1e-6 then 
+			d = math.atan2( lx, lz )
+		end 
+		local a = self.vcaLastSnapAngle
+		while a - d <= -math.pi*0.25 do 
+			a = a + math.pi*0.5
+		end 
+		while a - d > math.pi*0.25 do 
+			a = a - math.pi*0.5
+		end		
+		a = vehicleControlAddon.normalizeAngle( a )
+		
 		if self.vcaDrawHud then 
 			if VCAGlobals.snapAngleHudX >= 0 then 
 				x = VCAGlobals.snapAngleHudX
@@ -1375,17 +1389,23 @@ function vehicleControlAddon:onDraw()
 				y = y + l * 1.2	
 			end 
 
-			local lx,_,lz = localDirectionToWorld( self.components[1].node, 0, 0, 1 )			
-			local d = 0
-			if lx*lx+lz*lz > 1e-6 then 
-				d = math.deg( math.pi - math.atan2( lx, lz ) )
-			end 
-			if -4 <= self.vcaLastSnapAngle and self.vcaLastSnapAngle <= 4 then 
-				renderText(x, y, l, string.format( "%4.1f° / %4.1f°", math.deg( math.pi - self.vcaLastSnapAngle ),d))
+			if not ( -4 <= self.vcaLastSnapAngle and self.vcaLastSnapAngle <= 4 ) then 
+				renderText(x, y, l, string.format( "%4.1f°", math.deg( math.pi - d )))
 				y = y + l * 1.2	
 			else
-				renderText(x, y, l, string.format( "%4.1f°", d))
-				y = y + l * 1.2	
+				if self.vcaSnapIsOn then 
+					setTextColor(0, 1, 0, 0.5) 
+					if self.vcaSnapDistance >= 1 then 
+						renderText(x, y, l, string.format( "%4.1f° / %4.1fm", math.deg( math.pi - a ), self.vcaSnapDistance))
+					else 
+						renderText(x, y, l, string.format( "%4.1f° / %4.1f°", math.deg( math.pi - a ), math.deg( math.pi - d )))
+					end 
+					y = y + l * 1.2	
+					setTextColor(1, 1, 1, 1) 
+				else
+					renderText(x, y, l, string.format( "%4.1f° / %4.1f°", math.deg( math.pi - a ), math.deg( math.pi - d )))
+					y = y + l * 1.2	
+				end
 			end
 			
 			if self.vcaKSIsOn and self.spec_drivable.cruiseControl.state == 0 then 
@@ -1396,13 +1416,17 @@ function vehicleControlAddon:onDraw()
 		end 
 			
 		local snapDraw = false 
-		if     self.vcaSnapDraw >= 2 then 
+		if self.vcaSnapDistance  < 1 then 
+			snapDraw = false
+		elseif self.vcaSnapDraw >= 2 then 
 			snapDraw = true 
 		elseif self.vcaSnapDraw >= 1 and not self.vcaSnapIsOn then  
 			snapDraw = true 
 			self.vcaSnapDrawTimer = 3000
 		elseif self.vcaSnapDrawTimer ~= nil then 
-			self.vcaSnapDrawTimer = self.vcaSnapDrawTimer - self.vcaTickDt 
+			if math.abs( self.lastSpeedReal ) * 3600 > 1 then 
+				self.vcaSnapDrawTimer = self.vcaSnapDrawTimer - self.vcaTickDt 
+			end 
 			if self.vcaSnapDrawTimer < 0 then 
 				self.vcaSnapDrawTimer = nil 
 			else 
@@ -1414,9 +1438,9 @@ function vehicleControlAddon:onDraw()
 			
 			local curSnapAngle
 			if self.vcaMovingDir < 0 then 
-				curSnapAngle = -self.vcaLastSnapAngle
+				curSnapAngle = -a
 			else
-				curSnapAngle = self.vcaLastSnapAngle
+				curSnapAngle = a
 			end 
 
 			local dist  = 0
@@ -1669,11 +1693,19 @@ function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, ax
 				self:vcaSetState( "vcaLastSnapAngle", vehicleControlAddon.normalizeAngle( target ) )
 			end 
 			
+			local a = self.vcaLastSnapAngle
+			while a - rot <= -math.pi*0.25 do 
+				a = a + math.pi*0.5
+			end 
+			while a - rot > math.pi*0.25 do 
+				a = a - math.pi*0.5
+			end
+			
 			local curSnapAngle
 			if self.vcaMovingDir < 0 then 
-				curSnapAngle = -self.vcaLastSnapAngle
+				curSnapAngle = -a
 			else
-				curSnapAngle = self.vcaLastSnapAngle
+				curSnapAngle = a
 			end 
 
 			local dist    = 0
@@ -1687,23 +1719,25 @@ function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, ax
 				diffR = vehicleControlAddon.normalizeAngle( rot - curSnapAngle )
 			end 
 	
-			local dx    = math.sin( curSnapAngle )
-			local dz    = math.cos( curSnapAngle )			
-			local distX = wx - self.vcaLastSnapPosX
-			local distZ = wz - self.vcaLastSnapPosZ 			
-			local dist  = dist + distX * dz - distZ * dx
+			if self.vcaSnapDistance >= 1 then 
+				local dx    = math.sin( curSnapAngle )
+				local dz    = math.cos( curSnapAngle )			
+				local distX = wx - self.vcaLastSnapPosX
+				local distZ = wz - self.vcaLastSnapPosZ 			
+				local dist  = dist + distX * dz - distZ * dx
 
-			while dist+dist > self.vcaSnapDistance do 
-				dist = dist - self.vcaSnapDistance
-			end 
-			while dist+dist <-self.vcaSnapDistance do 
-				dist = dist + self.vcaSnapDistance
-			end 
-			
-			local alpha = math.asin( vehicleControlAddon.mbClamp( 0.1 * dist, -0.851, 0.851 ) )
-			
-			diffR = diffR + alpha
+				while dist+dist > self.vcaSnapDistance do 
+					dist = dist - self.vcaSnapDistance
+				end 
+				while dist+dist <-self.vcaSnapDistance do 
+					dist = dist + self.vcaSnapDistance
+				end 
 				
+				local alpha = math.asin( vehicleControlAddon.mbClamp( 0.1 * dist, -0.851, 0.851 ) )
+				
+				diffR = diffR + alpha
+			end 
+			
 			local a = vehicleControlAddon.mbClamp( diffR / 0.174, -1, 1 ) 
 			if self.vcaMovingDir < 0 then 
 				a = -a 
@@ -2848,7 +2882,8 @@ function vehicleControlAddon:vcaShowSettingsUI()
 	
 	self.vcaUI.vcaSnapDistance_V = {}
 	self.vcaUI.vcaSnapDistance   = {}
-	for i,v in pairs( { 2, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 
+	for i,v in pairs( { 0,
+											2, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 
 											3, 3.1, 3.2, 3.4, 3.6, 3.8, 4, 4.2, 4.5, 4.8, 
 											5, 5.5, 6, 7, 7.5, 8, 9, 10, 12, 13.5, 15, 
 											18, 24, 30, 36, 40, 48 } ) do
