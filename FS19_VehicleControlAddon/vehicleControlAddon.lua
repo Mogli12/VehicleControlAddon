@@ -887,102 +887,6 @@ function vehicleControlAddon:onUpdate(dt)
 	end
 
 	--*******************************************************************
-	-- Snap Angle
-	local axisSideLast       = self.vcaAxisSideLast
-	local lastSnapAngleTimer = self.vcaSnapAngleTimer
-	self.vcaAxisSideLast     = nil
-	self.vcaSnapAngleTimer   = nil
-	
-	if self.vcaSnapIsOn and self.vcaIsEntered then 
-		local lx, lz 
-		if self.vcaMovingDir < 0 then 
-			lx,_,lz = localDirectionToWorld( self.components[1].node, 0, 0, -1 )	
-		else 
-			lx,_,lz = localDirectionToWorld( self.components[1].node, 0, 0, 1 )		
-		end 
-		local wx,_,wz = getWorldTranslation( self.components[1].node )
-		if lx*lx+lz*lz > 1e-6 then 
-			local rot    = math.atan2( lx, lz )
-			local d      = vehicleControlAddon.snapAngles[self.vcaSnapAngle]
-			
-			if not ( -4 <= self.vcaLastSnapAngle and self.vcaLastSnapAngle <= 4 ) then 
-				self:vcaSetState( "vcaLastSnapPosX", wx )
-				self:vcaSetState( "vcaLastSnapPosZ", wz )
-				local target = 0
-				local diff   = math.pi+math.pi
-				if d == nil then 
-					if self.vcaSnapAngle < 1 then 
-						d = vehicleControlAddon.snapAngles[1] 
-					else 
-						d = 90 
-					end 
-				end 
-				for i=0,360,d do 
-					local a = math.rad( i )
-					local b = math.abs( vehicleControlAddon.normalizeAngle( a - rot ) )
-					if b < diff then 
-						target = a 
-						diff   = b
-					end 
-				end 
-				
-				self:vcaSetState( "vcaLastSnapAngle", vehicleControlAddon.normalizeAngle( target ) )
-			end 
-			
-			local curSnapAngle
-			if self.vcaMovingDir < 0 then 
-				curSnapAngle = -self.vcaLastSnapAngle
-			else
-				curSnapAngle = self.vcaLastSnapAngle
-			end 
-
-			local dist    = 0
-			local diffR   = vehicleControlAddon.normalizeAngle( rot - curSnapAngle )
-			
-			if     diffR > 0.5 * math.pi then 
-				curSnapAngle = curSnapAngle + math.pi
-				diffR = vehicleControlAddon.normalizeAngle( rot - curSnapAngle )
-			elseif diffR <-0.5 * math.pi then 
-				curSnapAngle = curSnapAngle - math.pi
-				diffR = vehicleControlAddon.normalizeAngle( rot - curSnapAngle )
-			end 
-	
-			local dx    = math.sin( curSnapAngle )
-			local dz    = math.cos( curSnapAngle )			
-			local distX = wx - self.vcaLastSnapPosX
-			local distZ = wz - self.vcaLastSnapPosZ 			
-			local dist  = dist + distX * dz - distZ * dx
-
-			while dist+dist > self.vcaSnapDistance do 
-				dist = dist - self.vcaSnapDistance
-			end 
-			while dist+dist <-self.vcaSnapDistance do 
-				dist = dist + self.vcaSnapDistance
-			end 
-			
-			local alpha = math.asin( vehicleControlAddon.mbClamp( 0.1 * dist, -0.851, 0.851 ) )
-			
-			diffR = diffR + alpha
-				
-			local a = vehicleControlAddon.mbClamp( diffR / 0.174, -1, 1 ) 
-			if self.vcaMovingDir < 0 then 
-				a = -a 
-			end
-
-			d = 0.00025 * ( 4 + math.min( 16, self.lastSpeed * 3600 ) ) * dt
-			
-			if axisSideLast == nil then 
-				axisSideLast = self.spec_drivable.axisSideLast 
-			end 
-			
-			self.spec_drivable.axisSide = axisSideLast + vehicleControlAddon.mbClamp( a - axisSideLast, -d, d )
-
-			
-			self.vcaAxisSideLast = self.spec_drivable.axisSide
-		end 
-	end 
-	
-	--*******************************************************************
 	-- Keep Speed 
 	if self.vcaKSIsOn and self.vcaIsEntered then
 		if self.spec_drivable.cruiseControl.state > 0 then 
@@ -1720,6 +1624,106 @@ function vehicleControlAddon:vcaScaleFx( fx, mi, ma )
 	return vehicleControlAddon.mbClamp( 1 + self.vcaFactor * ( fx - 1 ), mi, ma )
 end
 
+--******************************************************************************************************************************************
+function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, axisSide, doHandbrake, dt )
+	--*******************************************************************
+	-- Snap Angle
+	local axisSideLast       = self.vcaAxisSideLast
+	local lastSnapAngleTimer = self.vcaSnapAngleTimer
+	self.vcaAxisSideLast     = nil
+	self.vcaSnapAngleTimer   = nil
+	
+	if self.vcaSnapIsOn and self.vcaIsEntered then 
+		local lx, lz 
+		if self.vcaMovingDir < 0 then 
+			lx,_,lz = localDirectionToWorld( self.components[1].node, 0, 0, -1 )	
+		else 
+			lx,_,lz = localDirectionToWorld( self.components[1].node, 0, 0, 1 )		
+		end 
+		local wx,_,wz = getWorldTranslation( self.components[1].node )
+		if lx*lx+lz*lz > 1e-6 then 
+			local rot    = math.atan2( lx, lz )
+			local d      = vehicleControlAddon.snapAngles[self.vcaSnapAngle]
+			
+			if not ( -4 <= self.vcaLastSnapAngle and self.vcaLastSnapAngle <= 4 ) then 
+				self:vcaSetState( "vcaLastSnapPosX", wx )
+				self:vcaSetState( "vcaLastSnapPosZ", wz )
+				local target = 0
+				local diff   = math.pi+math.pi
+				if d == nil then 
+					if self.vcaSnapAngle < 1 then 
+						d = vehicleControlAddon.snapAngles[1] 
+					else 
+						d = 90 
+					end 
+				end 
+				for i=0,360,d do 
+					local a = math.rad( i )
+					local b = math.abs( vehicleControlAddon.normalizeAngle( a - rot ) )
+					if b < diff then 
+						target = a 
+						diff   = b
+					end 
+				end 
+				
+				self:vcaSetState( "vcaLastSnapAngle", vehicleControlAddon.normalizeAngle( target ) )
+			end 
+			
+			local curSnapAngle
+			if self.vcaMovingDir < 0 then 
+				curSnapAngle = -self.vcaLastSnapAngle
+			else
+				curSnapAngle = self.vcaLastSnapAngle
+			end 
+
+			local dist    = 0
+			local diffR   = vehicleControlAddon.normalizeAngle( rot - curSnapAngle )
+			
+			if     diffR > 0.5 * math.pi then 
+				curSnapAngle = curSnapAngle + math.pi
+				diffR = vehicleControlAddon.normalizeAngle( rot - curSnapAngle )
+			elseif diffR <-0.5 * math.pi then 
+				curSnapAngle = curSnapAngle - math.pi
+				diffR = vehicleControlAddon.normalizeAngle( rot - curSnapAngle )
+			end 
+	
+			local dx    = math.sin( curSnapAngle )
+			local dz    = math.cos( curSnapAngle )			
+			local distX = wx - self.vcaLastSnapPosX
+			local distZ = wz - self.vcaLastSnapPosZ 			
+			local dist  = dist + distX * dz - distZ * dx
+
+			while dist+dist > self.vcaSnapDistance do 
+				dist = dist - self.vcaSnapDistance
+			end 
+			while dist+dist <-self.vcaSnapDistance do 
+				dist = dist + self.vcaSnapDistance
+			end 
+			
+			local alpha = math.asin( vehicleControlAddon.mbClamp( 0.1 * dist, -0.851, 0.851 ) )
+			
+			diffR = diffR + alpha
+				
+			local a = vehicleControlAddon.mbClamp( diffR / 0.174, -1, 1 ) 
+			if self.vcaMovingDir < 0 then 
+				a = -a 
+			end
+
+			d = 0.0005 * ( 2 + math.min( 18, self.lastSpeed * 3600 ) ) * dt
+			
+			if axisSideLast == nil then 
+				axisSideLast = axisSide
+			end 
+			
+			axisSide = axisSideLast + vehicleControlAddon.mbClamp( a - axisSideLast, -d, d )
+		end 
+	end 
+	self.vcaAxisSideLast = axisSide
+	
+	return superFunc( self, axisForward, axisSide, doHandbrake, dt )
+end 
+
+Drivable.updateVehiclePhysics = Utils.overwrittenFunction( Drivable.updateVehiclePhysics, vehicleControlAddon.vcaUpdateVehiclePhysics )
 --******************************************************************************************************************************************
 -- shuttle control and inching
 function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed, acceleration, doHandbrake, stopAndGoBraking )
