@@ -214,6 +214,7 @@ function vehicleControlAddon:onLoad(savegame)
 	self.vcaIsValidCam       = vehicleControlAddon.vcaIsValidCam
 	self.vcaIsActive         = vehicleControlAddon.vcaIsActive
 	self.vcaIsNonDefaultProp = vehicleControlAddon.vcaIsNonDefaultProp
+	self.vcaGetSteeringNode  = vehicleControlAddon.vcaGetSteeringNode
 	
 	--********************************************************************************************
 	-- functions for others mods 
@@ -647,7 +648,7 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 				or  actionName == "vcaSnapRIGHT" ) then
 		self.vcaSnapPosTimer = 3000
 		
-		local lx,_,lz = localDirectionToWorld( self.components[1].node, 0, 0, 1 )			
+		local lx,_,lz = localDirectionToWorld( self:vcaGetSteeringNode(), 0, 0, 1 )			
 		local d = 0
 		if lx*lx+lz*lz > 1e-6 then 
 			d = math.atan2( lx, lz )
@@ -1364,7 +1365,7 @@ function vehicleControlAddon:onDraw()
 			end 
 		end 
 		
-		local lx,_,lz = localDirectionToWorld( self.components[1].node, 0, 0, 1 )			
+		local lx,_,lz = localDirectionToWorld( self:vcaGetSteeringNode(), 0, 0, 1 )			
 		local d = 0
 		if lx*lx+lz*lz > 1e-6 then 
 			d = math.atan2( lx, lz )
@@ -1485,7 +1486,7 @@ function vehicleControlAddon:onDraw()
 			end 
 		end 		
 		if snapDraw then
-			local wx,wy,wz = getWorldTranslation( self.components[1].node )
+			local wx,wy,wz = getWorldTranslation( self:vcaGetSteeringNode() )
 			
 			local curSnapAngle
 			if self.vcaMovingDir < 0 then 
@@ -1675,6 +1676,17 @@ function vehicleControlAddon:onStartReverseDirectionChange()
 	end 
 end 
 
+function vehicleControlAddon:vcaGetSteeringNode()
+	local node = nil 
+	if type( self.getAIVehicleSteeringNode ) == "function" then 
+		node = self:getAIVehicleSteeringNode() 
+	end 
+	if node == nil then 
+		node = self.components[1].node
+	end 
+	return node 
+end 
+
 function vehicleControlAddon:getDefaultTransmission()
 	if VCAGlobals.transmission <= 0 then 
 		return 0
@@ -1743,14 +1755,14 @@ function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, ax
 	self.vcaAxisSideLast     = nil
 	self.vcaSnapAngleTimer   = nil
 	
-	if self.vcaSnapIsOn and self.vcaIsEntered then 
+	if self.vcaSnapIsOn and self.vcaIsEnteredMP then 
 		local lx, lz 
 		if self.vcaMovingDir < 0 then 
-			lx,_,lz = localDirectionToWorld( self.components[1].node, 0, 0, -1 )	
+			lx,_,lz = localDirectionToWorld( self:vcaGetSteeringNode(), 0, 0, -1 )	
 		else 
-			lx,_,lz = localDirectionToWorld( self.components[1].node, 0, 0, 1 )		
+			lx,_,lz = localDirectionToWorld( self:vcaGetSteeringNode(), 0, 0, 1 )		
 		end 
-		local wx,_,wz = getWorldTranslation( self.components[1].node )
+		local wx,_,wz = getWorldTranslation( self:vcaGetSteeringNode() )
 		if lx*lx+lz*lz > 1e-6 then 
 			local rot    = math.atan2( lx, lz )
 			local d      = vehicleControlAddon.snapAngles[self.vcaSnapAngle]
