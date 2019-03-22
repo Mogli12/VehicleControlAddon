@@ -340,6 +340,11 @@ function vehicleControlAddon:onLoad(savegame)
 	for _,prop in pairs( listOfProperties ) do 
 		self.vcaDefaults[prop.propName] = self[prop.propName]
 	end
+	
+	if self.isServer then 
+		self.vcaUserSettings = {}	
+	end 
+	self.vcaControllerName = ""	
 end
 
 function vehicleControlAddon:onPostLoad(savegame)
@@ -653,14 +658,7 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 		if lx*lx+lz*lz > 1e-6 then 
 			d = math.atan2( lx, lz )
 		end 
-		local a = self.vcaLastSnapAngle
-		while a - d <= -math.pi*0.25 do 
-			a = a + math.pi*0.5
-		end 
-		while a - d > math.pi*0.25 do 
-			a = a - math.pi*0.5
-		end		
-		
+		local a  = vehicleControlAddon.vcaGetCurrentSnapAngle( self, d )
 		local dx = math.sin( a )
 		local dz = math.cos( a )			
 		local fx = 0
@@ -732,8 +730,12 @@ function vehicleControlAddon:onUpdate(dt)
 		self.vcaControllerName = "" 
 	end 
 	
-	if self.isServer and self.vcaControllerName ~= nil then 
-		if lastControllerName ~= nil and lastControllerName ~= "" and self.vcaUserSettings[lastControllerName] ~= nil then 
+	if self.isServer and self.vcaControllerName ~= lastControllerName then 
+		if lastControllerName ~= "" then 
+			if self.vcaUserSettings[lastControllerName] == nil then 
+				print("Error in vehicleControlAddon.lua: self.vcaUserSettings["..tostring(lastControllerName).."] is nil")
+				self.vcaUserSettings[lastControllerName] = {} 
+			end 
 		-- remember previous user settings 
 			for _,prop in pairs( listOfProperties ) do 
 				self.vcaUserSettings[lastControllerName][prop.propName] = self[prop.propName] 
@@ -741,10 +743,6 @@ function vehicleControlAddon:onUpdate(dt)
 		end 
 	
 		if self.vcaControllerName ~= "" then 
-			if self.vcaUserSettings == nil then 
-				vehicleControlAddon.debugPrint("Initializing user settings")
-				self.vcaUserSettings = {} 
-			end
 			if self.vcaUserSettings[self.vcaControllerName] == nil then 
 			-- new user or no settings in save game => create setting from self
 				vehicleControlAddon.debugPrint("Creating settings for user "..self.vcaControllerName)
@@ -752,7 +750,7 @@ function vehicleControlAddon:onUpdate(dt)
 				for _,prop in pairs( listOfProperties ) do 
 					self.vcaUserSettings[self.vcaControllerName][prop.propName] = self[prop.propName]
 				end 
-			elseif lastControllerName == nil or lastControllerName ~= self.vcaControllerName then 
+			else
 			-- changed user => restore user settings 
 				vehicleControlAddon.debugPrint("Restoring settings for user "..self.vcaControllerName)
 				for _,prop in pairs( listOfProperties ) do 
@@ -1370,14 +1368,9 @@ function vehicleControlAddon:onDraw()
 		if lx*lx+lz*lz > 1e-6 then 
 			d = math.atan2( lx, lz )
 		end 
-		local a = self.vcaLastSnapAngle
-		while a - d <= -math.pi*0.25 do 
-			a = a + math.pi*0.5
-		end 
-		while a - d > math.pi*0.25 do 
-			a = a - math.pi*0.5
-		end		
-		a = vehicleControlAddon.normalizeAngle( a )
+		local curSnapAngle = vehicleControlAddon.vcaGetCurrentSnapAngle( self, d )
+		
+
 		
 		if self.vcaDrawHud then 
 			if VCAGlobals.snapAngleHudX >= 0 then 
@@ -1441,14 +1434,14 @@ function vehicleControlAddon:onDraw()
 				if self.vcaSnapIsOn then 
 					setTextColor(0, 1, 0, 0.5) 
 					if self.vcaSnapDistance >= 1 then 
-						renderText(x, y, l, string.format( "%4.1f° / %4.1fm", math.deg( math.pi - a ), self.vcaSnapDistance))
+						renderText(x, y, l, string.format( "%4.1f° / %4.1fm", math.deg( math.pi - curSnapAngle ), self.vcaSnapDistance))
 					else 
-						renderText(x, y, l, string.format( "%4.1f° / %4.1f°", math.deg( math.pi - a ), math.deg( math.pi - d )))
+						renderText(x, y, l, string.format( "%4.1f° / %4.1f°", math.deg( math.pi - curSnapAngle ), math.deg( math.pi - d )))
 					end 
 					y = y + l * 1.2	
 					setTextColor(1, 1, 1, 1) 
 				else
-					renderText(x, y, l, string.format( "%4.1f° / %4.1f°", math.deg( math.pi - a ), math.deg( math.pi - d )))
+					renderText(x, y, l, string.format( "%4.1f° / %4.1f°", math.deg( math.pi - curSnapAngle ), math.deg( math.pi - d )))
 					y = y + l * 1.2	
 				end
 			end
@@ -1488,15 +1481,7 @@ function vehicleControlAddon:onDraw()
 		if snapDraw then
 			local wx,wy,wz = getWorldTranslation( self:vcaGetSteeringNode() )
 			
-			local curSnapAngle
-			if self.vcaMovingDir < 0 then 
-				curSnapAngle = -a
-			else
-				curSnapAngle = a
-			end 
-
-			local dist  = 0
-		
+			local dist  = 0		
 			local dx    = math.sin( curSnapAngle )
 			local dz    = math.cos( curSnapAngle )			
 			local distX = wx - self.vcaLastSnapPosX
@@ -1540,8 +1525,8 @@ function vehicleControlAddon:onDraw()
 				self.vcaSnapPosTimer = nil 
 			end 
 		
-			local dx = math.sin( a )
-			local dz = math.cos( a )	
+			local dx = math.sin( curSnapAngle )
+			local dz = math.cos( curSnapAngle )	
 			local df = 0.5 * self.vcaSnapDistance
 	
 			setTextColor(0, 0, 1, 1) 
@@ -1677,14 +1662,29 @@ function vehicleControlAddon:onStartReverseDirectionChange()
 end 
 
 function vehicleControlAddon:vcaGetSteeringNode()
-	local node = nil 
-	if type( self.getAIVehicleSteeringNode ) == "function" then 
-		node = self:getAIVehicleSteeringNode() 
+	if self.spec_aiVehicle ~= nil and self.spec_aiVehicle.steeringNode ~= nil then 
+		return self.spec_aiVehicle.steeringNode
 	end 
-	if node == nil then 
-		node = self.components[1].node
+	return self.components[1].node  
+end 
+
+function vehicleControlAddon:vcaGetCurrentSnapAngle(curRot)
+
+	if self.vcaLastSnapAngle == nil or curRot == nil then 
+		return 0 
+	end
+	
+	local a = self.vcaLastSnapAngle
+	local c = curRot 
+
+	while a - c <= -math.pi*0.25 do 
+		a = a + math.pi*0.5
 	end 
-	return node 
+	while a - c > math.pi*0.25 do 
+		a = a - math.pi*0.5
+	end
+
+	return a			
 end 
 
 function vehicleControlAddon:getDefaultTransmission()
@@ -1791,20 +1791,7 @@ function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, ax
 				self:vcaSetState( "vcaLastSnapAngle", vehicleControlAddon.normalizeAngle( target ) )
 			end 
 			
-			local a = self.vcaLastSnapAngle
-			while a - rot <= -math.pi*0.25 do 
-				a = a + math.pi*0.5
-			end 
-			while a - rot > math.pi*0.25 do 
-				a = a - math.pi*0.5
-			end
-			
-			local curSnapAngle
-			if self.vcaMovingDir < 0 then 
-				curSnapAngle = -a
-			else
-				curSnapAngle = a
-			end 
+			local curSnapAngle = vehicleControlAddon.vcaGetCurrentSnapAngle( self, rot )
 
 			local dist    = 0
 			local diffR   = vehicleControlAddon.normalizeAngle( rot - curSnapAngle )
@@ -1837,7 +1824,11 @@ function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, ax
 			end 
 			
 			local a = vehicleControlAddon.mbClamp( diffR / 0.174, -1, 1 ) 
-			if self.vcaMovingDir < 0 then 
+			local m = self.movingDirection
+			if self.lastSpeedReal * 3600 < 1 or ( -0.5 < m and m < 0.5 ) then 
+				m = self.vcaMovingDir 
+			end 
+			if m < 0 then 
 				a = -a 
 			end
 
@@ -3070,8 +3061,4 @@ function vehicleControlAddon:vcaUISetvcaLaunchGear( value )
 		self:vcaSetState( "vcaLaunchGear", value )
 	end
 end
-
-
-
-
 
