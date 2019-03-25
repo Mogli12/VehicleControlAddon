@@ -1481,41 +1481,50 @@ function vehicleControlAddon:onDraw()
 		if snapDraw then
 			local wx,wy,wz = getWorldTranslation( self:vcaGetSteeringNode() )
 			
-			local dist  = 0		
 			local dx    = math.sin( curSnapAngle )
 			local dz    = math.cos( curSnapAngle )			
 			local distX = wx - self.vcaLastSnapPosX
-			local distZ = wz - self.vcaLastSnapPosZ 			
-			local dist  = dist + distX * dz - distZ * dx
-
-			while dist+dist > self.vcaSnapDistance do 
-				dist = dist - self.vcaSnapDistance
-			end 
-			while dist+dist <-self.vcaSnapDistance do 
-				dist = dist + self.vcaSnapDistance
-			end 
-
-			setTextAlignment( RenderText.ALIGN_CENTER ) 
-			setTextVerticalAlignment( RenderText.VERTICAL_ALIGN_MIDDLE )
+			local distZ = wz - self.vcaLastSnapPosZ 	
 			
+			local iMax  = 2
 			if self.vcaSnapIsOn then 
-				setTextColor(0, 1, 0, 0.5) 
-			else 
-				setTextColor(1, 0, 0, 1) 
+				iMax = 1 
 			end 
-			
-			for z=-20,20,0.5 do 
-				if math.abs( z ) >= 5 then 
-					for x=-1,1 do 
-						local px = wx - dist * dz + z * dx - x * 0.5 * self.vcaSnapDistance * dz
-						local pz = wz + dist * dx + z * dz + x * 0.5 * self.vcaSnapDistance * dx
-						local py = getTerrainHeightAtWorldPos( g_currentMission.terrainRootNode, px, 0, pz )
-						local sx,sy,sz = project(px,py,pz)
-						if 0 < sz and sz <= 2 and 0 <= sx and sx <= 1 and 0 <= sy and sy <= 1 then 
-							renderText(sx, sy, getCorrectTextSize(0.04) * sz, ".")					
+			for i=1,iMax do
+				local dist  = distX * dz - distZ * dx
+
+				while dist+dist > self.vcaSnapDistance do 
+					dist = dist - self.vcaSnapDistance
+				end 
+				while dist+dist <-self.vcaSnapDistance do 
+					dist = dist + self.vcaSnapDistance
+				end 
+
+				setTextAlignment( RenderText.ALIGN_CENTER ) 
+				setTextVerticalAlignment( RenderText.VERTICAL_ALIGN_MIDDLE )
+				
+				if     i > 1 then 
+					setTextColor(0.5, 0.5, 0.5, 0.5) 
+				elseif self.vcaSnapIsOn then 
+					setTextColor(0, 1, 0, 0.5) 
+				else 
+					setTextColor(1, 0, 0, 1) 
+				end 
+				
+				for z=-20,20,0.5 do 
+					if math.abs( z ) >= 5 then 
+						for x=-1,1 do 
+							local px = wx - dist * dz + z * dx - x * 0.5 * self.vcaSnapDistance * dz
+							local pz = wz + dist * dx + z * dz + x * 0.5 * self.vcaSnapDistance * dx
+							local py = getTerrainHeightAtWorldPos( g_currentMission.terrainRootNode, px, 0, pz )
+							local sx,sy,sz = project(px,py,pz)
+							if 0 < sz and sz <= 2 and 0 <= sx and sx <= 1 and 0 <= sy and sy <= 1 then 
+								renderText(sx, sy, getCorrectTextSize(0.04) * sz, ".")					
+							end 
 						end 
 					end 
 				end 
+				dx, dz = -dz, dx
 			end 
 		end 
 		
