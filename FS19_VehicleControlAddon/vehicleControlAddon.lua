@@ -1969,7 +1969,7 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 		end 
 	end 
 	
-	if self.vcaShuttleCtrl then 
+	if self:getIsVehicleControlledByPlayer() and self.vcaShuttleCtrl then 
 		self.spec_lights   = nil
 		stopAndGoBraking   = true 
 	end 
@@ -1982,7 +1982,7 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 		self.vcaTransmission = 0 
 	end
 	
-	if self.vcaShuttleCtrl then 
+	if self:getIsVehicleControlledByPlayer() and self.vcaShuttleCtrl then 
 		self.spec_lights = lightsBackup
 		if type( self.setBrakeLightsVisibility ) == "function" then 
 			self:setBrakeLightsVisibility( brake )
