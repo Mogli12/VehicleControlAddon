@@ -419,7 +419,7 @@ function vehicleControlAddon:saveToXMLFile(xmlFile, xmlKey)
 end 
 
 function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicle)
-	if isOnActiveVehicle then
+	if isOnActiveVehicle or self.isClient then
 		if self.vcaActionEvents == nil then 
 			self.vcaActionEvents = {}
 		else	
@@ -1308,7 +1308,7 @@ end
 
 function vehicleControlAddon:onDraw()
 
-	if self.vcaIsEntered then
+	if self.vcaIsEntered and self:getIsVehicleControlledByPlayer() then
 		local x = g_currentMission.inGameMenu.hud.speedMeter.gaugeCenterX
 		local y = g_currentMission.inGameMenu.hud.speedMeter.gaugeCenterY + g_currentMission.inGameMenu.hud.speedMeter.fuelGaugeRadiusY * 1.6
 		local l = getCorrectTextSize(0.02)
