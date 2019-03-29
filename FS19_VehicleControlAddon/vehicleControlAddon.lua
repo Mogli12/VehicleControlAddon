@@ -419,7 +419,7 @@ function vehicleControlAddon:saveToXMLFile(xmlFile, xmlKey)
 end 
 
 function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicle)
-	if isOnActiveVehicle or self.isClient then
+	if self.isClient and self:getIsActiveForInput(true, true) then
 		if self.vcaActionEvents == nil then 
 			self.vcaActionEvents = {}
 		else	
@@ -809,7 +809,7 @@ function vehicleControlAddon:onUpdate(dt)
 
 	--*******************************************************************
 	-- overwrite or reset some values 
-	if self.vcaShuttleCtrl then 
+	if self.vcaShuttleCtrl and self:getIsVehicleControlledByPlayer() then 
 		if     self.spec_reverseDriving  ~= nil then 
 			if self.spec_reverseDriving.isReverseDriving then 
 				self.vcaReverserDirection = -1 
@@ -829,7 +829,7 @@ function vehicleControlAddon:onUpdate(dt)
 		self.vcaReverserDirection            = nil
 	end 
 	
-	if self.vcaShuttleCtrl then 
+	if self.vcaShuttleCtrl and self:getIsVehicleControlledByPlayer() then 
 		if self.vcaReverseDriveSample == nil then 
 			self.vcaReverseDriveSample = self.spec_motorized.samples.reverseDrive 
 		end 
@@ -899,7 +899,7 @@ function vehicleControlAddon:onUpdate(dt)
 			self.vcaMovingDir = 1
 		elseif self.vcaExternalDir < 0 then 
 			self.vcaMovingDir = -1
-		elseif self.vcaShuttleCtrl then 
+		elseif self.vcaShuttleCtrl and self:getIsVehicleControlledByPlayer() then 
 			local controlledVehicles = g_currentMission.controlledVehicles
 			local isHudVisible = g_currentMission.hud:getIsVisible()
 			if self.vcaShuttleFwd then
@@ -951,7 +951,7 @@ function vehicleControlAddon:onUpdate(dt)
 	-- Camera Rotation
 	if      self:getIsActive() 
 			and self.isClient 
---		and self.steeringEnabled 
+			and self:getIsVehicleControlledByPlayer()
 			and self:vcaIsValidCam() then
 			
 		local camera  = self.spec_enterable.cameras[i]
@@ -1199,7 +1199,7 @@ function vehicleControlAddon:onUpdate(dt)
 --******************************************************************************************************************************************
 -- Reverse driving sound
 	if self.isClient and self:vcaIsActive() then 
-		if self.vcaShuttleCtrl and self.vcaReverseDriveSample ~= nil then 
+		if self.vcaShuttleCtrl and self:getIsVehicleControlledByPlayer() and self.vcaReverseDriveSample ~= nil then 
 			local notRev = self.vcaShuttleFwd or self.vcaNeutral
 			if not g_soundManager:getIsSamplePlaying(self.vcaReverseDriveSample) and not notRev then
 				g_soundManager:playSample(self.vcaReverseDriveSample)

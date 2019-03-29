@@ -2,8 +2,7 @@ vehicleControlAddon_Register = {};
 vehicleControlAddon_Register.g_currentModDirectory = g_currentModDirectory
 vehicleControlAddon_Register.specName = "zzzVehicleControlAddon"
 
-if g_specializationManager:getSpecializationByName("vehicleControlAddon") == nil then 
---g_specializationManager:addSpecialization("vehicleControlAddon", "vehicleControlAddon", g_currentModDirectory.."vehicleControlAddon.lua")
+if g_specializationManager:getSpecializationByName(vehicleControlAddon_Register.specName) == nil then 
 	if vehicleControlAddon == nil then 
 		print("Failed to add specialization vehicleControlAddon")
 	else 
