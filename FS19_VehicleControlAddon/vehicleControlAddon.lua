@@ -461,42 +461,50 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
 																"AXIS_BRAKE_VEHICLE",
 																"AXIS_ACCELERATE_VEHICLE",
 																"AXIS_MOVE_SIDE_VEHICLE" }) do
-																
-			local pBool1, pBool2, pBool3, pBool4 = false, true, false, true 
-			if     actionName == "AXIS_MOVE_SIDE_VEHICLE"
-					or actionName == "AXIS_BRAKE_VEHICLE"
-					or actionName == "AXIS_ACCELERATE_VEHICLE"
-					or actionName == "vcaUP"
-					or actionName == "vcaDOWN"
-					or actionName == "vcaLEFT"
-					or actionName == "vcaRIGHT" 
-					or actionName == "vcaINCHING"
-					or actionName == "vcaKEEPSPEED"
-					or actionName == "vcaShifter1"
-					or actionName == "vcaShifter2"
-					or actionName == "vcaShifter3"
-					or actionName == "vcaShifter4"
-					or actionName == "vcaShifter5"
-					or actionName == "vcaShifter6"
-					or actionName == "vcaShifter7"
-					or actionName == "vcaNO_ARB" then 
-				pBool1 = true 
-			elseif actionName == "vcaClutch" then 
-				pBool2 = false 
-				pBool3 = true 
-			end 
 			
-			local _, eventName = self:addActionEvent(self.vcaActionEvents, InputAction[actionName], self, vehicleControlAddon.actionCallback, pBool1, pBool2, pBool3, pBool4, nil);
+			if     isOnActiveVehicle 
+					or actionName == "vcaUP"
+          or actionName == "vcaDOWN"
+          or actionName == "vcaLEFT"
+          or actionName == "vcaRIGHT"
+					or actionName == "vcaSWAPSPEED" then 
+				-- above actions are still active for hired worker
+				local pBool1, pBool2, pBool3, pBool4 = false, true, false, true 
+				if     actionName == "AXIS_MOVE_SIDE_VEHICLE"
+						or actionName == "AXIS_BRAKE_VEHICLE"
+						or actionName == "AXIS_ACCELERATE_VEHICLE"
+						or actionName == "vcaUP"
+						or actionName == "vcaDOWN"
+						or actionName == "vcaLEFT"
+						or actionName == "vcaRIGHT" 
+						or actionName == "vcaINCHING"
+						or actionName == "vcaKEEPSPEED"
+						or actionName == "vcaShifter1"
+						or actionName == "vcaShifter2"
+						or actionName == "vcaShifter3"
+						or actionName == "vcaShifter4"
+						or actionName == "vcaShifter5"
+						or actionName == "vcaShifter6"
+						or actionName == "vcaShifter7"
+						or actionName == "vcaNO_ARB" then 
+					pBool1 = true 
+				elseif actionName == "vcaClutch" then 
+					pBool2 = false 
+					pBool3 = true 
+				end 
+				
+				local _, eventName = self:addActionEvent(self.vcaActionEvents, InputAction[actionName], self, vehicleControlAddon.actionCallback, pBool1, pBool2, pBool3, pBool4, nil);
 
-			if      g_inputBinding                   ~= nil 
-					and g_inputBinding.events            ~= nil 
-					and g_inputBinding.events[eventName] ~= nil
-					and ( actionName == "vcaSETTINGS"
-					   or ( self.vcaShuttleCtrl and actionName == "vcaDIRECTION" ) ) then 
-				if isSelected then
-					g_inputBinding.events[eventName].displayPriority = 1
-				elseif  isOnActiveVehicle then
-					g_inputBinding.events[eventName].displayPriority = 3
+				if      g_inputBinding                   ~= nil 
+						and g_inputBinding.events            ~= nil 
+						and g_inputBinding.events[eventName] ~= nil
+						and ( actionName == "vcaSETTINGS"
+							 or ( self.vcaShuttleCtrl and actionName == "vcaDIRECTION" ) ) then 
+					if isSelected then
+						g_inputBinding.events[eventName].displayPriority = 1
+					elseif  isOnActiveVehicle then
+						g_inputBinding.events[eventName].displayPriority = 3
+					end
 				end
 			end
 		end
