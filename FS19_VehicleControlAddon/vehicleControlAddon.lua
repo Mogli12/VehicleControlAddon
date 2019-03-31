@@ -2991,8 +2991,8 @@ function vehicleControlAddon:vcaShowSettingsUI()
 	for i,v in pairs( { 0,
 											2, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 
 											3, 3.1, 3.2, 3.4, 3.6, 3.8, 4, 4.2, 4.5, 4.8, 
-											5, 5.5, 6, 7, 7.5, 8, 9, 10, 12, 13.5, 15, 
-											18, 24, 30, 36, 40, 48 } ) do
+											5, 5.5, 6, 6.5, 7, 7.5, 8, 8.4, 9, 10, 12, 13.5, 15, 
+											18, 18.2, 21, 24, 28, 30, 36, 40, 48 } ) do
 		self.vcaUI.vcaSnapDistance_V[i] = v
 		self.vcaUI.vcaSnapDistance[i]   = string.format( "%4.1fm",v )
 	end 
