@@ -16,6 +16,7 @@ end
 function vehicleControlAddon.registerEventListeners(vehicleType)
 	for _,n in pairs( { "onLoad", 
 											"onPostLoad", 
+											"onPreUpdate", 
 											"onUpdate", 
 											"onDraw",
 											"onLeaveVehicle",
@@ -457,11 +458,7 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
 																"vcaShifter6",
 																"vcaShifter7",
 																"vcaShifterLH",
-																"vcaClutch",
-																"AXIS_BRAKE_VEHICLE",
-																"AXIS_ACCELERATE_VEHICLE",
-																"AXIS_MOVE_SIDE_VEHICLE" }) do
-			
+																"vcaClutch" }) do
 			if     isOnActiveVehicle 
 					or actionName == "vcaUP"
           or actionName == "vcaDOWN"
@@ -470,10 +467,7 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
 					or actionName == "vcaSWAPSPEED" then 
 				-- above actions are still active for hired worker
 				local pBool1, pBool2, pBool3, pBool4 = false, true, false, true 
-				if     actionName == "AXIS_MOVE_SIDE_VEHICLE"
-						or actionName == "AXIS_BRAKE_VEHICLE"
-						or actionName == "AXIS_ACCELERATE_VEHICLE"
-						or actionName == "vcaUP"
+				if     actionName == "vcaUP"
 						or actionName == "vcaDOWN"
 						or actionName == "vcaLEFT"
 						or actionName == "vcaRIGHT" 
@@ -513,10 +507,7 @@ end
 
 function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState, isAnalog, isMouse, deviceCategory)
 
-	if actionName ~= "AXIS_MOVE_SIDE_VEHICLE" then 
-		vehicleControlAddon.debugPrint( 'vehicleControlAddon:actionCallback( "'..tostring(actionName)..'", '..tostring(keyStatus)..' )' )
-	end 
-	
+
 	if     actionName == "vcaGearUp"
 			or actionName == "vcaGearDown"
 			or actionName == "vcaRangeUp" 
@@ -535,9 +526,7 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 		return 
 	end 
 
-	if     actionName == "AXIS_MOVE_SIDE_VEHICLE"  and math.abs( keyStatus ) > 0.05 then 
-		self:vcaSetState( "vcaSnapIsOn", false )
-	elseif actionName == "vcaClutch" then 
+	if     actionName == "vcaClutch" then 
 		self.vcaCloseClutchNonAnalog = nil 
 		if     isAnalog then 
 			self.vcaClutchPercent = math.min( 1, 1.2*math.max( keyStatus-0.1, 0 ) )
@@ -721,7 +710,21 @@ function vehicleControlAddon:vcaIsActive()
 	return false
 end 
 
-function vehicleControlAddon:onUpdate(dt)
+function vehicleControlAddon:onPreUpdate(dt, isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
+
+	if       self.isClient
+			and self.getIsEntered  ~= nil
+			and self.spec_drivable ~= nil
+			and self:getIsEntered()
+			and self:getIsActiveForInput(true, true)
+			and self:getIsVehicleControlledByPlayer()
+			and math.abs( self.spec_drivable.lastInputValues.axisSteer ) > 0.05 then 
+		self:vcaSetState( "vcaSnapIsOn", false )
+	end 
+	
+end
+
+function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
 
 	self.vcaTickDt = dt
 
@@ -737,7 +740,7 @@ function vehicleControlAddon:onUpdate(dt)
 		end 
 		self.vcaControllerName = "" 
 	end 
-	
+		
 	if self.isServer and self.vcaControllerName ~= lastControllerName then 
 		if lastControllerName ~= "" then 
 			if self.vcaUserSettings[lastControllerName] == nil then 
@@ -776,7 +779,7 @@ function vehicleControlAddon:onUpdate(dt)
 		end 
 	end 
 	
-	if self.isClient and self:getIsControlled() and self:getIsEntered() then 
+	if self.isClient and self.getIsEntered ~= nil and self:getIsControlled() and self:getIsEntered() then 
 		self.vcaIsEntered = not g_gui:getIsGuiVisible()
 		self:vcaSetState( "vcaIsEnteredMP", self.vcaIsEntered or self.spec_drivable.cruiseControl.state == 1 )
 	else 
@@ -1435,7 +1438,7 @@ function vehicleControlAddon:onDraw()
 				y = y + l * 1.2	
 			end 
 
-			if not ( -4 <= self.vcaLastSnapAngle and self.vcaLastSnapAngle <= 4 ) then 
+			if self.aiveAutoSteer or not ( -4 <= self.vcaLastSnapAngle and self.vcaLastSnapAngle <= 4 ) then 
 				renderText(x, y, l, string.format( "%4.1f°", math.deg( math.pi - d )))
 				y = y + l * 1.2	
 			else
@@ -1462,7 +1465,7 @@ function vehicleControlAddon:onDraw()
 		end 
 			
 		local snapDraw = false
-		if not ( -4 <= self.vcaLastSnapAngle and self.vcaLastSnapAngle <= 4 ) then 		
+		if self.aiveAutoSteer or not ( -4 <= self.vcaLastSnapAngle and self.vcaLastSnapAngle <= 4 ) then 		
 			self.vcaSnapDrawTimer = nil
 			self.vcaSnapPosTimer  = nil 
 		elseif self.vcaSnapDistance  < 1 then 
@@ -1772,7 +1775,7 @@ function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, ax
 	self.vcaAxisSideLast     = nil
 	self.vcaSnapAngleTimer   = nil
 	
-	if self.vcaSnapIsOn and self.vcaIsEnteredMP then 
+	if self.vcaSnapIsOn and self.vcaIsEnteredMP and not ( self.aiveAutoSteer ) then 
 		local lx, lz 
 		if self.vcaMovingDir < 0 then 
 			lx,_,lz = localDirectionToWorld( self:vcaGetSteeringNode(), 0, 0, -1 )	
@@ -2811,6 +2814,8 @@ function vehicleControlAddon:vcaOnSetSnapIsOn( old, new, noEventSend )
       playSample(vehicleControlAddon.snapOffSample, 1, 0.2, 0, 0, 0)
 		end 
 	end 
+
+	self:requestActionEventUpdate()	
 end 
 
 function vehicleControlAddon:vcaOnSetDirection( old, new, noEventSend )
