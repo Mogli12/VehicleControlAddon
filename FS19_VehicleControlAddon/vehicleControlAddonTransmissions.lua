@@ -548,17 +548,15 @@ function vehicleControlAddonTransmissionBase.loadSettings()
 
 	local file = getUserProfileAppPath().. "modsSettings/FS19_VehicleControlAddon/transmissions.xml"
 	
-	print(file)
-	
 	if fileExists(file) then	
-		print("Loading transmissions")
+		print('Loading "'..tostring(file)..'"...')
 	
 		local xmlFile = loadXMLFile( "vehicleControlAddonTransmissionBase", file, "transmissions" )
 		local i = 0
 		while true do
 			local key  = string.format( "transmissions.transmission(%d)", i )
-			local style = getXMLString( xmlFile, key.."#style" )
-			if style == nil then 
+			local label = getXMLString( xmlFile, key.."#label" )
+			if label == nil then 
 				break 
 			end 
 			i = i + 1 
@@ -579,70 +577,10 @@ function vehicleControlAddonTransmissionBase.loadSettings()
 			
 			local j
 			
-			if noGear ~= nil then 
-				timeGears          = getXMLInt(  xmlFile, key.."#gearShiftTimeMs" )
-				timeRanges         = getXMLInt(  xmlFile, key.."#rangeShiftTimeMs" )
-				autoGears          = getXMLBool( xmlFile, key.."#autoShiftGears" )
-				autoRanges         = getXMLBool( xmlFile, key.."#autoShiftRanges" )
-				
-				j = 0
-				while true do 
-					local key2   = string.format( "transmissions.transmission(%d).gearRatio(%d)", i, j )
-					local number = getXMLFloat( xmlFile, key2.."#value" ) 
-					if number == nil then
-						break 
-					end 
-					if j == 0 then 
-						gearRatios = { number } 
-					else 
-						table.insert( gearRatios, number ) 
-					end 
-					j = j + 1 
-				end 
-				
-				j = 0
-				while true do 
-					local key2   = string.format( "transmissions.transmission(%d).range(%d)", i, j )
-					local number = getXMLInt( xmlFile, key2.."#gearOffset" ) 
-					if number == nil then
-						break 
-					end 
-					local offset = noGears - number
-					table.insert( rangeGearOverlap, offset ) 
-					j = j + 1 
-				end 
-				
-				j = 0
-				while true do 
-					local key2 = string.format( "transmissions.transmission(%d).gearText(%d)", i, j )
-					local text = getXMLString( xmlFile, key2.."#value" ) 
-					if text == nil then
-						break 
-					end 
-					if j == 0 then 
-						gearTexts = { text } 
-					else 
-						table.insert( gearTexts, text ) 
-					end 
-					j = j + 1 
-				end 
-				
-				j = 0
-				while true do 
-					local key2 = string.format( "transmissions.transmission(%d).rangeText(%d)", i, j )
-					local text = getXMLString( xmlFile, key2.."#value" ) 
-					if text == nil then
-						break 
-					end 
-					if j == 0 then 
-						rangeTexts = { text } 
-					else 
-						table.insert( rangeTexts, text ) 
-					end 
-					j = j + 1 
-				end 
-				
-			elseif getXMLFloat( xmlFile, key..".gears.gear(1)#speed" ) ~= nil then 
+		--print("Transmission: "..tostring(label))
+			
+			if getXMLFloat( xmlFile, key..".gears.gear(1)#speed" ) ~= nil then 
+			--print("gears and ranges")
 			
 				local gears = {} 
 				
@@ -722,14 +660,85 @@ function vehicleControlAddonTransmissionBase.loadSettings()
 					j = j + 1 
 				end 
 				
+			elseif noGears ~= nil then 
+			--print("gears and ranges with offset")
+				
+				timeGears          = getXMLInt(  xmlFile, key.."#gearShiftTimeMs" )
+				timeRanges         = getXMLInt(  xmlFile, key.."#rangeShiftTimeMs" )
+				autoGears          = getXMLBool( xmlFile, key.."#autoShiftGears" )
+				autoRanges         = getXMLBool( xmlFile, key.."#autoShiftRanges" )
+				
+				j = 0
+				while true do 
+					local key2   = key..string.format( ".gearRatios.gearRatio(%d)", j )
+					local number = getXMLFloat( xmlFile, key2.."#value" ) 
+				--print(tostring(key2)..": "..tostring(number))
+					if number == nil then
+						break 
+					end 
+					if j == 0 then 
+						gearRatios = { number } 
+					else 
+						table.insert( gearRatios, number ) 
+					end 
+					j = j + 1 
+				end 
+				
+				j = 0
+				while true do 
+					local key2   = key..string.format( ".rangeGearOffsets.rangeGearOffset(%d)", j )
+					local number = getXMLInt( xmlFile, key2.."#value" ) 
+				--print(tostring(key2)..": "..tostring(number))
+					if number == nil then
+						break 
+					end 
+					local offset = noGears - number
+					table.insert( rangeGearOverlap, offset ) 
+					j = j + 1 
+				end 
+				
+				j = 0
+				while true do 
+					local key2 = key..string.format( ".gearTexts. gearText(%d)", j )
+					local text = getXMLString( xmlFile, key2.."#value" ) 
+				--print(tostring(key2)..": "..tostring(text))
+					if text == nil then
+						break 
+					end 
+					if j == 0 then 
+						gearTexts = { text } 
+					else 
+						table.insert( gearTexts, text ) 
+					end 
+					j = j + 1 
+				end 
+				
+				j = 0
+				while true do 
+					local key2 = key..string.format( ".rangeTexts.rangeText(%d)", j )
+					local text = getXMLString( xmlFile, key2.."#value" ) 
+				--print(tostring(key2)..": "..tostring(text))
+					if text == nil then
+						break 
+					end 
+					if j == 0 then 
+						rangeTexts = { text } 
+					else 
+						table.insert( rangeTexts, text ) 
+					end 
+					j = j + 1 
+				end 
+				
 			end 
 			
-			print("Transmission: "..tostring(name)..", #gears "..tostring(noGears))
+			if noGears ~= nil and noGears > 0 then 		
+				print("Transmission: "..tostring(label)..", #gears "..tostring(noGears)..", #ranges "..tostring(#rangeGearOverlap+1))
 
-			table.insert( vehicleControlAddonTransmissionBase.transmissionList, 
-										{ class  = vehicleControlAddonTransmissionBase,
-											params = { name, noGears, timeGears, rangeGearOverlap, timeRanges, gearRatios, autoGears, autoRanges, splitGears4Shifter, gearTexts, rangeTexts },
-											text   = "Extra: "..name } )
+				table.insert( vehicleControlAddonTransmissionBase.transmissionList, 
+											{ class  = vehicleControlAddonTransmissionBase,
+												params = { name, noGears, timeGears, rangeGearOverlap, timeRanges, gearRatios, autoGears, autoRanges, splitGears4Shifter, gearTexts, rangeTexts },
+												text   = label } )
+			end 		
 		end 		
 	end 
 
