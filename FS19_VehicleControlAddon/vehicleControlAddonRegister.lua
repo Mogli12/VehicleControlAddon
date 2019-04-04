@@ -2,7 +2,8 @@ vehicleControlAddon_Register = {};
 vehicleControlAddon_Register.g_currentModDirectory = g_currentModDirectory
 vehicleControlAddon_Register.specName = "zzzVehicleControlAddon"
 
-if g_specializationManager:getSpecializationByName(vehicleControlAddon_Register.specName) == nil then 
+function vehicleControlAddon_Register:beforeFinalizeVehicleTypes()
+
 	if vehicleControlAddon == nil then 
 		print("Failed to add specialization vehicleControlAddon")
 	else 
@@ -14,6 +15,7 @@ if g_specializationManager:getSpecializationByName(vehicleControlAddon_Register.
 				local hasLights    = false 
 				local hasWheels    = false 
 				local isAttachable = false 
+				local hasNotVCA    = true 
 				for name, spec in pairs(typeDef.specializationsByName) do
 					if     name == "drivable"   then 
 						isDrivable = true 
@@ -27,9 +29,11 @@ if g_specializationManager:getSpecializationByName(vehicleControlAddon_Register.
 						hasWheels = true 
 					elseif name == "attachable" then 
 						isAttachable = true 
+					elseif name == vehicleControlAddon_Register.specName then 
+						isAttachable = true 
 					end 
 				end 
-				if isDrivable and isEnterable and hasMotor and hasLights and hasWheels and not isAttachable then 
+				if hasNotVCA and isDrivable and isEnterable and hasMotor and hasLights and hasWheels and not isAttachable then 
 					print("  adding vehicleControlAddon to vehicleType '"..tostring(k).."'")
 					typeDef.specializationsByName[vehicleControlAddon_Register.specName] = vehicleControlAddon
 					table.insert(typeDef.specializationNames, vehicleControlAddon_Register.specName)
@@ -39,6 +43,7 @@ if g_specializationManager:getSpecializationByName(vehicleControlAddon_Register.
 		end 	
 	end 
 end 
+VehicleTypeManager.finalizeVehicleTypes = Utils.prependedFunction(VehicleTypeManager.finalizeVehicleTypes, vehicleControlAddon_Register.beforeFinalizeVehicleTypes)
 
 function vehicleControlAddon_Register:loadMap(name)
 	print("--- loading "..g_i18n:getText("vcaVERSION").." by mogli ---")
