@@ -11,7 +11,7 @@ vehicleControlAddonTransmissionBase_mt = vcaClass(vehicleControlAddonTransmissio
 vehicleControlAddonTransmissionBase.gearRatios = { 0.120, 0.145, 0.176, 0.213, 0.259, 0.314, 0.381, 0.462, 0.560, 0.680, 0.824, 1.000 }
 
 
-function vehicleControlAddonTransmissionBase:new( mt, name, noGears, timeGears, rangeGearOverlap, timeRanges, gearRatios, gearTexts, rangeTexts )
+function vehicleControlAddonTransmissionBase:new( name, noGears, timeGears, rangeGearOverlap, timeRanges, gearRatios, autoGears, autoRanges, splitGears4Shifter, gearTexts, rangeTexts )
 	local self = {}
 
 	if mt == nil then 
@@ -36,8 +36,8 @@ function vehicleControlAddonTransmissionBase:new( mt, name, noGears, timeGears, 
 		ft.ofs  = ft.ofs  + self.numberOfGears - rangeGearOverlap[i]
 		i       = i + 1
 	end 
-	self.changeTimeGears  = timeGears
-	self.changeTimeRanges = timeRanges
+	self.changeTimeGears  = Utils.getNoNil( timeGears, 750 )
+	self.changeTimeRanges = Utils.getNoNil( timeRanges, 1000 )
 	local n = self.rangeGearFromTo[self.numberOfRanges].ofs + self.numberOfGears 
 	self.gearRatios       = {}
 	for i=1,n do 		
@@ -90,7 +90,31 @@ function vehicleControlAddonTransmissionBase:new( mt, name, noGears, timeGears, 
 	else 
 		self.rangeTexts = rangeTexts 
 	end 
-
+	
+	if autoGears == nil then 
+		self.autoShiftGears = true 
+	elseif autoGears  then 
+		self.autoShiftGears = true 
+	else 
+		self.autoShiftGears = false 
+	end 
+	
+	if autoRanges == nil then 
+		self.autoShiftRange = true 
+	elseif autoRanges  then 
+		self.autoShiftRange = true 
+	else 
+		self.autoShiftRange = false 
+	end 
+	
+	if splitGears4Shifter == nil then 
+		self.splitGears4Shifter = true 
+	elseif splitGears4Shifter then 
+		self.splitGears4Shifter = true 
+	else 
+		self.splitGears4Shifter = false 
+	end 
+	
 	return self
 end 
 
@@ -244,10 +268,6 @@ function vehicleControlAddonTransmissionBase:rangeDown()
 	end 
 end 
 
-function vehicleControlAddonTransmissionBase:splitGearsForShifter()
-	return true 
-end 
-
 function vehicleControlAddonTransmissionBase:gearShifter( number, isPressed )
 	if isPressed then 
 		local goFwd = nil 
@@ -262,7 +282,7 @@ function vehicleControlAddonTransmissionBase:gearShifter( number, isPressed )
 			self.vehicle.vcaShifter7isR1 = true 
 			goFwd = false 
 			
-			if self:splitGearsForShifter() then 
+			if self.splitGears4Shifter then 
 				num2 = 2
 				for i,l in pairs(list) do  
 					if i > 1 and l > self.vehicle.vcaLaunchGear then 
@@ -290,7 +310,7 @@ function vehicleControlAddonTransmissionBase:gearShifter( number, isPressed )
 				goFwd = true 
 			end 
 			
-			if self:splitGearsForShifter() then 
+			if self.splitGears4Shifter then 
 				num2 =  number + number 
 				if not self.vehicle.vcaShifterLH and num2 > 1 then 
 					num2 = num2 - 1
@@ -356,6 +376,34 @@ function vehicleControlAddonTransmissionBase:getNumberOfRatios()
 	return table.getn( self.gearRatios )
 end 
 
+function vehicleControlAddonTransmissionBase:getAutoShiftIndeces( curIndex, minIndex, searchDown, searchUp )
+	local gearList = {}
+	
+	if self.autoShiftGears and self.autoShiftRange then 
+		for i=1,table.getn( self.gearRatios ) do 
+			if ( i < curIndex and searchDown and i >= minIndex ) or ( searchUp and i > curIndex )  then 
+				table.insert( gearList, i )
+			end 
+		end 
+	else
+		local tmpList = nil
+		if     self.autoShiftGears then 
+			tmpList = self:getRatioIndexListOfRange( self.vehicle.vcaRange )
+		elseif self.autoShiftRange then 
+			tmpList = self:getRatioIndexListOfGear( self.vehicle.vcaGear )
+		end 
+		if tmpList ~= nil then 
+			for _,i in pairs(tmpList) do 
+				if ( i < curIndex and searchDown and i >= minIndex ) or ( searchUp and i > curIndex )  then 
+					table.insert( gearList, i )
+				end 
+			end 
+		end 
+	end 
+	
+	return gearList
+end 
+
 function vehicleControlAddonTransmissionBase:getRatioIndex( gear, range )
 	if gear == nil or range == nil or self.rangeGearFromTo[range] == nil then 
 		return 0
@@ -398,8 +446,20 @@ end
 
 function vehicleControlAddonTransmissionBase:getRatioIndexListOfGear( gear )
 	local list = {}
+	
+	if self.vehicle ~= nil then 
+		self.vehicle.vcaDebugG = "" 
+	end 
+	
 	for i,r in pairs(self.rangeGearFromTo) do 
-		table.insert( list, gear + r.ofs ) 
+		local i = gear + r.ofs
+		if self.gearRatios[i] ~= nil then 
+			table.insert( list, i ) 
+			
+			if self.vehicle ~= nil then 
+				self.vehicle.vcaDebugG = self.vehicle.vcaDebugG .. string.format( "%d  ",i )
+			end 
+		end 
 	end 
 	return list 
 end 
@@ -409,8 +469,18 @@ function vehicleControlAddonTransmissionBase:getRatioIndexListOfRange( range )
 		return {} 
 	end 
 	list = {}
+
+	if self.vehicle ~= nil then 
+		self.vehicle.vcaDebugR = "" 
+	end 
+	
 	for i=self.rangeGearFromTo[range].from,self.rangeGearFromTo[range].to do	
-		table.insert( list, i )
+		if self.gearRatios[i] ~= nil then 
+			table.insert( list, i )
+			if self.vehicle ~= nil then 
+				self.vehicle.vcaDebugR = self.vehicle.vcaDebugR .. string.format( "%d  ",i )
+			end 
+		end 
 	end 
 	return list
 end 
@@ -447,42 +517,224 @@ function vehicleControlAddonTransmissionBase:actionCallback( actionName, keyStat
 	end 
 end 
 
-vehicleControlAddonTransmissionIVT = {}
-function vehicleControlAddonTransmissionIVT:new()
-	local self = vehicleControlAddonTransmissionBase:new( vcaClass(vehicleControlAddonTransmissionIVT,vehicleControlAddonTransmissionBase), "IVT", 1, 0, {}, 0 )
-	return self 
+vehicleControlAddonTransmissionBase.transmissionList = 
+	{ { class  = vehicleControlAddonTransmissionBase, 
+			params = { "IVT", 1, 0, {}, 0 },
+			text   = "IVT" }, 
+		{ class  = vehicleControlAddonTransmissionBase, 
+			params = { "4x4", 4, 750, {2,1,1}, 1000 },
+			text   = "4x4" },
+		{ class  = vehicleControlAddonTransmissionBase,
+			params = { "4PS", 4, 0, {2,1,1}, 750 },
+			text   = "4x4 PowerShift" },
+		{ class  = vehicleControlAddonTransmissionBase,
+			params = { "2x6", 6, 750, {0}, 1000, nil, true, true, false },
+			text   = "2x6" },
+		{ class  = vehicleControlAddonTransmissionBase, 
+			params = { "FPS", 12, 0, {}, 0 },
+			text   = "FullPowerShift" },
+		{ class  = vehicleControlAddonTransmissionBase,
+			params = { "6PS", 2, 0, {0,0,0,0,0}, 750 },
+			text   = "6 Gears with Splitter" },
+		{ class  = vehicleControlAddonTransmissionBase,
+			params = { "4PA", 4, 0, {2,1,1}, 750, nil, true, false },
+			text   = "4x4 AutoQuad" },
+		{ class  = vehicleControlAddonTransmissionBase,
+			params = { "PKW", 6, 500, {3}, 1000, { 0.1, 0.15, 0.2, 0.2778, 0.3889, 0.5278, 0.7222, 1, 1.3889 }, true, false },
+			text   = "Car with low range" }
+	}
+	
+function vehicleControlAddonTransmissionBase.loadSettings()
+
+	local file = getUserProfileAppPath().. "modsSettings/FS19_VehicleControlAddon/transmissions.xml"
+	
+	print(file)
+	
+	if fileExists(file) then	
+		print("Loading transmissions")
+	
+		local xmlFile = loadXMLFile( "vehicleControlAddonTransmissionBase", file, "transmissions" )
+		local i = 0
+		while true do
+			local key  = string.format( "transmissions.transmission(%d)", i )
+			local style = getXMLString( xmlFile, key.."#style" )
+			if style == nil then 
+				break 
+			end 
+			i = i + 1 
+			
+			local name               = string.format( "X%02d", i )
+
+      local timeGears          = nil
+      local timeRanges         = nil
+      local autoGears          = nil
+      local autoRanges         = nil
+			local rangeGearOverlap   = {}
+			local gearRatios         = nil
+			local gearTexts          = nil
+			local rangeTexts         = nil
+
+			local splitGears4Shifter = getXMLBool( xmlFile, key.."#splitGears4Shifter" )
+			local noGears            = getXMLInt(  xmlFile, key.."#numberOfGears" )
+			
+			local j
+			
+			if noGear ~= nil then 
+				timeGears          = getXMLInt(  xmlFile, key.."#gearShiftTimeMs" )
+				timeRanges         = getXMLInt(  xmlFile, key.."#rangeShiftTimeMs" )
+				autoGears          = getXMLBool( xmlFile, key.."#autoShiftGears" )
+				autoRanges         = getXMLBool( xmlFile, key.."#autoShiftRanges" )
+				
+				j = 0
+				while true do 
+					local key2   = string.format( "transmissions.transmission(%d).gearRatio(%d)", i, j )
+					local number = getXMLFloat( xmlFile, key2.."#value" ) 
+					if number == nil then
+						break 
+					end 
+					if j == 0 then 
+						gearRatios = { number } 
+					else 
+						table.insert( gearRatios, number ) 
+					end 
+					j = j + 1 
+				end 
+				
+				j = 0
+				while true do 
+					local key2   = string.format( "transmissions.transmission(%d).range(%d)", i, j )
+					local number = getXMLInt( xmlFile, key2.."#gearOffset" ) 
+					if number == nil then
+						break 
+					end 
+					local offset = noGears - number
+					table.insert( rangeGearOverlap, offset ) 
+					j = j + 1 
+				end 
+				
+				j = 0
+				while true do 
+					local key2 = string.format( "transmissions.transmission(%d).gearText(%d)", i, j )
+					local text = getXMLString( xmlFile, key2.."#value" ) 
+					if text == nil then
+						break 
+					end 
+					if j == 0 then 
+						gearTexts = { text } 
+					else 
+						table.insert( gearTexts, text ) 
+					end 
+					j = j + 1 
+				end 
+				
+				j = 0
+				while true do 
+					local key2 = string.format( "transmissions.transmission(%d).rangeText(%d)", i, j )
+					local text = getXMLString( xmlFile, key2.."#value" ) 
+					if text == nil then
+						break 
+					end 
+					if j == 0 then 
+						rangeTexts = { text } 
+					else 
+						table.insert( rangeTexts, text ) 
+					end 
+					j = j + 1 
+				end 
+				
+			elseif getXMLFloat( xmlFile, key..".gears.gear(1)#speed" ) ~= nil then 
+			
+				local gears = {} 
+				
+				local baseSpeed = getXMLFloat( xmlFile, key..".gears#baseSpeed" )
+				timeGears       = getXMLInt(   xmlFile, key..".gears#shiftTimeMs" )
+				timeRanges      = getXMLInt(   xmlFile, key..".ranges#shiftTimeMs" )
+				autoGears       = true 
+				autoRanges      = false 
+				gearRatios      = {}
+				local maxSpeed  = 0
+				
+				j = 0
+				while true do 
+					local key2  = key..string.format( ".gears.gear(%d)", j )
+					local speed = getXMLFloat( xmlFile, key2.."#speed" ) 
+					if speed == nil then 
+						break 
+					end 
+					
+					table.insert( gears, speed )
+					
+					if maxSpeed < speed then 
+						maxSpeed = speed 
+					end 
+					
+					local text = getXMLString( xmlFile, key2.."#text" ) 
+					if text ~= nil then 
+						if j == 0 then 
+							gearTexts = { text } 
+						elseif gearTexts  ~= nil then 
+							table.insert( gearTexts, text ) 
+						end 
+					end
+					j = j + 1 
+				end 
+				
+				if #gears < 1 then 
+					if baseSpeed == nil then 
+						baseSpeed = 1 
+					end 
+					gears = { baseSpeed }
+				elseif baseSpeed == nil then 
+					baseSpeed = maxSpeed 
+				end 
+				
+				noGears = #gears 
+				
+				j = 0
+				while true do 
+					local key2  = key..string.format( ".ranges.range(%d)", j )
+					local ratio = getXMLFloat( xmlFile, key2.."#ratio" ) 
+					if ratio == nil then
+						if j == 0 then 
+							for _,g in pairs(gears) do 
+								table.insert( gearRatios, g / baseSpeed )
+							end 
+						end 
+						break 
+					end 
+					
+					for _,g in pairs(gears) do 
+						table.insert( gearRatios, g * ratio / baseSpeed )
+					end 
+					
+					if j > 0 then 
+						table.insert( rangeGearOverlap, 0 )
+					end 
+					
+					local text = getXMLString( xmlFile, key2.."#text" ) 
+					if text ~= nil then 
+						if j == 0 then 
+							rangeTexts = { text } 
+						elseif rangeTexts  ~= nil then 
+							table.insert( rangeTexts, text ) 
+						end 
+					end
+					j = j + 1 
+				end 
+				
+			end 
+			
+			print("Transmission: "..tostring(name)..", #gears "..tostring(noGears))
+
+			table.insert( vehicleControlAddonTransmissionBase.transmissionList, 
+										{ class  = vehicleControlAddonTransmissionBase,
+											params = { name, noGears, timeGears, rangeGearOverlap, timeRanges, gearRatios, autoGears, autoRanges, splitGears4Shifter, gearTexts, rangeTexts },
+											text   = "Extra: "..name } )
+		end 		
+	end 
+
 end 
 
-vehicleControlAddonTransmission4x4 = {}
-function vehicleControlAddonTransmission4x4:new()
-	local self = vehicleControlAddonTransmissionBase:new( vcaClass(vehicleControlAddonTransmission4x4,vehicleControlAddonTransmissionBase), "4X4", 4, 750, {2,1,1}, 1000 )
-	return self 
-end 
+vehicleControlAddonTransmissionBase.loadSettings()
 
-vehicleControlAddonTransmission4PS = {}
-function vehicleControlAddonTransmission4PS:new()
-	local self = vehicleControlAddonTransmissionBase:new( vcaClass(vehicleControlAddonTransmission4PS,vehicleControlAddonTransmissionBase), "4PS", 4, 0, {2,1,1}, 750 )
-	return self 
-end 
-
-vehicleControlAddonTransmission2x6 = {}
-function vehicleControlAddonTransmission2x6:new()
-	local self = vehicleControlAddonTransmissionBase:new( vcaClass(vehicleControlAddonTransmission2x6,vehicleControlAddonTransmissionBase), "2X6", 6, 750, {0}, 1000 )
-	return self 
-end 
-function vehicleControlAddonTransmission2x6:splitGearsForShifter()
-	return false 
-end 
-
-vehicleControlAddonTransmissionFPS = {}
-function vehicleControlAddonTransmissionFPS:new()
-	local self = vehicleControlAddonTransmissionBase:new( vcaClass(vehicleControlAddonTransmissionFPS,vehicleControlAddonTransmissionBase), "FPS", 12, 0, {}, 0 )
-	return self 
-end 
-
-vehicleControlAddonTransmission6PS = {}
-function vehicleControlAddonTransmission6PS:new()
-	local self = vehicleControlAddonTransmissionBase:new( vcaClass(vehicleControlAddonTransmission6PS,vehicleControlAddonTransmissionBase), "6PS", 2, 0, {0,0,0,0,0}, 750 )
-	return self 
-end 
 

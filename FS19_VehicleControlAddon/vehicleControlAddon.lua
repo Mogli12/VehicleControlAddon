@@ -47,8 +47,8 @@ local listOfProperties =
 		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="snapDist",      propName="vcaSnapDistance"  },
 		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="drawHud",       propName="vcaDrawHud"       }, 
 		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="brakeForce",    propName="vcaBrakeForce"    },
-		{ getFunc=getXMLInt  , setFunc=setXMLInt  , xmlName="launchGear",    propName="vcaLaunchGear"    },
 		{ getFunc=getXMLInt  , setFunc=setXMLInt  , xmlName="transmission",  propName="vcaTransmission"  },
+		{ getFunc=getXMLInt  , setFunc=setXMLInt  , xmlName="launchGear",    propName="vcaLaunchGear"    },
 		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="autoShift",     propName="vcaAutoShift"     },
 		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="autoClutch",    propName="vcaAutoClutch"    },
 		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="maxSpeed",      propName="vcaMaxSpeed"      },
@@ -96,7 +96,7 @@ function vehicleControlAddon.globalsReset( createIfMissing )
 		print("ERROR: NO GLOBALS IN "..file)
 	end
 	
-	file = getUserProfileAppPath().. "modsSettings/FS19_VehicleControlAddon/vehicleControlAddonConfig.xml"
+	file = getUserProfileAppPath().. "modsSettings/FS19_VehicleControlAddon/config.xml"
 	if fileExists(file) then	
 		print('Loading "'..file..'"...')
 		vehicleControlAddon.globalsLoad( file, "VCAGlobals", VCAGlobals )	
@@ -388,6 +388,28 @@ function vehicleControlAddon:onPostLoad(savegame)
 	end 
 	
 	self:vcaSetState( "vcaKSIsOn", self.vcaKSToggle )
+	
+	if self.spec_motorized ~= nil then 
+		local pMax  = 0
+		local mMax1 = 0
+		local mMax2 = 0
+		for _,k in pairs( self.spec_motorized.motor.torqueCurve.keyframes ) do 
+			local p = k.time * k[1]
+			if p > pMax then 
+				pMax  = p 
+				mMax1 = k.time 
+				mMax2 = k.time 
+			elseif p > 0.9 * pMax then 
+				mMax2 = k.time 
+			end 
+		end 
+		
+		print(tostring(self.configFileName)..": "..tostring( mMax1 ).." .. "..tostring(mMax2 ))
+		
+		self.vcaPowerRpm = mMax1 
+		self.vcaRatedRpm = mMax2 
+	end 
+	
 end 
 
 function vehicleControlAddon:saveToXMLFile(xmlFile, xmlKey)
@@ -2436,7 +2458,10 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			end 
 		elseif self.vehicle.vcaAutoShift and self.gearChangeTimer <= 0 and not self.vehicle.vcaNeutral and self.vehicle.vcaShifterIndex <= 0 then
 			local m1 = self.minRpm * 1.1
-			local m4 = self.maxRpm * 0.975
+			local m4 = math.min( math.max( self.vehicle.vcaRatedRpm, motorPtoRpm ), self.maxRpm * 0.975 )
+			if motorPtoRpm <= 0 and curBrake <= 0 and curAcc > 0.1 and curAcc < 0.8 and self.gearChangeTimer <= 0 then 
+				m4 = math.max( m1, math.min( m4, self.minRpm + curAcc * rpmRange * 0.975 ) )
+			end 
 			local m2 = math.min( m4, m1 / 0.72 )
 			local m3 = math.max( m1, m4 * 0.72 )
 			local autoMinRpm = m1 + self.vcaLoad * ( m3 - m1 )
@@ -2467,14 +2492,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 				lowGear    = self.vehicle.vcaLaunchGear
 			end 
 			
-			gearlist = {}
-			if searchUp or searchDown then 
-				for i=1,transmission:getNumberOfRatios() do 
-					if ( i < gear and searchDown and i >= lowGear ) or ( searchUp and i > gear )  then 
-						table.insert( gearlist, i )
-					end 
-				end 
-			end 
+			local gearlist = transmission:getAutoShiftIndeces( gear, lowGear, searchDown, searchUp )
 			
 			if #gearlist > 0 then 
 				local d = 0
@@ -2506,6 +2524,9 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 				
 				self.vehicle.vcaDebugA = string.format( "%3.0f%%; %3.0f%%; %4.0f..%4.0f; %4.0f -> %4.0f; %d -> %d; %5.0f -> %5.0f",
 																								curAcc*100,self.vcaLoad*100,autoMinRpm,autoMaxRpm,wheelRpm, rr,gear,newGear,d1,d )
+			else 
+				self.vehicle.vcaDebugA = string.format( "%3.0f%%; %3.0f%%; %4.0f..%4.0f; %4.0f no gear",
+																								curAcc*100,self.vcaLoad*100,autoMinRpm,autoMaxRpm,wheelRpm)
 			end 
 		end
 
@@ -2837,18 +2858,11 @@ function vehicleControlAddon:vcaOnSetTransmission( old, new, noEventSend )
 		return 
 	end 
 		
-	if     self.vcaTransmission == 1 then
-		self.vcaGearbox = vehicleControlAddonTransmissionIVT:new()
-	elseif self.vcaTransmission == 2 then
-		self.vcaGearbox = vehicleControlAddonTransmission4x4:new()
-	elseif self.vcaTransmission == 3 then
-		self.vcaGearbox = vehicleControlAddonTransmission4PS:new()
-	elseif self.vcaTransmission == 4 then
-		self.vcaGearbox = vehicleControlAddonTransmission2x6:new()
-	elseif self.vcaTransmission == 5 then
-		self.vcaGearbox = vehicleControlAddonTransmissionFPS:new()
-	elseif self.vcaTransmission == 6 then
-		self.vcaGearbox = vehicleControlAddonTransmission6PS:new()
+	local transmissionDef = vehicleControlAddonTransmissionBase.transmissionList[self.vcaTransmission]
+	if transmissionDef == nil then 
+		self.vcaGearbox = nil  
+	else 
+		self.vcaGearbox = transmissionDef.class:new( unpack( transmissionDef.params ) )
 	end 
 	
 	if self.vcaGearbox ~= nil then 
@@ -2959,7 +2973,10 @@ function vehicleControlAddon:vcaShowSettingsUI()
 	for i,e in pairs( self.vcaUI.vcaBrakeForce_V ) do
 		self.vcaUI.vcaBrakeForce[i] = string.format("%3.0f %%", 100 * e )
 	end
-	self.vcaUI.vcaTransmission = { "off", "IVT", "4x4", "4x4 PowerShift", "2x6", "FullPowerShift", "6 Gears with Splitter" }
+	self.vcaUI.vcaTransmission = { "off" }
+	for i,t in pairs(vehicleControlAddonTransmissionBase.transmissionList) do 
+		table.insert( self.vcaUI.vcaTransmission , t.text )
+	end 
 	
 	local m = vehicleControlAddon.getDefaultMaxSpeed( self )
 	self.vcaUI.vcaMaxSpeed_V = { 7, 8.889, 11.944, 16.111, 18.056, 20.417, 25, 33.333, 50 }
