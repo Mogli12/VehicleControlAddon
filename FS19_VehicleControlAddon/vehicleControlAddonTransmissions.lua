@@ -11,7 +11,7 @@ vehicleControlAddonTransmissionBase_mt = vcaClass(vehicleControlAddonTransmissio
 vehicleControlAddonTransmissionBase.gearRatios = { 0.120, 0.145, 0.176, 0.213, 0.259, 0.314, 0.381, 0.462, 0.560, 0.680, 0.824, 1.000 }
 
 
-function vehicleControlAddonTransmissionBase:new( name, noGears, timeGears, rangeGearOverlap, timeRanges, gearRatios, autoGears, autoRanges, splitGears4Shifter, gearTexts, rangeTexts )
+function vehicleControlAddonTransmissionBase:new( name, noGears, timeGears, rangeGearOverlap, timeRanges, gearRatios, autoGears, autoRanges, splitGears4Shifter, gearTexts, rangeTexts, shifterIndexList )
 	local self = {}
 
 	if mt == nil then 
@@ -114,6 +114,8 @@ function vehicleControlAddonTransmissionBase:new( name, noGears, timeGears, rang
 	else 
 		self.splitGears4Shifter = false 
 	end 
+	
+	self.shifterIndexList = shifterIndexList
 	
 	return self
 end 
@@ -269,10 +271,20 @@ function vehicleControlAddonTransmissionBase:rangeDown()
 end 
 
 function vehicleControlAddonTransmissionBase:gearShifter( number, isPressed )
-	if isPressed then 
+	if not isPressed then 
+		self.vehicle:vcaSetState( "vcaNeutral", true )
+		if self.vehicle.spec_motorized.motor.vcaLoad ~= nil then  
+			self.vehicle:vcaSetState("vcaBOVVolume",self.vehicle.spec_motorized.motor.vcaLoad)
+		end 
+	else 
 		local goFwd = nil 
-		local list  = self:getGearShifterIndeces()
 		local num2  = 0
+		local list  
+		if self.shifterIndexList == nil then 
+			list  = self:getGearShifterIndeces()
+		else 
+			list = self.shifterIndexList
+		end 
 		
 		if number == 7 then 
 			if not self.vehicle.vcaShuttleCtrl then 
@@ -344,11 +356,6 @@ function vehicleControlAddonTransmissionBase:gearShifter( number, isPressed )
 			if goFwd ~= nil then
 				self.vehicle:vcaSetState( "vcaShuttleFwd", goFwd )
 			end
-		end 
-	else 
-		self.vehicle:vcaSetState( "vcaNeutral", true )
-		if self.vehicle.spec_motorized.motor.vcaLoad ~= nil then  
-			self.vehicle:vcaSetState("vcaBOVVolume",self.vehicle.spec_motorized.motor.vcaLoad)
 		end 
 	end 
 end 
@@ -517,6 +524,9 @@ function vehicleControlAddonTransmissionBase:actionCallback( actionName, keyStat
 	end 
 end 
 
+
+--( name, noGears, timeGears, rangeGearOverlap, timeRanges, gearRatios, autoGears, autoRanges, splitGears4Shifter, gearTexts, rangeTexts )
+
 vehicleControlAddonTransmissionBase.transmissionList = 
 	{ { class  = vehicleControlAddonTransmissionBase, 
 			params = { "IVT", 1, 0, {}, 0 },
@@ -537,8 +547,15 @@ vehicleControlAddonTransmissionBase.transmissionList =
 			params = { "6PS", 2, 0, {0,0,0,0,0}, 750 },
 			text   = "6 Gears with Splitter" },
 		{ class  = vehicleControlAddonTransmissionBase,
-			params = { "4PA", 4, 0, {2,1,1}, 750, nil, true, false },
-			text   = "4x4 AutoQuad" },
+			params = { "64A", 4, 0, {0,0,0,0,0}, 750, { 0.0638968, 0.0766104, 0.0916914, 0.1096000,
+																									0.1149676, 0.1378428, 0.1649775, 0.1972000,
+																									0.1844612, 0.2211636, 0.2647002, 0.3164000,
+																									0.2778578, 0.3331434, 0.3987236, 0.4766000,
+																									0.3820982, 0.4581246, 0.5483076, 0.6554000,
+																									0.5830000, 0.6990000, 0.8366000, 1.0000000 }, 
+												true, false, true, {"A","B","C","D"}, {"1","2","3","4","5","6"}, 
+												{ 3, 4, 7, 8, 11, 12, 15, 16, 19, 20, 23, 24, 3, 4 } },
+			text   = "6x4 AutoPowerShift" },
 		{ class  = vehicleControlAddonTransmissionBase,
 			params = { "PKW", 6, 500, {3}, 1000, { 0.1, 0.15, 0.2, 0.2778, 0.3889, 0.5278, 0.7222, 1, 1.3889 }, true, false },
 			text   = "Car with low range" }
@@ -571,6 +588,7 @@ function vehicleControlAddonTransmissionBase.loadSettings()
 			local gearRatios         = nil
 			local gearTexts          = nil
 			local rangeTexts         = nil
+			local shifterIndexList   = nil
 
 			local splitGears4Shifter = getXMLBool( xmlFile, key.."#splitGears4Shifter" )
 			local noGears            = getXMLInt(  xmlFile, key.."#numberOfGears" )
@@ -736,7 +754,8 @@ function vehicleControlAddonTransmissionBase.loadSettings()
 
 				table.insert( vehicleControlAddonTransmissionBase.transmissionList, 
 											{ class  = vehicleControlAddonTransmissionBase,
-												params = { name, noGears, timeGears, rangeGearOverlap, timeRanges, gearRatios, autoGears, autoRanges, splitGears4Shifter, gearTexts, rangeTexts },
+												params = { name, noGears, timeGears, rangeGearOverlap, timeRanges, gearRatios, autoGears, autoRanges, 
+																	 splitGears4Shifter, gearTexts, rangeTexts, shifterIndexList },
 												text   = label } )
 			end 		
 		end 		

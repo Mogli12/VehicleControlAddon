@@ -2454,7 +2454,10 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 				and setLaunchGear
 				and not ( self.vcaSetLaunchGear ) then 
 			if self.vehicle.vcaShifterIndex <= 0 then 
-				newGear = self.vehicle.vcaLaunchGear
+				local gearlist = transmission:getAutoShiftIndeces( gear, self.vehicle.vcaLaunchGear, true, false )
+				if #gearlist > 0 then
+					newGear = gearlist[1]
+				end 
 			end 
 		elseif self.vehicle.vcaAutoShift and self.gearChangeTimer <= 0 and not self.vehicle.vcaNeutral and self.vehicle.vcaShifterIndex <= 0 then
 			local m1 = self.minRpm * 1.1
