@@ -56,7 +56,8 @@ local listOfProperties =
 		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="ccSpeed3",      propName="vcaCCSpeed3"      },
 		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="snapDir",       propName="vcaLastSnapAngle" },
 		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="snapPosX",      propName="vcaLastSnapPosX"  },
-		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="snapPosZ",      propName="vcaLastSnapPosZ"  } }
+		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="snapPosZ",      propName="vcaLastSnapPosZ"  },
+		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="handthrottle",  propName="vcaHandthrottle"  } }
 
 
 VCAGlobals = {}
@@ -277,6 +278,7 @@ function vehicleControlAddon:onLoad(savegame)
 	vehicleControlAddon.registerState( self, "vcaLastSnapPosZ", 0 )
 	vehicleControlAddon.registerState( self, "vcaIsEnteredMP",  false )
 	vehicleControlAddon.registerState( self, "vcaSnapDraw",     1 )
+	vehicleControlAddon.registerState( self, "vcaHandthrottle", 0 )
 	
 	self.vcaFactor        = 1
 	self.vcaReverseTimer  = 1.5 / VCAGlobals.timer4Reverse
@@ -2058,6 +2060,17 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	local speed        = math.abs( self.vehicle.lastSpeedReal ) *3600
 	local motorPtoRpm  = math.min(PowerConsumer.getMaxPtoRpm(self.vehicle)*self.ptoMotorRpmRatio, self.maxRpm)
 	local motorRpm     = self.motorRotSpeed * vehicleControlAddon.factor30pi
+	local rpmRange     = self.maxRpm - self.minRpm
+	
+	local idleRpm      = self.minRpm  
+	if     self.vehicle.vcaHandthrottle < 0 then 
+		idleRpm          = math.max( idleRpm, -self.vehicle.vcaHandthrottle * motorPtoRpm )
+	elseif self.vehicle.vcaHandthrottle > 0 then 
+		idleRpm          = self.minRpm + self.vehicle.vcaHandthrottle * rpmRange
+		if self.vehicle.vcaTransmission ~= nil and self.vehicle.vcaTransmission > 1 and self.vehicle.vcaAutoShift then 
+			idleRpm        = math.min( idleRpm, 0.95 * self.maxRpm )
+		end 
+	end 
 	
 	if      self.vehicle.vcaForceStopMotor ~= nil 
 			and self.vehicle.vcaForceStopMotor > 0		
@@ -2164,8 +2177,10 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	if self.vcaDirTimer ~= nil then 
 		fakeAcc         = 0
 	end 
-	local rpmRange    = self.maxRpm - self.minRpm
-	local fakeRpm     = math.max( self.minRpm + fakeAcc * rpmRange, self.minRpm, motorPtoRpm )
+	local fakeRpm     = math.max( self.minRpm + fakeAcc * rpmRange, idleRpm )
+	if self.vehicle.vcaHandthrottle == 0 or self.vehicle.vcaHandthrottle < -0.8 then 
+		fakeRpm         = math.max( fakeRpm, motorPtoRpm )
+	end 
 	
 	if self.vcaAutoStop or self.vehicle.vcaNeutral or self.vehicle.vcaClutchPercent >= 1 then 
 		self.vcaFakeRpm   = vehicleControlAddon.mbClamp( fakeRpm, lastFakeRpm - 0.001 * dt * rpmRange, lastFakeRpm + 0.001 * dt * rpmRange )		
@@ -2202,7 +2217,10 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			self.vehiclevcaClutchDisp = 0
 		end 
 	
-		if motorPtoRpm > 0 then 
+		if self.vehicle.vcaHandthrottle ~= 0 then 
+			newMinRpm = math.max( self.minRpm, idleRpm * 0.95 )
+			newMaxRpm = math.min( self.maxRpm, idleRpm * 1.05 )
+		elseif motorPtoRpm > 0 then 
 			newMinRpm = math.max( self.minRpm, motorPtoRpm * 0.95 )
 			newMaxRpm = math.min( self.maxRpm, motorPtoRpm * 1.05 )
 		else 
@@ -2423,7 +2441,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		if curBrake >= 0.1 and self.vcaBrakeTimer ~= nil and self.vcaBrakeTimer > 500 then 
 			self.vcaAutoDownTimer = 0
 		end 
-		if curAcc < 0.1 and curBrake < 0.1 and self.vcaAutoDownTimer < 3000 then  
+		if motorPtoRpm < self.minRpm and curAcc < 0.1 and curBrake < 0.1 and self.vcaAutoDownTimer < 3000 then  
 			self.vcaAutoDownTimer = 3000 
 		end 
 		if self.gearChangeTimer > 0 and self.vcaAutoDownTimer < 1000 then 
@@ -2435,7 +2453,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		if self.vcaClutchTimer > 0 and self.vcaAutoUpTimer < 500 then 
 			self.vcaAutoUpTimer = 500 
 		end 
-		if self.vcaLoad < 0.8 then 
+		if motorPtoRpm < self.minRpm and self.vcaLoad < 0.8 then 
 			self.vcaAutoLowTimer = 5000 
 		end 
 		if curAcc < 0.1 and self.vcaAutoLowTimer < 2000 then 
@@ -2469,11 +2487,24 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			local m3 = math.max( m1, m4 * 0.72 )
 			local autoMinRpm = m1 + self.vcaLoad * ( m3 - m1 )
 			local autoMaxRpm = m3 + self.vcaLoad * ( m4 - m3 )
-			if motorPtoRpm > 0 then 
-				autoMaxRom = math.min( m4, motorPtoRpm * 1.101363 )
-				autoMinRpm = math.max( m1, autoMaxRom * 0.8 )
+			if self.vehicle.vcaHandthrottle > 0 then 
+				autoMaxRom = math.min( m4, idleRpm * 1.025 )
+				autoMinRpm = math.min( m4, idleRpm * 0.975 )
+			elseif motorPtoRpm > 0 then 
+				if -1 < self.vehicle.vcaHandthrottle and self.vehicle.vcaHandthrottle < -0.8 then 
+				-- 90% PTO 
+					autoMaxRom = math.min( m4, motorPtoRpm * 1.025 )
+					autoMinRpm = math.min( m4, idleRpm * 0.975 )
+				elseif self.vehicle.vcaHandthrottle < 0 then 
+				-- PTO ECO
+					autoMaxRom = math.min( m4, idleRpm * 1.025 )
+					autoMinRpm = math.min( m4, idleRpm * 0.975 )
+				elseif motorPtoRpm > 0 then 
+					autoMaxRom = math.min( m4, motorPtoRpm * 1.025 )
+					autoMinRpm = math.min( m4, motorPtoRpm * 0.975 )
+				end 
 			end 
-					
+			
 			if clutchRpm > m4 and self.vcaAutoUpTimer > 0 then
 				self.vcaAutoUpTimer = 0
 			end 
@@ -2669,18 +2700,20 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 				self.vcaMaxRpm      = self.maxRpm
 			end  
 
-			if     motorRpm <= 0.95 * self.minRpm then
+			if     motorRpm <= 0.95 * idleRpm then
 				self.vcaIdleAcc = 1
-			elseif motorRpm <= self.minRpm then
-				f = 0.1 + 18 * ( 1 - motorRpm / self.minRpm )
+			elseif motorRpm > idleRpm then 
+				self.vcaIdleAcc = 0
+			elseif motorRpm <= idleRpm then
+				f = 0.1 + 18 * ( 1 - motorRpm / idleRpm )
 				self.vcaIdleAcc = lastIdleAcc + f * ( 1 - lastIdleAcc )
 			else 
 				local a = 0
-				if curBrake <= 0 and motorRpm < 1.1 * self.minRpm then 
-					if motorRpm <= 0.9 * self.minRpm then 
+				if curBrake <= 0 and motorRpm < 1.1 * idleRpm then 
+					if motorRpm <= 0.9 * idleRpm then 
 						a = 1
 					else 
-						a = math.max( curAcc , 5 * ( motorRpm / self.minRpm - 1 ) )
+						a = math.max( curAcc , 5 * ( motorRpm / idleRpm - 1 ) )
 					end 
 				end 
 				self.vcaIdleAcc = lastIdleAcc + 0.1 * ( a - lastIdleAcc )
@@ -2698,7 +2731,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 				self.vcaFakeTimer = 100
 			end 
 	
-			if not self.vehicle.vcaAutoShift and motorPtoRpm >= self.minRpm then 
+			if self.vehicle.vcaHandthrottle == 0 and not self.vehicle.vcaAutoShift and motorPtoRpm >= self.minRpm then 
 				self.vcaMaxRpm = math.min( motorPtoRpm * 1.11, self.vcaMaxRpm )
 			end 		
 		end 		
@@ -3024,6 +3057,20 @@ function vehicleControlAddon:vcaShowSettingsUI()
 	
 	self.vcaUI.vcaSnapDraw = { "off", "only if inactive", "always" }
 	
+	self.vcaUI.vcaHandthrottle = { "off", "PTO ECO", "90% PTO", "100% PTO" } 
+	self.vcaUI.vcaHandthrottle_V = { 0, -0.7, -0.9, -1 }
+	local m1 = self.spec_motorized.motor.minRpm 
+	local m2 = self.spec_motorized.motor.maxRpm 
+	local md = m2 - m1
+	
+	local r = m1 + 100 
+	while r <= m2 do 
+		h = ( r - m1 ) / md 
+		table.insert( self.vcaUI.vcaHandthrottle, string.format( "%4d U/min", r ) )
+		table.insert( self.vcaUI.vcaHandthrottle_V, h )
+		r = r + 100
+	end 
+	
 	g_vehicleControlAddonScreen:setVehicle( self )
 	g_gui:showGui( "vehicleControlAddonScreen" )
 end
@@ -3103,4 +3150,23 @@ function vehicleControlAddon:vcaUISetvcaLaunchGear( value )
 		self:vcaSetState( "vcaLaunchGear", value )
 	end
 end
+
+function vehicleControlAddon:vcaUISetvcaHandthrottle( value )
+	if self.vcaUI.vcaHandthrottle_V[value] ~= nil then
+		self:vcaSetState( "vcaHandthrottle", self.vcaUI.vcaHandthrottle_V[value] )
+	end
+end
+
+function vehicleControlAddon:vcaUIGetvcaHandthrottle( value )
+	local i = 1
+	local d = 2
+	for j,h in pairs( self.vcaUI.vcaHandthrottle_V ) do 
+		if math.abs( h - self.vcaHandthrottle ) < d then 
+			d = math.abs( h - self.vcaHandthrottle )
+			i = j 
+		end 
+	end 
+	return i
+end
+
 
