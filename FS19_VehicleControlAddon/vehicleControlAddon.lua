@@ -2063,7 +2063,9 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	local rpmRange     = self.maxRpm - self.minRpm
 	
 	local idleRpm      = self.minRpm  
-	if     self.vehicle.vcaHandthrottle < 0 then 
+	if     self.vehicle.vcaHandthrottle == nil 
+			or self.vehicle.vcaHandthrottle == 0 then 
+	elseif self.vehicle.vcaHandthrottle < 0 then 
 		idleRpm          = math.max( idleRpm, -self.vehicle.vcaHandthrottle * motorPtoRpm )
 	elseif self.vehicle.vcaHandthrottle > 0 then 
 		idleRpm          = self.minRpm + self.vehicle.vcaHandthrottle * rpmRange
