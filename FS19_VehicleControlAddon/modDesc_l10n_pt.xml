@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<l10n>
+	<!-- Note that 'description' is only here for easier translations. It needs to be manually copied to ModDesc.XML later. -->
+	<description><![CDATA[Adds the specialization for adaptive keyboard steering]]></description>
+
+	<texts>
+		<text name="vcaCAMERAI"         text="Rotação da camera interior"/>
+		<text name="vcaCAMERAO"         text="Rotação da camera exterior"/>
+		<text name="vcaEXPONENT"        text="Sensibilidade"/>
+		<text name="vcaSTEERING"        text="Direção adaptiva"/>
+		<text name="vcaSHUTTLE"         text="Shuttle"/>
+		<text name="vcaREVERSEI"        text="Olhar para trás (dentro)"/>
+		<text name="vcaREVERSEO"        text="Olhar para trás (fora)"/>
+		<text name="vcaLIMIT"           text="Limitador de aceleração"/>
+		<text name="vcaPEEKLR"          text="Olhar para os lados"/>
+		<text name="vcaANGLE"           text="Ângulo de encaixe"/>
+		<text name="vcaBRAKE"           text="Low Brake Force"/>
+		<text name="vcaTRANSMISSION"    text="Transmissão"/>
+		<text name="vcaMAXSPEED"        text="Velocidade do Eixo"/>
+		<text name="vcaLIMSPEED"        text="Limitador de Velocidade"/>
+		<text name="vcaAUTOSHIFT"       text="Automatico"/>
+		<text name="vcaLAUNCH"          text="Mudança de Arranque"/>
+		<text name="vcaKEEPSPEED"       text="Manter Velocidade"/>
+		<text name="vcaSETTINGS"        text="Settings"/>
+
+		<text name="vca_tip_CAMERAI"    text="A câmera interior gira automaticamente de acordo com o ângulo de direção"/>
+		<text name="vca_tip_CAMERAO"    text="A câmera exterior gira automaticamente de acordo com o ângulo de direção"/>
+		<text name="vca_tip_EXPONENT"   text="Sensibilidade da direção adaptativa em relação à velocidade no solo"/>
+		<text name="vca_tip_STEERING"   text="A direção adaptativa ajusta a rotação traseira automática e o ângulo máximo de direção"/>
+		<text name="vca_tip_SHUTTLE"    text="Alterar a direção de condução <space>"/>
+		<text name="vca_tip_REVERSEI"   text="Se o veículo mudar de direção, a câmera interna é girada em 180 °"/>
+		<text name="vca_tip_REVERSEO"   text="Se o veículo mudar de direção, a câmera exterior é girada em 180 °"/>
+		<text name="vca_tip_LIMIT"      text="Limitador do acelerador sem e com tecla Shift-Esquerda"/>
+		<text name="vca_tip_PEEKLR"     text="Da uma olhada rápida com a tecla Shift-Direita mais seta esquerda/direita"/>
+		<text name="vca_tip_ANGLE"      text="Orientar automaticamente para seguir o ângulo de encaixe"/>
+		<text name="vca_tip_BRAKE"      text="Low brake force percentagem, aka rolling resistance"/>
+		<text name="vca_tip_TRANSMISSION" text="Tipo de Transmissão; IVT Transmissão Variavel, todas as outras transmissões têm 12 mudanças diferentes, 2x6 é melhor para os camiões"/>
+		<text name="vca_tip_MAXSPEED"   text="Velocidade máxima da Mudança mais alta, pode ser mais rápida que a velocidade máxima do veículo"/>
+		<text name="vca_tip_LIMSPEED"   text="Limita a velocidade máxima do veículo ao seu valor padrão"/>
+		<text name="vca_tip_AUTOSHIFT"  text="Mudanças Automaticas"/>
+		<text name="vca_tip_LAUNCH"     text="Velocidade da Mudança de Arranque"/>
+		<text name="vca_tip_KEEPSPEED"  text="Se a velocidade permanente estiver ativada, o pedal de aceleração vai se comportar como um joystick. Isto é como andar com controle de velocidade."/>
+
+		<text name="input_vcaSETTINGS"  text="VCA: Opções"/>
+		<text name="input_vcaUP"        text="VCA: alterna a direção da vista / Olhar para frente"/>
+		<text name="input_vcaDOWN"      text="VCA: espreitar a direção da outra vista / Olhar para trás"/>
+		<text name="input_vcaLEFT"      text="VCA: Olhar para Esquerda"/>
+		<text name="input_vcaRIGHT"     text="VCA: Olhar para a Direita"/>
+		<text name="input_vcaDIRECTION" text="VCA: Muda a Direção de Condução"/>
+		<text name="input_vcaFORWARD"   text="VCA: Condução para frente"/>
+		<text name="input_vcaREVERSE"   text="VCA: Condução para trás"/>
+		<text name="input_vcaSNAP"      text="VCA: encaixe da direção de condução"/>
+		<text name="input_vcaSNAPRESET" text="VCA: reset do encaixe da direção de condução"/>
+		<text name="input_vcaSnapUP"    text="VCA: snap forward"/>
+		<text name="input_vcaSnapDOWN"  text="VCA: snap backward"/>
+		<text name="input_vcaSnapLEFT"  text="VCA: snap left"/>
+		<text name="input_vcaSnapRIGHT" text="VCA: snap right"/>
+		<text name="input_vcaNO_ARB"    text="VCA: desativar rotação automática para trás"/>
+		<text name="input_vcaINCHING"   text="VCA: inching"/>
+		<text name="input_vcaKEEPSPEED" text="VCA: Manter Velocidade"/>
+		<text name="input_vcaSWAPSPEED" text="VCA: trocar Velocidade"/>
+		<text name="input_vcaGearUp"    text="VCA: gear up"/>
+		<text name="input_vcaGearDown"  text="VCA: gear down"/>
+		<text name="input_vcaRangeUp"   text="VCA: range up"/>
+		<text name="input_vcaRangeDown" text="VCA: range down"/>
+		<text name="input_vcaNeutral"   text="VCA: neutra on/off"/>
+		<text name="input_vcaClutch"    text="VCA: embraiagem axis"/>
+		<text name="input_vcaShifter1"  text="VCA: G27/G29 gear 1"/>
+		<text name="input_vcaShifter2"  text="VCA: G27/G29 gear 2"/>
+		<text name="input_vcaShifter3"  text="VCA: G27/G29 gear 3"/>
+		<text name="input_vcaShifter4"  text="VCA: G27/G29 gear 4"/>
+		<text name="input_vcaShifter5"  text="VCA: G27/G29 gear 5 / range down"/>
+		<text name="input_vcaShifter6"  text="VCA: G27/G29 gear 6 / range up"/>
+		<text name="input_vcaShifter7"  text="VCA: G27/G29 reverse gear"/>
+		<text name="input_vcaShifterLH" text="VCA: G27/G29 gear splitter"/>
+	</texts>
+
+	<longTexts>
+		<longText name="vca_Help_1">
+<![CDATA[
+Este script varia a velocidade de direção, dependendo da velocidade a que estás a conduzir, e gira a câmera para coincidir com o ângulo de direção e direção.
+
+Shift-Left limita o acelerador, o controle de Velocidade e as rotações máximas por minuto para 75%. Com Shift-right e as teclas do cursor, você pode espiar na direção correspondente.
+Se você pressionar Ctrl à esquerda junto com W, a direção de condução se ajustará a direções fixas.
+CtrlEsq-W activa o angulo Snap
+AltEsq-W desativae faz reset ao angulo Snap
+
+Todas as funções podem ser desativadas.]]>
+		</longText>
+	</longTexts>
+</l10n>
