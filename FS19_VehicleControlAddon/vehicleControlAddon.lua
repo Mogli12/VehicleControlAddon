@@ -705,6 +705,10 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 		self:vcaSetState( "vcaSnapIsOn", false )
 	elseif actionName == "vcaSNAP" then
 		self:vcaSetState( "vcaSnapIsOn", not self.vcaSnapIsOn )
+		
+		if self.vcaSnapIsOn then 
+			self.vcaSnapPosTimer = 3000
+		end
  	elseif actionName == "vcaNeutral" then
 		if self.vcaNeutral and self.vcaShifterIndex > 0 then 
 			self:vcaSetState( "vcaShifterIndex", 0 )
@@ -716,15 +720,17 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 end
 
 function vehicleControlAddon:onLeaveVehicle()
-	self:vcaSetState( "vcaInchingIsOn", false )
-	self:vcaSetState( "vcaNoAutoRotBack", false )
-	self.vcaNewRotCursorKey  = nil
-	self.vcaPrevRotCursorKey = nil
-	self:vcaSetState( "vcaSnapIsOn", false )
-	self:vcaSetState( "vcaShifterIndex", 0 )
-	self:vcaSetState( "vcaKSIsOn", self.vcaKSToggle )
-	self:vcaSetState( "vcaIsEnteredMP", false )
-	self.vcaIsEntered = false 
+	if self.vcaIsEntered then 
+		self:vcaSetState( "vcaInchingIsOn", false )
+		self:vcaSetState( "vcaNoAutoRotBack", false )
+		self.vcaNewRotCursorKey  = nil
+		self.vcaPrevRotCursorKey = nil
+		self:vcaSetState( "vcaSnapIsOn", false )
+		self:vcaSetState( "vcaShifterIndex", 0 )
+		self:vcaSetState( "vcaKSIsOn", self.vcaKSToggle )
+		self:vcaSetState( "vcaIsEnteredMP", false )
+		self.vcaIsEntered = false 
+	end 
 end 
 
 function vehicleControlAddon:vcaIsActive()
@@ -736,10 +742,9 @@ end
 
 function vehicleControlAddon:onPreUpdate(dt, isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
 
-	if       self.isClient
-			and self.getIsEntered  ~= nil
+	if      self.isClient
+			and self.vcaIsEntered
 			and self.spec_drivable ~= nil
-			and self:getIsEntered()
 			and self:getIsActiveForInput(true, true)
 			and self:getIsVehicleControlledByPlayer()
 			and math.abs( self.spec_drivable.lastInputValues.axisSteer ) > 0.05 then 
@@ -899,7 +904,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 		self.vcaMaxBackwardSpeed = nil
 	end 
 
-	if self.vcaNoAutoRotBack and self:vcaIsActive() then
+	if self.vcaNoAutoRotBack and self.vcaIsEntered then
 		if self.vcaAutoRotateBackSpeed == nil then 
 			self.vcaAutoRotateBackSpeed = self.autoRotateBackSpeed
 		end 
@@ -2721,7 +2726,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 				self.vcaIdleAcc = lastIdleAcc + 0.1 * ( a - lastIdleAcc )
 			end 
 			
-			if self.vcaIdleAcc > curAcc then 
+			if curBrake <= 0 and self.vcaIdleAcc > curAcc then 
 				newAcc = self.vcaIdleAcc
 				if  not fwd then 
 					newAcc = -newAcc
