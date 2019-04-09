@@ -35,7 +35,7 @@ local listOfProperties =
 	{ { getFunc=getXMLBool , setFunc=setXMLBool , xmlName="steering",      propName="vcaSteeringIsOn"  },
 		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="shuttle",       propName="vcaShuttleCtrl"   },
 		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="peek",          propName="vcaPeekLeftRight" },
-		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="autoShift",     propName="vcaLimitSpeed"    },
+		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="limitSpeed",    propName="vcaLimitSpeed"    },
 		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="keepSpeed",     propName="vcaKSToggle"      },
 		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="camRotInside",  propName="vcaCamRotInside"  },
 		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="camRotOutside", propName="vcaCamRotOutside" },
@@ -49,6 +49,8 @@ local listOfProperties =
 		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="brakeForce",    propName="vcaBrakeForce"    },
 		{ getFunc=getXMLInt  , setFunc=setXMLInt  , xmlName="transmission",  propName="vcaTransmission"  },
 		{ getFunc=getXMLInt  , setFunc=setXMLInt  , xmlName="launchGear",    propName="vcaLaunchGear"    },
+		{ getFunc=getXMLInt  , setFunc=setXMLInt  , xmlName="currentGear",   propName="vcaGear",         },
+		{ getFunc=getXMLInt  , setFunc=setXMLInt  , xmlName="currentRange",  propName="vcaRange",        },
 		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="autoShift",     propName="vcaAutoShift"     },
 		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="autoClutch",    propName="vcaAutoClutch"    },
 		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="maxSpeed",      propName="vcaMaxSpeed"      },
@@ -261,7 +263,7 @@ function vehicleControlAddon:onLoad(savegame)
 	vehicleControlAddon.registerState( self, "vcaGear",         0 ) --, vehicleControlAddon.vcaOnSetGear )
 	vehicleControlAddon.registerState( self, "vcaRange",        0 ) --, vehicleControlAddon.vcaOnSetRange )
 	vehicleControlAddon.registerState( self, "vcaNeutral",      false )
-	vehicleControlAddon.registerState( self, "vcaAutoShift",    true )
+	vehicleControlAddon.registerState( self, "vcaAutoShift",    true) --, vehicleControlAddon.vcaOnSetAutoShift )
 	vehicleControlAddon.registerState( self, "vcaShifterIndex", 0 )
 	vehicleControlAddon.registerState( self, "vcaShifterLH",    true )
 	vehicleControlAddon.registerState( self, "vcaLimitSpeed",   true )
@@ -273,7 +275,7 @@ function vehicleControlAddon:onLoad(savegame)
 	vehicleControlAddon.registerState( self, "vcaCCSpeed2",     10 )
 	vehicleControlAddon.registerState( self, "vcaCCSpeed3",     15 )
 	vehicleControlAddon.registerState( self, "vcaAutoClutch",   true )
-	vehicleControlAddon.registerState( self, "vcaLastSnapAngle",10 ) -- value should be between -pi and pi !!!
+	vehicleControlAddon.registerState( self, "vcaLastSnapAngle",10, vehicleControlAddon.vcaOnSetLastSnapAngle ) -- value should be between -pi and pi !!!
 	vehicleControlAddon.registerState( self, "vcaLastSnapPosX", 0 )
 	vehicleControlAddon.registerState( self, "vcaLastSnapPosZ", 0 )
 	vehicleControlAddon.registerState( self, "vcaIsEnteredMP",  false )
@@ -2869,17 +2871,37 @@ end
 function vehicleControlAddon:vcaOnSetSnapIsOn( old, new, noEventSend )
 	self.vcaSnapIsOn = new 
 	
-  if      ( old == nil or new ~= old )
-			and self.isClient
-			and self:vcaIsActive() then
-		if new and vehicleControlAddon.snapOnSample ~= nil then
-      playSample(vehicleControlAddon.snapOnSample, 1, 0.2, 0, 0, 0)
-		elseif not new and vehicleControlAddon.snapOffSample ~= nil then
-      playSample(vehicleControlAddon.snapOffSample, 1, 0.2, 0, 0, 0)
+  if      ( old == nil or new ~= old ) then 
+		if self.isClient and self:vcaIsActive() then
+			if new and vehicleControlAddon.snapOnSample ~= nil then
+				playSample(vehicleControlAddon.snapOnSample, 1, 0.2, 0, 0, 0)
+			elseif not new and vehicleControlAddon.snapOffSample ~= nil then
+				playSample(vehicleControlAddon.snapOffSample, 1, 0.2, 0, 0, 0)
+			end 
+		end 
+		
+		if not ( self.isClient and self.isServer ) then 
+			print("Turning off snap angle (server:"..tostring(self.isServer).."/client:"..tostring(self.isClient)..")")
+			print("old: "..tostring(old).." => new: "..tostring(new))
+			printCallstack()
 		end 
 	end 
 
-	self:requestActionEventUpdate()	
+--self:requestActionEventUpdate()	
+end 
+
+function vehicleControlAddon:vcaOnSetLastSnapAngle( old, new, noEventSend )
+	self.vcaLastSnapAngle = new 
+	
+  if      ( old == nil or new ~= old ) then 
+		if not ( self.isClient and self.isServer ) then 
+			print("Turning off snap angle (server:"..tostring(self.isServer).."/client:"..tostring(self.isClient)..")")
+			print("old: "..tostring(old).." => new: "..tostring(new))
+			printCallstack()
+		end 
+	end 
+
+--self:requestActionEventUpdate()	
 end 
 
 function vehicleControlAddon:vcaOnSetDirection( old, new, noEventSend )
@@ -2932,6 +2954,14 @@ function vehicleControlAddon:vcaOnSetGearChanged( old, new, noEventSend )
 		end 
 	end 
 	self.vcaBOVVolume = new 
+end 
+
+function vehicleControlAddon:vcaOnSetAutoShift( old, new, noEventSend )
+	self.vcaAutoShift = new 
+	
+	if old and not ( new ) then 
+		printCallstack()
+	end 
 end 
 
 function vehicleControlAddon:vcaOnSetGear( old, new, noEventSend )
@@ -3022,7 +3052,7 @@ function vehicleControlAddon:vcaShowSettingsUI()
 	end 
 	
 	local m = vehicleControlAddon.getDefaultMaxSpeed( self )
-	self.vcaUI.vcaMaxSpeed_V = { 7, 8.889, 11.944, 16.111, 18.056, 20.417, 25, 33.333, 50 }
+	self.vcaUI.vcaMaxSpeed_V = { 7, 8.889, 11.944, 14.722, 16.111, 18.056, 20.417, 25, 33.333, 50 }
 	local found = -1 
 	for i,v in pairs(self.vcaUI.vcaMaxSpeed_V) do
 		if math.abs( m-v ) < 1 then 
