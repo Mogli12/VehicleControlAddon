@@ -448,7 +448,7 @@ else
 					if g_server ~= nil then 
 						g_server:broadcastEvent( eventObject ) 
 					else
-					--_newClass_.mbSync( self )
+						_newClass_.mbSync( self )
 						g_client:getServerConnection():sendEvent( eventObject ) 
 					end 
 				end 										
@@ -922,6 +922,7 @@ else
 		self.level1, self.value = _G[mogliBaseClass].readStreamEx( streamId )
 		if self.object == nil then 
 			print("Error: mogliBase30Event received invalid NodeObject")
+			print(tostring(self.className).."; "..tostring(self.level1).."; "..tostring(self.value))
 		else 
 			local state, message = pcall( mogliBase30Event.run, self, connection )
 			if not state then
@@ -934,7 +935,9 @@ else
 -- writeStream
 --=======================================================================================
 	function mogliBase30Event:writeStream(streamId, connection)
-		--both clients and server can send this event
+		if self.object == nil then 
+			print("Error: mogliBase30Event has empty object")
+		end
 		NetworkUtil.writeNodeObject( streamId, self.object )
 		streamWriteString(streamId, self.className )
 		_G[mogliBaseClass].writeStreamEx( streamId, self.level1, self.value )
@@ -986,6 +989,9 @@ else
 		end 
 	end
 	function mogliBase30Request:writeStream(streamId, connection)
+		if self.object == nil then 
+			print("Error: mogliBase30Request has empty object")
+		end
 		NetworkUtil.writeNodeObject( streamId, self.object )
 		streamWriteString(streamId, self.className )
 	end
@@ -1026,6 +1032,9 @@ else
 		end 
 	end
 	function mogliBase30Reply:writeStream(streamId, connection)
+		if self.object == nil then 
+			print("Error: mogliBase30Reply has empty object")
+		end
 		NetworkUtil.writeNodeObject( streamId, self.object )
 		mogliBase30.writeStreamEx( streamId, self.className, self.document )
 	end

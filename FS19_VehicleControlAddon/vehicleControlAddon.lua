@@ -137,15 +137,19 @@ function vehicleControlAddon:vcaIsNonDefaultProp( propName, setting )
 	if setting == nil then 
 		setting = self 
 	end 
-	if self.vcaDefaults == nil or setting[propName] == nil or self.vcaDefaults[propName] == nil then 
-		return false 
+	local check = self 
+	if setting == self then 
+		check = self.vcaDefaults 
 	end 
-	if type( setting[propName] ) == "number" and type( self.vcaDefaults[propName] ) == "number" then 
-		if math.abs( setting[propName] - self.vcaDefaults[propName] ) < 1e-4 then 
+	if check == nil or setting[propName] == nil or check[propName] == nil then 
+		isEqual = true 
+	end
+	if type( setting[propName] ) == "number" and type( check[propName] ) == "number" then 
+		if math.abs( setting[propName] - check[propName] ) < 1e-4 then 
 			return false 
 		end 
 		return true 
-	elseif setting[propName] == self.vcaDefaults[propName] then 
+	elseif setting[propName] == check[propName] then 
 		return false 
 	end 
 	return true  
@@ -269,13 +273,13 @@ function vehicleControlAddon:onLoad(savegame)
 	vehicleControlAddon.registerState( self, "vcaLimitSpeed",   true )
 	vehicleControlAddon.registerState( self, "vcaLaunchGear",   VCAGlobals.launchGear )
 	vehicleControlAddon.registerState( self, "vcaBOVVolume",    0, vehicleControlAddon.vcaOnSetGearChanged )
-	vehicleControlAddon.registerState( self, "vcaKSIsOn",       true )
+	vehicleControlAddon.registerState( self, "vcaKSIsOn",       true ) --, vehicleControlAddon.vcaOnSetKSIsOn )
 	vehicleControlAddon.registerState( self, "vcaKeepSpeed",    0 )
 	vehicleControlAddon.registerState( self, "vcaKSToggle",     false )
 	vehicleControlAddon.registerState( self, "vcaCCSpeed2",     10 )
 	vehicleControlAddon.registerState( self, "vcaCCSpeed3",     15 )
 	vehicleControlAddon.registerState( self, "vcaAutoClutch",   true )
-	vehicleControlAddon.registerState( self, "vcaLastSnapAngle",10, vehicleControlAddon.vcaOnSetLastSnapAngle ) -- value should be between -pi and pi !!!
+	vehicleControlAddon.registerState( self, "vcaLastSnapAngle",10 ) --, vehicleControlAddon.vcaOnSetLastSnapAngle ) -- value should be between -pi and pi !!!
 	vehicleControlAddon.registerState( self, "vcaLastSnapPosX", 0 )
 	vehicleControlAddon.registerState( self, "vcaLastSnapPosZ", 0 )
 	vehicleControlAddon.registerState( self, "vcaIsEnteredMP",  false )
@@ -362,7 +366,7 @@ function vehicleControlAddon:onPostLoad(savegame)
 			local v = prop.getFunc( savegame.xmlFile, savegame.key.."."..vehicleControlAddon_Register.specName.."#"..prop.xmlName )
 			vehicleControlAddon.debugPrint(tostring(prop.xmlName)..": "..tostring(v))
 			if v ~= nil then 
-				self:vcaSetState( prop.propName, v ) 
+				self:vcaSetState( prop.propName, v, true ) 
 			end 
 		end 
 		
@@ -389,10 +393,10 @@ function vehicleControlAddon:onPostLoad(savegame)
 				end 
 			end 
 		end 
+	
+		self:vcaSetState( "vcaKSIsOn", self.vcaKSToggle, true )
 	end 
-	
-	self:vcaSetState( "vcaKSIsOn", self.vcaKSToggle )
-	
+		
 	if self.spec_motorized ~= nil then 
 		local pMax  = 0
 		local mMax1 = 0
@@ -408,7 +412,7 @@ function vehicleControlAddon:onPostLoad(savegame)
 			end 
 		end 
 		
-		print(tostring(self.configFileName)..": "..tostring( mMax1 ).." .. "..tostring(mMax2 ))
+		vehicleControlAddon.debugPrint(tostring(self.configFileName)..": "..tostring( mMax1 ).." .. "..tostring(mMax2 ))
 		
 		self.vcaPowerRpm = mMax1 
 		self.vcaRatedRpm = mMax2 
@@ -731,8 +735,9 @@ function vehicleControlAddon:onLeaveVehicle()
 		self:vcaSetState( "vcaShifterIndex", 0 )
 		self:vcaSetState( "vcaKSIsOn", self.vcaKSToggle )
 		self:vcaSetState( "vcaIsEnteredMP", false )
-		self.vcaIsEntered = false 
 	end 
+
+	self.vcaIsEntered = false 
 end 
 
 function vehicleControlAddon:vcaIsActive()
@@ -746,6 +751,7 @@ function vehicleControlAddon:onPreUpdate(dt, isActiveForInput, isActiveForInputI
 
 	if      self.isClient
 			and self.vcaIsEntered
+			and self.vcaSnapIsOn
 			and self.spec_drivable ~= nil
 			and self:getIsActiveForInput(true, true)
 			and self:getIsVehicleControlledByPlayer()
@@ -759,6 +765,13 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 
 	self.vcaTickDt = dt
 
+	if self.isClient and self.getIsEntered ~= nil and self:getIsControlled() and self:getIsEntered() then 
+		self.vcaIsEntered = not g_gui:getIsGuiVisible()
+		self:vcaSetState( "vcaIsEnteredMP", self.vcaIsEntered or self.spec_drivable.cruiseControl.state == 1 )
+	else 
+		self.vcaIsEntered = false 
+	end 	
+	
 	lastControllerName = self.vcaControllerName
 	if self:getIsControlled() then 
 		self.vcaControllerName = self:getControllerName()
@@ -796,27 +809,24 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 			-- changed user => restore user settings 
 				vehicleControlAddon.debugPrint("Restoring settings for user "..self.vcaControllerName)
 				for _,prop in pairs( listOfProperties ) do 
+					if not self.vcaIsEntered then 
+						self[prop.propName] = nil
+					end 
 					if self.vcaUserSettings[self.vcaControllerName][prop.propName] ~= nil then 
 						self:vcaSetState( prop.propName, self.vcaUserSettings[self.vcaControllerName][prop.propName] )
+						vehicleControlAddon.debugPrint( prop.propName.." of "..self.vcaControllerName..": "
+																					..tostring( self[prop.propName]) .." ("..tostring(self.vcaUserSettings[	self.vcaControllerName][prop.propName])..")")
 					else 
 						self:vcaSetState( prop.propName, self.vcaDefaults[prop.propName] )
 					end 
-					vehicleControlAddon.debugPrint( prop.propName.." of "..self.vcaControllerName..": "..tostring( self[prop.propName]) .." ("..tostring(self.vcaUserSettings[self.vcaControllerName][prop.propName])..")")
 				end 
 			end 
-			if self.isClient and self:getIsEntered() then 
+			if self.isClient and self.getIsEntered ~= nil and self:getIsEntered() then 
 				self.vcaUserSettings[self.vcaControllerName].isMain = true 
 			end 
 		end 
 	end 
 	
-	if self.isClient and self.getIsEntered ~= nil and self:getIsControlled() and self:getIsEntered() then 
-		self.vcaIsEntered = not g_gui:getIsGuiVisible()
-		self:vcaSetState( "vcaIsEnteredMP", self.vcaIsEntered or self.spec_drivable.cruiseControl.state == 1 )
-	else 
-		self.vcaIsEntered = false 
-	end 	
-
 	local newRotCursorKey = self.vcaNewRotCursorKey
 	local i               = self.spec_enterable.camIndex
 	local requestedBack   = nil
@@ -1635,6 +1645,9 @@ function vehicleControlAddon:onReadStream(streamId, connection)
 	self.vcaLaunchGear    = streamReadInt16(streamId)
 	self.vcaTransmission  = streamReadInt16(streamId)
 	self.vcaMaxSpeed      = streamReadFloat32(streamId)
+	self.vcaLastSnapAngle = streamReadFloat32(streamId)
+	self.vcaLastSnapPosX  = streamReadFloat32(streamId)
+	self.vcaLastSnapPosZ  = streamReadFloat32(streamId)
 	
 end
 
@@ -1660,7 +1673,10 @@ function vehicleControlAddon:onWriteStream(streamId, connection)
 	streamWriteInt16(streamId,   math.floor( 20 * self.vcaBrakeForce + 0.5 ) )
 	streamWriteInt16(streamId,   self.vcaLaunchGear    )
 	streamWriteInt16(streamId,   self.vcaTransmission  )
-	streamWriteFloat32(streamId, self.vcaMaxSpeed    )
+	streamWriteFloat32(streamId, self.vcaMaxSpeed      )
+	streamWriteFloat32(streamId, self.vcaLastSnapAngle )
+	streamWriteFloat32(streamId, self.vcaLastSnapPosX  )
+	streamWriteFloat32(streamId, self.vcaLastSnapPosZ  )
 
 end 
 
@@ -1805,8 +1821,19 @@ function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, ax
 	local lastSnapAngleTimer = self.vcaSnapAngleTimer
 	self.vcaAxisSideLast     = nil
 	self.vcaSnapAngleTimer   = nil
+	self.vcaLastSnapIsOn     = self.vcaSnapIsOn 
 	
-	if self.vcaSnapIsOn and self.vcaIsEnteredMP and not ( self.aiveAutoSteer ) then 
+	if self.vcaSnapIsOn then 
+		if not ( self.vcaIsEnteredMP ) then
+			self:vcaSetState( "vcaSnapIsOn", false )
+		elseif self.spec_aiVehicle ~= nil and self.spec_aiVehicle.isActive then 
+			self:vcaSetState( "vcaSnapIsOn", false )
+		elseif self.aiveAutoSteer then 
+			self:vcaSetState( "vcaSnapIsOn", false )
+		end 
+	end 
+	
+	if self.vcaSnapIsOn then 
 		local lx, lz 
 		if self.vcaMovingDir < 0 then 
 			lx,_,lz = localDirectionToWorld( self:vcaGetSteeringNode(), 0, 0, -1 )	
@@ -2880,28 +2907,27 @@ function vehicleControlAddon:vcaOnSetSnapIsOn( old, new, noEventSend )
 			end 
 		end 
 		
-		if not ( self.isClient and self.isServer ) then 
-			print("Turning off snap angle (server:"..tostring(self.isServer).."/client:"..tostring(self.isClient)..")")
-			print("old: "..tostring(old).." => new: "..tostring(new))
-			printCallstack()
-		end 
+	--print("Turning off snap angle (server:"..tostring(self.isServer).."/client:"..tostring(self.isClient)..")")
+	--print("old: "..tostring(old).." => new: "..tostring(new))
+	--printCallstack()
 	end 
+end 
 
---self:requestActionEventUpdate()	
+function vehicleControlAddon:vcaOnSetKSIsOn( old, new, noEventSend )
+	self.vcaKSIsOn = new 
+	
+--if      ( old == nil or new ~= old ) then 
+--	printCallstack()
+--end 
 end 
 
 function vehicleControlAddon:vcaOnSetLastSnapAngle( old, new, noEventSend )
 	self.vcaLastSnapAngle = new 
 	
-  if      ( old == nil or new ~= old ) then 
-		if not ( self.isClient and self.isServer ) then 
-			print("Turning off snap angle (server:"..tostring(self.isServer).."/client:"..tostring(self.isClient)..")")
-			print("old: "..tostring(old).." => new: "..tostring(new))
-			printCallstack()
-		end 
-	end 
-
---self:requestActionEventUpdate()	
+--if      ( old == nil or new ~= old ) then 
+--	print("vcaOnSetLastSnapAngle: "..tostring(new))
+--	printCallstack()
+--end 
 end 
 
 function vehicleControlAddon:vcaOnSetDirection( old, new, noEventSend )
