@@ -25,11 +25,12 @@
 -- 3.19 missing syncs in SP and MP
 -- 3.20 WARNING: undefined input in gearboxMogli:  
 -- 4.00 FS19
+-- 4.01 problem with events
 
 -- Usage:  source(Utils.getFilename("mogliBase.lua", g_currentModDirectory));
 --         _G[g_currentModDirectory.."mogliBase"].newClass( "AutoCombine", "acParameters" )
 
-local mogliBaseVersion   = 4.00
+local mogliBaseVersion   = 4.01
 local mogliBaseClass     = g_currentModName..".mogliBase"
 local mogliEventClass    = g_currentModName..".mogliEvent"
 local mogliSyncRequest   = g_currentModName..".mogliSyncRequest"
@@ -495,9 +496,9 @@ else
 		end
 		
 	--********************************
-	-- readStream
+	-- onReadStream
 	--********************************
-		function _newClass_:readStream(streamId, connection)
+		function _newClass_:onReadStream(streamId, connection)
 		--print(tostring(_globalClassName_).." / "..tostring(self.configFileName)..": synced via readStream")
 			local mbDocument, pos, err = "", 0, ""
 			local mode = streamReadString( streamId )
@@ -518,9 +519,9 @@ else
 		end 
 		 
 	--********************************
-	-- writeStream
+	-- onWriteStream
 	--********************************
-		function _newClass_:writeStream(streamId, connection)
+		function _newClass_:onWriteStream(streamId, connection)
 
 			if      self[_globalClassName_.."ConfigHandler"] == nil
 					and self[_globalClassName_.."StateHandler"]  == nil then
@@ -894,7 +895,7 @@ else
 --=======================================================================================
 -- mogliBase30Event:emptyNew
 --=======================================================================================
-	mogliBase30Event.emptyNew = function(self)
+	function mogliBase30Event:emptyNew()
 		local self = Event:new(mogliBase30Event_mt) 
 		return self 
 	end 
@@ -902,7 +903,7 @@ else
 --=======================================================================================
 -- mogliBase30Event:new
 --=======================================================================================
-	mogliBase30Event.new = function(self, className, object, level1, value)
+	function mogliBase30Event:new(className, object, level1, value)
 		local self = mogliBase30Event:emptyNew() 
 		self.className = className
 		self.object    = object 
@@ -915,12 +916,13 @@ else
 --=======================================================================================
 -- readStream
 --=======================================================================================
-	mogliBase30Event.readStream = function(self, streamId, connection)
+	function mogliBase30Event:readStream(streamId, connection)
 		self.object    = NetworkUtil.readNodeObject( streamId )				
 		self.className = streamReadString(streamId)
 		self.level1, self.value = _G[mogliBaseClass].readStreamEx( streamId )
 		if self.object == nil then 
 			print("Error: mogliBase30Event received invalid NodeObject")
+			print(tostring(self.className).."; "..tostring(self.level1).."; "..tostring(self.value))
 		else 
 			local state, message = pcall( mogliBase30Event.run, self, connection )
 			if not state then
@@ -932,8 +934,10 @@ else
 --=======================================================================================
 -- writeStream
 --=======================================================================================
-	mogliBase30Event.writeStream = function(self, streamId, connection)
-		--both clients and server can send this event
+	function mogliBase30Event:writeStream(streamId, connection)
+		if self.object == nil then 
+			print("Error: mogliBase30Event has empty object")
+		end
 		NetworkUtil.writeNodeObject( streamId, self.object )
 		streamWriteString(streamId, self.className )
 		_G[mogliBaseClass].writeStreamEx( streamId, self.level1, self.value )
@@ -942,7 +946,7 @@ else
 --=======================================================================================
 -- run
 --=======================================================================================
-	mogliBase30Event.run = function(self, connection)
+	function mogliBase30Event:run(connection)
 		----both clients and server can "run" this event (after reading it)	
 		if self.object == nil or self.className == nil or self.className == "" then
 			print("Error running event: nil ("..tostring(self.className)..")")
@@ -985,6 +989,9 @@ else
 		end 
 	end
 	function mogliBase30Request:writeStream(streamId, connection)
+		if self.object == nil then 
+			print("Error: mogliBase30Request has empty object")
+		end
 		NetworkUtil.writeNodeObject( streamId, self.object )
 		streamWriteString(streamId, self.className )
 	end
@@ -1025,6 +1032,9 @@ else
 		end 
 	end
 	function mogliBase30Reply:writeStream(streamId, connection)
+		if self.object == nil then 
+			print("Error: mogliBase30Reply has empty object")
+		end
 		NetworkUtil.writeNodeObject( streamId, self.object )
 		mogliBase30.writeStreamEx( streamId, self.className, self.document )
 	end
