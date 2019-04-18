@@ -59,7 +59,8 @@ local listOfProperties =
 		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="snapDir",       propName="vcaLastSnapAngle" },
 		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="snapPosX",      propName="vcaLastSnapPosX"  },
 		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="snapPosZ",      propName="vcaLastSnapPosZ"  },
-		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="handthrottle",  propName="vcaHandthrottle"  } }
+		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="handthrottle",  propName="vcaHandthrottle"  },
+		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="pitchFactor",   propName="vcaPitchFactor"   } }
 
 
 VCAGlobals = {}
@@ -285,6 +286,7 @@ function vehicleControlAddon:onLoad(savegame)
 	vehicleControlAddon.registerState( self, "vcaIsEnteredMP",  false )
 	vehicleControlAddon.registerState( self, "vcaSnapDraw",     1 )
 	vehicleControlAddon.registerState( self, "vcaHandthrottle", 0 )
+	vehicleControlAddon.registerState( self, "vcaPitchFactor",  1 )
 	
 	self.vcaFactor        = 1
 	self.vcaReverseTimer  = 1.5 / VCAGlobals.timer4Reverse
@@ -983,9 +985,13 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 
 	--*******************************************************************
 	-- Keep Speed 
+	local lastKSStopTimer = self.vcaLastKSStopTimer
 	if self.vcaKSIsOn and self.vcaIsEntered then
-		if self.spec_drivable.cruiseControl.state > 0 then 
+		if     self.spec_drivable.cruiseControl.state == Drivable.CRUISECONTROL_STATE_FULL then 
 			self:vcaSetState( "vcaKeepSpeed", self.lastSpeed * 3600 * self.movingDirection  )
+		elseif self.spec_drivable.cruiseControl.state == Drivable.CRUISECONTROL_STATE_ON then 
+			self:vcaSetState( "vcaKeepSpeed", self:getCruiseControlSpeed() * self.movingDirection  )
+			self:setCruiseControlState( Drivable.CRUISECONTROL_STATE_OFF )
 		elseif math.abs( self.spec_drivable.axisForward ) > 0.01 then 
 			local f = 3.6 * math.max( -self.spec_motorized.motor.maxBackwardSpeed, self.lastSpeed * 1000 * self.movingDirection - 1 )
 			local t = 3.6 * math.min(  self.spec_motorized.motor.maxForwardSpeed,  self.lastSpeed * 1000 * self.movingDirection + 1  )
@@ -995,7 +1001,17 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 			elseif self.spec_drivable.reverserDirection ~= nil then 
 				a = a * self.spec_drivable.reverserDirection
 			end 
-			self:vcaSetState( "vcaKeepSpeed", vehicleControlAddon.mbClamp( self.vcaKeepSpeed + a * 0.003 * dt, f, t ) )
+			local s = vehicleControlAddon.mbClamp( self.vcaKeepSpeed + a * 0.0067 * dt, f, t ) 
+			
+			if math.abs( self.lastSpeed * 3600 ) > 2 then 
+				self.vcaLastKSStopTimer = g_currentMission.time + 2000 
+			elseif lastKSStopTimer == nil then 
+				self.vcaLastKSStopTimer = g_currentMission.time
+			elseif g_currentMission.time < lastKSStopTimer then 
+				s = 0
+			end 
+				
+			self:vcaSetState( "vcaKeepSpeed", s )
 		end 
 	end 
 	
@@ -1268,12 +1284,14 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 		if self.vcaTransmission ~= nil and self.vcaTransmission >= 1 and self:getIsMotorStarted() and self.spec_motorized.motor.vcaFakeRpm == nil then 
 			local motor = self.spec_motorized.motor 
 		
+			local m = motor:getMinRpm()
 			local r = motor:getNonClampedMotorRpm()
-			if self:getIsMotorStarted() and motor:getMinRpm() > 0 and r < motor:getMinRpm() then 
-				self.vcaRpmFactor = math.max( 0.1, r / motor:getMinRpm() )
+			if self:getIsMotorStarted() and motor:getMinRpm() > 0 and r < m then 
+				self.vcaRpmFactor = math.max( 0.1, r / m )
 			end 
-			if self:getIsMotorStarted() and motor:getMaxRpm() > 0 and r > motor:getMaxRpm() then 
-				self.vcaRpmFactor = math.min( 1.9, r / motor:getMaxRpm() )
+			m = motor:getMaxRpm() / self.vcaPitchFactor
+			if self:getIsMotorStarted() and motor:getMaxRpm() > 0 and r > m then 
+				self.vcaRpmFactor = math.min( 1.9, r / m )
 			end 
 		end 
 	end 
@@ -2265,7 +2283,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		end 
 					
 		if speed > 2 then 
-			self.vcaIncreaseRpm = g_currentMission.time + 1000 
+			self.vcaIncreaseRpm = g_currentMission.time + 2000 
 		end 
 		
 		local minReducedRpm = math.min( math.max( newMinRpm, 0.5*math.min( 2200, self.maxRpm ) ), newMaxRpm )
@@ -2273,11 +2291,25 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			minReducedRpm = math.min( math.max( newMinRpm, 0.8*math.min( 2200, self.maxRpm ) ), newMaxRpm )
 		end 
 		
+		local noThrottle = ( curAcc <= 0.1 )
+		if speed >= self:getSpeedLimit() - 0.5 then 
+			if self.vehicle.vcaKSIsOn then 
+				noThrottle = self.vehicle.vcaOldAcc <= 0.1
+			else 
+				noThrottle = true 
+			end 
+		end 
+		if noThrottle then 
+			minReducedRpm = math.max( minReducedRpm - 0.05 * self.maxRpm, newMinRpm )
+		else 
+			minReducedRpm = math.min( minReducedRpm + 0.05 * self.maxRpm, self.maxRpm )
+		end 					
+		
 		if speed > 0.5 and self.vcaIncreaseRpm ~= nil and g_currentMission.time < self.vcaIncreaseRpm  then 
 			newMinRpm = minReducedRpm
-		end
+		end		
 		minReducedRpm = minReducedRpm + 0.1 * self.maxRpm
-			
+		
 		if self.vehicle.spec_combine == nil and self.vehicle.vcaLimitThrottle ~= nil and self.vehicle.vcaInchingIsOn ~= nil then 
 				
 			if self.vehicle.spec_drivable.cruiseControl.state == 0 then
@@ -2495,7 +2527,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		if curAcc < 0.1 and self.vcaAutoLowTimer < 2000 then 
 			self.vcaAutoLowTimer = 2000
 		end 
-		if maxSpeed > 1.5 * self:getSpeedLimit() and self.vcaAutoDownTimer > 1000 then
+		if maxSpeed > 0.41667 * self:getSpeedLimit() and self.vcaAutoDownTimer > 1000 then -- 0.41667 = 1.5 / 3.6
 			self.vcaAutoDownTimer = 1000
 		end 
 		
@@ -3134,6 +3166,14 @@ function vehicleControlAddon:vcaShowSettingsUI()
 		r = r + 100
 	end 
 	
+	self.vcaUI.vcaPitchFactor   = {}
+	self.vcaUI.vcaPitchFactor_V = {}
+	for i=1,15 do 
+		local v = 0.8 + ( i - 1 ) * 0.05
+		table.insert( self.vcaUI.vcaPitchFactor, string.format( "%3.0f%%", v*100 ) )
+		table.insert( self.vcaUI.vcaPitchFactor_V, v )
+	end 
+	
 	g_vehicleControlAddonScreen:setVehicle( self )
 	g_gui:showGui( "vehicleControlAddonScreen" )
 end
@@ -3220,7 +3260,7 @@ function vehicleControlAddon:vcaUISetvcaHandthrottle( value )
 	end
 end
 
-function vehicleControlAddon:vcaUIGetvcaHandthrottle( value )
+function vehicleControlAddon:vcaUIGetvcaHandthrottle()
 	local i = 1
 	local d = 2
 	for j,h in pairs( self.vcaUI.vcaHandthrottle_V ) do 
@@ -3232,4 +3272,18 @@ function vehicleControlAddon:vcaUIGetvcaHandthrottle( value )
 	return i
 end
 
+function vehicleControlAddon:vcaUIGetvcaPitchFactor()
+	local j = 5
+	local d = math.abs( self.vcaPitchFactor - 1 )
+	for i,v in pairs( self.vcaUI.vcaPitchFactor_V ) do 
+		if math.abs( self.vcaPitchFactor - v ) < d then 
+			j = i 
+			d = math.abs( self.vcaPitchFactor - v )
+		end 
+	end 
+	return j 
+end 
 
+function vehicleControlAddon:vcaUISetvcaPitchFactor( value )
+	self:vcaSetState( "vcaPitchFactor", 0.8 + ( value - 1 ) * 0.05 )
+end 

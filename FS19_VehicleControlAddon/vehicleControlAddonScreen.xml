@@ -6,8 +6,8 @@
 			<GuiElement type="text" profile="headerText" id="mogliHeaderText" text="$mogli_vcaTITLE"/>
 		</GuiElement>
 		
-		<GuiElement type="boxLayout" profile="settingsBox" size="390px 688px" position="20px 88px" positionOrigin="bottomLeft">	
 		
+		<GuiElement type="boxLayout" profile="settingsBox" size="390px 688px" position="20px 88px" positionOrigin="bottomLeft">
 			<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="vcaCamRotInside" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_vca_tip_CAMERAI"  onCreate="onCreateSubElement"
 											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="110" focusChangeTop="502" focusChangeBottom="111">										
 				<GuiElement type="button" profile="multiTextOptionLeft" />
@@ -61,11 +61,10 @@
 				<GuiElement type="text" profile="multiTextOptionTitle" text="$mogli_vcaPEEKLR"/>
 				<GuiElement type="bitmap" profile="multiTextOptionBg" />
 			</GuiElement>			
-		
 		</GuiElement>
 		
+		
 		<GuiElement type="boxLayout" profile="settingsBox" size="390px 688px" position="430px 88px" positionOrigin="bottomLeft">	
-			
 			<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="vcaExponent" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_vca_tip_EXPONENT" onCreate="onCreateSubElement" onCreateArgs="list"
 											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="210" focusChangeTop="140" focusChangeBottom="220">
 				<GuiElement type="button" profile="multiTextOptionLeft" />
@@ -103,7 +102,7 @@
 			</GuiElement>
 
 			<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="vcaHandthrottle" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_vca_tip_HANDTHROTTLE" onCreate="onCreateSubElement" onCreateArgs="list"
-											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="250" focusChangeTop="240" focusChangeBottom="310">
+											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="250" focusChangeTop="240" focusChangeBottom="260">
 				<GuiElement type="button" profile="multiTextOptionLeft" />
 				<GuiElement type="button" profile="multiTextOptionRight"/>
 				<GuiElement type="text"   profile="multiTextOptionText" />
@@ -111,11 +110,18 @@
 				<GuiElement type="bitmap" profile="multiTextOptionBg" />
 			</GuiElement>
 
-
+			<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="vcaPitchFactor" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_vca_tip_PITCH" onCreate="onCreateSubElement" onCreateArgs="list"
+											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="260" focusChangeTop="250" focusChangeBottom="310">
+				<GuiElement type="button" profile="multiTextOptionLeft" />
+				<GuiElement type="button" profile="multiTextOptionRight"/>
+				<GuiElement type="text"   profile="multiTextOptionText" />
+				<GuiElement type="text"   profile="multiTextOptionTitle" text="$mogli_vcaPITCH"/>
+				<GuiElement type="bitmap" profile="multiTextOptionBg" />
+			</GuiElement>
 		</GuiElement>
-
+		
+		
 		<GuiElement type="boxLayout" profile="settingsBox" size="390px 688px" position="840px 88px" positionOrigin="bottomLeft">	
-					
 			<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="vcaShuttleCtrl" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_vca_tip_SHUTTLE" onCreate="onCreateSubElement" 
 											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="310" focusChangeTop="250" focusChangeBottom="320">										
 				<GuiElement type="button" profile="multiTextOptionLeft" />
@@ -182,7 +188,6 @@
 
 
 		<GuiElement type="boxLayout" profile="settingsBox" size="390px 688px" position="1250px 88px" positionOrigin="bottomLeft">	
-		
 			<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="vcaSnapAngle" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_vca_tip_ANGLE" onCreate="onCreateSubElement" onCreateArgs="list"
 											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="410" focusChangeTop="370" focusChangeBottom="420">
 				<GuiElement type="button" profile="multiTextOptionLeft" />
@@ -208,8 +213,7 @@
 				<GuiElement type="text"   profile="multiTextOptionText" />
 				<GuiElement type="text"   profile="multiTextOptionTitle" text="Draw Marker"/>
 				<GuiElement type="bitmap" profile="multiTextOptionBg" />
-			</GuiElement>
-			
+			</GuiElement>			
 		</GuiElement>
 
 
