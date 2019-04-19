@@ -1,28 +1,40 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <l10n>
 	<!-- Note that 'description' is only here for easier translations. It needs to be manually copied to ModDesc.XML later. -->
 	<description><![CDATA[Ajoute la spécialisation pour la conduite adaptative au clavier]]></description>
 	<texts>
-		<text name="ksmENABLE_ON"     text="Conduite [adaptive]" />
-		<text name="ksmENABLE_OFF"    text="Conduite [normale]" />
-		<text name="ksmCAMERA_ON"     text="Mouvement de caméra [ON]" />
-		<text name="ksmCAMERA_OFF"    text="Mouvement de caméra [OFF]" />
-		<text name="ksmANALOG_ON"     text="Manette analogique [ON]" />
-		<text name="ksmANALOG_OFF"    text="Manette analogique [OFF]" />
-		<text name="ksmREVERSE_ON"    text="Caméra de recul [ON]" />
-		<text name="ksmREVERSE_OFF"   text="Caméra de recul [OFF]" />
+		<text name="ksmCAMERA"		   text="Mouvement de caméra"/>
+		<text name="ksmEXPONENT"       text="dépendance à la vitesse"/>
+		<text name="ksmSTEERING"       text="Direction adaptative"/>
+		<text name="ksmANALOG" 		   text="Controleur analogique"/>
+		<text name="ksmREVERSE"		   text="Caméra de recul"/>
+		<text name="ksmLIMIT"          text="Limiteur de pédale d'accélérateur"/>
+		<text name="ksmSETTINGS"       text="FS17_KeyboardSteer: Paramètres"/>
 
-		<text name="input_ksmENABLE"  text="keyboardSteer : Direction" />
-		<text name="input_ksmCAMERA"  text="keyboardSteer : Mouvement de caméra" />
-		<text name="input_ksmREVERSE" text="keyboardSteer : Caméra de recul" />
-		<text name="input_ksmANALOG"  text="keyboardSteer : Manette analogique" />
-		<text name="input_ksmPLUS"    text="keyboardSteer : Sensibilité +" />
-		<text name="input_ksmMINUS"   text="keyboardSteer : Sensibilité -" />
-		<text name="input_ksmTPLUS"   text="keyboardSteer : throttle limiter +"/>
-		<text name="input_ksmTMINUS"  text="keyboardSteer : throttle limiter -"/>
-		<text name="input_ksmUP"      text="keyboardSteer : Devant" />
-		<text name="input_ksmDOWN"    text="keyboardSteer : Derrière" />
-		<text name="input_ksmLEFT"    text="keyboardSteer : Gauche" />
-		<text name="input_ksmRIGHT"   text="keyboardSteer : Droite" />
+		<text name="ksm_tip_CAMERA"    text="La caméra pivote automatiquement pour s'adapter à l'angle de braquage."/>
+		<text name="ksm_tip_EXPONENT"  text="Dépendance de la vitesse de direction adaptative"/>
+		<text name="ksm_tip_STEERING"  text="La direction adaptative change la vitesse de retour et l'angle de braquage maximal en fonction de la vitesse"/>
+		<text name="ksm_tip_ANALOG"    text="Activer le pilotage adaptatif également pour les contrôleurs analogiques"/>
+		<text name="ksm_tip_REVERSE"   text="Lors du changement du sens de marche avant ou arrière, la caméra changera automatiquement à 180 °"/>
+		<text name="ksm_tip_LIMIT"     text="Limiteur de pédale d'accélérateur sans et avec la touche Maj gauche enfoncée (LShift)"/>
+
+		<text name="input_ksmENABLE"   text="keyboardSteer : Direction"/>
+		<text name="input_ksmCAMERA"   text="keyboardSteer : Mouvement de caméra"/>
+		<text name="input_ksmREVERSE"  text="keyboardSteer : Caméra de recul"/>
+		<text name="input_ksmSETTINGS" text="FS17_KeyboardSteer: Paramètres"/>
+		<text name="input_ksmUP"       text="keyboardSteer : Regardez devant"/>
+		<text name="input_ksmDOWN"     text="keyboardSteer : Regardez derrière"/>
+		<text name="input_ksmLEFT"     text="keyboardSteer : Regardez à gauche"/>
+		<text name="input_ksmRIGHT"    text="keyboardSteer : Regardez à droite"/>
 	</texts>
+
+	<longTexts>
+		<longText name="ksm_Help_1">
+<![CDATA[Ce script fait varier la vitesse de direction, la vitesse de retour et l'angle de braquage maximal en fonction de la vitesse parcourue.
+Il fait également pivoter la caméra pour l'adapter à l'angle de direction et à la direction du déplacement. L'accélérateur digital (Touche A et W) peut être limité.
+Si vous appuyez simultanément sur la touche Majuscule gauche, alors 100% des gaz sont fournit ou bridés.
+Si vous réglez l’accélérateur sur 100%, alors Maj Gauche, au contraire, limitera l’effet de la pédale d’accélérateur ou du frein.
+Toutes les fonctions peuvent également être désactivées.]]>
+		</longText>
+	</longTexts>
 </l10n>
