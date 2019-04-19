@@ -22,6 +22,7 @@
 		<text name="vcaLAUNCH"          text="Launch Gear"/>
 		<text name="vcaKEEPSPEED"       text="Permanent keep speed"/>
 		<text name="vcaHANDTHROTTLE"    text="Hand throttle"/>
+		<text name="vcaPITCH"           text="Sound pitch at max. RPM"/>
 		<text name="vcaSETTINGS"        text="Settings"/>
 		                                
 		<text name="vca_tip_CAMERAI"    text="The interior camera rotates automatically according to the steering angle"/>
@@ -42,6 +43,7 @@
 		<text name="vca_tip_LAUNCH"     text="Rated speed of the launch gear"/>
 		<text name="vca_tip_KEEPSPEED"  text="If permanent keep speed is enabled than the acceleration pedal behaves like a joystick. This is like driving with cruise control."/>
 		<text name="vca_tip_HANDTHROTTLE" text="The engine automatically accelerates to reach hand throttle RPM"/>
+		<text name="vca_tip_PITCH"      text="Sound pitch at maximum RPM"/>
 		                               
 		<text name="input_vcaSETTINGS"  text="VCA: settings"/>
 		<text name="input_vcaUP"        text="VCA: toggle view direction / lock forwards"/>

@@ -172,7 +172,7 @@ else
 						
 						if     element.typeName == "checkedOption" then
 							local b = value
-							if s.parameter then
+							if s.parameter == "inverted" then
 								b = not b
 							end
 							element:setIsChecked( b )
@@ -230,7 +230,7 @@ else
 						print("Invalid UI element ID: "..tostring(name))
 					elseif element.typeName == "checkedOption" then
 						local b = element:getIsChecked()
-						if s.parameter then
+						if s.parameter == "inverted" then
 							b = not b
 						end
 					--print("SET: "..tostring(name)..": '"..tostring(b).."'")

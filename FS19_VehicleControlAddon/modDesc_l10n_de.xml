@@ -23,6 +23,7 @@
 		<text name="vcaLAUNCH"          text="Startgang"/>
 		<text name="vcaKEEPSPEED"       text="Geschwindigkeit permanent halten"/>
 		<text name="vcaHANDTHROTTLE"    text="Handgas"/>
+		<text name="vcaPITCH"           text="Tonhöhe bei Maximaldrehzahl"/>
 		<text name="vcaSETTINGS"        text="Einstellungen"/>
 		                                
 		<text name="vca_tip_CAMERAI"    text="Die innere Kamera dreht sich passend zum Lenkeinschlag automatisch mit."/>
@@ -43,7 +44,8 @@
 		<text name="vca_tip_LAUNCH"     text="Geschwindigkeit des Ganges, der zum Anfahren benutzt wird"/>
 		<text name="vca_tip_KEEPSPEED"  text="Falls ständiges Halten der Geschwindigkeit aktiviert ist, dann fährt das Fahrzeug quasi immer mit Tempomat. Das entspricht dem Fahrhebel in modernen Traktoren."/>
 		<text name="vca_tip_HANDTHROTTLE" text="Der Motor beschleunigt automatisch bis zur gewählten Drehzahl"/>
-		                                
+		<text name="vca_tip_PITCH"      text="Tonhöhe bei Maximaldrehzahl"/>
+
 		<text name="input_vcaSETTINGS"  text="VCA: Einstellungen"/>
 		<text name="input_vcaUP"        text="VCA: Blickrichtung wechseln oder nach vorne schauen"/>
 		<text name="input_vcaDOWN"      text="VCA: In die andere Richtung blicken / nach hinten schauen"/>
