@@ -22,6 +22,7 @@
 		<text name="vcaLAUNCH"          text="Mudança de Arranque"/>
 		<text name="vcaKEEPSPEED"       text="Manter Velocidade"/>
 		<text name="vcaHANDTHROTTLE"    text="Acelerador de Mão"/>
+		<text name="vcaPITCH"           text="Tom sonoro na RPM máximo"/>
 		<text name="vcaSETTINGS"        text="Configuração"/>
 
 		<text name="vca_tip_CAMERAI"    text="A câmera interior gira automaticamente de acordo com o ângulo de direção"/>
@@ -42,6 +43,7 @@
 		<text name="vca_tip_LAUNCH"     text="Velocidade da Mudança de Arranque"/>
 		<text name="vca_tip_KEEPSPEED"  text="Se a velocidade permanente estiver ativada, o pedal de aceleração vai se comportar como um joystick. Isto é como andar com controle de velocidade."/>
 		<text name="vca_tip_HANDTHROTTLE" text="O motor automáticamente acelera para a rotação do acelerador de mão"/>
+		<text name="vca_tip_PITCH"      text="Tom sonoro na RPM máximo"/>
 		
 		<text name="input_vcaSETTINGS"  text="VCA: Configuração"/>
 		<text name="input_vcaUP"        text="VCA: alterna a direção da vista / Olhar para frente"/>
