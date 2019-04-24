@@ -119,6 +119,14 @@ function vehicleControlAddon.debugPrint( ... )
 	end
 end
 
+function vehicleControlAddon:mpDebugPrint( ... )
+	if VCAGlobals.debugPrint then
+		print( ... )
+	elseif type( self ) == "table" and self.isServer and not ( self.isClient ) then 
+		print( ... )
+	end
+end
+
 function vehicleControlAddon:vcaIsValidCam( index )
 	local i = Utils.getNoNil( index, self.spec_enterable.camIndex )
 	
@@ -430,7 +438,7 @@ function vehicleControlAddon:saveToXMLFile(xmlFile, xmlKey)
 		end 
 	end 
 	
-	if self.vcaUserSettings ~= nil and table.getn( self.vcaUserSettings ) > 1 then 
+	if type( self.vcaUserSettings ) == "table" then 
 		local u = 0
 		for name,setting in pairs( self.vcaUserSettings ) do 
 			local ins = true 
@@ -778,11 +786,11 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 	if self:getIsControlled() then 
 		self.vcaControllerName = self:getControllerName()
 		if lastControllerName == nil or lastControllerName ~= self.vcaControllerName then 
-			vehicleControlAddon.debugPrint("New controller of vehicle is: "..self.vcaControllerName)
+			vehicleControlAddon.mpDebugPrint( self,"New controller of vehicle is: "..self.vcaControllerName)
 		end 
 	elseif lastControllerName ~= nil then 
 		if lastControllerName ~= "" then 
-			vehicleControlAddon.debugPrint(lastControllerName.." left vehicle")
+			vehicleControlAddon.mpDebugPrint( self,lastControllerName.." left vehicle")
 		end 
 		self.vcaControllerName = "" 
 	end 
@@ -802,21 +810,21 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 		if self.vcaControllerName ~= "" then 
 			if self.vcaUserSettings[self.vcaControllerName] == nil then 
 			-- new user or no settings in save game => create setting from self
-				vehicleControlAddon.debugPrint("Creating settings for user "..self.vcaControllerName)
+				vehicleControlAddon.mpDebugPrint( self,"Creating settings for user "..self.vcaControllerName)
 				self.vcaUserSettings[self.vcaControllerName] = {} 
 				for _,prop in pairs( listOfProperties ) do 
 					self.vcaUserSettings[self.vcaControllerName][prop.propName] = self[prop.propName]
 				end 
 			else
 			-- changed user => restore user settings 
-				vehicleControlAddon.debugPrint("Restoring settings for user "..self.vcaControllerName)
+				vehicleControlAddon.mpDebugPrint( self,"Restoring settings for user "..self.vcaControllerName)
 				for _,prop in pairs( listOfProperties ) do 
 					if not self.vcaIsEntered then 
 						self[prop.propName] = nil
 					end 
 					if self.vcaUserSettings[self.vcaControllerName][prop.propName] ~= nil then 
 						self:vcaSetState( prop.propName, self.vcaUserSettings[self.vcaControllerName][prop.propName] )
-						vehicleControlAddon.debugPrint( prop.propName.." of "..self.vcaControllerName..": "
+						vehicleControlAddon.mpDebugPrint( self, prop.propName.." of "..self.vcaControllerName..": "
 																					..tostring( self[prop.propName]) .." ("..tostring(self.vcaUserSettings[	self.vcaControllerName][prop.propName])..")")
 					else 
 						self:vcaSetState( prop.propName, self.vcaDefaults[prop.propName] )
