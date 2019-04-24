@@ -397,7 +397,7 @@ function vehicleControlAddon:onPostLoad(savegame)
 				local v = prop.getFunc( savegame.xmlFile, key.."#"..prop.xmlName )
 				vehicleControlAddon.debugPrint("User: "..tostring(name).."; "..tostring(prop.xmlName)..": "..tostring(v))
 				if v == nil then 
-					self.vcaUserSettings[name][prop.propName] = self.vcaDefaults[prop.propName] 
+					self.vcaUserSettings[name][prop.propName] = self[prop.propName] 
 				else 
 					self.vcaUserSettings[name][prop.propName] = v 
 				end 
@@ -819,15 +819,10 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 			-- changed user => restore user settings 
 				vehicleControlAddon.mpDebugPrint( self,"Restoring settings for user "..self.vcaControllerName)
 				for _,prop in pairs( listOfProperties ) do 
-					if not self.vcaIsEntered then 
-						self[prop.propName] = nil
-					end 
 					if self.vcaUserSettings[self.vcaControllerName][prop.propName] ~= nil then 
 						self:vcaSetState( prop.propName, self.vcaUserSettings[self.vcaControllerName][prop.propName] )
 						vehicleControlAddon.mpDebugPrint( self, prop.propName.." of "..self.vcaControllerName..": "
 																					..tostring( self[prop.propName]) .." ("..tostring(self.vcaUserSettings[	self.vcaControllerName][prop.propName])..")")
-					else 
-						self:vcaSetState( prop.propName, self.vcaDefaults[prop.propName] )
 					end 
 				end 
 			end 
