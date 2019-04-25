@@ -120,11 +120,9 @@ function vehicleControlAddon.debugPrint( ... )
 end
 
 function vehicleControlAddon:mpDebugPrint( ... )
-	if VCAGlobals.debugPrint then
+	if VCAGlobals.debugPrint or self == nil or not ( self.isClient ) then 
 		print( ... )
-	elseif type( self ) == "table" and self.isServer and not ( self.isClient ) then 
-		print( ... )
-	end
+	end 
 end
 
 function vehicleControlAddon:vcaIsValidCam( index )
@@ -271,7 +269,7 @@ function vehicleControlAddon:onLoad(savegame)
 	vehicleControlAddon.registerState( self, "vcaInchingIsOn" , false )
 	vehicleControlAddon.registerState( self, "vcaNoAutoRotBack",false )
 	vehicleControlAddon.registerState( self, "vcaBrakeForce",   VCAGlobals.brakeForceFactor )
-	vehicleControlAddon.registerState( self, "vcaTransmission", vehicleControlAddon.getDefaultTransmission( self ), vehicleControlAddon.vcaOnSetTransmission )
+	vehicleControlAddon.registerState( self, "vcaTransmission", vehicleControlAddon.getDefaultTransmission( self ) )
 	vehicleControlAddon.registerState( self, "vcaMaxSpeed",     vehicleControlAddon.getDefaultMaxSpeed( self ) )
 	vehicleControlAddon.registerState( self, "vcaGear",         0 ) --, vehicleControlAddon.vcaOnSetGear )
 	vehicleControlAddon.registerState( self, "vcaRange",        0 ) --, vehicleControlAddon.vcaOnSetRange )
@@ -782,6 +780,9 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 		self.vcaIsEntered = false 
 	end 	
 	
+	
+	--*******************************************************************
+	-- user settings
 	lastControllerName = self.vcaControllerName
 	if self:getIsControlled() then 
 		self.vcaControllerName = self:getControllerName()
@@ -831,6 +832,57 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 			end 
 		end 
 	end 
+	
+	
+	--*******************************************************************
+	-- start the transmission
+	if not ( self:getIsVehicleControlledByPlayer() 
+			 and self:getIsMotorStarted()
+			 and ( ( self.isClient and self.vcaIsEntered ) 
+					or ( self.isServer and self.vcaIsEnteredMP ) ) ) then 
+		if self.vcaLastTransmission ~= nil then 
+			vehicleControlAddon.mpDebugPrint( self, "*********************************************" )
+			vehicleControlAddon.mpDebugPrint( self, tostring(self.configFileName))
+			vehicleControlAddon.mpDebugPrint( self, "Resetting transmission")
+			vehicleControlAddon.mpDebugPrint( self, "*********************************************" )
+		end 
+		self.vcaLastTransmission = nil 
+	elseif self.vcaLastTransmission == nil or self.vcaLastTransmission ~= self.vcaTransmission then 	
+		vehicleControlAddon.mpDebugPrint( self, "*********************************************" )
+		vehicleControlAddon.mpDebugPrint( self, tostring(self.configFileName))
+		vehicleControlAddon.mpDebugPrint( self, "Old transmission: "..tostring(self.vcaLastTransmission)..", new transmission: "..tostring(self.vcaTransmission))
+		self.vcaLastTransmission = self.vcaTransmission
+		
+		if self.vcaGearbox ~= nil then 
+			self.vcaGearbox:delete()
+		end 
+		
+		local transmissionDef = vehicleControlAddonTransmissionBase.transmissionList[self.vcaTransmission]
+		if transmissionDef == nil then 
+			self.vcaGearbox = nil  
+		else 
+			self.vcaGearbox = transmissionDef.class:new( unpack( transmissionDef.params ) )
+		end 
+		
+		if self.vcaGearbox ~= nil then 
+			self.vcaGearbox:setVehicle( self )
+		end 
+		
+		if self.isServer and self.vcaLastTransmission == nil or self.vcaLastTransmission <= 1 then 
+			vehicleControlAddon.mpDebugPrint( self, "New launch gear index: "..tostring(VCAGlobals.launchGear))
+			self:vcaSetState( "vcaLaunchGear", VCAGlobals.launchGear, noEventSend )
+		end 
+		
+		if self.vcaGearbox ~= nil then 
+			self.vcaGearbox:initGears( true )	
+		end 
+		
+		vehicleControlAddon.mpDebugPrint( self, "Gear: "..tostring(self.vcaGear)..", range: "..tostring(self.vcaRange))
+		vehicleControlAddon.mpDebugPrint( self, "*********************************************" )
+		
+		self:updateMotorProperties()
+	end 
+	
 	
 	local newRotCursorKey = self.vcaNewRotCursorKey
 	local i               = self.spec_enterable.camIndex
@@ -2976,30 +3028,6 @@ function vehicleControlAddon:vcaOnSetDirection( old, new, noEventSend )
 			self:vcaSetState( "vcaKeepSpeed", sign * math.abs( self.vcaKeepSpeed ), noEventSend )
 		end 
 	end 
-end 
-
-function vehicleControlAddon:vcaOnSetTransmission( old, new, noEventSend )
-	self.vcaTransmission = new 
-	if old ~= nil and new == old then 
-		return 
-	end 
-		
-	local transmissionDef = vehicleControlAddonTransmissionBase.transmissionList[self.vcaTransmission]
-	if transmissionDef == nil then 
-		self.vcaGearbox = nil  
-	else 
-		self.vcaGearbox = transmissionDef.class:new( unpack( transmissionDef.params ) )
-	end 
-	
-	if self.vcaGearbox ~= nil then 
-		self.vcaGearbox:setVehicle( self )
-	end 
-	
-	if self.isServer and old == nil or old <= 1 then 
-		self:vcaSetState( "vcaLaunchGear", VCAGlobals.launchGear, noEventSend )
-	end 
-	
-	self:updateMotorProperties()
 end 
 
 function vehicleControlAddon:vcaOnSetGearChanged( old, new, noEventSend )
