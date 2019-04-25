@@ -847,7 +847,9 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 			vehicleControlAddon.mpDebugPrint( self, "*********************************************" )
 		end 
 		self.vcaLastTransmission = nil 
-	elseif self.vcaLastTransmission == nil or self.vcaLastTransmission ~= self.vcaTransmission then 	
+	elseif self.vcaLastTransmission == nil 
+			or self.vcaLastTransmission ~= self.vcaTransmission
+			or ( self.vcaTransmission > 1 and self.vcaGearbox == nil ) then 
 		vehicleControlAddon.mpDebugPrint( self, "*********************************************" )
 		vehicleControlAddon.mpDebugPrint( self, tostring(self.configFileName))
 		vehicleControlAddon.mpDebugPrint( self, "Old transmission: "..tostring(self.vcaLastTransmission)..", new transmission: "..tostring(self.vcaTransmission))
@@ -855,12 +857,11 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 		
 		if self.vcaGearbox ~= nil then 
 			self.vcaGearbox:delete()
+			self.vcaGearbox = nil
 		end 
 		
 		local transmissionDef = vehicleControlAddonTransmissionBase.transmissionList[self.vcaTransmission]
-		if transmissionDef == nil then 
-			self.vcaGearbox = nil  
-		else 
+		if transmissionDef ~= nil then 
 			self.vcaGearbox = transmissionDef.class:new( unpack( transmissionDef.params ) )
 		end 
 		
@@ -1697,30 +1698,30 @@ end
 
 function vehicleControlAddon:onReadStream(streamId, connection)
 
-	self.vcaSteeringIsOn  = streamReadBool(streamId) 
-  self.vcaCamRotInside  = streamReadBool(streamId) 
-  self.vcaCamRotOutside = streamReadBool(streamId) 
-  self.vcaCamRevInside  = streamReadBool(streamId) 
-  self.vcaCamRevOutside = streamReadBool(streamId) 
-  self.vcaCamFwd        = streamReadBool(streamId) 
-  self.vcaShuttleCtrl   = streamReadBool(streamId) 
-  self.vcaShuttleFwd    = streamReadBool(streamId) 
-  self.vcaNeutral       = streamReadBool(streamId) 
-  self.vcaDrawHud       = streamReadBool(streamId) 
-	self.vcaExternalDir   = streamReadInt16(streamId)     
-	self.vcaExponent      = streamReadInt16(streamId)     
-	self.vcaSnapAngle     = streamReadInt16(streamId)     
-	self.vcaPeekLeftRight = streamReadBool(streamId) 
-	self.vcaAutoShift     = streamReadBool(streamId) 
-	self.vcaLimitSpeed    = streamReadBool(streamId) 
-	self.vcaLimitThrottle = streamReadInt16(streamId) 
-	self.vcaBrakeForce    = streamReadInt16(streamId) * 0.05
-	self.vcaLaunchGear    = streamReadInt16(streamId)
-	self.vcaTransmission  = streamReadInt16(streamId)
-	self.vcaMaxSpeed      = streamReadFloat32(streamId)
-	self.vcaLastSnapAngle = streamReadFloat32(streamId)
-	self.vcaLastSnapPosX  = streamReadFloat32(streamId)
-	self.vcaLastSnapPosZ  = streamReadFloat32(streamId)
+	self:vcaSetState( "vcaSteeringIsOn" , streamReadBool(streamId)      , true )
+  self:vcaSetState( "vcaCamRotInside" , streamReadBool(streamId)      , true )
+  self:vcaSetState( "vcaCamRotOutside", streamReadBool(streamId)      , true )
+  self:vcaSetState( "vcaCamRevInside" , streamReadBool(streamId)      , true )
+  self:vcaSetState( "vcaCamRevOutside", streamReadBool(streamId)      , true )
+  self:vcaSetState( "vcaCamFwd"       , streamReadBool(streamId)      , true )
+  self:vcaSetState( "vcaShuttleCtrl"  , streamReadBool(streamId)      , true )
+  self:vcaSetState( "vcaShuttleFwd"   , streamReadBool(streamId)      , true )
+  self:vcaSetState( "vcaNeutral"      , streamReadBool(streamId)      , true )
+  self:vcaSetState( "vcaDrawHud"      , streamReadBool(streamId)      , true )
+	self:vcaSetState( "vcaExternalDir"  , streamReadInt16(streamId)     , true )   
+	self:vcaSetState( "vcaExponent"     , streamReadInt16(streamId)     , true )   
+	self:vcaSetState( "vcaSnapAngle"    , streamReadInt16(streamId)     , true )   
+	self:vcaSetState( "vcaPeekLeftRight", streamReadBool(streamId)      , true )
+	self:vcaSetState( "vcaAutoShift"    , streamReadBool(streamId)      , true )
+	self:vcaSetState( "vcaLimitSpeed"   , streamReadBool(streamId)      , true )
+	self:vcaSetState( "vcaLimitThrottle", streamReadInt16(streamId)     , true )
+	self:vcaSetState( "vcaBrakeForce"   , streamReadInt16(streamId)*0.05, true )
+	self:vcaSetState( "vcaLaunchGear"   , streamReadInt16(streamId)     , true )
+	self:vcaSetState( "vcaTransmission" , streamReadInt16(streamId)     , true )
+	self:vcaSetState( "vcaMaxSpeed"     , streamReadFloat32(streamId)   , true )
+	self:vcaSetState( "vcaLastSnapAngle", streamReadFloat32(streamId)   , true )
+	self:vcaSetState( "vcaLastSnapPosX" , streamReadFloat32(streamId)   , true )
+	self:vcaSetState( "vcaLastSnapPosZ" , streamReadFloat32(streamId)   , true )
 	
 end
 
@@ -2310,7 +2311,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	
 	local transmission = self.vehicle.vcaGearbox 
 	
-	if not self.vehicle:getIsMotorStarted() or dt < 0 then 
+	if not self.vehicle:getIsMotorStarted() or dt < 0 or self.vehicle.vcaLastTransmission == nil then 
 		self.vcaClutchTimer   = nil
 		self.vcaAutoDownTimer = nil
 		self.vcaAutoUpTimer   = nil
@@ -2916,7 +2917,7 @@ end
 Motorized.getCanMotorRun = Utils.overwrittenFunction( Motorized.getCanMotorRun, vehicleControlAddon.vcaGetCanMotorRun )
 
 function vehicleControlAddon:vcaUpdateMotorProperties( superFunc, ... )
-	if self.vcaGearbox ~= nil then 
+	if self.vcaLastTransmission ~= nil and self.vcaGearbox ~= nil then 
 		local motor = self.spec_motorized.motor
 		motor.vcaMinRpm = motor.minRpm
 		motor.vcaMaxRpm = motor.maxRpm
