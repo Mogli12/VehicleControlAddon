@@ -119,6 +119,12 @@ function vehicleControlAddon.debugPrint( ... )
 	end
 end
 
+function vehicleControlAddon:mpDebugPrint( ... )
+	if VCAGlobals.debugPrint or self == nil or not ( self.isClient ) then 
+		print( ... )
+	end 
+end
+
 function vehicleControlAddon:vcaIsValidCam( index )
 	local i = Utils.getNoNil( index, self.spec_enterable.camIndex )
 	
@@ -263,7 +269,7 @@ function vehicleControlAddon:onLoad(savegame)
 	vehicleControlAddon.registerState( self, "vcaInchingIsOn" , false )
 	vehicleControlAddon.registerState( self, "vcaNoAutoRotBack",false )
 	vehicleControlAddon.registerState( self, "vcaBrakeForce",   VCAGlobals.brakeForceFactor )
-	vehicleControlAddon.registerState( self, "vcaTransmission", vehicleControlAddon.getDefaultTransmission( self ), vehicleControlAddon.vcaOnSetTransmission )
+	vehicleControlAddon.registerState( self, "vcaTransmission", vehicleControlAddon.getDefaultTransmission( self ) )
 	vehicleControlAddon.registerState( self, "vcaMaxSpeed",     vehicleControlAddon.getDefaultMaxSpeed( self ) )
 	vehicleControlAddon.registerState( self, "vcaGear",         0 ) --, vehicleControlAddon.vcaOnSetGear )
 	vehicleControlAddon.registerState( self, "vcaRange",        0 ) --, vehicleControlAddon.vcaOnSetRange )
@@ -389,7 +395,7 @@ function vehicleControlAddon:onPostLoad(savegame)
 				local v = prop.getFunc( savegame.xmlFile, key.."#"..prop.xmlName )
 				vehicleControlAddon.debugPrint("User: "..tostring(name).."; "..tostring(prop.xmlName)..": "..tostring(v))
 				if v == nil then 
-					self.vcaUserSettings[name][prop.propName] = self.vcaDefaults[prop.propName] 
+					self.vcaUserSettings[name][prop.propName] = self[prop.propName] 
 				else 
 					self.vcaUserSettings[name][prop.propName] = v 
 				end 
@@ -430,7 +436,7 @@ function vehicleControlAddon:saveToXMLFile(xmlFile, xmlKey)
 		end 
 	end 
 	
-	if self.vcaUserSettings ~= nil and table.getn( self.vcaUserSettings ) > 1 then 
+	if type( self.vcaUserSettings ) == "table" then 
 		local u = 0
 		for name,setting in pairs( self.vcaUserSettings ) do 
 			local ins = true 
@@ -774,15 +780,18 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 		self.vcaIsEntered = false 
 	end 	
 	
+	
+	--*******************************************************************
+	-- user settings
 	lastControllerName = self.vcaControllerName
 	if self:getIsControlled() then 
 		self.vcaControllerName = self:getControllerName()
 		if lastControllerName == nil or lastControllerName ~= self.vcaControllerName then 
-			vehicleControlAddon.debugPrint("New controller of vehicle is: "..self.vcaControllerName)
+			vehicleControlAddon.mpDebugPrint( self,"New controller of vehicle is: "..self.vcaControllerName)
 		end 
 	elseif lastControllerName ~= nil then 
 		if lastControllerName ~= "" then 
-			vehicleControlAddon.debugPrint(lastControllerName.." left vehicle")
+			vehicleControlAddon.mpDebugPrint( self,lastControllerName.." left vehicle")
 		end 
 		self.vcaControllerName = "" 
 	end 
@@ -802,24 +811,19 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 		if self.vcaControllerName ~= "" then 
 			if self.vcaUserSettings[self.vcaControllerName] == nil then 
 			-- new user or no settings in save game => create setting from self
-				vehicleControlAddon.debugPrint("Creating settings for user "..self.vcaControllerName)
+				vehicleControlAddon.mpDebugPrint( self,"Creating settings for user "..self.vcaControllerName)
 				self.vcaUserSettings[self.vcaControllerName] = {} 
 				for _,prop in pairs( listOfProperties ) do 
 					self.vcaUserSettings[self.vcaControllerName][prop.propName] = self[prop.propName]
 				end 
 			else
 			-- changed user => restore user settings 
-				vehicleControlAddon.debugPrint("Restoring settings for user "..self.vcaControllerName)
+				vehicleControlAddon.mpDebugPrint( self,"Restoring settings for user "..self.vcaControllerName)
 				for _,prop in pairs( listOfProperties ) do 
-					if not self.vcaIsEntered then 
-						self[prop.propName] = nil
-					end 
 					if self.vcaUserSettings[self.vcaControllerName][prop.propName] ~= nil then 
 						self:vcaSetState( prop.propName, self.vcaUserSettings[self.vcaControllerName][prop.propName] )
-						vehicleControlAddon.debugPrint( prop.propName.." of "..self.vcaControllerName..": "
+						vehicleControlAddon.mpDebugPrint( self, prop.propName.." of "..self.vcaControllerName..": "
 																					..tostring( self[prop.propName]) .." ("..tostring(self.vcaUserSettings[	self.vcaControllerName][prop.propName])..")")
-					else 
-						self:vcaSetState( prop.propName, self.vcaDefaults[prop.propName] )
 					end 
 				end 
 			end 
@@ -828,6 +832,58 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 			end 
 		end 
 	end 
+	
+	
+	--*******************************************************************
+	-- start the transmission
+	if not ( self:getIsVehicleControlledByPlayer() 
+			 and self:getIsMotorStarted()
+			 and ( ( self.isClient and self.vcaIsEntered ) 
+					or ( self.isServer and self.vcaIsEnteredMP ) ) ) then 
+		if self.vcaLastTransmission ~= nil then 
+			vehicleControlAddon.mpDebugPrint( self, "*********************************************" )
+			vehicleControlAddon.mpDebugPrint( self, tostring(self.configFileName))
+			vehicleControlAddon.mpDebugPrint( self, "Resetting transmission")
+			vehicleControlAddon.mpDebugPrint( self, "*********************************************" )
+		end 
+		self.vcaLastTransmission = nil 
+	elseif self.vcaLastTransmission == nil 
+			or self.vcaLastTransmission ~= self.vcaTransmission
+			or ( self.vcaTransmission > 1 and self.vcaGearbox == nil ) then 
+		vehicleControlAddon.mpDebugPrint( self, "*********************************************" )
+		vehicleControlAddon.mpDebugPrint( self, tostring(self.configFileName))
+		vehicleControlAddon.mpDebugPrint( self, "Old transmission: "..tostring(self.vcaLastTransmission)..", new transmission: "..tostring(self.vcaTransmission))
+		self.vcaLastTransmission = self.vcaTransmission
+		
+		if self.vcaGearbox ~= nil then 
+			self.vcaGearbox:delete()
+			self.vcaGearbox = nil
+		end 
+		
+		local transmissionDef = vehicleControlAddonTransmissionBase.transmissionList[self.vcaTransmission]
+		if transmissionDef ~= nil then 
+			self.vcaGearbox = transmissionDef.class:new( unpack( transmissionDef.params ) )
+		end 
+		
+		if self.vcaGearbox ~= nil then 
+			self.vcaGearbox:setVehicle( self )
+		end 
+		
+		if self.isServer and self.vcaLastTransmission == nil or self.vcaLastTransmission <= 1 then 
+			vehicleControlAddon.mpDebugPrint( self, "New launch gear index: "..tostring(VCAGlobals.launchGear))
+			self:vcaSetState( "vcaLaunchGear", VCAGlobals.launchGear, noEventSend )
+		end 
+		
+		if self.vcaGearbox ~= nil then 
+			self.vcaGearbox:initGears( true )	
+		end 
+		
+		vehicleControlAddon.mpDebugPrint( self, "Gear: "..tostring(self.vcaGear)..", range: "..tostring(self.vcaRange))
+		vehicleControlAddon.mpDebugPrint( self, "*********************************************" )
+		
+		self:updateMotorProperties()
+	end 
+	
 	
 	local newRotCursorKey = self.vcaNewRotCursorKey
 	local i               = self.spec_enterable.camIndex
@@ -1642,30 +1698,30 @@ end
 
 function vehicleControlAddon:onReadStream(streamId, connection)
 
-	self.vcaSteeringIsOn  = streamReadBool(streamId) 
-  self.vcaCamRotInside  = streamReadBool(streamId) 
-  self.vcaCamRotOutside = streamReadBool(streamId) 
-  self.vcaCamRevInside  = streamReadBool(streamId) 
-  self.vcaCamRevOutside = streamReadBool(streamId) 
-  self.vcaCamFwd        = streamReadBool(streamId) 
-  self.vcaShuttleCtrl   = streamReadBool(streamId) 
-  self.vcaShuttleFwd    = streamReadBool(streamId) 
-  self.vcaNeutral       = streamReadBool(streamId) 
-  self.vcaDrawHud       = streamReadBool(streamId) 
-	self.vcaExternalDir   = streamReadInt16(streamId)     
-	self.vcaExponent      = streamReadInt16(streamId)     
-	self.vcaSnapAngle     = streamReadInt16(streamId)     
-	self.vcaPeekLeftRight = streamReadBool(streamId) 
-	self.vcaAutoShift     = streamReadBool(streamId) 
-	self.vcaLimitSpeed    = streamReadBool(streamId) 
-	self.vcaLimitThrottle = streamReadInt16(streamId) 
-	self.vcaBrakeForce    = streamReadInt16(streamId) * 0.05
-	self.vcaLaunchGear    = streamReadInt16(streamId)
-	self.vcaTransmission  = streamReadInt16(streamId)
-	self.vcaMaxSpeed      = streamReadFloat32(streamId)
-	self.vcaLastSnapAngle = streamReadFloat32(streamId)
-	self.vcaLastSnapPosX  = streamReadFloat32(streamId)
-	self.vcaLastSnapPosZ  = streamReadFloat32(streamId)
+	self:vcaSetState( "vcaSteeringIsOn" , streamReadBool(streamId)      , true )
+  self:vcaSetState( "vcaCamRotInside" , streamReadBool(streamId)      , true )
+  self:vcaSetState( "vcaCamRotOutside", streamReadBool(streamId)      , true )
+  self:vcaSetState( "vcaCamRevInside" , streamReadBool(streamId)      , true )
+  self:vcaSetState( "vcaCamRevOutside", streamReadBool(streamId)      , true )
+  self:vcaSetState( "vcaCamFwd"       , streamReadBool(streamId)      , true )
+  self:vcaSetState( "vcaShuttleCtrl"  , streamReadBool(streamId)      , true )
+  self:vcaSetState( "vcaShuttleFwd"   , streamReadBool(streamId)      , true )
+  self:vcaSetState( "vcaNeutral"      , streamReadBool(streamId)      , true )
+  self:vcaSetState( "vcaDrawHud"      , streamReadBool(streamId)      , true )
+	self:vcaSetState( "vcaExternalDir"  , streamReadInt16(streamId)     , true )   
+	self:vcaSetState( "vcaExponent"     , streamReadInt16(streamId)     , true )   
+	self:vcaSetState( "vcaSnapAngle"    , streamReadInt16(streamId)     , true )   
+	self:vcaSetState( "vcaPeekLeftRight", streamReadBool(streamId)      , true )
+	self:vcaSetState( "vcaAutoShift"    , streamReadBool(streamId)      , true )
+	self:vcaSetState( "vcaLimitSpeed"   , streamReadBool(streamId)      , true )
+	self:vcaSetState( "vcaLimitThrottle", streamReadInt16(streamId)     , true )
+	self:vcaSetState( "vcaBrakeForce"   , streamReadInt16(streamId)*0.05, true )
+	self:vcaSetState( "vcaLaunchGear"   , streamReadInt16(streamId)     , true )
+	self:vcaSetState( "vcaTransmission" , streamReadInt16(streamId)     , true )
+	self:vcaSetState( "vcaMaxSpeed"     , streamReadFloat32(streamId)   , true )
+	self:vcaSetState( "vcaLastSnapAngle", streamReadFloat32(streamId)   , true )
+	self:vcaSetState( "vcaLastSnapPosX" , streamReadFloat32(streamId)   , true )
+	self:vcaSetState( "vcaLastSnapPosZ" , streamReadFloat32(streamId)   , true )
 	
 end
 
@@ -2255,7 +2311,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	
 	local transmission = self.vehicle.vcaGearbox 
 	
-	if not self.vehicle:getIsMotorStarted() or dt < 0 then 
+	if not self.vehicle:getIsMotorStarted() or dt < 0 or self.vehicle.vcaLastTransmission == nil then 
 		self.vcaClutchTimer   = nil
 		self.vcaAutoDownTimer = nil
 		self.vcaAutoUpTimer   = nil
@@ -2861,7 +2917,7 @@ end
 Motorized.getCanMotorRun = Utils.overwrittenFunction( Motorized.getCanMotorRun, vehicleControlAddon.vcaGetCanMotorRun )
 
 function vehicleControlAddon:vcaUpdateMotorProperties( superFunc, ... )
-	if self.vcaGearbox ~= nil then 
+	if self.vcaLastTransmission ~= nil and self.vcaGearbox ~= nil then 
 		local motor = self.spec_motorized.motor
 		motor.vcaMinRpm = motor.minRpm
 		motor.vcaMaxRpm = motor.maxRpm
@@ -2973,30 +3029,6 @@ function vehicleControlAddon:vcaOnSetDirection( old, new, noEventSend )
 			self:vcaSetState( "vcaKeepSpeed", sign * math.abs( self.vcaKeepSpeed ), noEventSend )
 		end 
 	end 
-end 
-
-function vehicleControlAddon:vcaOnSetTransmission( old, new, noEventSend )
-	self.vcaTransmission = new 
-	if old ~= nil and new == old then 
-		return 
-	end 
-		
-	local transmissionDef = vehicleControlAddonTransmissionBase.transmissionList[self.vcaTransmission]
-	if transmissionDef == nil then 
-		self.vcaGearbox = nil  
-	else 
-		self.vcaGearbox = transmissionDef.class:new( unpack( transmissionDef.params ) )
-	end 
-	
-	if self.vcaGearbox ~= nil then 
-		self.vcaGearbox:setVehicle( self )
-	end 
-	
-	if self.isServer and old == nil or old <= 1 then 
-		self:vcaSetState( "vcaLaunchGear", VCAGlobals.launchGear, noEventSend )
-	end 
-	
-	self:updateMotorProperties()
 end 
 
 function vehicleControlAddon:vcaOnSetGearChanged( old, new, noEventSend )
