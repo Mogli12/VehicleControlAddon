@@ -21,7 +21,9 @@
 		<text name="vcaAUTOSHIFT"       text="Automatico"/>
 		<text name="vcaLAUNCH"          text="Mudança de Arranque"/>
 		<text name="vcaKEEPSPEED"       text="Manter Velocidade"/>
-		<text name="vcaSETTINGS"        text="Settings"/>
+		<text name="vcaHANDTHROTTLE"    text="Acelerador de Mão"/>
+		<text name="vcaPITCH"           text="Tom sonoro na RPM máximo"/>
+		<text name="vcaSETTINGS"        text="Configuração"/>
 
 		<text name="vca_tip_CAMERAI"    text="A câmera interior gira automaticamente de acordo com o ângulo de direção"/>
 		<text name="vca_tip_CAMERAO"    text="A câmera exterior gira automaticamente de acordo com o ângulo de direção"/>
@@ -40,23 +42,25 @@
 		<text name="vca_tip_AUTOSHIFT"  text="Mudanças Automaticas"/>
 		<text name="vca_tip_LAUNCH"     text="Velocidade da Mudança de Arranque"/>
 		<text name="vca_tip_KEEPSPEED"  text="Se a velocidade permanente estiver ativada, o pedal de aceleração vai se comportar como um joystick. Isto é como andar com controle de velocidade."/>
-
-		<text name="input_vcaSETTINGS"  text="VCA: Opções"/>
+		<text name="vca_tip_HANDTHROTTLE" text="O motor automáticamente acelera para a rotação do acelerador de mão"/>
+		<text name="vca_tip_PITCH"      text="Tom sonoro na RPM máximo"/>
+		
+		<text name="input_vcaSETTINGS"  text="VCA: Configuração"/>
 		<text name="input_vcaUP"        text="VCA: alterna a direção da vista / Olhar para frente"/>
-		<text name="input_vcaDOWN"      text="VCA: espreitar a direção da outra vista / Olhar para trás"/>
+		<text name="input_vcaDOWN"      text="VCA: Espreitar a direção da outra vista / Olhar para trás"/>
 		<text name="input_vcaLEFT"      text="VCA: Olhar para Esquerda"/>
 		<text name="input_vcaRIGHT"     text="VCA: Olhar para a Direita"/>
 		<text name="input_vcaDIRECTION" text="VCA: Muda a Direção de Condução"/>
 		<text name="input_vcaFORWARD"   text="VCA: Condução para frente"/>
 		<text name="input_vcaREVERSE"   text="VCA: Condução para trás"/>
-		<text name="input_vcaSNAP"      text="VCA: encaixe da direção de condução"/>
+		<text name="input_vcaSNAP"      text="VCA: Encaixe da direção de condução"/>
 		<text name="input_vcaSNAPRESET" text="VCA: reset do encaixe da direção de condução"/>
 		<text name="input_vcaSnapUP"    text="VCA: snap forward"/>
 		<text name="input_vcaSnapDOWN"  text="VCA: snap backward"/>
 		<text name="input_vcaSnapLEFT"  text="VCA: snap left"/>
 		<text name="input_vcaSnapRIGHT" text="VCA: snap right"/>
-		<text name="input_vcaNO_ARB"    text="VCA: desativar rotação automática para trás"/>
-		<text name="input_vcaINCHING"   text="VCA: inching"/>
+		<text name="input_vcaNO_ARB"    text="VCA: Desativar rotação automática para trás"/>
+		<text name="input_vcaINCHING"   text="VCA: Inching"/>
 		<text name="input_vcaKEEPSPEED" text="VCA: Manter Velocidade"/>
 		<text name="input_vcaSWAPSPEED" text="VCA: trocar Velocidade"/>
 		<text name="input_vcaGearUp"    text="VCA: gear up"/>
