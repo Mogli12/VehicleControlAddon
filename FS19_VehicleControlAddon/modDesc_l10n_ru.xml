@@ -21,6 +21,8 @@
 		<text name="vcaAUTOSHIFT"           text="Автомат"/>
 		<text name="vcaLAUNCH"              text="Трогаться с передачи"/>
 		<text name="vcaKEEPSPEED"           text="Удерживать скорость"/>
+		<text name="vcaHANDTHROTTLE"        text="Ручной дроссель"/>
+		<text name="vcaPITCH"               text="Высота звука при макс. оборотах"/>
 		<text name="vcaSETTINGS"            text="VCA: Настройки"/>
 
 		<text name="vca_tip_CAMERAI"        text="Внутренняя камера автоматически поворачивается в соответствии с углом поворота рулевого колеса"/>
@@ -40,6 +42,8 @@
 		<text name="vca_tip_AUTOSHIFT"      text="Автоматическое переключение передач и диапазонов"/>
 		<text name="vca_tip_LAUNCH"         text="Передача (для диапазона скорости) используемая для трогания с места"/>
 		<text name="vca_tip_KEEPSPEED"      text="Если активировано удержание постоянной скорости, то автомобиль почти всегда движется на круиз-контроле. Это соответствует приводному рычагу в современных тракторах."/>
+		<text name="vca_tip_HANDTHROTTLE"   text="Двигатель автоматически ускоряется, чтобы достичь оборотов ручного дросселя"/>
+		<text name="vca_tip_PITCH"          text="Высота звука при максимальных оборотах"/>
 
 		<text name="input_vcaSETTINGS"      text="VCA: Настройки"/>
 		<text name="input_vcaUP"            text="VCA: Посмотреть вперед"/>
@@ -51,6 +55,10 @@
 		<text name="input_vcaREVERSE"       text="VCA: Направление движения назад"/>
 		<text name="input_vcaSNAP"          text="VCA: Выровнять направление по сетке"/>
 		<text name="input_vcaSNAPRESET"     text="VCA: Отменить выравнивание направления по сетке"/>
+		<text name="input_vcaSnapUP"        text="VCA: snap forward"/>
+		<text name="input_vcaSnapDOWN"      text="VCA: snap backward"/>
+		<text name="input_vcaSnapLEFT"      text="VCA: snap left"/>
+		<text name="input_vcaSnapRIGHT"     text="VCA: snap right"/>
 		<text name="input_vcaNO_ARB"        text="VCA: Без автоповорота камеры назад"/>
 		<text name="input_vcaINCHING"       text="VCA: Сцепление"/>
 		<text name="input_vcaKEEPSPEED"     text="VCA: Удерживать скорость"/>
