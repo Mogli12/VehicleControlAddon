@@ -1,31 +1,94 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <l10n>
 	<!-- Note that 'description' is only here for easier translations. It needs to be manually copied to ModDesc.XML later. -->
-	<description><![CDATA[Añade la capacidad de modular el volante en la conducción con el teclado]]></description>
+	<description><![CDATA[Añade la especialización para dirección adaptativa de teclado.]]></description>
 
 	<texts>
-		<text name="vcaENABLE_ON"   text="volante [modulado]"/>
-		<text name="vcaENABLE_OFF"  text="volante [normal]"/>
-		<text name="vcaCAMERA_ON"   text="movimiento camera [on]"/>
-		<text name="vcaCAMERA_OFF"  text="movimiento camera [off]"/>
-		<text name="vcaANALOG_ON"   text="controlador analógico [on]"/>
-		<text name="vcaANALOG_OFF"  text="controlador analógico [off]"/>
-		<text name="vcaREVERSE_ON"  text="mirar hacia atrás [on]"/>
-		<text name="vcaREVERSE_OFF" text="mirar hacia atrás [off]"/>
-
-		<text name="input_vcaENABLE"  text="VCA: volante"/>
-		<text name="input_vcaCAMERA"  text="VCA: movimiento camara"/>
-		<text name="input_vcaREVERSE" text="VCA: mirar hacia atrás"/>
-		<text name="input_vcaANALOG"  text="VCA: controlador analógico"/>
-		<text name="input_vcaPLUS"    text="VCA:sensibilidad velocidad +"/>
-		<text name="input_vcaMINUS"   text="VCA:sensibilidad velocidad -"/>
-		<text name="input_vcaTPLUS"   text="VCA: throttle limiter +"/>
-		<text name="input_vcaTMINUS"  text="VCA: throttle limiter -"/>
-		<text name="input_vcaUP"      text="VCA: mira adelante"/>
-		<text name="input_vcaDOWN"    text="VCA: mira atrás"/>
-		<text name="input_vcaLEFT"    text="VCA: mira izquierda"/>
-		<text name="input_vcaRIGHT"   text="VCA: mira derecha"/>
+		<text name="vcaCAMERAI"         text="Rotación Camara Interior"/>
+		<text name="vcaCAMERAO"         text="Rotación Camara Exterior"/>
+		<text name="vcaEXPONENT"        text="Sensibilidad"/>
+		<text name="vcaSTEERING"        text="Dirección Adaptativa"/>
+		<text name="vcaSHUTTLE"         text="Acelerador"/>
+		<text name="vcaREVERSEI"        text="Mirar Hacia Atrás (Interior)"/>
+		<text name="vcaREVERSEO"        text="Mirar Hacia Atrás (Exterior)"/>
+		<text name="vcaLIMIT"           text="Límite Acelerador"/>
+		<text name="vcaPEEKLR"          text="Mirar Hacia Los Lados"/>
+		<text name="vcaANGLE"           text="Ángulo"/>
+		<text name="vcaBRAKE"           text="Fuerza de Frenado"/>
+		<text name="vcaTRANSMISSION"    text="Transmisión"/>
+		<text name="vcaMAXSPEED"        text="Velc. Max."/>
+		<text name="vcaLIMSPEED"        text="Limitar Velc."/>
+		<text name="vcaAUTOSHIFT"       text="Automático"/>
+		<text name="vcaLAUNCH"          text="Cambiar Marcha"/>
+		<text name="vcaKEEPSPEED"       text="Mantener Velc. Constante"/>
+		<text name="vcaHANDTHROTTLE"    text="Acelerador de Mano"/>
+		<text name="vcaPITCH"           text="Tono de sonido max. RPM"/>
+		<text name="vcaSETTINGS"        text="Ajustes"/>
+		                                
+		<text name="vca_tip_CAMERAI"    text="La cámara interior gira automáticamente acorde al ángulo de giro."/>
+		<text name="vca_tip_CAMERAO"    text="La cámara esterior gira automáticamente acorde al ángulo de giro."/>
+		<text name="vca_tip_EXPONENT"   text="Sensibilidad de la dirección adaptativa respecto a la velocidad de avance."/>
+		<text name="vca_tip_STEERING"   text="La dirección adaptable ajusta la rotación automática hacia atrás y el ángulo de dirección máximo"/>
+		<text name="vca_tip_SHUTTLE"    text="Cambiar dirección de avance <space>"/>
+		<text name="vca_tip_REVERSEI"   text="Si el vehículo cambia la dirección, la camara interior será rotada 180°"/>
+		<text name="vca_tip_REVERSEO"   text="Si el vehículo cambia la dirección, la camara exterior será rotada 180°"/>
+		<text name="vca_tip_LIMIT"      text="Limitador de acelerador Con y Sin Mayus-Izq."/>
+		<text name="vca_tip_PEEKLR"     text="Eche un vistazo rápido con Mayus-Der y las teclas de flecha izquierda / derecha"/>
+		<text name="vca_tip_ANGLE"      text="Conducir automáticamente para seguir el ángulo"/>
+		<text name="vca_tip_BRAKE"      text="Porcentaje de potencia de freno o resistencia a la rodadura."/>
+		<text name="vca_tip_TRANSMISSION" text="Tipo de transmisión; IVT transmisión variable, el resto de las demás transmisiones tiene 12 marchas, 2x6 es la mejor para camiones."/>
+		<text name="vca_tip_MAXSPEED"   text="La velocidad máxima de la marcha más alta, puede ser más alta que la velocidad máxima del vehículo"/>
+		<text name="vca_tip_LIMSPEED"   text="Limita la velocidad máxima del vehículo a su valor predeterminado."/>
+		<text name="vca_tip_AUTOSHIFT"  text="Cambio automático de marchas y rangos."/>
+		<text name="vca_tip_LAUNCH"     text="Rango de velocidad de la marcha de arranque."/>
+		<text name="vca_tip_KEEPSPEED"  text="Si la Velc. Mantener Constante está habilitada, el pedal de aceleración se comporta como un joystick. Esto es como conducir con control de crucero."/>
+		<text name="vca_tip_HANDTHROTTLE" text="El motor acelera automáticamente para alcanzar la aceleración de rpm."/>
+		<text name="vca_tip_PITCH"      text="Tono de sonido máximo por RPM"/>
+		                               
+		<text name="input_vcaSETTINGS"  text="VCA: Ajustes"/>
+		<text name="input_vcaUP"        text="VCA: Alternar dirección de vista/bloquear hacia delante."/>
+		<text name="input_vcaDOWN"      text="VCA: Asomarse a otra dirección de vista/bloquear hacia atrás"/>
+		<text name="input_vcaLEFT"      text="VCA: Mirar Izq."/>
+		<text name="input_vcaRIGHT"     text="VCA: Mirar Der."/>
+		<text name="input_vcaDIRECTION" text="VCA: Alternar dirección de conducción."/>
+		<text name="input_vcaFORWARD"   text="VCA: Conducir hacia delante."/>
+		<text name="input_vcaREVERSE"   text="VCA: Conducir hacia atrás."/>
+		<text name="input_vcaSNAP"      text="VCA: Guías de direción"/>
+		<text name="input_vcaSNAPRESET" text="VCA: Resetear Guías de direción"/>
+		<text name="input_vcaSnapUP"    text="VCA: Mover Guías hacia delante"/>
+		<text name="input_vcaSnapDOWN"  text="VCA: Mover Guías hacia atrás"/>
+		<text name="input_vcaSnapLEFT"  text="VCA: Mover Guías hacia izq."/>
+		<text name="input_vcaSnapRIGHT" text="VCA: Mover Guías hacia der."/>
+		<text name="input_vcaNO_ARB"    text="VCA: No auto-rotar hacia atrás."/>
+		<text name="input_vcaINCHING"   text="VCA: Avance lento."/>
+		<text name="input_vcaKEEPSPEED" text="VCA: Mantener Velc."/>
+		<text name="input_vcaSWAPSPEED" text="VCA: Cambiar Velc."/>
+		<text name="input_vcaGearUp"    text="VCA: Subir Marcha"/>
+		<text name="input_vcaGearDown"  text="VCA: Bajar Marcha"/>
+		<text name="input_vcaRangeUp"   text="VCA: Subir Rango"/>
+		<text name="input_vcaRangeDown" text="VCA: Bajar Rango"/>
+		<text name="input_vcaNeutral"   text="VCA: Neutral On/Off"/>
+		<text name="input_vcaClutch"    text="VCA: Embrague"/> 
+		<text name="input_vcaShifter1"  text="VCA: G27/G29 Marcha 1"/>
+		<text name="input_vcaShifter2"  text="VCA: G27/G29 Marcha 2"/>
+		<text name="input_vcaShifter3"  text="VCA: G27/G29 Marcha 3"/>
+		<text name="input_vcaShifter4"  text="VCA: G27/G29 Marcha 4"/>
+		<text name="input_vcaShifter5"  text="VCA: G27/G29 Marcha 5 / Rango Bajar"/>
+		<text name="input_vcaShifter6"  text="VCA: G27/G29 Marcha 6 / Rango Subir"/>
+		<text name="input_vcaShifter7"  text="VCA: G27/G29 Marcha Atrás"/>
+		<text name="input_vcaShifterLH" text="VCA: G27/G29 Marcha splitter"/>
 	</texts>
+
+	<longTexts>
+		<longText name="vca_Help_1">
+<![CDATA[
+Este script varia la velocidad de giro dependiendo a la velocidad que usted conduce, y gira la cámara en el ángulo correspondiente a la dirección tomada.
+
+Mayus-Izq limita el acelerador, control de crucero y rpm a 75%. Con Mayus-Dere y las flechas puede mirar en la dirección correspondiente.
+
+Si presiona Ctrl Izq junto con W, entonces las líneas de conducción son fijadas.
+
+Todas las funciones se pueden apagar.]]>
+		</longText>
+	</longTexts>
 </l10n>
-Contact GitHub API Training Shop Blog About
-© 2016 GitHub, Inc. Terms P
