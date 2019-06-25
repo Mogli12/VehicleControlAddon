@@ -881,7 +881,12 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 		vehicleControlAddon.mpDebugPrint( self, "Gear: "..tostring(self.vcaGear)..", range: "..tostring(self.vcaRange))
 		vehicleControlAddon.mpDebugPrint( self, "*********************************************" )
 		
-		self:updateMotorProperties()
+		if self.isServer then
+			local spec = self.spec_motorized
+			if spec.motorizedNode ~= nil and next(spec.differentials) ~= nil then
+				self:updateMotorProperties()
+			end 
+		end 
 	end 
 	
 	

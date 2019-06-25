@@ -30,7 +30,7 @@ function vehicleControlAddon_Register:beforeFinalizeVehicleTypes()
 					elseif name == "attachable" then 
 						isAttachable = true 
 					elseif name == vehicleControlAddon_Register.specName then 
-						isAttachable = true 
+						hasNotVCA = false 
 					end 
 				end 
 				if hasNotVCA and isDrivable and isEnterable and hasMotor and hasLights and hasWheels and not isAttachable then 
