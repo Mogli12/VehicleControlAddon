@@ -61,6 +61,15 @@
 				<GuiElement type="text" profile="multiTextOptionTitle" text="$mogli_vcaPEEKLR"/>
 				<GuiElement type="bitmap" profile="multiTextOptionBg" />
 			</GuiElement>			
+			
+			<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="vcaDrawHud" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_vca_tip_DRAWHUD" onCreate="onCreateSubElement" 
+											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="140" focusChangeTop="130" focusChangeBottom="210">										
+				<GuiElement type="button" profile="multiTextOptionLeft" />
+				<GuiElement type="button" profile="multiTextOptionRight"/>
+				<GuiElement type="text" profile="multiTextOptionText" />
+				<GuiElement type="text" profile="multiTextOptionTitle" text="$mogli_vcaDRAWHUD"/>
+				<GuiElement type="bitmap" profile="multiTextOptionBg" />
+			</GuiElement>			
 		</GuiElement>
 		
 		

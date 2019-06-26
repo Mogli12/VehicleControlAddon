@@ -24,6 +24,7 @@
 		<text name="vcaHANDTHROTTLE"    text="Hand throttle"/>
 		<text name="vcaPITCH"           text="Sound pitch at max. RPM"/>
 		<text name="vcaSETTINGS"        text="Settings"/>
+		<text name="vcaDRAWHUD"         text="Transmission HUD"/>
 		                                
 		<text name="vca_tip_CAMERAI"    text="The interior camera rotates automatically according to the steering angle"/>
 		<text name="vca_tip_CAMERAO"    text="The exterior camera rotates automatically according to the steering angle"/>
@@ -44,6 +45,7 @@
 		<text name="vca_tip_KEEPSPEED"  text="If permanent keep speed is enabled than the acceleration pedal behaves like a joystick. This is like driving with cruise control."/>
 		<text name="vca_tip_HANDTHROTTLE" text="The engine automatically accelerates to reach hand throttle RPM"/>
 		<text name="vca_tip_PITCH"      text="Sound pitch at maximum RPM"/>
+		<text name="vca_tip_DRAWHUD"    text="Show or hide transmission HUD"/>
 		                               
 		<text name="input_vcaSETTINGS"  text="VCA: settings"/>
 		<text name="input_vcaUP"        text="VCA: toggle view direction / lock forwards"/>
