@@ -1342,7 +1342,11 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 -- Real RPM 
 	if self.isServer then 
 		self.vcaRpmFactor = 1 
-		if self.vcaTransmission ~= nil and self.vcaTransmission >= 1 and self:getIsMotorStarted() and self.spec_motorized.motor.vcaFakeRpm == nil then 
+		if      self.vcaIsEnteredMP
+				and self.vcaTransmission ~= nil
+				and self.vcaTransmission >= 1
+				and self:getIsMotorStarted()
+				and self.spec_motorized.motor.vcaFakeRpm == nil then 
 			local motor = self.spec_motorized.motor 
 		
 			local m = motor:getMinRpm()
