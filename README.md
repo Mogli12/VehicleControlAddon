@@ -15,7 +15,7 @@ If you are looking for a realistic manual transmisison please visit [FS19_realMa
 I renamed the configuration file in modSettings folder to just "config.xml". Additionally, there is a new file "transmissions.xml". Here you can add your own transmissions. I propose to use the second transmission as template. Gears support automatic shifting. but ranges have to be shifted manually. 
 
 ## VehicleControlAddon is the new KeyboardSteer
-Please check section status why I renamed the mod. Please use VCA as abreviation.
+Please check section status why I renamed the mod. Please use VCA as abbreviation.
 
 You will have to choose the new mod after replacing it in the mods folder. But settings in old save games are still read.
 
