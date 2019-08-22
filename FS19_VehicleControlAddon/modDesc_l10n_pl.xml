@@ -29,7 +29,10 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vcaAUTOSHIFT"       text="Automat"/>
 		<text name="vcaLAUNCH"          text="Załączony bieg"/>
 		<text name="vcaKEEPSPEED"       text="Stała prędkość tempomatu"/>
+		<text name="vcaHANDTHROTTLE"    text="Gaz ręczny"/>
+		<text name="vcaPITCH"           text="Wysokość dźwięku przy maks. RPM"/>
 		<text name="vcaSETTINGS"        text="Ustawienia"/>
+		<text name="vcaDRAWHUD"         text="HUD skrzyni"/>
 
 		<text name="vca_tip_CAMERAI"    text="Kamera wewnętrzna obraca się automatycznie zgodnie z kątem skrętu"/>
 		<text name="vca_tip_CAMERAO"    text="Kamera zewnętrzna obraca się automatycznie zgodnie z kątem skrętu"/>
@@ -39,7 +42,7 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vca_tip_REVERSEI"   text="Przy zmianie kierunku jazdy do tyłu, kamera wewnętrzna zostaje obrócona o 180°"/>
 		<text name="vca_tip_REVERSEO"   text="Przy zmianie kierunku jazdy do tyłu, kamera zewnętrzna zostaje obrócona o 180°"/>
 		<text name="vca_tip_LIMIT"      text="Kontrola prędkości tempomatu (bez/z Lewy Shift)"/>
-		<text name="vca_tip_PEEKLR"     text="Zerknij się szybko w bok (Prawy Shift + strzałki w bok)"/>
+		<text name="vca_tip_PEEKLR"     text="Zerknij szybko w bok (Prawy Shift + strzałki w bok)"/>
 		<text name="vca_tip_ANGLE"      text="Najnowsza funkcja"/>
 		<text name="vca_tip_BRAKE"      text="Procentowo najniższa siła hamowania, czyli opór toczenia"/>
 		<text name="vca_tip_TRANSMISSION" text="Rodzaj skrzyni biegów; Przekładnia bezstopniowa (IVT), wszystkie pozostałe mają 12 różnych biegów, 2x6 jest najlepszą dla samochodów ciężarowych"/>
@@ -48,6 +51,9 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vca_tip_AUTOSHIFT"  text="Automatyczna zmiana biegów i zakresów"/>
 		<text name="vca_tip_LAUNCH"     text="Prędkość znamionowa włączenia biegu"/>
 		<text name="vca_tip_KEEPSPEED"  text="Jeśli włączona jest stała prędkość tempomatu, pedał przyspieszenia zachowuje się jak joystick. Podobnie jak jazda z tempomatem."/>
+		<text name="vca_tip_HANDTHROTTLE" text="Silnik automatycznie osiąga ustalone obroty."/>
+		<text name="vca_tip_PITCH"      text="Wysokość dźwięku przy maksymalnych obrotach silnika"/>
+		<text name="vca_tip_DRAWHUD"    text="Pokazuje lub ukrywa HUD skrzyni"/>
 
 		<text name="input_vcaSETTINGS"  text="VCA: Ustawienia"/>
 		<text name="input_vcaUP"        text="VCA: Zmiana widok / Widok w przód"/>
@@ -59,6 +65,10 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="input_vcaREVERSE"   text="VCA: Jazda w tył"/>
 		<text name="input_vcaSNAP"      text="VCA: Wyrównanie kierunku jazdy"/>
 		<text name="input_vcaSNAPRESET" text="VCA: Reset wyrównania kierunku jazdy"/>
+		<text name="input_vcaSnapUP"    text="VCA: Przesuń w przód"/>
+		<text name="input_vcaSnapDOWN"  text="VCA: Przesuń w tył"/>
+		<text name="input_vcaSnapLEFT"  text="VCA: Przesuń w lewo"/>
+		<text name="input_vcaSnapRIGHT" text="VCA: Przesuń w prawo"/>
 		<text name="input_vcaNO_ARB"    text="VCA: Wył. auto. spojrzenia w tył"/>
 		<text name="input_vcaINCHING"   text="VCA: Kontroler tempomatu"/>
 		<text name="input_vcaKEEPSPEED" text="VCA: Utrzymywanie prędkości"/>
