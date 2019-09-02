@@ -24,6 +24,7 @@
 		<text name="vcaHANDTHROTTLE"        text="Ручной дроссель"/>
 		<text name="vcaPITCH"               text="Высота звука при макс. оборотах"/>
 		<text name="vcaSETTINGS"            text="VCA: Настройки"/>
+		<text name="vcaDRAWHUD"             text="HUD трансмиссии"/>
 
 		<text name="vca_tip_CAMERAI"        text="Внутренняя камера автоматически поворачивается в соответствии с углом поворота рулевого колеса"/>
 		<text name="vca_tip_CAMERAO"        text="Внешняя камера автоматически поворачивается в соответствии с углом поворота рулевого колеса"/>
@@ -44,6 +45,7 @@
 		<text name="vca_tip_KEEPSPEED"      text="Если активировано удержание постоянной скорости, то автомобиль почти всегда движется на круиз-контроле. Это соответствует приводному рычагу в современных тракторах."/>
 		<text name="vca_tip_HANDTHROTTLE"   text="Двигатель автоматически ускоряется, чтобы достичь оборотов ручного дросселя"/>
 		<text name="vca_tip_PITCH"          text="Высота звука при максимальных оборотах"/>
+		<text name="vca_tip_DRAWHUD"        text="Отобразить или скрыть HUD трансмиссии"/>
 
 		<text name="input_vcaSETTINGS"      text="VCA: Настройки"/>
 		<text name="input_vcaUP"            text="VCA: Посмотреть вперед"/>
