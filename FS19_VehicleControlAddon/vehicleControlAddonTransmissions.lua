@@ -170,6 +170,20 @@ function vehicleControlAddonTransmissionBase:getGearText( gear, range )
 	return ""
 end 
 
+function vehicleControlAddonTransmissionBase:getChangeTimeGears ()
+	if self.vehicle ~= nil and self.vehicle:getIsVehicleControlledByPlayer() then 
+		return self.changeTimeGears
+	end
+	return 0
+end 
+
+function vehicleControlAddonTransmissionBase:getChangeTimeRanges()
+	if self.vehicle ~= nil and self.vehicle:getIsVehicleControlledByPlayer() then 
+		return self.changeTimeRanges
+	end
+	return 0
+end 
+
 function vehicleControlAddonTransmissionBase:grindingGears()
 	if vehicleControlAddon.grindingSample ~= nil then 
 		playSample( vehicleControlAddon.grindingSample, 1, 1, 0, 0, 0)
@@ -192,7 +206,7 @@ function vehicleControlAddonTransmissionBase:gearUp()
 	vehicleControlAddon.debugPrint(tostring(self.name)..", gearUp: "..tostring(self.vehicle.vcaGear)..", "..tostring(self.numberOfGears))
 	self.vehicle:vcaSetState("vcaShifterIndex", 0)
 	if self.vehicle.vcaGear < self.numberOfGears then 
-		if self.changeTimeGears > 100 then 
+		if self:getChangeTimeGears() > 100 then 
 			if not ( self.vehicle.vcaAutoClutch or self.vehicle.vcaNeutral ) and self.vehicle.vcaClutchPercent < 1 then 
 				self:grindingGears()
 				return 
@@ -209,7 +223,7 @@ end
 function vehicleControlAddonTransmissionBase:gearDown()
 	self.vehicle:vcaSetState("vcaShifterIndex", 0)
 	if self.vehicle.vcaGear > 1 then 
-		if self.changeTimeGears > 100 then 
+		if self:getChangeTimeGears() > 100 then 
 			if not ( self.vehicle.vcaAutoClutch or self.vehicle.vcaNeutral ) and self.vehicle.vcaClutchPercent < 1 then 
 				self:grindingGears()
 				return 
@@ -225,7 +239,7 @@ end
 function vehicleControlAddonTransmissionBase:rangeUp()
 	vehicleControlAddon.debugPrint(tostring(self.name)..", rangeUp: "..tostring(self.vehicle.vcaRange)..", "..tostring(self.numberOfRanges))
 	if self.vehicle.vcaRange < self.numberOfRanges then 
-		if self.changeTimeRanges > 100 then
+		if self:getChangeTimeRanges() > 100 then
 			if not ( self.vehicle.vcaAutoClutch or self.vehicle.vcaNeutral ) and self.vehicle.vcaClutchPercent < 1 then 
 				self:grindingGears()
 				return 
@@ -249,7 +263,7 @@ end
 
 function vehicleControlAddonTransmissionBase:rangeDown()
 	if self.vehicle.vcaRange > 1 then 
-		if self.changeTimeRanges > 100 then
+		if self:getChangeTimeRanges() > 100 then
 			if not ( self.vehicle.vcaAutoClutch or self.vehicle.vcaNeutral ) and self.vehicle.vcaClutchPercent < 1 then 
 				self:grindingGears()
 				return 
@@ -345,8 +359,8 @@ function vehicleControlAddonTransmissionBase:gearShifter( number, isPressed )
 		local g, r = self:getBestGearRangeFromIndex( self.vehicle.vcaGear, self.vehicle.vcaRange, index )
 		
 		if not ( self.vehicle.vcaAutoClutch ) and self.vehicle.vcaClutchPercent < 1
-				and ( ( g ~= self.vehicle.vcaGear  and self.changeTimeGears  > 100 )
-					 or ( r ~= self.vehicle.vcaRange and self.changeTimeRanges > 100 ) ) then 
+				and ( ( g ~= self.vehicle.vcaGear  and self:getChangeTimeGears()  > 100 )
+					 or ( r ~= self.vehicle.vcaRange and self:getChangeTimeRanges() > 100 ) ) then 
 			self:grindingGears()
 		else 
 			self.vehicle:vcaSetState( "vcaShifterIndex", number )
