@@ -854,41 +854,39 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 		end 
 		self.vcaControllerName = "" 
 	end 
+	
+	if self.isServer and lastControllerName ~= "" then 
+		if self.vcaUserSettings[lastControllerName] == nil then 
+			print("Error in vehicleControlAddon.lua: self.vcaUserSettings["..tostring(lastControllerName).."] is nil")
+			self.vcaUserSettings[lastControllerName] = {} 
+		end 
+	-- remember previous user settings 
+		for _,prop in pairs( listOfProperties ) do 
+			self.vcaUserSettings[lastControllerName][prop.propName] = self[prop.propName] 
+		end 
+	end 
 		
-	if self.isServer and self.vcaControllerName ~= lastControllerName then 
-		if lastControllerName ~= "" then 
-			if self.vcaUserSettings[lastControllerName] == nil then 
-				print("Error in vehicleControlAddon.lua: self.vcaUserSettings["..tostring(lastControllerName).."] is nil")
-				self.vcaUserSettings[lastControllerName] = {} 
-			end 
-		-- remember previous user settings 
+	if self.isServer and self.vcaControllerName ~= "" and self.vcaControllerName ~= lastControllerName then 
+		if self.vcaUserSettings[self.vcaControllerName] == nil then 
+		-- new user or no settings in save game => create setting from self
+			vehicleControlAddon.mpDebugPrint( self,"Creating settings for user "..self.vcaControllerName)
+			self.vcaUserSettings[self.vcaControllerName] = {} 
 			for _,prop in pairs( listOfProperties ) do 
-				self.vcaUserSettings[lastControllerName][prop.propName] = self[prop.propName] 
+				self.vcaUserSettings[self.vcaControllerName][prop.propName] = self[prop.propName]
+			end 
+		else
+		-- changed user => restore user settings 
+			vehicleControlAddon.mpDebugPrint( self,"Restoring settings for user "..self.vcaControllerName)
+			for _,prop in pairs( listOfProperties ) do 
+				if self.vcaUserSettings[self.vcaControllerName][prop.propName] ~= nil then 
+					self:vcaSetState( prop.propName, self.vcaUserSettings[self.vcaControllerName][prop.propName] )
+					vehicleControlAddon.mpDebugPrint( self, prop.propName.." of "..self.vcaControllerName..": "
+																				..tostring( self[prop.propName]) .." ("..tostring(self.vcaUserSettings[	self.vcaControllerName][prop.propName])..")")
+				end 
 			end 
 		end 
-	
-		if self.vcaControllerName ~= "" then 
-			if self.vcaUserSettings[self.vcaControllerName] == nil then 
-			-- new user or no settings in save game => create setting from self
-				vehicleControlAddon.mpDebugPrint( self,"Creating settings for user "..self.vcaControllerName)
-				self.vcaUserSettings[self.vcaControllerName] = {} 
-				for _,prop in pairs( listOfProperties ) do 
-					self.vcaUserSettings[self.vcaControllerName][prop.propName] = self[prop.propName]
-				end 
-			else
-			-- changed user => restore user settings 
-				vehicleControlAddon.mpDebugPrint( self,"Restoring settings for user "..self.vcaControllerName)
-				for _,prop in pairs( listOfProperties ) do 
-					if self.vcaUserSettings[self.vcaControllerName][prop.propName] ~= nil then 
-						self:vcaSetState( prop.propName, self.vcaUserSettings[self.vcaControllerName][prop.propName] )
-						vehicleControlAddon.mpDebugPrint( self, prop.propName.." of "..self.vcaControllerName..": "
-																					..tostring( self[prop.propName]) .." ("..tostring(self.vcaUserSettings[	self.vcaControllerName][prop.propName])..")")
-					end 
-				end 
-			end 
-			if self.isClient and self.getIsEntered ~= nil and self:getIsEntered() then 
-				self.vcaUserSettings[self.vcaControllerName].isMain = true 
-			end 
+		if self.isClient and self.getIsEntered ~= nil and self:getIsEntered() then 
+			self.vcaUserSettings[self.vcaControllerName].isMain = true 
 		end 
 	end 
 	
@@ -1766,6 +1764,59 @@ function vehicleControlAddon:onDraw()
 	end 	
 end
 
+
+function vehicleControlAddon:newUpdateSpeedGauge( superFunc, dt ) 
+	if not ( self.vehicle ~= nil
+			 and self.vehicle.vcaIsLoaded
+			 and self.vehicle.spec_motorized ~= nil 
+			 and self.vehicle.spec_motorized.motor ~= nil 
+			 and self.vehicle.spec_motorized.motor.minRpm ~= nil
+			 and self.vehicle.spec_motorized.motor.maxRpm ~= nil
+			 and self.vehicle.spec_motorized.motor.maxRpm > self.vehicle.spec_motorized.motor.minRpm
+			 and self.vehicle.vcaTransmission ~= nil
+			 and self.vehicle.vcaTransmission >= 1 ) then 		
+		return superFunc( self, dt )
+	end 
+
+	-- used again for drawing the speed text
+	self.speedKmh = math.max(0, self.vehicle:getLastSpeed() * self.vehicle.spec_motorized.speedDisplayScale)
+	if self.speedKmh < 0.5 then
+		self.speedKmh = 0
+	end
+	
+	local gaugeValue = 0
+	
+	if false then 
+		gaugeValue = MathUtil.clamp(self.speedKmh / (self.vehicle.spec_drivable.cruiseControl.maxSpeed * 1.1), 0, 1)
+	elseif self.vehicle:getIsMotorStarted() then 
+		local rpm
+		if self.vehicle.spec_motorized.motor.vcaFakeRpm ~= nil then 
+			rpm = self.vehicle.spec_motorized.motor.vcaFakeRpm
+		else 
+			rpm = self.vehicle.spec_motorized.motor:getNonClampedMotorRpm()
+		end 
+		rpm = rpm - self.vehicle.spec_motorized.motor.minRpm
+		local mxr = self.vehicle.spec_motorized.motor.maxRpm - self.vehicle.spec_motorized.motor.minRpm
+		gaugeValue = MathUtil.clamp( 0.1 + 0.8 * rpm / mxr, 0, 1)
+	else 
+		gaugeValue = 0
+	end 
+	
+	local indicatorRotation = MathUtil.lerp(SpeedMeterDisplay.ANGLE.SPEED_GAUGE_MIN, SpeedMeterDisplay.ANGLE.SPEED_GAUGE_MAX, gaugeValue)
+	self:updateGaugeIndicator(self.speedIndicatorElement, self.speedIndicatorRadiusX, self.speedIndicatorRadiusY,
+		indicatorRotation)
+	self:updateGaugeFillSegments(self.speedGaugeSegmentElements, gaugeValue)
+	self:updateGaugePartialSegments(
+		self.speedGaugeSegmentPartElements,
+		indicatorRotation, 1,
+		self.speedGaugeRadiusX, self.speedGaugeRadiusY,
+		SpeedMeterDisplay.ANGLE.SPEED_GAUGE_MIN,
+		SpeedMeterDisplay.ANGLE.SPEED_GAUGE_SEGMENT_FULL,
+		SpeedMeterDisplay.ANGLE.SPEED_GAUGE_SEGMENT_SMALLEST)	
+end 
+
+SpeedMeterDisplay.updateSpeedGauge = Utils.overwrittenFunction( SpeedMeterDisplay.updateSpeedGauge, vehicleControlAddon.newUpdateSpeedGauge )
+
 function vehicleControlAddon:onReadStream(streamId, connection)
 
 	self:vcaSetState( "vcaSteeringIsOn" , streamReadBool(streamId)      , true )
@@ -2394,6 +2445,24 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	end 
 	
 	local transmission = self.vehicle.vcaGearbox 
+	local curLoad      = self.vehicle.spec_motorized.actualLoadPercentage
+	if curLoad > 0.7 then 
+		local l = ( curLoad - 0.5 ) * 2
+		if         fwd and self.differentialRotAcceleration > l and self.differentialRotAccelerationSmoothed > l then 
+			curLoad = 0.7
+		elseif not fwd and self.differentialRotAcceleration <-l and self.differentialRotAccelerationSmoothed <-l then 
+			curLoad = 0.7
+		end 	
+	end 
+	
+	if self.vcaLoad == nil or dt <= 0 then 
+		self.vcaLoad = curLoad
+	elseif curBrake >= 0.5 and speed > 10 then 
+	-- simulate high load for immediate down shift
+		self.vcaLoad = math.max( 0.8, curLoad )
+	elseif self.gearChangeTimer <= 0 then 
+		self.vcaLoad = vehicleControlAddon.mbClamp( curLoad, self.vcaLoad - 0.001 * dt, self.vcaLoad + 0.001 * dt )
+	end 
 	
 	if not self.vehicle:getIsMotorStarted() or dt < 0 or self.vehicle.vcaLastTransmission == nil then 
 		self.vcaClutchTimer   = nil
@@ -2447,14 +2516,14 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		
 		if self.vcaIncreaseRpm ~= nil and g_currentMission.time < self.vcaIncreaseRpm then 
 			if speed > 0.5 then 
-				newMinRpm = minReducedRpm
+				newMinRpm = vehicleControlAddon.mbClamp( minReducedRpm, newMinRpm, newMaxRpm )
 			end 
 			if self.vcaFakeRpm ~= nil then 
 				self.vcaFakeRpm = math.max( self.vcaFakeRpm, minReducedRpm )
 			end 
 		end		
 		
-		minReducedRpm = minReducedRpm + 0.1 * self.maxRpm
+		minReducedRpm = minReducedRpm + 0.2 * self.maxRpm
 		
 		if self.vehicle.spec_combine == nil and self.vehicle.vcaLimitThrottle ~= nil and self.vehicle.vcaInchingIsOn ~= nil then 
 				
@@ -2474,40 +2543,31 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 					newMaxRpm = math.max( minReducedRpm, math.min( newMaxRpm, self.maxRpm * limitThrottleRatio ) )
 				end 
 			end 
+
+			local m1, m2 = newMinRpm, newMaxRpm 
 			
-			local lowLoad = false 
-			if     self.vcaChangeTime ~= nil and g_currentMission.time < self.vcaChangeTime + 5500 then
-			elseif self.vehicle.spec_motorized.actualLoadPercentage < 0.5 then 	
-				lowLoad = true 
-			else 
-				local l = ( self.vehicle.spec_motorized.actualLoadPercentage - 0.5 ) * 2
-				if         fwd and self.differentialRotAcceleration > l and self.differentialRotAccelerationSmoothed > l then 
-					lowLoad = true 
-				elseif not fwd and self.differentialRotAcceleration <-l and self.differentialRotAccelerationSmoothed <-l then 
-					lowLoad = true 
-				end 
-			end 
-			
-			if lowLoad then 
+			if     self.vcaLoad < 0.75 then 
 				local minRatio = self.minForwardGearRatio
 				if not fwd then 
 					minRatio     = self.minBackwardGearRatio
 				end 
 				local wheelRpm = (speed + 1 )/3.6 * vehicleControlAddon.factor30pi
-				local newRpm   = wheelRpm * minRatio 
-				if newRpm < minReducedRpm then 
-					newRpm = minReducedRpm 
-				end 
-				if newRpm < newMaxRpm then 
-					if self.vehicle.spec_motorized.actualLoadPercentage < 0.75 then 
-						newMaxRpm = newRpm 
-					else 
-						newMaxRpm = newRpm + 4 * ( self.vehicle.spec_motorized.actualLoadPercentage - 0.75 ) * ( newMaxRpm - newRpm )
-					end 
-				end 
+			
+				newMaxRpm = vehicleControlAddon.mbClamp( math.max( wheelRpm * minRatio, minReducedRpm ), m1, m2 )
+			elseif speed > 25 and self.vcaLoad > 0.85 then 
+				newMaxRpm = vehicleControlAddon.mbClamp( 1.00 * self.maxRpm, m1, m2 )
+				newMinRpm = vehicleControlAddon.mbClamp( 0.80 * self.maxRpm, m1, m2 )
+			elseif self.vcaLoad > 0.97 then 
+				newMaxRpm = vehicleControlAddon.mbClamp( 0.88 * self.maxRpm, m1, m2 )
+				newMinRpm = vehicleControlAddon.mbClamp( 0.72 * self.maxRpm, m1, m2 )
+			elseif self.vcaLoad > 0.85 then 
+				newMaxRpm = vehicleControlAddon.mbClamp( 1.00 * self.maxRpm, m1, m2 )
+				newMinRpm = vehicleControlAddon.mbClamp( 0.92 * self.maxRpm, m1, m2 )
 			else 
-				newMinRpm = math.min( newMaxRpm, 0.72 * self.maxRpm )
+				newMaxRpm = vehicleControlAddon.mbClamp( self.lastRealMotorRpm + 0.025 * self.maxRpm, m1, m2 )
+				newMinRpm = vehicleControlAddon.mbClamp( self.lastRealMotorRpm - 0.025 * self.maxRpm, m1, m2 )
 			end 
+
 		end 
 		
 		local deltaS, deltaF
@@ -2591,14 +2651,6 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			self.vcaAutoUpTimer   = VCAGlobals.clutchTimer
 		elseif self.vcaClutchTimer > 0 then --and motorRpm > self.minRpm then
 			self.vcaClutchTimer   = self.vcaClutchTimer - dt
-		end 
-		if self.vcaLoad == nil or self.vcaLoad < self.vehicle.spec_motorized.actualLoadPercentage then 
-			self.vcaLoad = self.vehicle.spec_motorized.actualLoadPercentage
-		elseif curBrake >= 0.5 then 
-		-- simulate high load for immediate down shift
-			self.vcaLoad = 1
-		elseif self.gearChangeTimer <= 0 then 
-			self.vcaLoad = self.vcaLoad + 0.03 * ( self.vehicle.spec_motorized.actualLoadPercentage - self.vcaLoad )
 		end 
 						
 		local gear  = transmission:getRatioIndex( self.vehicle.vcaGear, self.vehicle.vcaRange )		
