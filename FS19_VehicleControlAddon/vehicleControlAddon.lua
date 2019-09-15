@@ -238,6 +238,7 @@ function vehicleControlAddon:onLoad(savegame)
 	self.vcaGetAutoClutch    = vehicleControlAddon.vcaGetAutoClutch
 	self.vcaGetShuttleCtrl   = vehicleControlAddon.vcaGetShuttleCtrl
 	self.vcaGetNeutral       = vehicleControlAddon.vcaGetNeutral
+	self.vcaGetAutoHold      = vehicleControlAddon.vcaGetAutoHold
 	
 	--********************************************************************************************
 	-- functions for others mods 
@@ -358,6 +359,10 @@ function vehicleControlAddon:onLoad(savegame)
 			vehicleControlAddon.ovArrowDownGray  = createImageOverlay( Utils.getFilename( "arrow_down_gray.dds",  vehicleControlAddon.baseDirectory ))
 			vehicleControlAddon.ovHandBrakeUp    = createImageOverlay( Utils.getFilename( "hand_brake_up.dds",    vehicleControlAddon.baseDirectory ))
 			vehicleControlAddon.ovHandBrakeDown  = createImageOverlay( Utils.getFilename( "hand_brake_down.dds",  vehicleControlAddon.baseDirectory ))
+			vehicleControlAddon.ovHandBrake      = createImageOverlay( Utils.getFilename( "hand_brake.dds",       vehicleControlAddon.baseDirectory ))
+			vehicleControlAddon.ovAutoHoldUp     = createImageOverlay( Utils.getFilename( "auto_hold_up.dds",     vehicleControlAddon.baseDirectory ))
+			vehicleControlAddon.ovAutoHoldDown   = createImageOverlay( Utils.getFilename( "auto_hold_down.dds",   vehicleControlAddon.baseDirectory ))
+			vehicleControlAddon.ovAutoHold       = createImageOverlay( Utils.getFilename( "auto_hold.dds",        vehicleControlAddon.baseDirectory ))
 		end 
 	end 
 
@@ -805,6 +810,18 @@ function vehicleControlAddon:vcaGetNeutral()
 	return false  
 end 
 
+function vehicleControlAddon:vcaGetAutoHold()
+	local motor = self:getMotor()
+	if 			self:getIsVehicleControlledByPlayer()
+			and self.vcaTransmission ~= nil 
+			and self.vcaTransmission >= 1 
+			and motor ~= nil 
+			and motor.vcaAutoStop then 
+		return true 
+	end 
+	return false  
+end 
+
 function vehicleControlAddon:onPreUpdate(dt, isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
 
 	if      self.isClient
@@ -820,8 +837,13 @@ function vehicleControlAddon:onPreUpdate(dt, isActiveForInput, isActiveForInputI
 end
 
 function vehicleControlAddon:onAIEnd()
-	if self:vcaGetTransmissionActive() and self:getIsMotorStarted() then 
-		self:vcaSetState( "vcaNeutral", true )
+	if self:vcaGetTransmissionActive() and self:getIsMotorStarted() and self.vcaTransmission ~= nil and self.vcaTransmission >= 1 then 
+	--self:vcaSetState( "vcaNeutral", true )
+		local motor = self:getMotor()
+		if motor ~= nil then 
+			motor.vcaAutoStop = true 
+			motor.gearChangeTimer = 2000 
+		end 
 	end 
 end 	
 
@@ -1504,52 +1526,53 @@ function vehicleControlAddon:onDraw()
 		local x = g_currentMission.inGameMenu.hud.speedMeter.gaugeCenterX
 		local y = g_currentMission.inGameMenu.hud.speedMeter.gaugeCenterY + g_currentMission.inGameMenu.hud.speedMeter.fuelGaugeRadiusY * 1.6
 		local l = getCorrectTextSize(0.02)
+		local w = 0.015 * vehicleControlAddon.getUiScale()
+		local h = w * g_screenAspectRatio
 		
 		setTextAlignment( RenderText.ALIGN_CENTER ) 
 		setTextVerticalAlignment( RenderText.VERTICAL_ALIGN_MIDDLE )
 		setTextColor(1, 1, 1, 1) 
 		setTextBold(false)
-		
-		if     self:vcaGetShuttleCtrl()
-				or ( self:vcaGetTransmissionActive() and self.vcaTransmission ~= nil and self.vcaTransmission >= 2 ) then  
-		
-			self.vcaDebugT = nil 
-			if self.vcaGearbox ~= nil then 
-				local t = self.vcaGearbox
-				if t ~= nil then 
-					self.vcaDebugT = "I: "..tostring(self.vcaTransmission)
-												.." T: "..tostring(t:getName())
-												.." G: "..tostring(t.numberOfGears)
-												.." R: "..tostring(t.numberOfRanges)
-				end 
-			end 
 
-			if vehicleControlAddon.ovArrowUpWhite ~= nil then
-				local w = 0.015 * vehicleControlAddon.getUiScale()
-				local h = w * g_screenAspectRatio
-				if self:vcaGetShuttleCtrl() then 
-					if self.vcaShuttleFwd then
-						if     self:vcaGetNeutral() and self.vcaShifterIndex > 0 then 
-						elseif self:vcaGetNeutral() then 
-							renderOverlay( vehicleControlAddon.ovHandBrakeUp, x-0.5*w, y-0.5*h, w, h )
-						elseif self.vcaShifter7isR1 and self.vcaShifterIndex > 0 then
-							renderOverlay( vehicleControlAddon.ovArrowUpGray, x-0.5*w, y-0.5*h, w, h )
-						else 
-							renderOverlay( vehicleControlAddon.ovArrowUpWhite, x-0.5*w, y-0.5*h, w, h )
-						end 
-					else 
-						if     self:vcaGetNeutral() and self.vcaShifterIndex > 0 then 
-						elseif self:vcaGetNeutral() then 
-							renderOverlay( vehicleControlAddon.ovHandBrakeDown, x-0.5*w, y-0.5*h, w, h )
-						elseif self.vcaShifter7isR1 and self.vcaShifterIndex > 0 then
-							renderOverlay( vehicleControlAddon.ovArrowDownGray, x-0.5*w, y-0.5*h, w, h )
-						else 
-							renderOverlay( vehicleControlAddon.ovArrowDownWhite, x-0.5*w, y-0.5*h, w, h )
-						end 
-					end 
-				elseif self:vcaGetNeutral() then 
-					renderText(x, y, l, "N")
-				end 
+		if     vehicleControlAddon.ovArrowUpWhite == nil
+				or not self:vcaGetTransmissionActive() then 
+		-- no output 
+		elseif not self:vcaGetShuttleCtrl() then 
+		-- no shuttle control
+			if     self:vcaGetNeutral()  and vehicleControlAddon.ovHandBrake ~= nil then 
+				renderOverlay( vehicleControlAddon.ovHandBrake, x-0.5*w, y-0.5*h, w, h )
+			elseif self:vcaGetAutoHold() and vehicleControlAddon.ovAutoHold ~= nil then 
+				renderOverlay( vehicleControlAddon.ovAutoHold, x-0.5*w, y-0.5*h, w, h )
+			end 
+		elseif self:vcaGetNeutral() and self.vcaShifterIndex > 0 then 
+		-- not in (G27) gear
+		elseif self:vcaGetNeutral() then 
+		-- neutral / park break
+			if self.vcaShuttleFwd then
+				renderOverlay( vehicleControlAddon.ovHandBrakeUp, x-0.5*w, y-0.5*h, w, h )
+			else 
+				renderOverlay( vehicleControlAddon.ovHandBrakeDown, x-0.5*w, y-0.5*h, w, h )
+			end 
+		elseif self:vcaGetAutoHold() then 
+		-- auto hold 
+			if self.vcaShuttleFwd then
+				renderOverlay( vehicleControlAddon.ovAutoHoldUp, x-0.5*w, y-0.5*h, w, h )
+			else 
+				renderOverlay( vehicleControlAddon.ovAutoHoldDown, x-0.5*w, y-0.5*h, w, h )
+			end 
+		elseif self.vcaShifter7isR1 and self.vcaShifterIndex > 0 then
+		-- G27 
+			if self.vcaShuttleFwd then
+				renderOverlay( vehicleControlAddon.ovArrowUpGray, x-0.5*w, y-0.5*h, w, h )
+			else 
+				renderOverlay( vehicleControlAddon.ovArrowDownGray, x-0.5*w, y-0.5*h, w, h )
+			end 
+		else 
+		-- normal shuttle control
+			if self.vcaShuttleFwd then
+				renderOverlay( vehicleControlAddon.ovArrowUpWhite, x-0.5*w, y-0.5*h, w, h )
+			else 
+				renderOverlay( vehicleControlAddon.ovArrowDownWhite, x-0.5*w, y-0.5*h, w, h )
 			end 
 		end 
 		
@@ -2477,7 +2500,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	end 
 	
 	if autoNeutral then 
-		self.vcaFakeRpm   = vehicleControlAddon.mbClamp( fakeRpm, lastFakeRpm - 0.001 * dt * rpmRange, lastFakeRpm + 0.001 * dt * rpmRange )		
+		self.vcaFakeRpm   = vehicleControlAddon.mbClamp( fakeRpm, lastFakeRpm - 0.0005 * dt * rpmRange, lastFakeRpm + 0.001 * dt * rpmRange )		
 		self.vcaFakeTimer = 500 
 		newAcc            = 0
 	elseif self.vcaFakeTimer ~= nil then 
@@ -2485,7 +2508,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			self.vcaFakeTimer = nil 
 		else 
 			local rpmRange = self.maxRpm - self.minRpm	
-			self.vcaFakeRpm   = vehicleControlAddon.mbClamp( self.equalizedMotorRpm, lastFakeRpm - 0.001 * dt * rpmRange, lastFakeRpm + 0.001 * dt * rpmRange )	
+			self.vcaFakeRpm   = vehicleControlAddon.mbClamp( self.equalizedMotorRpm, lastFakeRpm - 0.0005 * dt * rpmRange, lastFakeRpm + 0.001 * dt * rpmRange )	
 			self.vcaFakeTimer = self.vcaFakeTimer - dt 
 			if self.vcaFakeTimer <= 0 then 
 				self.vcaFakeTimer = nil 
@@ -2652,8 +2675,19 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			end 
 		end 
 		
-			
-				
+		if self.gearChangeTimer == nil then 
+			self.gearChangeTimer = 0
+		elseif self.gearChangeTimer > 0 then 
+			self.gearChangeTimer = self.gearChangeTimer - dt 
+		end 			
+		if self.gearChangeTimer > 0 then 
+			self.vcaFakeRpm     = vehicleControlAddon.mbClamp( math.max( self.minRpm, motorPtoRpm ), 
+																												lastFakeRpm - 0.0005 * dt * rpmRange,
+																												lastFakeRpm + 0.001  * dt * rpmRange )		
+			self.vcaFakeTimer   = 100 
+			newAcc              = 0
+		end 
+		
 		return newAcc
 
 	elseif transmission ~= nil then 
@@ -3043,8 +3077,8 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			self.vcaMaxRpm      = 1000000
 		elseif self.gearChangeTimer > 0 then 
 			self.vcaFakeRpm     = vehicleControlAddon.mbClamp( math.max( self.minRpm, motorPtoRpm ), 
-																												lastFakeRpm - 0.001 * dt * rpmRange,
-																												lastFakeRpm + 0.002 * dt * rpmRange )		
+																												lastFakeRpm - 0.0005 * dt * rpmRange,
+																												lastFakeRpm + 0.001  * dt * rpmRange )		
 			self.vcaFakeTimer   = 100 
 			newAcc              = 0
 			self.vcaClutchTimer = VCAGlobals.clutchTimer
