@@ -1695,6 +1695,7 @@ function vehicleControlAddon:onDraw()
 				snapDraw = true 
 			end 
 		end 		
+				
 		if snapDraw then
 			local wx,wy,wz = getWorldTranslation( self:vcaGetSteeringNode() )
 			
@@ -1707,6 +1708,7 @@ function vehicleControlAddon:onDraw()
 			if self.vcaSnapIsOn then 
 				iMax = 1 
 			end 
+			
 			for i=1,iMax do
 				local dist  = distX * dz - distZ * dx
 
@@ -1728,21 +1730,30 @@ function vehicleControlAddon:onDraw()
 					setTextColor(1, 0, 0, 1) 
 				end 
 				
-				for z=-20,20,0.5 do 
-					if math.abs( z ) >= 5 then 
-						for x=-1,1 do 
-							local px = wx - dist * dz + z * dx - x * 0.5 * self.vcaSnapDistance * dz
-							local pz = wz + dist * dx + z * dz + x * 0.5 * self.vcaSnapDistance * dx
-							local py = getTerrainHeightAtWorldPos( g_currentMission.terrainRootNode, px, 0, pz )
-							local sx,sy,sz = project(px,py,pz)
-							if 0 < sz and sz <= 2 and 0 <= sx and sx <= 1 and 0 <= sy and sy <= 1 then 
-								renderText(sx, sy, getCorrectTextSize(0.04) * sz, ".")					
-							end 
-						end 
+			--for z=-20,20,0.25 do 
+			--	for x=-1,1 do 
+			--		local px = wx - dist * dz + z * dx - x * 0.5 * self.vcaSnapDistance * dz
+			--		local pz = wz + dist * dx + z * dz + x * 0.5 * self.vcaSnapDistance * dx
+			--		local py = getTerrainHeightAtWorldPos( g_currentMission.terrainRootNode, px, 0, pz )
+			--		if i == 1 then 
+			--			renderText3D( px,py+0.5,pz, 0.5*math.pi,curSnapAngle,0, 0.5, "|" )
+			--		else 
+			--			renderText3D( px,py+0.5,pz, 0,curSnapAngle,0, 0.5, "-" )
+			--		end 
+			--	end 
+			--end 
+				for x=-1,1 do 
+					local px = wx - dist * dz - x * 0.5 * self.vcaSnapDistance * dz
+					local pz = wz + dist * dx + x * 0.5 * self.vcaSnapDistance * dx
+					local py = getTerrainHeightAtWorldPos( g_currentMission.terrainRootNode, px, 0, pz )
+					if i == 1 then 
+						renderText3D( px,py+0.5,pz, 0,curSnapAngle-0.5*math.pi,0, 0.2, "VEHICLECONTROLADDONVEHICLECONTROLADDONVEHICLECONTROLADDONVEHICLECONTROLADDONVEHICLECONTROLADDONVEHICLECONTROLADDON" )
+					else 
+						renderText3D( px,py+0.5,pz, 0,curSnapAngle+math.pi,0, 0.2, "vehiclecontroladdonvehiclecontroladdonvehiclecontroladdonvehiclecontroladdonvehiclecontroladdonvehiclecontroladdon" )
 					end 
 				end 
 				dx, dz = -dz, dx
-			end 
+			end 			
 		end 
 		
 		if self.vcaSnapPosTimer ~= nil then 
@@ -1757,7 +1768,7 @@ function vehicleControlAddon:onDraw()
 	
 			setTextColor(0, 0, 1, 1) 
 			
-			for f=-df,df,0.1 do 
+			for f=-df,df,0.25 do 
 				for i=1,4 do 
 					local vx, vz = f, self.vcaSnapDistance + f 
 					if     i == 1 then 
@@ -1773,10 +1784,8 @@ function vehicleControlAddon:onDraw()
 					local px = self.vcaLastSnapPosX + vz * dx + vx * dz 
 					local pz = self.vcaLastSnapPosZ + vz * dz - vx * dx 				
 					local py = getTerrainHeightAtWorldPos( g_currentMission.terrainRootNode, px, 0, pz )
-					local sx,sy,sz = project(px,py,pz)
-					if 0 < sz and sz <= 2 and 0 <= sx and sx <= 1 and 0 <= sy and sy <= 1 then 
-						renderText(sx, sy, getCorrectTextSize(0.04) * sz, ".")					
-					end 
+					renderText3D( px,py+0.3,pz, 0,curSnapAngle-0.5*math.pi,0, 0.2, "+" )
+					renderText3D( px,py+0.3,pz, 0,curSnapAngle,0, 0.2, "+" )
 				end 
 			end 
 		end 
@@ -3099,25 +3108,35 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 				self.vcaMinRpm      = 0
 				self.vcaMaxRpm      = self.maxRpm
 			end  
-
-			if     motorRpm <= 0.95 * idleRpm then
-				self.vcaIdleAcc = 1
-			elseif motorRpm > idleRpm then 
-				self.vcaIdleAcc = 0
-			elseif motorRpm <= idleRpm then
-				f = 0.1 + 18 * ( 1 - motorRpm / idleRpm )
-				self.vcaIdleAcc = lastIdleAcc + f * ( 1 - lastIdleAcc )
-			else 
-				local a = 0
-				if curBrake <= 0 and motorRpm < 1.1 * idleRpm then 
-					if motorRpm <= 0.9 * idleRpm then 
-						a = 1
-					else 
-						a = math.max( curAcc , 5 * ( motorRpm / idleRpm - 1 ) )
-					end 
-				end 
-				self.vcaIdleAcc = lastIdleAcc + 0.1 * ( a - lastIdleAcc )
+			
+			local fullRpm = idleRpm - 0.025 * self.minRpm
+			local zeroRpm = math.min( idleRpm + 0.025 * self.minRpm, self.maxRpm )
+			local idleAcc = 0
+			
+			local smoothF = 0.1414
+			local deltaR  = math.abs( motorRpm - idleRpm )
+			
+			if     3 * deltaR >= 0.4472 * self.minRpm then 
+				smoothF = 0.4472
+			elseif 3 * deltaR > smoothF * self.minRpm  then 
+				smoothF = 3 * deltaR / self.minRpm 
 			end 
+			smoothF = smoothF * smoothF 
+			
+			if     motorRpm >= zeroRpm then 
+				idleAcc = 0
+			elseif motorRpm <= fullRpm then 
+				idleAcc = 1 
+			else 
+				idleAcc = ( zeroRpm - motorRpm ) / ( zeroRpm - fullRpm ) 
+			end 
+			
+			if lastIdleAcc == nil or smoothF >= 1 then 
+				self.vcaIdleAcc = idleAcc
+			else 
+				self.vcaIdleAcc = lastIdleAcc + smoothF * ( idleAcc - lastIdleAcc )
+			end 
+			
 			
 			if curBrake <= 0 and self.vcaIdleAcc > curAcc then 
 				newAcc = self.vcaIdleAcc
