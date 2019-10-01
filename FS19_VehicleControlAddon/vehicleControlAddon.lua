@@ -2527,14 +2527,43 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	
 	local transmission = self.vehicle.vcaGearbox 
 	local curLoad      = self.vehicle.spec_motorized.actualLoadPercentage
+	
 	if curLoad > 0.7 then 
-		local l = ( curLoad - 0.5 ) * 2
-		if         fwd and self.differentialRotAcceleration > l and self.differentialRotAccelerationSmoothed > l then 
-			curLoad = 0.7
-		elseif not fwd and self.differentialRotAcceleration <-l and self.differentialRotAccelerationSmoothed <-l then 
-			curLoad = 0.7
-		end 	
+		local diffRotAcc   = 0
+		
+		if fwd then 
+			diffRotAcc = math.min(  self.differentialRotAcceleration,  self.differentialRotAccelerationSmoothed )
+		else 
+			diffRotAcc = math.min( -self.differentialRotAcceleration, -self.differentialRotAccelerationSmoothed )
+		end 
+		local accLoad = 1
+		if     diffRotAcc >= 1 then 
+			accLoad = 0.7
+		elseif diffRotAcc >= 0 then 
+			accLoad = 0.7 + 0.3 * ( 1 - diffRotAcc )
+		end 
+		if curLoad > accLoad then 
+			curLoad = accLoad 
+		end 
 	end 
+--for i=1,2 do 
+--	local accLoad, lf 
+--	if i == 1 then 
+--		accLoad = 0.7
+--		lf      = 2 
+--	else 
+--		accLoad = 0.86
+--		lf      = 1 
+--	end 
+--	if curLoad > accLoad then 
+--		local l = ( curLoad - 0.5 ) * lf
+--		if         fwd and self.differentialRotAcceleration > l and self.differentialRotAccelerationSmoothed > l then 
+--			curLoad = accLoad
+--		elseif not fwd and self.differentialRotAcceleration <-l and self.differentialRotAccelerationSmoothed <-l then 
+--			curLoad = accLoad
+--		end 	
+--	end 
+--end 
 	
 	if self.vcaLoad == nil or dt <= 0 then 
 		self.vcaLoad = curLoad
@@ -2542,7 +2571,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	-- simulate high load for immediate down shift
 		self.vcaLoad = math.max( 0.8, curLoad )
 	elseif self.gearChangeTimer <= 0 then 
-		self.vcaLoad = vehicleControlAddon.mbClamp( curLoad, self.vcaLoad - 0.001 * dt, self.vcaLoad + 0.001 * dt )
+		self.vcaLoad = vehicleControlAddon.mbClamp( curLoad, self.vcaLoad - 0.0005 * dt, self.vcaLoad + 0.0005 * dt )
 	end 
 	
 	if not self.vehicle:getIsMotorStarted() or dt < 0 or self.vehicle.vcaLastTransmission == nil then 
@@ -2635,15 +2664,15 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 				local wheelRpm = (speed + 1 )/3.6 * vehicleControlAddon.factor30pi
 			
 				newMaxRpm = vehicleControlAddon.mbClamp( math.max( wheelRpm * minRatio, minReducedRpm ), m1, m2 )
-			elseif speed > 25 and self.vcaLoad > 0.85 then 
-				newMaxRpm = vehicleControlAddon.mbClamp( 1.00 * self.maxRpm, m1, m2 )
-				newMinRpm = vehicleControlAddon.mbClamp( 0.80 * self.maxRpm, m1, m2 )
-			elseif self.vcaLoad > 0.97 then 
-				newMaxRpm = vehicleControlAddon.mbClamp( 0.88 * self.maxRpm, m1, m2 )
-				newMinRpm = vehicleControlAddon.mbClamp( 0.72 * self.maxRpm, m1, m2 )
-			elseif self.vcaLoad > 0.85 then 
-				newMaxRpm = vehicleControlAddon.mbClamp( 1.00 * self.maxRpm, m1, m2 )
-				newMinRpm = vehicleControlAddon.mbClamp( 0.92 * self.maxRpm, m1, m2 )
+			elseif self.vcaLoad >= 0.97 then 
+				newMaxRpm = vehicleControlAddon.mbClamp( 0.85 * self.maxRpm, m1, m2 )
+				newMinRpm = vehicleControlAddon.mbClamp( 0.75 * self.maxRpm, m1, m2 )
+			elseif self.vcaLoad >= 0.85 then 
+				local v = ( self.vcaLoad - 0.85 ) / ( 0.97 - 0.85 )
+				local fl, fh = 1.00, 0.85
+				newMaxRpm = vehicleControlAddon.mbClamp( ( fl + v * ( fh - fl ) ) * self.maxRpm, m1, m2 )
+				fl, fh = 0.92, 0.75
+				newMinRpm = vehicleControlAddon.mbClamp( ( fl + v * ( fh - fl ) ) * self.maxRpm, m1, m2 )
 			else 
 				newMaxRpm = vehicleControlAddon.mbClamp( self.lastRealMotorRpm + 0.025 * self.maxRpm, m1, m2 )
 				newMinRpm = vehicleControlAddon.mbClamp( self.lastRealMotorRpm - 0.025 * self.maxRpm, m1, m2 )
@@ -2656,9 +2685,25 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		deltaF = self:getMaxRpm() * 0.0002 * dt
 		self.vcaMinRpm = vehicleControlAddon.mbClamp( newMinRpm, lastMinRpm - deltaS, math.max( lastMinRpm, self.lastRealMotorRpm + deltaF ) )
 		self.vcaMaxRpm = vehicleControlAddon.mbClamp( newMaxRpm, math.max( lastMaxRpm, self.lastRealMotorRpm ) - deltaS, lastMaxRpm + deltaS )
-		
+
 		self.minGearRatio = self.maxRpm / ( self.vehicle.vcaMaxSpeed * vehicleControlAddon.factor30pi )
 		self.maxGearRatio = 1000
+		
+		local g1 = self.gearRatio
+		if not fwd then 
+			g1 = -g1 
+		end 
+		
+		if      self.vcaLoad < 0.9
+				and lastMinRpm <= motorRpm and motorRpm <= lastMaxRpm 
+				and self.minGearRatio <= g1 and g1 <= self.maxGearRatio then  
+			local g1 = 1 / g1 
+			local gm = 1 / self.minGearRatio
+			local gn = 1 / self.maxGearRatio
+			local gd = gm * dt * 0.00025
+			self.minGearRatio = 1 / vehicleControlAddon.mbClamp( g1 + gd, gn, gm )
+			self.maxGearRatio = 1 / vehicleControlAddon.mbClamp( g1 - gd, gn, gm )
+		end
 		
 		if not fwd then 
 			self.minGearRatio = -self.minGearRatio
