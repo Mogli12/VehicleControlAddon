@@ -84,6 +84,7 @@ function vehicleControlAddon.globalsReset( createIfMissing )
   VCAGlobals.launchGear          = 0
 	VCAGlobals.clutchTimer         = 0
  	VCAGlobals.debugPrint          = false
+ 	VCAGlobals.mouseAutoRotateBack = false
 	
 -- defaults	
 	VCAGlobals.adaptiveSteering    = false
@@ -836,23 +837,103 @@ function vehicleControlAddon:onPreUpdate(dt, isActiveForInput, isActiveForInputI
 		self:vcaSetState( "vcaSnapIsOn", false )
 	end 
 	
+	local noARB = self.vcaNoARBToggle 
+	local ana   = self.spec_drivable.lastInputValues.axisSteerIsAnalog 
+	local dev   = self.spec_drivable.lastInputValues.axisSteerDeviceCategory 
+	if      self.spec_drivable.lastInputValues.axisSteer == 0
+			and self.vcaLastAxisSteer ~= nil then 
+		ana = self.vcaLastAxisSteerAnalog
+		dev = self.vcaLastAxisSteerDevice
+	end 
+	if  not VCAGlobals.mouseAutoRotateBack
+			and ana 
+			and dev == InputDevice.CATEGORY.KEYBOARD_MOUSE then 
+		noARB = true 
+	end 
+	if self.vcaNoAutoRotBack then 
+		noARB = not noARB
+	end 
+	
 	if      self.isClient
 			and self.getIsEntered ~= nil and self:getIsEntered()
       and self:getIsActiveForInput(true, true)
-      and self:getIsVehicleControlledByPlayer()
-			and ( ( self.vcaNoARBToggle and not self.vcaNoAutoRotBack )
-				 or ( self.vcaNoAutoRotBack and not self.vcaNoARBToggle ) ) then 
+      and self:getIsVehicleControlledByPlayer() 
+			and ( self.vcaSteeringIsOn or noARB ) then 
+		
+		local lastAxisSteer, lastAxisSteerTime1, lastAxisSteerTime2 = 0, nil, nil
+				 
 		if self.vcaLastAxisSteer == nil then 
-			self.vcaLastAxisSteer = 0 
+			self.vcaLastAxisSteer       = 0 
+			self.vcaLastAxisSteerAnalog = self.spec_drivable.lastInputValues.axisSteerIsAnalog 
+			self.vcaLastAxisSteerDevice = self.spec_drivable.lastInputValues.axisSteerDeviceCategory
+		else  
+			lastAxisSteer      = self.vcaLastAxisSteer
+			lastAxisSteerTime1 = self.vcaLastAxisSteerTime1
+			lastAxisSteerTime2 = self.vcaLastAxisSteerTime2
 		end 
-		local f = dt * 0.0005
-		if self.spec_drivable.lastInputValues.axisSteerIsAnalog then 
-			f = dt * 0.002
-		elseif ( self.vcaLastAxisSteer > 0 and self.spec_drivable.lastInputValues.axisSteer < 0 )
-				or ( self.vcaLastAxisSteer < 0 and self.spec_drivable.lastInputValues.axisSteer > 0 ) then 
-			f = dt * 0.001
+		self.vcaLastAxisSteerTime1  = nil 
+		self.vcaLastAxisSteerTime2  = nil 
+		
+		if self.spec_drivable.lastInputValues.axisSteer ~= 0 then 
+			self.vcaLastAxisSteerAnalog = self.spec_drivable.lastInputValues.axisSteerIsAnalog 
+			self.vcaLastAxisSteerDevice = self.spec_drivable.lastInputValues.axisSteerDeviceCategory
 		end 
-		self.vcaLastAxisSteer = vehicleControlAddon.mbClamp( self.vcaLastAxisSteer + f * self.spec_drivable.lastInputValues.axisSteer, -1, 1 )
+
+		local s = math.abs( self.lastSpeed * 3600 )
+		
+		if     noARB 
+				or ( not self.vcaLastAxisSteerAnalog  
+				 and math.abs( self.spec_drivable.lastInputValues.axisSteer ) > 0.01 ) then 
+			local f = dt * 0.00025
+			if self.vcaLastAxisSteerAnalog then 
+				f = dt * 0.002
+			elseif ( self.vcaLastAxisSteer > 0 and self.spec_drivable.lastInputValues.axisSteer < 0 )
+					or ( self.vcaLastAxisSteer < 0 and self.spec_drivable.lastInputValues.axisSteer > 0 ) then 
+				f = dt * 0.002
+			elseif not noARB then 
+				if lastAxisSteerTime1 == nil then 
+					self.vcaLastAxisSteerTime1 = g_currentMission.time 
+				else 
+					self.vcaLastAxisSteerTime1 = lastAxisSteerTime1
+				end 
+				local tMax = 2000
+				if s >= 85 then 
+					tMax = 350 
+				elseif s >= 10 then 
+					tMax = 350 + 22 * ( 85 - s )
+				end 
+				f = f * 0.004 * vehicleControlAddon.mbClamp( g_currentMission.time - self.vcaLastAxisSteerTime1, 25, tMax )
+			end 
+			self.vcaLastAxisSteer = vehicleControlAddon.mbClamp( self.vcaLastAxisSteer + f * self.spec_drivable.lastInputValues.axisSteer, -1, 1 )
+		elseif self.vcaLastAxisSteerAnalog then 
+			self.vcaLastAxisSteer = self.spec_drivable.lastInputValues.axisSteer 
+		elseif s > 4 then 
+			local a = 1
+			if self.autoRotateBackSpeed ~= nil then 
+				a = self.autoRotateBackSpeed 
+			end 
+			if s <= 24 then 
+				a = a * ( s - 4 ) * 0.05 
+			end 
+
+			if lastAxisSteerTime2 == nil then 
+				self.vcaLastAxisSteerTime2 = g_currentMission.time 
+			else 
+				self.vcaLastAxisSteerTime2 = lastAxisSteerTime2
+			end 
+			if     g_currentMission.time - self.vcaLastAxisSteerTime2 < 200 then 
+				a = 0
+			elseif g_currentMission.time - self.vcaLastAxisSteerTime2 < 600 then 
+				a = a * 0.0025 * ( g_currentMission.time - self.vcaLastAxisSteerTime2 - 200 )
+			end 
+												
+			if self.vcaLastAxisSteer > 0 then 
+				self.vcaLastAxisSteer = math.max( 0, self.vcaLastAxisSteer - dt * 0.0005 * a )
+			elseif self.vcaLastAxisSteer < 0 then                                        
+				self.vcaLastAxisSteer = math.min( 0, self.vcaLastAxisSteer + dt * 0.0005 * a )
+			end 
+		end 
+		
 		self.spec_drivable.lastInputValues.axisSteer = self.vcaLastAxisSteer
 		self.spec_drivable.lastInputValues.axisSteerIsAnalog = true 
 		self.spec_drivable.lastInputValues.axisSteerDeviceCategory = InputDevice.CATEGORY.UNKNOWN
@@ -1371,53 +1452,53 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 		end
 	end	
 	
---******************************************************************************************************************************************
--- adaptive steering 	
-	if self.vcaSteeringIsOn and not ( self.vcaSnapIsOn ) and self:vcaIsActive() then 
-		local speed = math.abs( self.lastSpeed * 3600 )
-		local f = 1
-		if     speed <= 12.5 then 
-		  f = 2 - 0.8 * speed / 12.5
-		elseif speed <= 25 then 
-			f = 1.2 - 0.5 * ( speed - 12.5 ) / 12.5 
-		elseif speed <= 50 then 
-			f = 0.7 - 0.3 * ( speed - 25 ) / 25 
-		elseif speed <= 100 then 
-			f = 0.4 - 0.3 * ( speed - 50 ) / 50 
-		else 
-			f = 0.1
-		end 
-		
-		self.vcaRotSpeedFactor = vehicleControlAddon.vcaScaleFx( self, f )
-		
-		for i,w in pairs( self.spec_wheels.wheels ) do 
-			if w.rotSpeed ~= nil then 
-				if w.vcaRotSpeed == nil then 
-					w.vcaRotSpeed = w.rotSpeed 
-				end 				
-				w.rotSpeed = w.vcaRotSpeed * self.vcaRotSpeedFactor
-			end 
-			
-			if w.rotSpeedNeg ~= nil then 
-				if w.vcaRotSpeedNeg == nil then 
-					w.vcaRotSpeedNeg = w.rotSpeedNeg 
-				end 				
-				w.rotSpeedNeg = w.vcaRotSpeedNeg * self.vcaRotSpeedFactor
-			end 
-		end 
-	elseif self.vcaRotSpeedFactor ~= nil then
-		for i,w in pairs( self.spec_wheels.wheels ) do 
-			if w.vcaRotSpeed ~= nil and w.vcaRotSpeed ~= nil then 
-				w.rotSpeed = w.vcaRotSpeed
-			end 
-			
-			if w.rotSpeedNeg ~= nil and w.vcaRotSpeedNeg ~= nil then 
-				w.rotSpeedNeg = w.vcaRotSpeedNeg
-			end 
-		end 
-	
-		self.vcaRotSpeedFactor = nil 
-	end 
+----******************************************************************************************************************************************
+---- adaptive steering 	
+--	if self.vcaSteeringIsOn and not ( self.vcaSnapIsOn ) and self:vcaIsActive() then 
+--		local speed = math.abs( self.lastSpeed * 3600 )
+--		local f = 1
+--		if     speed <= 12.5 then 
+--		  f = 2 - 0.8 * speed / 12.5
+--		elseif speed <= 25 then 
+--			f = 1.2 - 0.5 * ( speed - 12.5 ) / 12.5 
+--		elseif speed <= 50 then 
+--			f = 0.7 - 0.3 * ( speed - 25 ) / 25 
+--		elseif speed <= 100 then 
+--			f = 0.4 - 0.3 * ( speed - 50 ) / 50 
+--		else 
+--			f = 0.1
+--		end 
+--		
+--		self.vcaRotSpeedFactor = vehicleControlAddon.vcaScaleFx( self, f )
+--		
+--		for i,w in pairs( self.spec_wheels.wheels ) do 
+--			if w.rotSpeed ~= nil then 
+--				if w.vcaRotSpeed == nil then 
+--					w.vcaRotSpeed = w.rotSpeed 
+--				end 				
+--				w.rotSpeed = w.vcaRotSpeed * self.vcaRotSpeedFactor
+--			end 
+--			
+--			if w.rotSpeedNeg ~= nil then 
+--				if w.vcaRotSpeedNeg == nil then 
+--					w.vcaRotSpeedNeg = w.rotSpeedNeg 
+--				end 				
+--				w.rotSpeedNeg = w.vcaRotSpeedNeg * self.vcaRotSpeedFactor
+--			end 
+--		end 
+--	elseif self.vcaRotSpeedFactor ~= nil then
+--		for i,w in pairs( self.spec_wheels.wheels ) do 
+--			if w.vcaRotSpeed ~= nil and w.vcaRotSpeed ~= nil then 
+--				w.rotSpeed = w.vcaRotSpeed
+--			end 
+--			
+--			if w.rotSpeedNeg ~= nil and w.vcaRotSpeedNeg ~= nil then 
+--				w.rotSpeedNeg = w.vcaRotSpeedNeg
+--			end 
+--		end 
+--	
+--		self.vcaRotSpeedFactor = nil 
+--	end 
 	
 --******************************************************************************************************************************************
 -- Reverse driving sound
