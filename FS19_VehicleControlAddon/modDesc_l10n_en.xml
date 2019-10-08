@@ -21,6 +21,7 @@
 		<text name="vcaAUTOSHIFT"       text="Automatic"/>
 		<text name="vcaLAUNCH"          text="Launch Gear"/>
 		<text name="vcaKEEPSPEED"       text="Permanent keep speed"/>
+		<text name="vcaNO_ARB"          text="Free steeering"/>
 		<text name="vcaHANDTHROTTLE"    text="Hand throttle"/>
 		<text name="vcaPITCH"           text="Sound pitch at max. RPM"/>
 		<text name="vcaSETTINGS"        text="Settings"/>
@@ -42,7 +43,8 @@
 		<text name="vca_tip_LIMSPEED"   text="Limits the maximum speed of the vehicle to its default value"/>
 		<text name="vca_tip_AUTOSHIFT"  text="Automatic shifting of gears and ranges"/>
 		<text name="vca_tip_LAUNCH"     text="Rated speed of the launch gear"/>
-		<text name="vca_tip_KEEPSPEED"  text="If permanent keep speed is enabled than the acceleration pedal behaves like a joystick. This is like driving with cruise control."/>
+		<text name="vca_tip_KEEPSPEED"  text="If permanent keep speed is enabled then the acceleration pedal behaves like a joystick. This is like driving with cruise control."/>
+		<text name="vca_tip_NO_ARB"     text="If free steering is enabled then the steering will not automatically rotate back"/>
 		<text name="vca_tip_HANDTHROTTLE" text="The engine automatically accelerates to reach hand throttle RPM"/>
 		<text name="vca_tip_PITCH"      text="Sound pitch at maximum RPM"/>
 		<text name="vca_tip_DRAWHUD"    text="Show or hide transmission HUD"/>

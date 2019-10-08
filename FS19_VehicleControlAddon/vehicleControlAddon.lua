@@ -38,6 +38,7 @@ local listOfProperties =
 		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="peek",          propName="vcaPeekLeftRight" },
 		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="limitSpeed",    propName="vcaLimitSpeed"    },
 		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="keepSpeed",     propName="vcaKSToggle"      },
+		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="freeSteering",  propName="vcaNoARBToggle"   },
 		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="camRotInside",  propName="vcaCamRotInside"  },
 		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="camRotOutside", propName="vcaCamRotOutside" },
 		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="camRevInside",  propName="vcaCamRevInside"  },
@@ -277,6 +278,7 @@ function vehicleControlAddon:onLoad(savegame)
 	vehicleControlAddon.registerState( self, "vcaDrawHud" ,     VCAGlobals.drawHud )
 	vehicleControlAddon.registerState( self, "vcaInchingIsOn" , false )
 	vehicleControlAddon.registerState( self, "vcaNoAutoRotBack",false )
+	vehicleControlAddon.registerState( self, "vcaNoARBToggle",  false )
 	vehicleControlAddon.registerState( self, "vcaBrakeForce",   VCAGlobals.brakeForceFactor )
 	vehicleControlAddon.registerState( self, "vcaTransmission", vehicleControlAddon.getDefaultTransmission( self ) )
 	vehicleControlAddon.registerState( self, "vcaMaxSpeed",     vehicleControlAddon.getDefaultMaxSpeed( self ) )
@@ -834,6 +836,30 @@ function vehicleControlAddon:onPreUpdate(dt, isActiveForInput, isActiveForInputI
 		self:vcaSetState( "vcaSnapIsOn", false )
 	end 
 	
+	if      self.isClient
+			and self.getIsEntered ~= nil and self:getIsEntered()
+      and self:getIsActiveForInput(true, true)
+      and self:getIsVehicleControlledByPlayer()
+			and ( ( self.vcaNoARBToggle and not self.vcaNoAutoRotBack )
+				 or ( self.vcaNoAutoRotBack and not self.vcaNoARBToggle ) ) then 
+		if self.vcaLastAxisSteer == nil then 
+			self.vcaLastAxisSteer = 0 
+		end 
+		local f = dt * 0.0005
+		if self.spec_drivable.lastInputValues.axisSteerIsAnalog then 
+			f = dt * 0.002
+		elseif ( self.vcaLastAxisSteer > 0 and self.spec_drivable.lastInputValues.axisSteer < 0 )
+				or ( self.vcaLastAxisSteer < 0 and self.spec_drivable.lastInputValues.axisSteer > 0 ) then 
+			f = dt * 0.001
+		end 
+		self.vcaLastAxisSteer = vehicleControlAddon.mbClamp( self.vcaLastAxisSteer + f * self.spec_drivable.lastInputValues.axisSteer, -1, 1 )
+		self.spec_drivable.lastInputValues.axisSteer = self.vcaLastAxisSteer
+		self.spec_drivable.lastInputValues.axisSteerIsAnalog = true 
+		self.spec_drivable.lastInputValues.axisSteerDeviceCategory = InputDevice.CATEGORY.UNKNOWN
+	elseif self.vcaLastAxisSteer ~= nil then 
+		self.vcaLastAxisSteer = nil
+	end 
+	
 end
 
 function vehicleControlAddon:onAIEnd()
@@ -1056,17 +1082,6 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 		self.spec_motorized.motor.maxBackwardSpeed = self.vcaMaxBackwardSpeed
 		self.vcaMaxForwardSpeed  = nil
 		self.vcaMaxBackwardSpeed = nil
-	end 
-
-	if self.vcaNoAutoRotBack and self.vcaIsEntered then
-		if self.vcaAutoRotateBackSpeed == nil then 
-			self.vcaAutoRotateBackSpeed = self.autoRotateBackSpeed
-		end 
-		self:vcaSetState( "vcaSnapIsOn", false )
-		self.autoRotateBackSpeed      = 0
-	elseif self.vcaAutoRotateBackSpeed ~= nil then
-		self.autoRotateBackSpeed      = self.vcaAutoRotateBackSpeed
-		self.vcaAutoRotateBackSpeed   = nil 
 	end 
 	
 	if self.vcaInchingIsOn and self.vcaIsEntered and self.spec_drivable.cruiseControl.state == 1 then

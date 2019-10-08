@@ -102,7 +102,7 @@
 			</GuiElement>
 			
 			<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="vcaKSToggle" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_vca_tip_KEEPSPEED" onCreate="onCreateSubElement"
-											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="240" focusChangeTop="230" focusChangeBottom="250">
+											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="240" focusChangeTop="230" focusChangeBottom="245">
 				<GuiElement type="button" profile="multiTextOptionLeft" />
 				<GuiElement type="button" profile="multiTextOptionRight"/>
 				<GuiElement type="text"   profile="multiTextOptionText" />
@@ -110,8 +110,17 @@
 				<GuiElement type="bitmap" profile="multiTextOptionBg" />
 			</GuiElement>
 
+			<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="vcaNoARBToggle" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_vca_tip_NO_ARB" onCreate="onCreateSubElement"
+											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="245" focusChangeTop="230" focusChangeBottom="250">
+				<GuiElement type="button" profile="multiTextOptionLeft" />
+				<GuiElement type="button" profile="multiTextOptionRight"/>
+				<GuiElement type="text"   profile="multiTextOptionText" />
+				<GuiElement type="text"   profile="multiTextOptionTitle" text="$mogli_vcaNO_ARB"/>
+				<GuiElement type="bitmap" profile="multiTextOptionBg" />
+			</GuiElement>
+
 			<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="vcaHandthrottle" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_vca_tip_HANDTHROTTLE" onCreate="onCreateSubElement" onCreateArgs="list"
-											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="250" focusChangeTop="240" focusChangeBottom="260">
+											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="250" focusChangeTop="245" focusChangeBottom="260">
 				<GuiElement type="button" profile="multiTextOptionLeft" />
 				<GuiElement type="button" profile="multiTextOptionRight"/>
 				<GuiElement type="text"   profile="multiTextOptionText" />
