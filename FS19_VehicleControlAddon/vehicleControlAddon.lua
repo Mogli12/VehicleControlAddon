@@ -884,25 +884,27 @@ function vehicleControlAddon:onPreUpdate(dt, isActiveForInput, isActiveForInputI
 		if     noARB 
 				or ( not self.vcaLastAxisSteerAnalog  
 				 and math.abs( self.spec_drivable.lastInputValues.axisSteer ) > 0.01 ) then 
-			local f = dt * 0.00025
+			local f = dt * 0.0005
 			if self.vcaLastAxisSteerAnalog then 
 				f = dt * 0.002
 			elseif ( self.vcaLastAxisSteer > 0 and self.spec_drivable.lastInputValues.axisSteer < 0 )
 					or ( self.vcaLastAxisSteer < 0 and self.spec_drivable.lastInputValues.axisSteer > 0 ) then 
-				f = dt * 0.002
+				f = dt * 0.003 * math.min( 1, 0.25 + math.abs( self.vcaLastAxisSteer ) * 2 ) 
 			elseif not noARB then 
 				if lastAxisSteerTime1 == nil then 
 					self.vcaLastAxisSteerTime1 = g_currentMission.time 
 				else 
 					self.vcaLastAxisSteerTime1 = lastAxisSteerTime1
 				end 
-				local tMax = 2000
-				if s >= 85 then 
-					tMax = 350 
+				local tMax = 3000
+				if s >= 60 then 
+					tMax = 200 
 				elseif s >= 10 then 
-					tMax = 350 + 22 * ( 85 - s )
+					tMax = 200 + 88 * ( 85 - s )
 				end 
-				f = f * 0.004 * vehicleControlAddon.mbClamp( g_currentMission.time - self.vcaLastAxisSteerTime1, 25, tMax )
+				f = dt * 1e-6 * vehicleControlAddon.mbClamp( g_currentMission.time - self.vcaLastAxisSteerTime1, 25, tMax )
+			else 
+				f = dt * 0.001 * math.min( 1, 0.25 + math.abs( self.vcaLastAxisSteer ) * 2 ) 
 			end 
 			self.vcaLastAxisSteer = vehicleControlAddon.mbClamp( self.vcaLastAxisSteer + f * self.spec_drivable.lastInputValues.axisSteer, -1, 1 )
 		elseif self.vcaLastAxisSteerAnalog then 
@@ -921,11 +923,7 @@ function vehicleControlAddon:onPreUpdate(dt, isActiveForInput, isActiveForInputI
 			else 
 				self.vcaLastAxisSteerTime2 = lastAxisSteerTime2
 			end 
-			if     g_currentMission.time - self.vcaLastAxisSteerTime2 < 200 then 
-				a = 0
-			elseif g_currentMission.time - self.vcaLastAxisSteerTime2 < 600 then 
-				a = a * 0.0025 * ( g_currentMission.time - self.vcaLastAxisSteerTime2 - 200 )
-			end 
+			a = a * vehicleControlAddon.mbClamp( 0.00125 * ( g_currentMission.time - self.vcaLastAxisSteerTime2 - 100 ), 0, 1 )^2
 												
 			if self.vcaLastAxisSteer > 0 then 
 				self.vcaLastAxisSteer = math.max( 0, self.vcaLastAxisSteer - dt * 0.0005 * a )
