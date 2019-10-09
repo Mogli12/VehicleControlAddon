@@ -837,106 +837,113 @@ function vehicleControlAddon:onPreUpdate(dt, isActiveForInput, isActiveForInputI
 		self:vcaSetState( "vcaSnapIsOn", false )
 	end 
 	
-	local noARB = self.vcaNoARBToggle 
-	local ana   = self.spec_drivable.lastInputValues.axisSteerIsAnalog 
-	local dev   = self.spec_drivable.lastInputValues.axisSteerDeviceCategory 
-	if      self.spec_drivable.lastInputValues.axisSteer == 0
-			and self.vcaLastAxisSteer ~= nil then 
-		ana = self.vcaLastAxisSteerAnalog
-		dev = self.vcaLastAxisSteerDevice
-	end 
-	if  not VCAGlobals.mouseAutoRotateBack
-			and ana 
-			and dev == InputDevice.CATEGORY.KEYBOARD_MOUSE then 
-		noARB = true 
-	end 
-	if self.vcaNoAutoRotBack then 
-		noARB = not noARB
+	local lastAxisSteer, lastAxisSteerTime1, lastAxisSteerTime2
+	
+	if self.vcaLastAxisSteer ~= nil then 
+		lastAxisSteer               = self.vcaLastAxisSteer
+		lastAxisSteerTime1          = self.vcaLastAxisSteerTime1
+		lastAxisSteerTime2          = self.vcaLastAxisSteerTime2
+		self.vcaLastAxisSteer       = nil
+		self.vcaLastAxisSteerAnalog = nil
+		self.vcaLastAxisSteerDevice = nil
+		self.vcaLastAxisSteerTime1  = nil
+		self.vcaLastAxisSteerTime2  = nil
 	end 
 	
 	if      self.isClient
-			and self.getIsEntered ~= nil and self:getIsEntered()
+			and self.getIsEntered  ~= nil and self:getIsEntered()
+			and self.spec_drivable ~= nil
       and self:getIsActiveForInput(true, true)
-      and self:getIsVehicleControlledByPlayer() 
-			and ( self.vcaSteeringIsOn or noARB ) then 
-		
-		local lastAxisSteer, lastAxisSteerTime1, lastAxisSteerTime2 = 0, nil, nil
-				 
-		if self.vcaLastAxisSteer == nil then 
-			self.vcaLastAxisSteer       = 0 
-			self.vcaLastAxisSteerAnalog = self.spec_drivable.lastInputValues.axisSteerIsAnalog 
-			self.vcaLastAxisSteerDevice = self.spec_drivable.lastInputValues.axisSteerDeviceCategory
-		else  
-			lastAxisSteer      = self.vcaLastAxisSteer
-			lastAxisSteerTime1 = self.vcaLastAxisSteerTime1
-			lastAxisSteerTime2 = self.vcaLastAxisSteerTime2
+      and self:getIsVehicleControlledByPlayer() then 
+			
+		local noARB = self.vcaNoARBToggle 
+		local ana   = self.spec_drivable.lastInputValues.axisSteerIsAnalog 
+		local dev   = self.spec_drivable.lastInputValues.axisSteerDeviceCategory 
+		if      self.spec_drivable.lastInputValues.axisSteer == 0
+				and self.vcaLastAxisSteer ~= nil then 
+			ana = self.vcaLastAxisSteerAnalog
+			dev = self.vcaLastAxisSteerDevice
 		end 
-		self.vcaLastAxisSteerTime1  = nil 
-		self.vcaLastAxisSteerTime2  = nil 
-		
-		if self.spec_drivable.lastInputValues.axisSteer ~= 0 then 
-			self.vcaLastAxisSteerAnalog = self.spec_drivable.lastInputValues.axisSteerIsAnalog 
-			self.vcaLastAxisSteerDevice = self.spec_drivable.lastInputValues.axisSteerDeviceCategory
+		if  not VCAGlobals.mouseAutoRotateBack
+				and ana 
+				and dev == InputDevice.CATEGORY.KEYBOARD_MOUSE then 
+			noARB = true 
 		end 
+		if self.vcaNoAutoRotBack then 
+			noARB = not noARB
+		end 
+		
+		if self.vcaSteeringIsOn or noARB then 
+			if lastAxisSteer == nil then 
+				self.vcaLastAxisSteer       = self.spec_drivable.lastInputValues.axisSteer 
+				self.vcaLastAxisSteerAnalog = self.spec_drivable.lastInputValues.axisSteerIsAnalog 
+				self.vcaLastAxisSteerDevice = self.spec_drivable.lastInputValues.axisSteerDeviceCategory
+				lastAxisSteerTime1          = nil 
+				lastAxisSteerTime2          = nil 
+			else  
+				self.vcaLastAxisSteer       = lastAxisSteer
+			end 
+			
+			if self.spec_drivable.lastInputValues.axisSteer ~= 0 then 
+				self.vcaLastAxisSteerAnalog = self.spec_drivable.lastInputValues.axisSteerIsAnalog 
+				self.vcaLastAxisSteerDevice = self.spec_drivable.lastInputValues.axisSteerDeviceCategory
+			end 
 
-		local s = math.abs( self.lastSpeed * 3600 )
-		
-		if     noARB 
-				or ( not self.vcaLastAxisSteerAnalog  
-				 and math.abs( self.spec_drivable.lastInputValues.axisSteer ) > 0.01 ) then 
-			local f = dt * 0.0005
-			if self.vcaLastAxisSteerAnalog then 
-				f = dt * 0.002
-			elseif ( self.vcaLastAxisSteer > 0 and self.spec_drivable.lastInputValues.axisSteer < 0 )
-					or ( self.vcaLastAxisSteer < 0 and self.spec_drivable.lastInputValues.axisSteer > 0 ) then 
-				f = dt * 0.003 * math.min( 1, 0.25 + math.abs( self.vcaLastAxisSteer ) * 2 ) 
-			elseif not noARB then 
-				if lastAxisSteerTime1 == nil then 
-					self.vcaLastAxisSteerTime1 = g_currentMission.time 
+			local s = math.abs( self.lastSpeed * 3600 )
+			
+			if noARB  or ( not self.vcaLastAxisSteerAnalog and math.abs( self.spec_drivable.lastInputValues.axisSteer ) > 0.01 ) then 
+				local f = dt * 0.0005
+				if self.vcaLastAxisSteerAnalog then 
+					f = dt * 0.002
+				elseif ( self.vcaLastAxisSteer > 0 and self.spec_drivable.lastInputValues.axisSteer < 0 )
+						or ( self.vcaLastAxisSteer < 0 and self.spec_drivable.lastInputValues.axisSteer > 0 ) then 
+					f = dt * 0.003 * math.min( 1, 0.25 + math.abs( self.vcaLastAxisSteer ) * 2 ) 
+				elseif not noARB then 
+					if lastAxisSteerTime1 == nil then 
+						self.vcaLastAxisSteerTime1 = g_currentMission.time 
+					else 
+						self.vcaLastAxisSteerTime1 = lastAxisSteerTime1
+					end 
+					local tMax = 3000
+					if s >= 60 then 
+						tMax = 200 
+					elseif s >= 10 then 
+						tMax = 200 + 88 * ( 85 - s )
+					end 
+					f = dt * 1e-6 * vehicleControlAddon.mbClamp( g_currentMission.time - self.vcaLastAxisSteerTime1, 25, tMax )
 				else 
-					self.vcaLastAxisSteerTime1 = lastAxisSteerTime1
+					f = dt * 0.001 * math.min( 1, 0.25 + math.abs( self.vcaLastAxisSteer ) * 2 ) 
 				end 
-				local tMax = 3000
-				if s >= 60 then 
-					tMax = 200 
-				elseif s >= 10 then 
-					tMax = 200 + 88 * ( 85 - s )
+				self.vcaLastAxisSteer = vehicleControlAddon.mbClamp( self.vcaLastAxisSteer + f * self.spec_drivable.lastInputValues.axisSteer, -1, 1 )
+			elseif self.vcaLastAxisSteerAnalog then 
+				self.vcaLastAxisSteer = self.spec_drivable.lastInputValues.axisSteer 
+			elseif s > 4 then 
+				local a = 1
+				if self.autoRotateBackSpeed ~= nil then 
+					a = self.autoRotateBackSpeed 
 				end 
-				f = dt * 1e-6 * vehicleControlAddon.mbClamp( g_currentMission.time - self.vcaLastAxisSteerTime1, 25, tMax )
-			else 
-				f = dt * 0.001 * math.min( 1, 0.25 + math.abs( self.vcaLastAxisSteer ) * 2 ) 
-			end 
-			self.vcaLastAxisSteer = vehicleControlAddon.mbClamp( self.vcaLastAxisSteer + f * self.spec_drivable.lastInputValues.axisSteer, -1, 1 )
-		elseif self.vcaLastAxisSteerAnalog then 
-			self.vcaLastAxisSteer = self.spec_drivable.lastInputValues.axisSteer 
-		elseif s > 4 then 
-			local a = 1
-			if self.autoRotateBackSpeed ~= nil then 
-				a = self.autoRotateBackSpeed 
-			end 
-			if s <= 24 then 
-				a = a * ( s - 4 ) * 0.05 
-			end 
+				if s <= 24 then 
+					a = a * ( s - 4 ) * 0.05 
+				end 
 
-			if lastAxisSteerTime2 == nil then 
-				self.vcaLastAxisSteerTime2 = g_currentMission.time 
-			else 
-				self.vcaLastAxisSteerTime2 = lastAxisSteerTime2
+				if lastAxisSteerTime2 == nil then 
+					self.vcaLastAxisSteerTime2 = g_currentMission.time 
+				else 
+					self.vcaLastAxisSteerTime2 = lastAxisSteerTime2
+				end 
+				a = a * vehicleControlAddon.mbClamp( 0.00125 * ( g_currentMission.time - self.vcaLastAxisSteerTime2 - 100 ), 0, 1 )^2
+													
+				if self.vcaLastAxisSteer > 0 then 
+					self.vcaLastAxisSteer = math.max( 0, self.vcaLastAxisSteer - dt * 0.0005 * a )
+				elseif self.vcaLastAxisSteer < 0 then                                        
+					self.vcaLastAxisSteer = math.min( 0, self.vcaLastAxisSteer + dt * 0.0005 * a )
+				end 
 			end 
-			a = a * vehicleControlAddon.mbClamp( 0.00125 * ( g_currentMission.time - self.vcaLastAxisSteerTime2 - 100 ), 0, 1 )^2
-												
-			if self.vcaLastAxisSteer > 0 then 
-				self.vcaLastAxisSteer = math.max( 0, self.vcaLastAxisSteer - dt * 0.0005 * a )
-			elseif self.vcaLastAxisSteer < 0 then                                        
-				self.vcaLastAxisSteer = math.min( 0, self.vcaLastAxisSteer + dt * 0.0005 * a )
-			end 
+			
+			self.spec_drivable.lastInputValues.axisSteer = self.vcaLastAxisSteer
+			self.spec_drivable.lastInputValues.axisSteerIsAnalog = true 
+			self.spec_drivable.lastInputValues.axisSteerDeviceCategory = InputDevice.CATEGORY.UNKNOWN
 		end 
-		
-		self.spec_drivable.lastInputValues.axisSteer = self.vcaLastAxisSteer
-		self.spec_drivable.lastInputValues.axisSteerIsAnalog = true 
-		self.spec_drivable.lastInputValues.axisSteerDeviceCategory = InputDevice.CATEGORY.UNKNOWN
-	elseif self.vcaLastAxisSteer ~= nil then 
-		self.vcaLastAxisSteer = nil
 	end 
 	
 end
