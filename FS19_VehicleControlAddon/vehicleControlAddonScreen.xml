@@ -184,7 +184,7 @@
 				<GuiElement type="text"   profile="multiTextOptionTitle" text="$mogli_vcaLIMSPEED"/>
 				<GuiElement type="bitmap" profile="multiTextOptionBg" />
 			</GuiElement>
-			
+			<!--
 			<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="vcaLaunchGear" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_vca_tip_LAUNCH" onCreate="onCreateSubElement" onCreateArgs="list"
 											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="360" focusChangeTop="350" focusChangeBottom="370">
 				<GuiElement type="button" profile="multiTextOptionLeft" />
@@ -193,7 +193,7 @@
 				<GuiElement type="text"   profile="multiTextOptionTitle" text="$mogli_vcaLAUNCH"/>
 				<GuiElement type="bitmap" profile="multiTextOptionBg" />
 			</GuiElement>			
-			
+			-->
 			<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="vcaAutoClutch" toolTipElementId="mogliToolTipBoxText" toolTipText="AutoClutch" onCreate="onCreateSubElement"
 											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="370" focusChangeTop="360" focusChangeBottom="410">
 				<GuiElement type="button" profile="multiTextOptionLeft" />
@@ -225,11 +225,29 @@
 			</GuiElement>
 			
 			<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="vcaSnapDraw" toolTipElementId="mogliToolTipBoxText" toolTipText="Draw Marker" onCreate="onCreateSubElement" onCreateArgs="list0"
-											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="430" focusChangeTop="420" focusChangeBottom="501">
+											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="430" focusChangeTop="420" focusChangeBottom="440">
 				<GuiElement type="button" profile="multiTextOptionLeft" />
 				<GuiElement type="button" profile="multiTextOptionRight"/>
 				<GuiElement type="text"   profile="multiTextOptionText" />
 				<GuiElement type="text"   profile="multiTextOptionTitle" text="Draw Marker"/>
+				<GuiElement type="bitmap" profile="multiTextOptionBg" />
+			</GuiElement>			
+			
+			<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="vcaGearRatioF" toolTipElementId="mogliToolTipBoxText" toolTipText="Gear Speed From" onCreate="onCreateSubElement" onCreateArgs="callback"
+											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="440" focusChangeTop="430" focusChangeBottom="450">
+				<GuiElement type="button" profile="multiTextOptionLeft" />
+				<GuiElement type="button" profile="multiTextOptionRight"/>
+				<GuiElement type="text"   profile="multiTextOptionText" />
+				<GuiElement type="text"   profile="multiTextOptionTitle" text="Gear Speed From"/>
+				<GuiElement type="bitmap" profile="multiTextOptionBg" />
+			</GuiElement>			
+			
+			<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="vcaGearRatioT" toolTipElementId="mogliToolTipBoxText" toolTipText="Gear Speed To" onCreate="onCreateSubElement" onCreateArgs="callback"
+											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="450" focusChangeTop="440" focusChangeBottom="501">
+				<GuiElement type="button" profile="multiTextOptionLeft" />
+				<GuiElement type="button" profile="multiTextOptionRight"/>
+				<GuiElement type="text"   profile="multiTextOptionText" />
+				<GuiElement type="text"   profile="multiTextOptionTitle" text="Gear Speed To"/>
 				<GuiElement type="bitmap" profile="multiTextOptionBg" />
 			</GuiElement>			
 		</GuiElement>

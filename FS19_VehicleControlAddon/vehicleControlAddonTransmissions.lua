@@ -400,9 +400,16 @@ end
 function vehicleControlAddonTransmissionBase:getAutoShiftIndeces( curIndex, minIndex, searchDown, searchUp )
 	local gearList = {}
 	
+	local delta = 0
+	if self.vehicle.vcaMaxSpeed ~= nil and self.vehicle.vcaMaxSpeed > 0 then 
+		delta = 0.5 / self.vehicle.vcaMaxSpeed 
+	end
+	
 	if self.autoShiftGears and self.autoShiftRange then 
 		for i=1,table.getn( self.gearRatios ) do 
-			if ( i < curIndex and searchDown and i >= minIndex ) or ( searchUp and i > curIndex )  then 
+			if 			( self.vehicle.vcaGearRatioF <= 0 or self.gearRatios[i] >= self.vehicle.vcaGearRatioF - delta )
+					and ( self.vehicle.vcaGearRatioT <= 0 or self.gearRatios[i] <= self.vehicle.vcaGearRatioT + delta )
+					and ( ( i < curIndex and searchDown and i >= minIndex ) or ( searchUp and i > curIndex ) ) then 
 				table.insert( gearList, i )
 			end 
 		end 
@@ -415,7 +422,9 @@ function vehicleControlAddonTransmissionBase:getAutoShiftIndeces( curIndex, minI
 		end 
 		if tmpList ~= nil then 
 			for _,i in pairs(tmpList) do 
-				if ( i < curIndex and searchDown and i >= minIndex ) or ( searchUp and i > curIndex )  then 
+				if 			( self.vehicle.vcaGearRatioF <= 0 or self.gearRatios[i] >= self.vehicle.vcaGearRatioF - delta )
+						and ( self.vehicle.vcaGearRatioT <= 0 or self.gearRatios[i] <= self.vehicle.vcaGearRatioT + delta )
+						and ( ( i < curIndex and searchDown and i >= minIndex ) or ( searchUp and i > curIndex ) ) then 
 					table.insert( gearList, i )
 				end 
 			end 
