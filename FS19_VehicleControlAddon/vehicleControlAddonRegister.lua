@@ -56,33 +56,27 @@ function vehicleControlAddon_Register:loadMap(name)
 	end
 	
 	local l10nFilenamePrefixFull = Utils.getFilename("modDesc_l10n", vehicleControlAddon_Register.g_currentModDirectory);
-	local l10nXmlFile;
-	local l10nFilename
-	local langs = {g_languageShort, "en", "de"};
+	local langs = {"en", "de", g_languageShort};
 	for _, lang in ipairs(langs) do
-		l10nFilename = l10nFilenamePrefixFull.."_"..lang..".xml";
+		local l10nFilename = l10nFilenamePrefixFull.."_"..lang..".xml";
 		if fileExists(l10nFilename) then
-			l10nXmlFile = loadXMLFile("TempConfig", l10nFilename);
-			break;
+			local l10nXmlFile = loadXMLFile("TempConfig", l10nFilename);
+			local textI = 0;
+			while true do
+				local key = string.format("l10n.longTexts.longText(%d)", textI);
+				if not hasXMLProperty(l10nXmlFile, key) then
+					break;
+				end;
+				local name = getXMLString(l10nXmlFile, key.."#name");
+				local text = getXMLString(l10nXmlFile, key);
+				if name ~= nil and text ~= nil then
+					vehicleControlAddon_Register.mogliTexts[name] = text:gsub("\r\n", "\n")
+				end;
+				textI = textI+1;
+			end;
+			delete(l10nXmlFile);
 		end
-	end
-	if l10nXmlFile ~= nil then
-		local textI = 0;
-		while true do
-			local key = string.format("l10n.longTexts.longText(%d)", textI);
-			if not hasXMLProperty(l10nXmlFile, key) then
-				break;
-			end;
-			local name = getXMLString(l10nXmlFile, key.."#name");
-			local text = getXMLString(l10nXmlFile, key);
-			if name ~= nil and text ~= nil then
-				vehicleControlAddon_Register.mogliTexts[name] = text:gsub("\r\n", "\n")
-			end;
-			textI = textI+1;
-		end;
-		delete(l10nXmlFile);
-	end
-	
+	end 
 end;
 
 function vehicleControlAddon_Register:deleteMap()

@@ -35,117 +35,126 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>store.dds</iconFilename>
-	<version>0.0.7.8</version>
+	<version>0.0.7.9</version>
 	<l10n filenamePrefix="modDesc_l10n">
 		<text name="vcaVERSION">          
-			<de>Vehicle Control Addon 0.0.7.8</de>
-			<en>Vehicle Control Addon 0.0.7.8</en>
+			<de>Vehicle Control Addon 0.0.7.9</de>
+			<en>Vehicle Control Addon 0.0.7.9</en>
 		</text>
 	</l10n>
 	
 	<actions>
-		<action name="vcaSETTINGS"  category="VEHICLE"/>
-		<action name="vcaUP"        category="VEHICLE"/>
-		<action name="vcaDOWN"      category="VEHICLE"/>
-		<action name="vcaLEFT"      category="VEHICLE"/>
-		<action name="vcaRIGHT"     category="VEHICLE"/>
-		<action name="vcaSnapUP"    category="VEHICLE"/>
-		<action name="vcaSnapDOWN"  category="VEHICLE"/>
-		<action name="vcaSnapLEFT"  category="VEHICLE"/>
-		<action name="vcaSnapRIGHT" category="VEHICLE"/>
-		<action name="vcaDIRECTION" category="VEHICLE"/>
-		<action name="vcaFORWARD"   category="VEHICLE"/>
-		<action name="vcaREVERSE"   category="VEHICLE"/>
-		<action name="vcaSNAP"      category="VEHICLE"/>
-		<action name="vcaSNAPRESET" category="VEHICLE"/>
-		<action name="vcaNO_ARB"    category="VEHICLE"/>
-		<action name="vcaINCHING"   category="VEHICLE"/>
-		<action name="vcaKEEPSPEED" category="VEHICLE"/>
-		<action name="vcaSWAPSPEED" category="VEHICLE"/>
-		<action name="vcaGearUp"    category="VEHICLE"/>
-		<action name="vcaGearDown"  category="VEHICLE"/>
-		<action name="vcaRangeUp"   category="VEHICLE"/>
-		<action name="vcaRangeDown" category="VEHICLE"/>
-		<action name="vcaNeutral"   category="VEHICLE"/>
-		<action name="vcaShifter1"  category="VEHICLE"/>
-		<action name="vcaShifter2"  category="VEHICLE"/>
-		<action name="vcaShifter3"  category="VEHICLE"/>
-		<action name="vcaShifter4"  category="VEHICLE"/>
-		<action name="vcaShifter5"  category="VEHICLE"/>
-		<action name="vcaShifter6"  category="VEHICLE"/>
-		<action name="vcaShifter7"  category="VEHICLE"/>
-		<action name="vcaShifterLH" category="VEHICLE"/>
-		<action name="vcaClutch"    category="VEHICLE"/>
+		<action name="vcaSETTINGS"  category="VEHICLE" axisType="HALF"/>
+		<action name="vcaUP"        category="VEHICLE" axisType="HALF"/>
+		<action name="vcaDOWN"      category="VEHICLE" axisType="HALF"/>
+		<action name="vcaLEFT"      category="VEHICLE" axisType="HALF"/>
+		<action name="vcaRIGHT"     category="VEHICLE" axisType="HALF"/>
+		<action name="vcaSnapUP"    category="VEHICLE" axisType="HALF"/>
+		<action name="vcaSnapDOWN"  category="VEHICLE" axisType="HALF"/>
+		<action name="vcaSnapLEFT"  category="VEHICLE" axisType="HALF"/>
+		<action name="vcaSnapRIGHT" category="VEHICLE" axisType="HALF"/>
+		<action name="vcaDIRECTION" category="VEHICLE" axisType="HALF"/>
+		<action name="vcaFORWARD"   category="VEHICLE" axisType="HALF"/>
+		<action name="vcaREVERSE"   category="VEHICLE" axisType="HALF"/>
+		<action name="vcaSNAP"      category="VEHICLE" axisType="HALF"/>
+		<action name="vcaSNAPRESET" category="VEHICLE" axisType="HALF"/>
+		<action name="vcaNO_ARB"    category="VEHICLE" axisType="HALF"/>
+		<action name="vcaINCHING"   category="VEHICLE" axisType="HALF"/>
+		<action name="vcaKEEPSPEED" category="VEHICLE" axisType="HALF"/>
+		<action name="vcaSWAPSPEED" category="VEHICLE" axisType="HALF"/>
+		<action name="vcaGearUp"    category="VEHICLE" axisType="HALF"/>
+		<action name="vcaGearDown"  category="VEHICLE" axisType="HALF"/>
+		<action name="vcaRangeUp"   category="VEHICLE" axisType="HALF"/>
+		<action name="vcaRangeDown" category="VEHICLE" axisType="HALF"/>
+		<action name="vcaNeutral"   category="VEHICLE" axisType="HALF"/>
+		<action name="vcaShifter1"  category="VEHICLE" axisType="HALF"/>
+		<action name="vcaShifter2"  category="VEHICLE" axisType="HALF"/>
+		<action name="vcaShifter3"  category="VEHICLE" axisType="HALF"/>
+		<action name="vcaShifter4"  category="VEHICLE" axisType="HALF"/>
+		<action name="vcaShifter5"  category="VEHICLE" axisType="HALF"/>
+		<action name="vcaShifter6"  category="VEHICLE" axisType="HALF"/>
+		<action name="vcaShifter7"  category="VEHICLE" axisType="HALF"/>
+		<action name="vcaShifterLH" category="VEHICLE" axisType="HALF"/>
+		<action name="vcaClutch"    category="VEHICLE" axisType="HALF"/>
+		<action name="vcaHandRpm"   category="VEHICLE" axisType="FULL"/>
+		<action name="vcaHandMode"  category="VEHICLE" axisType="HALF"/>
 	</actions>
 	<inputBinding>
 		<actionBinding action="vcaSETTINGS">	
-			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_c"      axisComponent="+" inputComponent="+" index="1"/>
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_c"/>
 		</actionBinding>	
 		<actionBinding action="vcaUP">	
-			<binding device="KB_MOUSE_DEFAULT" input="KEY_rshift KEY_up"    axisComponent="+" inputComponent="+" index="1"/>
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_rshift KEY_up"/>
 		</actionBinding>	
 		<actionBinding action="vcaDOWN">	
-			<binding device="KB_MOUSE_DEFAULT" input="KEY_rshift KEY_down"  axisComponent="+" inputComponent="+" index="1"/>
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_rshift KEY_down"/>
 		</actionBinding>	
 		<actionBinding action="vcaLEFT">	
-			<binding device="KB_MOUSE_DEFAULT" input="KEY_rshift KEY_left"  axisComponent="+" inputComponent="+" index="1"/>
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_rshift KEY_left"/>
 		</actionBinding>	
 		<actionBinding action="vcaRIGHT">	
-			<binding device="KB_MOUSE_DEFAULT" input="KEY_rshift KEY_right" axisComponent="+" inputComponent="+" index="1"/>
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_rshift KEY_right"/>
 		</actionBinding>	
 		<actionBinding action="vcaSnapUP">	
-			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_up"    axisComponent="+" inputComponent="+" index="1"/>
-		</actionBinding>	
-		<actionBinding action="vcaSnapDOWN">	
-			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_down"  axisComponent="+" inputComponent="+" index="1"/>
-		</actionBinding>	
-		<actionBinding action="vcaSnapLEFT">	
-			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_left"  axisComponent="+" inputComponent="+" index="1"/>
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_up"/>
+		</actionBinding>	                                                
+		<actionBinding action="vcaSnapDOWN">	                            
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_down"/>
+		</actionBinding>	                                                
+		<actionBinding action="vcaSnapLEFT">	                            
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_left"/>
 		</actionBinding>	
 		<actionBinding action="vcaSnapRIGHT">	
-			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_right" axisComponent="+" inputComponent="+" index="1"/>
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_right"/>
 		</actionBinding>	
 		<actionBinding action="vcaDIRECTION">	
-			<binding device="KB_MOUSE_DEFAULT" input="KEY_space"            axisComponent="+" inputComponent="+" index="1"/>
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_space"/>
 		</actionBinding>	
 		<actionBinding action="vcaSNAP">	
-			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_w"      axisComponent="+" inputComponent="+" index="1"/>
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_w"/>
 		</actionBinding>	
 		<actionBinding action="vcaSNAPRESET">	
-			<binding device="KB_MOUSE_DEFAULT" input="KEY_lalt KEY_w"       axisComponent="+" inputComponent="+" index="1"/>
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_lalt KEY_w"/>
 		</actionBinding>	
 		<actionBinding action="vcaINCHING">	
-			<binding device="KB_MOUSE_DEFAULT" input="KEY_lshift"           axisComponent="+" inputComponent="+" index="1"/>
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_lshift"/>
 		</actionBinding>	
 		<actionBinding action="vcaGearUp">
-			<binding device="KB_MOUSE_DEFAULT" input="KEY_leftbracket"      axisComponent="+" inputComponent="+" index="1"/>
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_leftbracket"/>
 		</actionBinding>	
 		<actionBinding action="vcaGearDown">
-			<binding device="KB_MOUSE_DEFAULT" input="KEY_quote"            axisComponent="+" inputComponent="+" index="1"/>
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_quote"/>
 		</actionBinding>	
 		<actionBinding action="vcaRangeUp">
-			<binding device="KB_MOUSE_DEFAULT" input="KEY_rightbracket"     axisComponent="+" inputComponent="+" index="1"/>
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_rightbracket"/>
 		</actionBinding>	
 		<actionBinding action="vcaRangeDown">
-			<binding device="KB_MOUSE_DEFAULT" input="KEY_backslash"        axisComponent="+" inputComponent="+" index="1"/>
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_backslash"/>
 		</actionBinding>	
 		<actionBinding action="vcaNeutral">
-			<binding device="KB_MOUSE_DEFAULT" input="KEY_semicolon"        axisComponent="+" inputComponent="+" index="1"/>
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_semicolon"/>
 		</actionBinding>	
 		<actionBinding action="vcaClutch">
-			<binding device="KB_MOUSE_DEFAULT" input="KEY_period"        		axisComponent="+" inputComponent="+" index="1"/>
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_period"/>
 		</actionBinding>	
 		<actionBinding action="vcaKEEPSPEED">
-			<binding device="KB_MOUSE_DEFAULT" input="KEY_delete"           axisComponent="+" inputComponent="+" index="1"/>
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_delete"/>
 		</actionBinding>	
 		<actionBinding action="vcaSWAPSPEED">
-			<binding device="KB_MOUSE_DEFAULT" input="KEY_4"                axisComponent="+" inputComponent="+" index="1"/>
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_4"/>
+		</actionBinding>	
+		<actionBinding action="vcaHandRpm">
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_equals" axisComponent="+"/>
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_minus"  axisComponent="-"/>
+		</actionBinding>	
+		<actionBinding action="vcaHandMode">
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_equals"/>
 		</actionBinding>	
 	</inputBinding>
 	
 	<extraSourceFiles>
-		<sourceFile filename="vehicleControlAddon.lua" />
-		<sourceFile filename="vehicleControlAddonScreen.lua" />
-		<sourceFile filename="vehicleControlAddonRegister.lua" />
+		<sourceFile filename="vehicleControlAddon.lua"/>
+		<sourceFile filename="vehicleControlAddonScreen.lua"/>
+		<sourceFile filename="vehicleControlAddonRegister.lua"/>
 	</extraSourceFiles>    
 </modDesc>

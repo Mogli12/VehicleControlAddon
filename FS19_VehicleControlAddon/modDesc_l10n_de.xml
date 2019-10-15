@@ -82,6 +82,8 @@
 		<text name="input_vcaShifter6"  text="VCA: G27/G29 Gang 6 / Gruppe hoch"/>
 		<text name="input_vcaShifter7"  text="VCA: G27/G29 Rückwärtsgang"/>
 		<text name="input_vcaShifterLH" text="VCA: G27/G29 Gang Splitter"/>
+		<text name="input_vcaHandRpm"   text="VCA: Handgas Drehzahl"/>
+		<text name="input_vcaHandMode"  text="VCA: Handgas Modus"/>
 	</texts>   
 
 	<longTexts>

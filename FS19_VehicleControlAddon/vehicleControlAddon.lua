@@ -263,7 +263,7 @@ function vehicleControlAddon:onLoad(savegame)
 	--********************************************************************************************
 
 	vehicleControlAddon.registerState( self, "vcaSteeringIsOn", VCAGlobals.adaptiveSteering )
-	vehicleControlAddon.registerState( self, "vcaShuttleCtrl",  VCAGlobals.shuttleControl )
+	vehicleControlAddon.registerState( self, "vcaShuttleCtrl",  VCAGlobals.shuttleControl, vehicleControlAddon.onSetShuttleControl )
 	vehicleControlAddon.registerState( self, "vcaPeekLeftRight",VCAGlobals.peekLeftRight )
 	vehicleControlAddon.registerState( self, "vcaShuttleFwd",   true, vehicleControlAddon.vcaOnSetDirection )
 	vehicleControlAddon.registerState( self, "vcaExternalDir",  0 )
@@ -283,7 +283,7 @@ function vehicleControlAddon:onLoad(savegame)
 	vehicleControlAddon.registerState( self, "vcaNoAutoRotBack",false )
 	vehicleControlAddon.registerState( self, "vcaNoARBToggle",  false )
 	vehicleControlAddon.registerState( self, "vcaBrakeForce",   VCAGlobals.brakeForceFactor )
-	vehicleControlAddon.registerState( self, "vcaTransmission", vehicleControlAddon.getDefaultTransmission( self ) )
+	vehicleControlAddon.registerState( self, "vcaTransmission", vehicleControlAddon.getDefaultTransmission( self ), vehicleControlAddon.onSetTransmission )
 	vehicleControlAddon.registerState( self, "vcaMaxSpeed",     vehicleControlAddon.getDefaultMaxSpeed( self ) )
 	vehicleControlAddon.registerState( self, "vcaGear",         0 ) --, vehicleControlAddon.vcaOnSetGear )
 	vehicleControlAddon.registerState( self, "vcaRange",        0 ) --, vehicleControlAddon.vcaOnSetRange )
@@ -516,13 +516,41 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
 																"vcaShifter6",
 																"vcaShifter7",
 																"vcaShifterLH",
-																"vcaClutch" }) do
-			if     isOnActiveVehicle 
-					or actionName == "vcaUP"
-          or actionName == "vcaDOWN"
-          or actionName == "vcaLEFT"
-          or actionName == "vcaRIGHT"
-					or actionName == "vcaSWAPSPEED" then 
+																"vcaClutch",
+																"vcaHandMode",
+																"vcaHandRpm" }) do
+																
+			local addThis = true  
+			if      actionName == "vcaDIRECTION" 
+					or  actionName == "vcaFORWARD"   
+					or  actionName == "vcaREVERSE" then 
+				addThis = self.vcaShuttleCtrl 
+			end 
+			if      actionName == "vcaGearUp"
+					or  actionName == "vcaGearDown"
+					or  actionName == "vcaRangeUp"
+					or  actionName == "vcaRangeDown"
+					or  actionName == "vcaShifter1"
+					or  actionName == "vcaShifter2"
+					or  actionName == "vcaShifter3"
+					or  actionName == "vcaShifter4"
+					or  actionName == "vcaShifter5"
+					or  actionName == "vcaShifter6"
+					or  actionName == "vcaShifter7"
+					or  actionName == "vcaShifterLH"			
+					or  actionName == "vcaClutch"		
+					or  actionName == "vcaHandMode"		
+					or  actionName == "vcaHandRpm" then 	
+				addThis = self.vcaTransmission ~= nil and self.vcaTransmission > 0
+			end 
+			
+			if      addThis 
+					and ( isOnActiveVehicle 
+						or  actionName == "vcaUP"
+						or  actionName == "vcaDOWN"
+						or  actionName == "vcaLEFT"
+						or  actionName == "vcaRIGHT"
+						or  actionName == "vcaSWAPSPEED" ) then 
 				-- above actions are still active for hired worker
 				local pBool1, pBool2, pBool3, pBool4 = false, true, false, true 
 				if     actionName == "vcaUP"
@@ -538,12 +566,16 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
 						or actionName == "vcaShifter5"
 						or actionName == "vcaShifter6"
 						or actionName == "vcaShifter7"
-						or actionName == "vcaNO_ARB" then 
+						or actionName == "vcaNO_ARB"
+						then 
 					pBool1 = true 
 				elseif actionName == "vcaClutch" then 
 					pBool2 = false 
 					pBool3 = true 
+				elseif actionName == "vcaHandRpm" then 
+					pBool3 = true 
 				end 
+				
 				
 				local _, eventName = self:addActionEvent(self.vcaActionEvents, InputAction[actionName], self, vehicleControlAddon.actionCallback, pBool1, pBool2, pBool3, pBool4, nil);
 
@@ -758,6 +790,67 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 		self:vcaSetState( "vcaNeutral", not self.vcaNeutral )
 	elseif actionName == "vcaSETTINGS" then
 		vehicleControlAddon.vcaShowSettingsUI( self )
+	elseif actionName == "vcaHandMode" then 
+		local h, t = 0, "vcaHANDTHROTTLE"
+		if self.vcaHandthrottle ~= nil then 
+			h = self.vcaHandthrottle
+		end 
+		
+		local g = h
+		local p = 0
+		if h <= 0 then 
+			p = Utils.getNoNil( PowerConsumer.getMaxPtoRpm( self ), 0 )
+		end 
+		
+		-- 0, -0.7, -0.9, -1
+		if h > 0 then 
+			h = 0
+			t = "off"
+		elseif h > -0.6  and p > 0 then 
+			h = -1 
+			t = "100% PTO RPM"
+		elseif h < -0.95 and p > 0 then 
+			h = -0.9 
+			t = "90% PTO RPM"
+		elseif h < -0.8  and p > 0 then 
+			h = -0.7
+			t = "70% PTO RPM"
+		elseif self.vcaHandthrottle2 ~= nil then 
+			h = self.vcaHandthrottle2
+			local r = self.spec_motorized.motor.minRpm + h * ( self.spec_motorized.motor.maxRpm - self.spec_motorized.motor.minRpm )
+			t = string.format( "%4.0f U/min", r )
+		else 
+			h = 0
+			t = "off"
+		end 
+		
+		self:vcaSetState( "vcaHandthrottle", h )
+		self:vcaSetState( "vcaWarningText", Utils.getNoNil( vehicleControlAddon_Register.mogliTexts.vcaHANDTHROTTLE, "" )..": ".. t )
+	elseif actionName == "vcaHandRpm" then 
+		local h = 0
+		if self.vcaHandthrottle ~= nil and self.vcaHandthrottle > 0 then 
+			h = self.vcaHandthrottle
+		end 
+		
+		if     isAnalog then 
+			h = 1 + keyStatus 
+		elseif keyStatus > 0.5 then 
+			h = math.min( 1, h + 0.0005 * self.vcaTickDt )
+		elseif keyStatus < 0.5 then 
+			h = math.max( 0, h - 0.0005 * self.vcaTickDt )
+		end 
+		
+		self:vcaSetState( "vcaHandthrottle", vehicleControlAddon.mbClamp( h, 0, 1 ) )
+		if h <= 0 then 
+			self:vcaSetState( "vcaWarningText", Utils.getNoNil( vehicleControlAddon_Register.mogliTexts.vcaHANDTHROTTLE, "" )..": off" )
+			self.vcaHandthrottle2 = nil 
+		elseif  self.spec_motorized ~= nil 
+				and self.spec_motorized.motor ~= nil 
+				and self.spec_motorized.motor.maxRpm ~= nil 
+				and self.spec_motorized.motor.maxRpm > 0 then 
+			local r = self.spec_motorized.motor.minRpm + h * ( self.spec_motorized.motor.maxRpm - self.spec_motorized.motor.minRpm )
+			self:vcaSetState( "vcaWarningText", string.format("%s: %4.0f U/min", Utils.getNoNil( vehicleControlAddon_Register.mogliTexts.vcaHANDTHROTTLE, "" ), r ) )
+		end 
 	end
 end
 
@@ -899,9 +992,11 @@ function vehicleControlAddon:onPreUpdate(dt, isActiveForInput, isActiveForInputI
 				local f = dt * 0.0005
 				if self.vcaLastAxisSteerAnalog then 
 					f = dt * 0.002
+				elseif s < 1 then 
+					f = dt * 0.003
 				elseif ( self.vcaLastAxisSteer > 0 and self.spec_drivable.lastInputValues.axisSteer < 0 )
 						or ( self.vcaLastAxisSteer < 0 and self.spec_drivable.lastInputValues.axisSteer > 0 ) then 
-					f = dt * 0.003 * math.min( 1, 0.25 + math.abs( self.vcaLastAxisSteer ) * 2 ) 
+					f = dt * 0.003 * math.min( 1, 0.25 + math.abs( self.vcaLastAxisSteer ) * 2 )	 
 				elseif not noARB then 
 					if lastAxisSteerTime1 == nil then 
 						self.vcaLastAxisSteerTime1 = g_currentMission.time 
@@ -915,19 +1010,22 @@ function vehicleControlAddon:onPreUpdate(dt, isActiveForInput, isActiveForInputI
 						tMax = 200 + 88 * ( 85 - s )
 					end 
 					f = dt * 1e-6 * vehicleControlAddon.mbClamp( g_currentMission.time - self.vcaLastAxisSteerTime1, 25, tMax )
+					if s < 21 then 
+						f = math.max( f, dt * 0.00015 * ( 21 - s ) )
+					end 
 				else 
 					f = dt * 0.001 * math.min( 1, 0.25 + math.abs( self.vcaLastAxisSteer ) * 2 ) 
 				end 
 				self.vcaLastAxisSteer = vehicleControlAddon.mbClamp( self.vcaLastAxisSteer + f * self.spec_drivable.lastInputValues.axisSteer, -1, 1 )
 			elseif self.vcaLastAxisSteerAnalog then 
 				self.vcaLastAxisSteer = self.spec_drivable.lastInputValues.axisSteer 
-			elseif s > 4 then 
+			elseif s > 1 then 
 				local a = 1
 				if self.autoRotateBackSpeed ~= nil then 
 					a = self.autoRotateBackSpeed 
 				end 
-				if s <= 24 then 
-					a = a * ( s - 4 ) * 0.05 
+				if s <= 26 then 
+					a = a * ( s - 1 ) * 0.04 
 				end 
 
 				if lastAxisSteerTime2 == nil then 
@@ -976,6 +1074,10 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 	
 	if not self:getIsVehicleControlledByPlayer() and self.vcaClutchPercent > 0 then 
 		self.vcaClutchPercent = 0
+	end 
+	
+	if self.vcaHandthrottle ~= nil and self.vcaHandthrottle > 0 then 
+		self.vcaHandthrottle2 = self.vcaHandthrottle 
 	end 
 	
 	--*******************************************************************
@@ -1458,7 +1560,11 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 			and self.vcaWarningText ~= "" then
 		if self.vcaWarningTimer <= 0 then
 			self.vcaWarningText = ""
-		end
+		else 
+			g_currentMission:showBlinkingWarning(self.vcaWarningText, self.vcaWarningTimer)
+			self.vcaWarningTimer = 0
+			self.vcaWarningText  = ""
+		end	
 	end	
 	
 ----******************************************************************************************************************************************
@@ -3638,6 +3744,16 @@ function vehicleControlAddon:vcaOnSetFactor( old, new, noEventSend )
 	self.vcaExponent = new
 	self.vcaFactor   = 1.1 ^ new
 end
+
+function vehicleControlAddon:onSetShuttleControl( old, new, noEventSend )
+	self.vcaShuttleCtrl = new 
+	self:requestActionEventUpdate()
+end 
+
+function vehicleControlAddon:onSetTransmission( old, new, noEventSend )
+	self.vcaTransmission = new 
+	self:requestActionEventUpdate()
+end 
 
 function vehicleControlAddon:vcaOnSetSnapAngle( old, new, noEventSend )
 	if new < 1 then 
