@@ -934,6 +934,8 @@ function vehicleControlAddon:onPreUpdate(dt, isActiveForInput, isActiveForInputI
 		self:vcaSetState( "vcaSnapIsOn", false )
 	end 
 	
+--******************************************************************************************************************************************
+-- adaptive steering 	
 	local lastAxisSteer, lastAxisSteerTime1, lastAxisSteerTime2
 	
 	if self.vcaLastAxisSteer ~= nil then 
@@ -993,7 +995,7 @@ function vehicleControlAddon:onPreUpdate(dt, isActiveForInput, isActiveForInputI
 				if self.vcaLastAxisSteerAnalog then 
 					f = dt * 0.002
 				elseif s < 1 then 
-					f = dt * 0.003
+					f = dt * 0.001
 				elseif ( self.vcaLastAxisSteer > 0 and self.spec_drivable.lastInputValues.axisSteer < 0 )
 						or ( self.vcaLastAxisSteer < 0 and self.spec_drivable.lastInputValues.axisSteer > 0 ) then 
 					f = dt * 0.003 * math.min( 1, 0.25 + math.abs( self.vcaLastAxisSteer ) * 2 )	 
@@ -1011,7 +1013,7 @@ function vehicleControlAddon:onPreUpdate(dt, isActiveForInput, isActiveForInputI
 					end 
 					f = dt * 1e-6 * vehicleControlAddon.mbClamp( g_currentMission.time - self.vcaLastAxisSteerTime1, 25, tMax )
 					if s < 21 then 
-						f = math.max( f, dt * 0.00015 * ( 21 - s ) )
+						f = math.max( f, dt * 5e-5 * ( 21 - s ) )
 					end 
 				else 
 					f = dt * 0.001 * math.min( 1, 0.25 + math.abs( self.vcaLastAxisSteer ) * 2 ) 
@@ -1021,19 +1023,24 @@ function vehicleControlAddon:onPreUpdate(dt, isActiveForInput, isActiveForInputI
 				self.vcaLastAxisSteer = self.spec_drivable.lastInputValues.axisSteer 
 			elseif s > 1 then 
 				local a = 1
+				local f = 0.001
 				if self.autoRotateBackSpeed ~= nil then 
 					a = self.autoRotateBackSpeed 
 				end 
 				if s <= 26 then 
 					a = a * ( s - 1 ) * 0.04 
+				end
+				if s <= 11 then 
+					f = math.max( ( 11 - s  ) * 0.1, f ) 
 				end 
 
 				if lastAxisSteerTime2 == nil then 
 					self.vcaLastAxisSteerTime2 = g_currentMission.time 
+					a = 0
 				else 
 					self.vcaLastAxisSteerTime2 = lastAxisSteerTime2
+					a = a * vehicleControlAddon.mbClamp( f * ( g_currentMission.time - lastAxisSteerTime2 - 50 ), 0, 1 )^2
 				end 
-				a = a * vehicleControlAddon.mbClamp( 0.00125 * ( g_currentMission.time - self.vcaLastAxisSteerTime2 - 100 ), 0, 1 )^2
 													
 				if self.vcaLastAxisSteer > 0 then 
 					self.vcaLastAxisSteer = math.max( 0, self.vcaLastAxisSteer - dt * 0.0005 * a )
@@ -1047,12 +1054,11 @@ function vehicleControlAddon:onPreUpdate(dt, isActiveForInput, isActiveForInputI
 			self.spec_drivable.lastInputValues.axisSteerDeviceCategory = InputDevice.CATEGORY.UNKNOWN
 		end 
 	end 
-	
+--******************************************************************************************************************************************
 end
 
 function vehicleControlAddon:onAIEnd()
-	if self:vcaGetTransmissionActive() and self:getIsMotorStarted() and self.vcaTransmission ~= nil and self.vcaTransmission >= 1 then 
-	--self:vcaSetState( "vcaNeutral", true )
+	if self:getIsMotorStarted() and self.vcaTransmission ~= nil and self.vcaTransmission >= 1 then 
 		local motor = self:getMotor()
 		if motor ~= nil then 
 			motor.vcaAutoStop = true 
@@ -1565,55 +1571,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 			self.vcaWarningTimer = 0
 			self.vcaWarningText  = ""
 		end	
-	end	
-	
-----******************************************************************************************************************************************
----- adaptive steering 	
---	if self.vcaSteeringIsOn and not ( self.vcaSnapIsOn ) and self:vcaIsActive() then 
---		local speed = math.abs( self.lastSpeed * 3600 )
---		local f = 1
---		if     speed <= 12.5 then 
---		  f = 2 - 0.8 * speed / 12.5
---		elseif speed <= 25 then 
---			f = 1.2 - 0.5 * ( speed - 12.5 ) / 12.5 
---		elseif speed <= 50 then 
---			f = 0.7 - 0.3 * ( speed - 25 ) / 25 
---		elseif speed <= 100 then 
---			f = 0.4 - 0.3 * ( speed - 50 ) / 50 
---		else 
---			f = 0.1
---		end 
---		
---		self.vcaRotSpeedFactor = vehicleControlAddon.vcaScaleFx( self, f )
---		
---		for i,w in pairs( self.spec_wheels.wheels ) do 
---			if w.rotSpeed ~= nil then 
---				if w.vcaRotSpeed == nil then 
---					w.vcaRotSpeed = w.rotSpeed 
---				end 				
---				w.rotSpeed = w.vcaRotSpeed * self.vcaRotSpeedFactor
---			end 
---			
---			if w.rotSpeedNeg ~= nil then 
---				if w.vcaRotSpeedNeg == nil then 
---					w.vcaRotSpeedNeg = w.rotSpeedNeg 
---				end 				
---				w.rotSpeedNeg = w.vcaRotSpeedNeg * self.vcaRotSpeedFactor
---			end 
---		end 
---	elseif self.vcaRotSpeedFactor ~= nil then
---		for i,w in pairs( self.spec_wheels.wheels ) do 
---			if w.vcaRotSpeed ~= nil and w.vcaRotSpeed ~= nil then 
---				w.rotSpeed = w.vcaRotSpeed
---			end 
---			
---			if w.rotSpeedNeg ~= nil and w.vcaRotSpeedNeg ~= nil then 
---				w.rotSpeedNeg = w.vcaRotSpeedNeg
---			end 
---		end 
---	
---		self.vcaRotSpeedFactor = nil 
---	end 
+	end		
 	
 --******************************************************************************************************************************************
 -- Reverse driving sound
@@ -1877,8 +1835,16 @@ function vehicleControlAddon:onDraw()
 			end
 
 		end 
-			
+		
+		if     self.vcaSnapIsOn and not ( self.vcaDrawSnapIsOn ) then 
+			self.vcaSnapDrawTimer = 3000
+		elseif self.vcaDrawSnapIsOn and not ( self.vcaSnapIsOn ) then 
+			self.vcaSnapDrawTimer = 20000
+		end 
+		self.vcaDrawSnapIsOn = self.vcaSnapIsOn
+		
 		local snapDraw = false
+		
 		if not self:getIsVehicleControlledByPlayer() then 
 			self.vcaSnapDrawTimer = nil
 			self.vcaSnapPosTimer  = nil 
@@ -1888,14 +1854,13 @@ function vehicleControlAddon:onDraw()
 		elseif self.vcaSnapDistance  < 1 then 
 			snapDraw = false
 			self.vcaSnapPosTimer  = nil 
-		elseif self.vcaSnapPosTimer ~= nil and self.vcaSnapDistance >= 1 then 
+		elseif self.vcaSnapPosTimer ~= nil then 
 			snapDraw = true
-			self.vcaSnapDrawTimer = 3000
+		elseif self.vcaSnapDraw <= 0 then 
+			self.vcaSnapDrawTimer = nil
+			self.vcaSnapPosTimer  = nil 
 		elseif self.vcaSnapDraw >= 2 then 
 			snapDraw = true 
-		elseif self.vcaSnapDraw >= 1 and not self.vcaSnapIsOn then  
-			snapDraw = true 
-			self.vcaSnapDrawTimer = 3000
 		elseif self.vcaSnapDrawTimer ~= nil then 
 			if math.abs( self.lastSpeedReal ) * 3600 > 1 then 
 				self.vcaSnapDrawTimer = self.vcaSnapDrawTimer - self.vcaTickDt 
@@ -3253,7 +3218,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 					end 
 				end 
 			end 
-			print("AI launch gear: "..tostring(launchGear).." ("..tostring(delta)..")")
+		--print("AI launch gear: "..tostring(launchGear).." ("..tostring(delta)..")")
 			if launchGear == nil then 
 				launchGear = self.vehicle.vcaLaunchGear 
 			end 
