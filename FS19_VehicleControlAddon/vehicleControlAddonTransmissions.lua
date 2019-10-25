@@ -284,109 +284,36 @@ function vehicleControlAddonTransmissionBase:rangeDown()
 	end 
 end 
 
-function vehicleControlAddonTransmissionBase:gearShifter( number, isPressed )
-	if not isPressed then 
-		self.vehicle:vcaSetState( "vcaNeutral", true )
-		if self.vehicle.spec_motorized.motor.vcaLoad ~= nil then  
-			self.vehicle:vcaSetState("vcaBOVVolume",self.vehicle.spec_motorized.motor.vcaLoad)
+function vehicleControlAddonTransmissionBase:getGearShifterIndeces( maxNum, noSplit )
+
+	if noSplit == nil then 
+		noSplit = false 
+	end 
+
+	if self.gearShifterIndeces == nil then 
+		self.gearShifterIndeces         = {}
+		self.gearShifterIndeces[maxNum] = {} 
+	elseif self.gearShifterIndeces[maxNum] == nil then 
+		self.gearShifterIndeces[maxNum] = {} 
+	elseif self.gearShifterIndeces[maxNum][noSplit] ~= nil then 
+		return self.gearShifterIndeces[maxNum][noSplit]
+	end 
+
+	self.gearShifterIndeces[maxNum][noSplit] = {}
+	
+	if noSplit then 
+		for i=1,maxNum do 
+			table.insert( self.gearShifterIndeces[maxNum][noSplit], math.max( 1, i + self.numberOfGears - maxNum ) )
 		end 
 	else 
-		local goFwd = nil 
-		local num2  = 0
-		local list  
-		if self.shifterIndexList == nil then 
-			list  = self:getGearShifterIndeces()
-		else 
-			list = self.shifterIndexList
-		end 
-		
-		if number == 7 then 
-			if not self.vehicle.vcaShuttleCtrl then 
-				return 
-			end 
-			
-			self.vehicle.vcaShifter7isR1 = true 
-			goFwd = false 
-			
-			if self.splitGears4Shifter then 
-				num2 = 2
-				for i,l in pairs(list) do  
-					if i > 1 and l > self.vehicle.vcaLaunchGear then 
-						break 
-					end 
-					num2 = i  
-				end 
-				if not self.vehicle.vcaShifterLH and num2 > 1 then 
-					num2 = num2 - 1
-				elseif self.vehicle.vcaShifterLH and num2 == 1 then 
-					num2 = 2
-				end 
-			else 
-				if self.vehicle.vcaShifterLH then 
-					num2 = number 
-				else 
-					num2 = number - 6 
-				end 
-			end 
-		else			
-			if self.vehicle.vcaShuttleCtrl and self.vehicle.vcaShifter7isR1 == nil then 
-				self.vehicle.vcaShifter7isR1 = true 
-			end 
-			if self.vehicle.vcaShifter7isR1 then 
-				goFwd = true 
-			end 
-			
-			if self.splitGears4Shifter then 
-				num2 =  number + number 
-				if not self.vehicle.vcaShifterLH and num2 > 1 then 
-					num2 = num2 - 1
-				end 
-			else 
-				if self.vehicle.vcaShifterLH then 
-					num2 = number + 6 
-				else 
-					num2 = number 
-				end 
-			end 
-		end 
-		
-		local index = list[num2] 
-		if index == nil then 
-			print("Cannot find correct gear for shifter position "..tostring(number))
-			return 
-		end 
-		
-		local g, r = self:getBestGearRangeFromIndex( self.vehicle.vcaGear, self.vehicle.vcaRange, index )
-		
-		if not ( self.vehicle.vcaAutoClutch ) and self.vehicle.vcaClutchPercent < 1
-				and ( ( g ~= self.vehicle.vcaGear  and self:getChangeTimeGears()  > 100 )
-					 or ( r ~= self.vehicle.vcaRange and self:getChangeTimeRanges() > 100 ) ) then 
-			self:grindingGears()
-		else 
-			self.vehicle:vcaSetState( "vcaShifterIndex", number )
-			self.vehicle:vcaSetState( "vcaGear", g )
-			self.vehicle:vcaSetState( "vcaRange", r )
-			self.vehicle:vcaSetState( "vcaNeutral", false )
-			if goFwd ~= nil then
-				self.vehicle:vcaSetState( "vcaShuttleFwd", goFwd )
-			end
-		end 
-	end 
-end 
-
-function vehicleControlAddonTransmissionBase:getGearShifterIndeces()
-	if self.gearShifterIndeces == nil then 
-		self.gearShifterLH = highRange
+		local maxI = maxNum + maxNum 
 		local numGears = self:getNumberOfRatios()	
-		local offset   = 0
-		offset = math.max( numGears - 12 )	
-		self.gearShifterIndeces = {} 
-		for i=1,12 do 
-			table.insert( self.gearShifterIndeces, math.max( 1, i + offset ) )
+		for i=1,maxI do 
+			table.insert( self.gearShifterIndeces[maxNum][noSplit], math.max( 1, i + numGears - maxI ) )
 		end 
 	end 
-			
-	return self.gearShifterIndeces
+
+	return self.gearShifterIndeces[maxNum][noSplit]
 end 
 
 function vehicleControlAddonTransmissionBase:getGearRatio( index )
@@ -515,6 +442,16 @@ function vehicleControlAddonTransmissionBase:getRatioIndexListOfRange( range )
 	return list
 end 
 
+-- vehicleControlAddon.g27Mode6R 
+-- vehicleControlAddon.g27Mode6S 
+-- vehicleControlAddon.g27Mode6D 
+-- vehicleControlAddon.g27Mode8R 
+-- vehicleControlAddon.g27Mode8S 
+-- vehicleControlAddon.g27Mode4RR
+-- vehicleControlAddon.g27Mode4RS
+-- vehicleControlAddon.g27Mode4RD
+-- vehicleControlAddon.g27ModeSGR
+
 function vehicleControlAddonTransmissionBase:actionCallback( actionName, keyStatus )
 	vehicleControlAddon.debugPrint(tostring(self.name)..": "..actionName)
 	if     actionName == "vcaGearUp"   then
@@ -525,24 +462,227 @@ function vehicleControlAddonTransmissionBase:actionCallback( actionName, keyStat
 		self:rangeUp()
 	elseif actionName == "vcaRangeDown"then
 		self:rangeDown()
-	elseif actionName == "vcaShifter1" then
-		self:gearShifter( 1, keyStatus >= 0.5 )
-	elseif actionName == "vcaShifter2" then
-		self:gearShifter( 2, keyStatus >= 0.5 )
-	elseif actionName == "vcaShifter3" then
-		self:gearShifter( 3, keyStatus >= 0.5 )
-	elseif actionName == "vcaShifter4" then
-		self:gearShifter( 4, keyStatus >= 0.5 )
-	elseif actionName == "vcaShifter5" then
-		self:gearShifter( 5, keyStatus >= 0.5 )
-	elseif actionName == "vcaShifter6" then
-		self:gearShifter( 6, keyStatus >= 0.5 )
-	elseif actionName == "vcaShifter7" then 
-		self:gearShifter( 7, keyStatus >= 0.5 )
-	elseif actionName == "vcaShifterLH" and self.vehicle.vcaShifterIndex > 0 then 
-		self.vehicle:vcaSetState( "vcaShifterLH", not self.vehicle.vcaShifterLH )
-		if not self.vehicle.vcaNeutral then 
-			self:gearShifter( self.vehicle.vcaShifterIndex, keyStatus >= 0.5 )
+	elseif self.vehicle.vcaG27Mode == vehicleControlAddon.g27Mode4RR
+			or self.vehicle.vcaG27Mode == vehicleControlAddon.g27Mode4RS
+			or self.vehicle.vcaG27Mode == vehicleControlAddon.g27Mode4RD then 
+		if     actionName == "vcaShifter1" then
+			self:gearShifter( 1, keyStatus >= 0.5 )
+		elseif actionName == "vcaShifter2" then
+			self:gearShifter( 2, keyStatus >= 0.5 )
+		elseif actionName == "vcaShifter3" then
+			self:gearShifter( 3, keyStatus >= 0.5 )
+		elseif actionName == "vcaShifter4" then
+			self:gearShifter( 4, keyStatus >= 0.5 )
+		elseif actionName == "vcaShifter7" then
+			self:gearShifter( 5, keyStatus >= 0.5 )
+		elseif actionName == "vcaShifter8" then
+			self:gearShifter( 6, keyStatus >= 0.5 )
+		elseif keyStatus < 0.5 then 
+		-- nothing
+		elseif actionName == "vcaShifter5" then
+			self:rangeUp()
+		elseif actionName == "vcaShifter6" then
+			self:rangeDown()
+		end 
+	elseif self.vehicle.vcaG27Mode == vehicleControlAddon.g27Mode6RR
+			or self.vehicle.vcaG27Mode == vehicleControlAddon.g27Mode6RS then 
+		if     actionName == "vcaShifter1" then
+			self:gearShifter( 1, keyStatus >= 0.5 )
+		elseif actionName == "vcaShifter2" then
+			self:gearShifter( 2, keyStatus >= 0.5 )
+		elseif actionName == "vcaShifter3" then
+			self:gearShifter( 3, keyStatus >= 0.5 )
+		elseif actionName == "vcaShifter4" then
+			self:gearShifter( 4, keyStatus >= 0.5 )
+		elseif actionName == "vcaShifter5" then
+			self:gearShifter( 5, keyStatus >= 0.5 )
+		elseif actionName == "vcaShifter6" then
+			self:gearShifter( 6, keyStatus >= 0.5 )
+		elseif actionName == "vcaShifter9" then
+			self:gearShifter( 7, keyStatus >= 0.5 )
+		elseif keyStatus < 0.5 then 
+		-- nothing
+		elseif actionName == "vcaShifter7" then
+			self:rangeUp()
+		elseif actionName == "vcaShifter8" then
+			self:rangeDown()
+		end 
+	elseif self.vehicle.vcaG27Mode == vehicleControlAddon.g27ModeSGR then 
+		if     keyStatus < 0.5 then 
+		-- nothing
+			if actionName == "vcaShifter1" or actionName == "vcaShifter2" then
+				self.vehicle:vcaSetState( "vcaNeutral", true )
+			end 
+		elseif actionName == "vcaShifter1" then
+			self.vehicle:vcaSetState( "vcaNeutral", false )
+			self.vehicle:vcaSetState( "vcaShuttleFwd", true )
+		elseif actionName == "vcaShifter2" then
+			self.vehicle:vcaSetState( "vcaNeutral", false )
+			self.vehicle:vcaSetState( "vcaShuttleFwd", false )
+		elseif actionName == "vcaShifter3" then
+			self:gearUp()
+		elseif actionName == "vcaShifter4" then
+			self:gearDown()
+		elseif actionName == "vcaShifter5" then
+			self:rangeUp()
+		elseif actionName == "vcaShifter6" then
+			self:rangeDown()
+		elseif actionName == "vcaShifter7" then
+			self.vehicle:vcaSetState( "vcaNeutral", not self.vehicle.vcaNeutral )
+		end 
+	else
+		if     actionName == "vcaShifter1" then
+			self:gearShifter( 1, keyStatus >= 0.5 )
+		elseif actionName == "vcaShifter2" then
+			self:gearShifter( 2, keyStatus >= 0.5 )
+		elseif actionName == "vcaShifter3" then
+			self:gearShifter( 3, keyStatus >= 0.5 )
+		elseif actionName == "vcaShifter4" then
+			self:gearShifter( 4, keyStatus >= 0.5 )
+		elseif actionName == "vcaShifter5" then
+			self:gearShifter( 5, keyStatus >= 0.5 )
+		elseif actionName == "vcaShifter6" then
+			self:gearShifter( 6, keyStatus >= 0.5 )
+		elseif actionName == "vcaShifter7" then 
+			self:gearShifter( 7, keyStatus >= 0.5 )
+		elseif actionName == "vcaShifter8" then 
+			self:gearShifter( 8, keyStatus >= 0.5 )
+		elseif actionName == "vcaShifter9" then 
+			self:gearShifter( 9, keyStatus >= 0.5 )
+		elseif keyStatus < 0.5 then 
+		-- nothing
+		elseif actionName == "vcaShifterLH" and self.vehicle.vcaShifterIndex > 0 then 
+			self.vehicle:vcaSetState( "vcaShifterLH", not self.vehicle.vcaShifterLH )
+			if not self.vehicle.vcaNeutral then 
+				self:gearShifter( self.vehicle.vcaShifterIndex, keyStatus >= 0.5 )
+			end 
+		end 
+	end 
+end 
+
+function vehicleControlAddonTransmissionBase:gearShifter( number, isPressed )
+	if not isPressed then 
+		self.vehicle:vcaSetState( "vcaNeutral", true )
+		if self.vehicle.spec_motorized.motor.vcaLoad ~= nil and math.abs( self.vehicle.lastSpeedReal ) * 3600 > 1 then  
+			self.vehicle:vcaSetState("vcaBOVVolume",self.vehicle.spec_motorized.motor.vcaLoad)
+		end 
+	else 
+		local goFwd = nil 
+		local num2  = 0
+		local list  
+		local maxNum = 6 
+		local noSplit = false
+		
+		if     self.vehicle.vcaG27Mode == vehicleControlAddon.g27Mode8R  
+				or self.vehicle.vcaG27Mode == vehicleControlAddon.g27Mode8S  then 
+			maxNum = 8
+		elseif self.vehicle.vcaG27Mode == vehicleControlAddon.g27Mode4RR
+				or self.vehicle.vcaG27Mode == vehicleControlAddon.g27Mode4RS
+				or self.vehicle.vcaG27Mode == vehicleControlAddon.g27Mode4RD then 
+			maxNum  = 4
+			noSplit = true
+		elseif self.vehicle.vcaG27Mode == vehicleControlAddon.g27Mode6RR
+				or self.vehicle.vcaG27Mode == vehicleControlAddon.g27Mode6RS then 
+			maxNum  = 6
+			noSplit = true
+		end 
+		
+		if self.shifterIndexList == nil then 
+			list  = self:getGearShifterIndeces( maxNum, noSplit )
+		else 
+			list = self.shifterIndexList
+		end 
+				
+		if number <= maxNum then 			
+			if self.vehicle.vcaShifter7isR1 then 
+				goFwd = true 
+			end 
+			
+			if noSplit then 
+				num2 = number 
+			elseif self.splitGears4Shifter then 
+				num2 =  number + number 
+				if not self.vehicle.vcaShifterLH and num2 > 1 then 
+					num2 = num2 - 1
+				end 
+			else 
+				if self.vehicle.vcaShifterLH then 
+					num2 = number + maxNum 
+				else 
+					num2 = number 
+				end 
+			end 
+		elseif not self.vehicle.vcaShuttleCtrl then 
+			return 
+		elseif self.vehicle.vcaG27Mode == vehicleControlAddon.g27Mode6S
+				or self.vehicle.vcaG27Mode == vehicleControlAddon.g27Mode8S
+				or self.vehicle.vcaG27Mode == vehicleControlAddon.g27Mode4RS
+				or self.vehicle.vcaG27Mode == vehicleControlAddon.g27Mode6RS then 
+			self.vehicle:vcaSetState( "vcaShuttleFwd", not self.vehicle.vcaShuttleFwd )
+			return 
+		elseif self.vehicle.vcaG27Mode == vehicleControlAddon.g27Mode6D
+				or self.vehicle.vcaG27Mode == vehicleControlAddon.g27Mode4RD then 
+			if number == maxNum + 1 then 
+				self.vehicle:vcaSetState( "vcaShuttleFwd", true )
+			else 
+				self.vehicle:vcaSetState( "vcaShuttleFwd", false )
+			end 
+			return 
+		else 
+			goFwd = false 
+			
+			if noSplit then 
+				num2 = 1
+			elseif self.splitGears4Shifter then 
+				num2 = 2
+				for i,l in pairs(list) do  
+					if i > 1 and l > self.vehicle.vcaLaunchGear then 
+						break 
+					end 
+					num2 = i  
+				end 
+				if not self.vehicle.vcaShifterLH and num2 > 1 then 
+					num2 = num2 - 1
+				elseif self.vehicle.vcaShifterLH and num2 == 1 then 
+					num2 = 2
+				end 
+			else 
+				if self.vehicle.vcaShifterLH then 
+					num2 = number 
+				else 
+					num2 = number - maxNum 
+				end 
+			end 
+		end 
+		
+		local index = list[num2] 
+		if index == nil then 
+			print("Cannot find correct gear for shifter position "..tostring(number))
+			return 
+		end 
+		
+		local g, r
+		if noSplit then 
+			g = index 
+			r = nil
+		else 
+			g, r = self:getBestGearRangeFromIndex( self.vehicle.vcaGear, self.vehicle.vcaRange, index )
+		end 
+		
+		if not ( self.vehicle.vcaAutoClutch ) and self.vehicle.vcaClutchPercent < 1
+				and ( ( g ~= self.vehicle.vcaGear  and self:getChangeTimeGears()  > 100 )
+					 or ( r ~= self.vehicle.vcaRange and self:getChangeTimeRanges() > 100 ) ) then 
+			self:grindingGears()
+		else 
+			self.vehicle:vcaSetState( "vcaShifterIndex", number )
+			self.vehicle:vcaSetState( "vcaGear", g )
+			if r ~= nil then 
+				self.vehicle:vcaSetState( "vcaRange", r )
+			end 
+			self.vehicle:vcaSetState( "vcaNeutral", false )
+			if goFwd ~= nil then
+				self.vehicle:vcaSetState( "vcaShuttleFwd", goFwd )
+			end
 		end 
 	end 
 end 
@@ -552,7 +692,7 @@ end
 
 vehicleControlAddonTransmissionBase.transmissionList = 
 	{ { class  = vehicleControlAddonTransmissionBase, 
-			params = { "IVT", 1, 0, {}, 0 },
+			params = { "IVT", 1, 0, {0}, 1000, { 0.5, 1.0 }, false, false, nil, nil, { "low", "high" } },
 			text   = "IVT" }, 
 		{ class  = vehicleControlAddonTransmissionBase, 
 			params = { "4x4", 4, 750, {2,1,1}, 1000 },

@@ -243,11 +243,20 @@
 			</GuiElement>			
 			
 			<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="vcaGearRatioT" toolTipElementId="mogliToolTipBoxText" toolTipText="Gear Speed To" onCreate="onCreateSubElement" onCreateArgs="callback"
-											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="450" focusChangeTop="440" focusChangeBottom="501">
+											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="450" focusChangeTop="440" focusChangeBottom="460">
 				<GuiElement type="button" profile="multiTextOptionLeft" />
 				<GuiElement type="button" profile="multiTextOptionRight"/>
 				<GuiElement type="text"   profile="multiTextOptionText" />
 				<GuiElement type="text"   profile="multiTextOptionTitle" text="Gear Speed To"/>
+				<GuiElement type="bitmap" profile="multiTextOptionBg" />
+			</GuiElement>			
+			
+			<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="vcaG27Mode" toolTipElementId="mogliToolTipBoxText" toolTipText="Gear Shifter Mode" onCreate="onCreateSubElement" onCreateArgs="list0"
+											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="460" focusChangeTop="450" focusChangeBottom="501">
+				<GuiElement type="button" profile="multiTextOptionLeft" />
+				<GuiElement type="button" profile="multiTextOptionRight"/>
+				<GuiElement type="text"   profile="multiTextOptionText" />
+				<GuiElement type="text"   profile="multiTextOptionTitle" text="Gear Shifter Mode"/>
 				<GuiElement type="bitmap" profile="multiTextOptionBg" />
 			</GuiElement>			
 		</GuiElement>

@@ -79,9 +79,13 @@
 		<text name="input_vcaShifter4"  text="VCA: G27/G29 gear 4"/>
 		<text name="input_vcaShifter5"  text="VCA: G27/G29 gear 5 / range down"/>
 		<text name="input_vcaShifter6"  text="VCA: G27/G29 gear 6 / range up"/>
-		<text name="input_vcaShifter7"  text="VCA: G27/G29 reverse gear"/>
+		<text name="input_vcaShifter7"  text="VCA: G27/G29 gear 7 / reverse gear"/>
+		<text name="input_vcaShifter8"  text="VCA: G27/G29 gear 8"/>
+		<text name="input_vcaShifter9"  text="VCA: G27/G29 gear 9 / reverse gear"/>
 		<text name="input_vcaShifterLH" text="VCA: G27/G29 gear splitter"/>
 		<text name="input_vcaHandRpm"   text="VCA: hand throttle RPM"/>
+		<text name="input_vcaHandRpm_1" text="VCA: more hand throttle"/>
+		<text name="input_vcaHandRpm_2" text="VCA: less hand throttle"/>
 		<text name="input_vcaHandMode"  text="VCA: hand throttle mode"/>
 	</texts>
 

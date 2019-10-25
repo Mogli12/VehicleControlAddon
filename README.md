@@ -9,7 +9,24 @@ I will not publish FS19_VehicleControlAddon anymore. I continue to work on this 
 
 Saving settings is now user dependent. I hope it does not break loading of saving games in MP. Please follow up in [#143](https://github.com/Mogli12/VehicleControlAddon/issues/143).
 
+I re-implemented the adaptive steering. The old implementation was too simillar to the vanilla steering. If you have problems with automatic back rotation just press the key to steer into the opposite direction.
+
 If you are looking for a realistic manual transmisison please visit [FS19_realManualTransmission](https://github.com/modelleicher/FS19_realManualTransmission)
+
+I added several settings for players with a gear shifter. These are the different options:
+* "6G, 1R, LH" - 6 gears, 1 reverse gear, one button to swtich between low and high range
+* "6G, Shuttle, LH" - 6 gears, one button to change driving direction, one button to swtich between low and high range
+* "6G, D/R, LH" - for 8+1 shifters: 6 gears, gear 7 switches to forward, gear 8 switches to backward, one button to swtich between low and high range
+* "6G, R+/-, 1R" - for 8+1 shifters: 6 gears, gear 7 increases the range, gear 8 lowers the range, gear 9 switches into the single reverse gear
+* "6G, R+/-, Shuttle" - for 8+1 shifters: 6 gears, gear 7 increases the range, gear 8 lowers the range, gear 9 toggles the driving direction
+* "8G, 1R, LH" - for 8+1 shifters: 8 gears, 1 reverse gear, one button to swtich between low and high range
+* "8G, Shuttle, LH" - for 8+1 shifters: 8 gears, one button to change driving direction, one button to swtich between low and high range
+* "4G, R+/-, 1R"- gears 1 to 4 change the highes 4 gears, gear 5 and 6 increase/decrease the range, gear 7 switches to reverse gear
+* "4G, R+/-, Shuttle" - gears 1 to 4 change the highes 4 gears, gear 5 and 6 increase/decrease the range, gear 7 toggles the driving direction
+* "4G, R+/-, D/R" - for 8+1 shifters: gears 1 to 4 change the highes 4 gears, gear 5 and 6 increase/decrease the range, gear 7 switches to forward, gear 8 switches to backward
+* "D/R , G+/-, R+/-" - gear 1 swtiches to forward, gear 2 switches to backward, vehicle is in neutral in neither 1 nor 2 are pressed, gears 3 and 4 change the gear, gears 5 and 6 change the range
+
+The IVT transmission has now two different ranges. The default should be the high range.
 
 ## modSettings
 I renamed the configuration file in modSettings folder to just "config.xml". Additionally, there is a new file "transmissions.xml". Here you can add your own transmissions. I propose to use the second transmission as template. Gears support automatic shifting. but ranges have to be shifted manually. 

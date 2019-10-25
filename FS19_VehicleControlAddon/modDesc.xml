@@ -35,11 +35,11 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>store.dds</iconFilename>
-	<version>0.0.8.0</version>
+	<version>0.0.8.1</version>
 	<l10n filenamePrefix="modDesc_l10n">
 		<text name="vcaVERSION">          
-			<de>Vehicle Control Addon 0.0.8.0</de>
-			<en>Vehicle Control Addon 0.0.8.0</en>
+			<de>Vehicle Control Addon 0.0.8.1</de>
+			<en>Vehicle Control Addon 0.0.8.1</en>
 		</text>
 	</l10n>
 	
@@ -74,6 +74,8 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 		<action name="vcaShifter5"  category="VEHICLE" axisType="HALF"/>
 		<action name="vcaShifter6"  category="VEHICLE" axisType="HALF"/>
 		<action name="vcaShifter7"  category="VEHICLE" axisType="HALF"/>
+		<action name="vcaShifter8"  category="VEHICLE" axisType="HALF"/>
+		<action name="vcaShifter9"  category="VEHICLE" axisType="HALF"/>
 		<action name="vcaShifterLH" category="VEHICLE" axisType="HALF"/>
 		<action name="vcaClutch"    category="VEHICLE" axisType="HALF"/>
 		<action name="vcaHandRpm"   category="VEHICLE" axisType="FULL"/>
