@@ -252,6 +252,7 @@ function vehicleControlAddon:onLoad(savegame)
 	self.vcaIsNonDefaultProp = vehicleControlAddon.vcaIsNonDefaultProp
 	self.vcaGetSteeringNode  = vehicleControlAddon.vcaGetSteeringNode
 	self.vcaGetTransmissionActive = vehicleControlAddon.vcaGetTransmissionActive
+	self.vcaIsVehicleControlledByPlayer = vehicleControlAddon.vcaIsVehicleControlledByPlayer
 	self.vcaGetAutoShift     = vehicleControlAddon.vcaGetAutoShift
 	self.vcaGetAutoClutch    = vehicleControlAddon.vcaGetAutoClutch
 	self.vcaGetShuttleCtrl   = vehicleControlAddon.vcaGetShuttleCtrl
@@ -902,42 +903,58 @@ function vehicleControlAddon:onLeaveVehicle()
 	self.vcaIsEntered = false 
 end 
 
+function vehicleControlAddon:vcaIsVehicleControlledByPlayer()
+	if self:getIsVehicleControlledByPlayer() then 
+		return true 
+	end 
+	if not self:getIsControlled() then 
+		return false 
+	end 
+	if self.spec_globalPositioningSystem == nil then 
+		return false 
+	end 
+	if self.spec_globalPositioningSystem.guidanceSteeringIsActive then 
+		return true 
+	end 
+	return false 
+end 
+
 function vehicleControlAddon:vcaIsActive()
-	if self:getIsEntered() and self:getIsVehicleControlledByPlayer() then 
+	if self.vcaIsLoaded and self:getIsEntered() and self:vcaIsVehicleControlledByPlayer() then 
 		return true 
 	end 
 	return false
 end 
 
 function vehicleControlAddon:vcaGetTransmissionActive()
---return self:getIsVehicleControlledByPlayer()
+--return self:vcaIsVehicleControlledByPlayer()
 --return self.vcaIsEnteredMP or (self.spec_aiVehicle ~= nil and self.spec_aiVehicle.isActive )
 	return self:getIsControlled()
 end 
 
 function vehicleControlAddon:vcaGetAutoShift()
-	if self:getIsVehicleControlledByPlayer() then 
+	if self.vcaIsLoaded and self:vcaIsVehicleControlledByPlayer() then 
 		return self.vcaAutoShift 
 	end 
 	return true 
 end 
 
 function vehicleControlAddon:vcaGetAutoClutch()
-	if self:getIsVehicleControlledByPlayer() then 
+	if self.vcaIsLoaded and self:vcaIsVehicleControlledByPlayer() then 
 		return self.vcaAutoClutch 
 	end 
 	return true 
 end 
 
 function vehicleControlAddon:vcaGetShuttleCtrl()
-	if self:getIsVehicleControlledByPlayer() then 
+	if self.vcaIsLoaded and self:vcaIsVehicleControlledByPlayer() then 
 		return self.vcaShuttleCtrl
 	end 
 	return false  
 end 
 
 function vehicleControlAddon:vcaGetNeutral()
-	if self:getIsVehicleControlledByPlayer() then 
+	if self.vcaIsLoaded and self:vcaIsVehicleControlledByPlayer() then 
 		return self.vcaNeutral
 	end 
 	return false  
@@ -945,7 +962,8 @@ end
 
 function vehicleControlAddon:vcaGetAutoHold()
 	local motor = self:getMotor()
-	if 			self:getIsVehicleControlledByPlayer()
+	if 			self.vcaIsLoaded
+			and self:vcaIsVehicleControlledByPlayer()
 			and self.vcaTransmission ~= nil 
 			and self.vcaTransmission >= 1 
 			and motor ~= nil 
@@ -1111,7 +1129,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 		self.vcaIsEntered = false 
 	end 	
 	
-	if not self:getIsVehicleControlledByPlayer() and self.vcaClutchPercent > 0 then 
+	if self.vcaIsLoaded and not self:vcaIsVehicleControlledByPlayer() and self.vcaClutchPercent > 0 then 
 		self.vcaClutchPercent = 0
 	end 
 	
@@ -1431,7 +1449,8 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 	-- Camera Rotation
 	if      self:getIsActive() 
 			and self.isClient 
-			and self:getIsVehicleControlledByPlayer()
+			and self.vcaIsLoaded 
+			and self:vcaIsVehicleControlledByPlayer()
 			and self:vcaIsValidCam() then
 			
 		local camera  = self.spec_enterable.cameras[i]
@@ -2440,8 +2459,8 @@ function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, ax
 	
 	local ccState = nil
 	local spec = self.spec_drivable
-	if      self:getIsVehicleControlledByPlayer()
-			and self.vcaIsLoaded
+	if      self.vcaIsLoaded
+			and self:vcaIsVehicleControlledByPlayer()
 			and self:vcaGetShuttleCtrl()
 			and axisForward > 0
 			and spec.cruiseControl.state ~= Drivable.CRUISECONTROL_STATE_OFF then 
@@ -2476,7 +2495,7 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 	self.vcaOldAcc       = acceleration
 	self.vcaOldHandbrake = doHandbrake
 
-	if self:getIsVehicleControlledByPlayer() then 		
+	if self.vcaIsLoaded and self:vcaIsVehicleControlledByPlayer() then 		
 		if self.vcaKSIsOn and self.spec_drivable.cruiseControl.state == 0 then 
 			if math.abs( self.vcaKeepSpeed ) < 1 then 
 				acceleration = 0
@@ -2563,10 +2582,11 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 	self.vcaNewHandbrake = doHandbrake
 	
 	if  		self:getIsMotorStarted()
+			and self.vcaIsLoaded
 			and math.abs( acceleration ) < 0.001 
 			and not doHandbrake
 			and ( self.vcaTransmission ~= nil and self.vcaTransmission > 0 )
-			and self:getIsVehicleControlledByPlayer()
+			and self:vcaIsVehicleControlledByPlayer()
 			and ( ( ( self:vcaGetNeutral() or self.vcaClutchPercent >= 1 ) and currentSpeed * 3600 > 1 )
 				 or ( self.vcaTransmission == 1 and not self.spec_motorized.motor.vcaAutoStop and currentSpeed * 1000 < 1 )
 				 or ( self.spec_motorized.motor.vcaIdleAcc ~= nil and self.spec_motorized.motor.vcaIdleAcc > 0 ) ) then 
@@ -2764,7 +2784,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	self.vcaLastFwd = fwd
 	
 	local dftDirTimer = 1000
-	if not self.vehicle:getIsVehicleControlledByPlayer() then
+	if not self.vehicle:vcaIsVehicleControlledByPlayer() then
 		dftDirTimer = nil
 	elseif self.vehicle:vcaGetShuttleCtrl() then
 		dftDirTimer = 250
@@ -3334,7 +3354,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		local setLaunchGear = ( initGear or lastFwd ~= fwd or self.vcaAutoStop )
 		local newGear    = gear 
 		local launchGear = self.vehicle.vcaLaunchGear 
-		if     self.vehicle:getIsVehicleControlledByPlayer()
+		if     self.vehicle:vcaIsVehicleControlledByPlayer()
 		-- AutoDrive
 				or ( self.vehicle.ad ~= nil and self.vehicle.ad.isActive  ) 
 		-- Courseplay
