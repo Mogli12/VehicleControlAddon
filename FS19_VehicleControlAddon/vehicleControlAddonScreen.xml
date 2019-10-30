@@ -215,13 +215,19 @@
 				<GuiElement type="bitmap" profile="multiTextOptionBg" />
 			</GuiElement>	
 		
-			<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="vcaSnapDistance" toolTipElementId="mogliToolTipBoxText" toolTipText="Distance" onCreate="onCreateSubElement" onCreateArgs="list"
+			<!--GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="vcaSnapDistance" toolTipElementId="mogliToolTipBoxText" toolTipText="Distance" onCreate="onCreateSubElement" onCreateArgs="list"
 											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="420" focusChangeTop="410" focusChangeBottom="430">
 				<GuiElement type="button" profile="multiTextOptionLeft" />
 				<GuiElement type="button" profile="multiTextOptionRight"/>
 				<GuiElement type="text"   profile="multiTextOptionText" />
 				<GuiElement type="text"   profile="multiTextOptionTitle" text="Distance"/>
 				<GuiElement type="bitmap" profile="multiTextOptionBg" />
+			</GuiElement-->
+			
+			<GuiElement type="textInput" profile="ingameMenuGameSettingsTextInput" id="vcaSnapDistance" onCreate="onCreateSubElement" 
+									toolTipElementId="mogliToolTipBoxText" toolTipText="Distance" maxCharacters="5"
+									imeKeyboardType="normal"> <!-- onTextChanged="vcaOnSnapDistanceChanged"-->
+				<GuiElement type="text" profile="multiTextOptionSettingsTitle" text="Distance"/>
 			</GuiElement>
 			
 			<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="vcaSnapDraw" toolTipElementId="mogliToolTipBoxText" toolTipText="Draw Marker" onCreate="onCreateSubElement" onCreateArgs="list0"

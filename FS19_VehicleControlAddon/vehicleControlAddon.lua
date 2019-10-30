@@ -2573,7 +2573,8 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 			end
 				
 			if self.vcaInchingIsOn == limitThrottleIfPressed then
-				acceleration = acceleration * limitThrottleRatio
+				acceleration   = acceleration   * limitThrottleRatio
+				self.vcaOldAcc = self.vcaOldAcc * limitThrottleRatio
 			end
 		end
 	end 
@@ -3668,6 +3669,8 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 				if  not fwd then 
 					newAcc = -newAcc
 				end 
+			elseif motorRpm > fakeRpm + 0.05 * self.maxRpm then 
+				newAcc = 0
 			end 	
 
 			if clutchFactor > 0.5 and motorRpm < self.minRpm then 
@@ -4377,3 +4380,13 @@ end
 function vehicleControlAddon:vcaUIDrawvcaGearRatioT()
 	return vehicleControlAddon.drawUIGearSpeed( self )
 end
+
+function vehicleControlAddon:vcaUIGetvcaSnapDistance()
+	return tostring( self.vcaSnapDistance )
+end 
+function vehicleControlAddon:vcaUISetvcaSnapDistance( value )
+	local v = tonumber( value )
+	if type( v ) == "number" and v > 0 then 
+		self:vcaSetState( "vcaSnapDistance", tonumber( value ) )
+	end 
+end 

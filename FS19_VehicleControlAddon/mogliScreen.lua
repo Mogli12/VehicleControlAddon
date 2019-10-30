@@ -190,6 +190,9 @@ else
 								i = value 
 							end
 							element:setState( i )
+						elseif element.typeName == "textInput" then 
+							local t = tostring( value )
+							element:setText( t )
 						end
 					end
 				end
@@ -250,6 +253,9 @@ else
 					--print("SET: "..tostring(name)..": '"..tostring(value).."'")
 						
 						setter( self.vehicle, value )
+					elseif element.typeName == "textInput" then 
+						local t = element:getText()
+						setter( self.vehicle, t )
 					end
 				end
 			end
