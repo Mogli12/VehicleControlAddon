@@ -29,6 +29,7 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vcaAUTOSHIFT"       text="Automat"/>
 		<text name="vcaLAUNCH"          text="Załączony bieg"/>
 		<text name="vcaKEEPSPEED"       text="Stała prędkość tempomatu"/>
+		<text name="vcaNO_ARB"          text="Brak centrowania"/>
 		<text name="vcaHANDTHROTTLE"    text="Gaz ręczny"/>
 		<text name="vcaPITCH"           text="Wysokość dźwięku przy maks. RPM"/>
 		<text name="vcaSETTINGS"        text="Ustawienia"/>
@@ -51,6 +52,7 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vca_tip_AUTOSHIFT"  text="Automatyczna zmiana biegów i zakresów"/>
 		<text name="vca_tip_LAUNCH"     text="Prędkość znamionowa włączenia biegu"/>
 		<text name="vca_tip_KEEPSPEED"  text="Jeśli włączona jest stała prędkość tempomatu, pedał przyspieszenia zachowuje się jak joystick. Podobnie jak jazda z tempomatem."/>
+		<text name="vca_tip_NO_ARB"     text="Jeśli włączone koła nie będą powracały do pozycji prostej."/>
 		<text name="vca_tip_HANDTHROTTLE" text="Silnik automatycznie osiąga ustalone obroty."/>
 		<text name="vca_tip_PITCH"      text="Wysokość dźwięku przy maksymalnych obrotach silnika"/>
 		<text name="vca_tip_DRAWHUD"    text="Pokazuje lub ukrywa HUD skrzyni"/>
@@ -69,7 +71,7 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="input_vcaSnapDOWN"  text="VCA: Przesuń w tył"/>
 		<text name="input_vcaSnapLEFT"  text="VCA: Przesuń w lewo"/>
 		<text name="input_vcaSnapRIGHT" text="VCA: Przesuń w prawo"/>
-		<text name="input_vcaNO_ARB"    text="VCA: Wył. auto. spojrzenia w tył"/>
+		<text name="input_vcaNO_ARB"    text="VCA: Wył. centrowanie kół"/>
 		<text name="input_vcaINCHING"   text="VCA: Kontroler tempomatu"/>
 		<text name="input_vcaKEEPSPEED" text="VCA: Utrzymywanie prędkości"/>
 		<text name="input_vcaSWAPSPEED" text="VCA: Wyrównanie prędkości"/>
@@ -85,8 +87,14 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="input_vcaShifter4"  text="VCA: G27/G29 bieg 4"/>
 		<text name="input_vcaShifter5"  text="VCA: G27/G29 bieg 5 / Zakres w dół"/>
 		<text name="input_vcaShifter6"  text="VCA: G27/G29 bieg 6 / Zakres w górę"/>
-		<text name="input_vcaShifter7"  text="VCA: G27/G29 bieg wsteczny"/>
+		<text name="input_vcaShifter7"  text="VCA: G27/G29 bieg 7 / bieg wsteczny"/>		
+		<text name="input_vcaShifter8"  text="VCA: G27/G29 bieg 8"/>
+		<text name="input_vcaShifter9"  text="VCA: G27/G29 bieg 9 / bieg wsteczny"/>
 		<text name="input_vcaShifterLH" text="VCA: G27/G29 rozdzielacz biegów"/>
+		<text name="input_vcaHandRpm"   text="VCA: RPM gazu ręcznego"/>
+		<text name="input_vcaHandRpm_1" text="VCA: Dodaj gazu ręcznie"/>
+		<text name="input_vcaHandRpm_2" text="VCA: Odejmij gazu ręcznie"/>
+		<text name="input_vcaHandMode"  text="VCA: Tryb gazu ręcznego"/>
 	</texts>
 	
 	<longTexts>
