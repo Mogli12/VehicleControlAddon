@@ -52,7 +52,7 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vca_tip_AUTOSHIFT"  text="Automatyczna zmiana biegów i zakresów"/>
 		<text name="vca_tip_LAUNCH"     text="Prędkość znamionowa włączenia biegu"/>
 		<text name="vca_tip_KEEPSPEED"  text="Jeśli włączona jest stała prędkość tempomatu, pedał przyspieszenia zachowuje się jak joystick. Podobnie jak jazda z tempomatem."/>
-		<text name="vca_tip_NO_ARB"     text="Jeśli włączone koła nie będą powracały do pozycji prostej."/>
+		<text name="vca_tip_NO_ARB"     text="Jeśli włączone, koła nie będą powracały do pozycji prostej."/>
 		<text name="vca_tip_HANDTHROTTLE" text="Silnik automatycznie osiąga ustalone obroty."/>
 		<text name="vca_tip_PITCH"      text="Wysokość dźwięku przy maksymalnych obrotach silnika"/>
 		<text name="vca_tip_DRAWHUD"    text="Pokazuje lub ukrywa HUD skrzyni"/>
