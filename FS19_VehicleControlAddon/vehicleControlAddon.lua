@@ -2398,7 +2398,11 @@ function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, ax
 	
 	if self.vcaSnapIsOn then 
 		local lx, lz 
-		if self.vcaMovingDir < 0 then 
+		local m = self.movingDirection
+		if self.lastSpeedReal * 3600 < 1 or ( -0.5 < m and m < 0.5 ) then 
+			m = self.vcaMovingDir 
+		end 
+		if m < 0 then 
 			lx,_,lz = localDirectionToWorld( self:vcaGetSteeringNode(), 0, 0, -1 )	
 		else 
 			lx,_,lz = localDirectionToWorld( self:vcaGetSteeringNode(), 0, 0, 1 )		
@@ -2434,7 +2438,7 @@ function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, ax
 			end 
 			
 			local curSnapAngle = vehicleControlAddon.vcaGetCurrentSnapAngle( self, rot )
-
+			
 			local dist    = 0
 			local diffR   = vehicleControlAddon.normalizeAngle( rot - curSnapAngle )
 			
@@ -2446,10 +2450,6 @@ function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, ax
 				diffR = vehicleControlAddon.normalizeAngle( rot - curSnapAngle )
 			end 
 	
-			local m = self.movingDirection
-			if self.lastSpeedReal * 3600 < 1 or ( -0.5 < m and m < 0.5 ) then 
-				m = self.vcaMovingDir 
-			end 
 			local f = self.vcaSnapFactor
 			if m < 0 then 
 				f = -f 
@@ -2475,6 +2475,8 @@ function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, ax
 			end 
 			
 			axisSide = axisSideLast + vehicleControlAddon.mbClamp( a - axisSideLast, -d, d )
+			
+		--print(string.format("%3d°, %3d°, %2d, %2d, %6.3f, %6.3f",math.deg(rot), math.deg(curSnapAngle), m, self.movingDirection, a, axisSide ))
 		end 
 	end 
 	self.vcaAxisSideLast = axisSide
