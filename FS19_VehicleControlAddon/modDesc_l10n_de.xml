@@ -60,8 +60,8 @@
 		<text name="input_vcaREVERSE"   text="VCA: Fahrtrichtung rückwärts"/>
 		<text name="input_vcaSNAP"      text="VCA: Fahrtrichtung am Raster ausrichten"/>
 		<text name="input_vcaSNAPRESET" text="VCA: Fahrtrichtung nicht am Raster ausrichten"/>
-		<text name="input_vcaSnapUP"    text="VCA: Raster vor"/>
-		<text name="input_vcaSnapDOWN"  text="VCA: Raster zurück"/>
+		<text name="input_vcaSnapUP"    text="VCA: Raster nach links drehen"/>
+		<text name="input_vcaSnapDOWN"  text="VCA: Raster nach rechts drehen"/>
 		<text name="input_vcaSnapLEFT"  text="VCA: Raster links"/>
 		<text name="input_vcaSnapRIGHT" text="VCA: Raster rechts"/>
 		<text name="input_vcaNO_ARB"    text="VCA: Kein zurück Lenken"/>

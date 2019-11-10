@@ -69,7 +69,7 @@ local listOfProperties =
 
 
 VCAGlobals = {}
-vehicleControlAddon.snapAngles = { 5, 7.5, 15, 22.5, 45, 90 }
+vehicleControlAddon.snapAngles = { 1, 5, 15, 22.5, 45, 90 }
 vehicleControlAddon.factor30pi = 9.5492965855137201461330258023509
 vehicleControlAddon.g27Mode6R  = 0 -- 6 Gears, 1 Reverse, Range Splitter
 vehicleControlAddon.g27Mode6S  = 1 -- 6 Gears, Shuttle, Range Splitter
@@ -325,6 +325,7 @@ function vehicleControlAddon:onLoad(savegame)
 	vehicleControlAddon.registerState( self, "vcaGearRatioF",   0 )
 	vehicleControlAddon.registerState( self, "vcaGearRatioT",   0 )
 	vehicleControlAddon.registerState( self, "vcaG27Mode",      0 )
+	vehicleControlAddon.registerState( self, "vcaSnapFactor",   0 )
 	
 	self.vcaFactor        = 1
 	self.vcaReverseTimer  = 1.5 / VCAGlobals.timer4Reverse
@@ -522,7 +523,7 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
                                 "vcaSnapUP",        
                                 "vcaSnapDOWN",      
                                 "vcaSnapLEFT",      
-                                "vcaSnapRIGHT",     
+                                "vcaSnapRIGHT", 
                                 "vcaDIRECTION",     
                                 "vcaFORWARD",     
                                 "vcaREVERSE",
@@ -776,10 +777,7 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 		
 	elseif  -4 <= self.vcaLastSnapAngle and self.vcaLastSnapAngle <= 4
 			and self.vcaSnapDistance >= 1
-			and ( actionName == "vcaSnapUP"
-				or  actionName == "vcaSnapDOWN"
-				or  actionName == "vcaSnapLEFT"
-				or  actionName == "vcaSnapRIGHT" ) then
+			and ( actionName == "vcaSnapLEFT" or actionName == "vcaSnapRIGHT" ) then
 		self.vcaSnapPosTimer = 3000
 		
 		local lx,_,lz = localDirectionToWorld( self:vcaGetSteeringNode(), 0, 0, 1 )			
@@ -793,19 +791,27 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 		local fx = 0
 		local fz = 0
 		
-		if     actionName == "vcaSnapUP"    then
-			fz = 0.1
-		elseif actionName == "vcaSnapDOWN"  then
-			fz = -0.1
-		elseif actionName == "vcaSnapLEFT"  then
+		if     actionName == "vcaSnapLEFT"  then
 			fx = 0.1 
-		elseif actionName == "vcaSnapRIGHT" then
+		else
 			fx = -0.1 
 		end 
 
 		self:vcaSetState( "vcaLastSnapPosX", self.vcaLastSnapPosX + fz * dx + fx * dz )
 		self:vcaSetState( "vcaLastSnapPosZ", self.vcaLastSnapPosZ + fz * dz - fx * dx )
 		
+	elseif  -4 <= self.vcaLastSnapAngle and self.vcaLastSnapAngle <= 4
+			and self.vcaSnapDistance >= 1
+			and vehicleControlAddon.snapAngles[self.vcaSnapAngle] ~= nil
+			and actionName == "vcaSnapDOWN" then 
+		self.vcaSnapPosTimer = 3000
+		self:vcaSetState( "vcaLastSnapAngle", vehicleControlAddon.normalizeAngle( self.vcaLastSnapAngle - math.rad(0.1*vehicleControlAddon.snapAngles[self.vcaSnapAngle])))
+	elseif  -4 <= self.vcaLastSnapAngle and self.vcaLastSnapAngle <= 4
+			and self.vcaSnapDistance >= 1
+			and vehicleControlAddon.snapAngles[self.vcaSnapAngle] ~= nil
+			and actionName == "vcaSnapUP" then 
+		self.vcaSnapPosTimer = 3000
+		self:vcaSetState( "vcaLastSnapAngle", vehicleControlAddon.normalizeAngle( self.vcaLastSnapAngle + math.rad(0.1*vehicleControlAddon.snapAngles[self.vcaSnapAngle])))
 	elseif actionName == "vcaSNAPRESET" then
 		self:vcaSetState( "vcaLastSnapAngle", 10 )
 		self:vcaSetState( "vcaLastSnapPosX", 0 )
@@ -816,6 +822,27 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 		
 		if self.vcaSnapIsOn then 
 			self.vcaSnapPosTimer = 3000
+			local wx,wy,wz = getWorldTranslation( self:vcaGetSteeringNode() )
+			local lx,_,lz = localDirectionToWorld( self:vcaGetSteeringNode(), 0, 0, 1 )			
+			local d = 0
+			if lx*lx+lz*lz > 1e-6 then 
+				d = math.atan2( lx, lz )
+			end 
+			local curSnapAngle = vehicleControlAddon.vcaGetCurrentSnapAngle( self, d )
+			local dx    = math.sin( curSnapAngle )
+			local dz    = math.cos( curSnapAngle )			
+			local distX = wx - self.vcaLastSnapPosX
+			local distZ = wz - self.vcaLastSnapPosZ 	
+			local dist  = distX * dz - distZ * dx + self.vcaSnapFactor * self.vcaSnapDistance
+
+			while dist+dist > self.vcaSnapDistance do 
+				self:vcaSetState( "vcaSnapFactor", self.vcaSnapFactor - 1 )
+				dist  = distX * dz - distZ * dx + self.vcaSnapFactor * self.vcaSnapDistance
+			end 
+			while dist+dist <-self.vcaSnapDistance do 
+				self:vcaSetState( "vcaSnapFactor", self.vcaSnapFactor + 1 )
+				dist  = distX * dz - distZ * dx + self.vcaSnapFactor * self.vcaSnapDistance
+			end 			
 		end
  	elseif actionName == "vcaNeutral" then
 		if self.vcaNeutral and self.vcaShifterIndex > 0 then 
@@ -1830,8 +1857,6 @@ function vehicleControlAddon:onDraw()
 		end 
 		local curSnapAngle = vehicleControlAddon.vcaGetCurrentSnapAngle( self, d )
 		
-
-		
 		if self.vcaDrawHud then 
 			if VCAGlobals.snapAngleHudX >= 0 and self:getIsVehicleControlledByPlayer() then
 				x = VCAGlobals.snapAngleHudX
@@ -1972,56 +1997,50 @@ function vehicleControlAddon:onDraw()
 			local distX = wx - self.vcaLastSnapPosX
 			local distZ = wz - self.vcaLastSnapPosZ 	
 			
-			local iMax  = 2
-			if self.vcaSnapIsOn then 
-				iMax = 1 
-			end 
-			
-			for i=1,iMax do
-				local dist  = distX * dz - distZ * dx
+			local dist  = distX * dz - distZ * dx
 
+			if self.vcaSnapIsOn then 
+				dist = dist + self.vcaSnapFactor * self.vcaSnapDistance
+				setTextColor(0, 1, 0, 0.5) 
+				if math.abs( dist ) > 1 then 
+					if self.vcaSnapPosTimer == nil or self.vcaSnapPosTimer < 1000 then 
+						self.vcaSnapPosTimer = 1000
+					end
+				end 
+			else 
 				while dist+dist > self.vcaSnapDistance do 
 					dist = dist - self.vcaSnapDistance
 				end 
 				while dist+dist <-self.vcaSnapDistance do 
 					dist = dist + self.vcaSnapDistance
 				end 
+				setTextColor(1, 0, 0, 1) 
+			end 
 
-				setTextAlignment( RenderText.ALIGN_CENTER ) 
-				setTextVerticalAlignment( RenderText.VERTICAL_ALIGN_MIDDLE )
+			setTextAlignment( RenderText.ALIGN_CENTER ) 
+			setTextVerticalAlignment( RenderText.VERTICAL_ALIGN_BASELINE )
 				
-				if     i > 1 then 
-					setTextColor(0.5, 0.5, 0.5, 0.5) 
-				elseif self.vcaSnapIsOn then 
-					setTextColor(0, 1, 0, 0.5) 
-				else 
-					setTextColor(1, 0, 0, 1) 
-				end 
-				
-			--for z=-20,20,0.25 do 
-			--	for x=-1,1 do 
-			--		local px = wx - dist * dz + z * dx - x * 0.5 * self.vcaSnapDistance * dz
-			--		local pz = wz + dist * dx + z * dz + x * 0.5 * self.vcaSnapDistance * dx
-			--		local py = getTerrainHeightAtWorldPos( g_currentMission.terrainRootNode, px, 0, pz )
-			--		if i == 1 then 
-			--			renderText3D( px,py+0.5,pz, 0.5*math.pi,curSnapAngle,0, 0.5, "|" )
-			--		else 
-			--			renderText3D( px,py+0.5,pz, 0,curSnapAngle,0, 0.5, "-" )
-			--		end 
-			--	end 
-			--end 
-				for x=-1,1 do 
-					local px = wx - dist * dz - x * 0.5 * self.vcaSnapDistance * dz
-					local pz = wz + dist * dx + x * 0.5 * self.vcaSnapDistance * dx
-					local py = getTerrainHeightAtWorldPos( g_currentMission.terrainRootNode, px, 0, pz )
-					if i == 1 then 
-						renderText3D( px,py+0.5,pz, 0,curSnapAngle-0.5*math.pi,0, 0.2, "VEHICLECONTROLADDONVEHICLECONTROLADDONVEHICLECONTROLADDONVEHICLECONTROLADDONVEHICLECONTROLADDONVEHICLECONTROLADDON" )
+			local xMax = 1 
+			if self.vcaSnapIsOn and self.vcaSnapPosTimer == nil then 
+				xMax = 0 
+			end 
+			local a = 0
+			local t = "|"
+			for x=-xMax,xMax do 
+				for zi=-2,3,0.1 do
+					local z = 10 
+					if zi < 0 then 
+						z = z + 10 * zi 
 					else 
-						renderText3D( px,py+0.5,pz, 0,curSnapAngle+math.pi,0, 0.2, "vehiclecontroladdonvehiclecontroladdonvehiclecontroladdonvehiclecontroladdonvehiclecontroladdonvehiclecontroladdon" )
+						z = z + 10 * zi * zi 
 					end 
+					local px = wx - dist * dz - x * 0.5 * self.vcaSnapDistance * dz + z * dx 
+					local pz = wz + dist * dx + x * 0.5 * self.vcaSnapDistance * dx + z * dz 
+					local py = getTerrainHeightAtWorldPos( g_currentMission.terrainRootNode, px, 0, pz )
+					renderText3D( px,py,pz, 0,curSnapAngle-a,0, 0.5, t )
 				end 
-				dx, dz = -dz, dx
-			end 			
+			end 
+			dx, dz = -dz, dx
 		end 
 		
 		if self.vcaSnapPosTimer ~= nil then 
@@ -2030,32 +2049,32 @@ function vehicleControlAddon:onDraw()
 				self.vcaSnapPosTimer = nil 
 			end 
 		
-			local dx = math.sin( curSnapAngle )
-			local dz = math.cos( curSnapAngle )	
-			local df = 0.5 * self.vcaSnapDistance
-	
-			setTextColor(0, 0, 1, 1) 
-			
-			for f=-df,df,0.25 do 
-				for i=1,4 do 
-					local vx, vz = f, self.vcaSnapDistance + f 
-					if     i == 1 then 
-						vz = self.vcaSnapDistance + df
-					elseif i == 2 then 
-						vz = self.vcaSnapDistance - df
-					elseif i == 3 then 
-						vx = df
-					elseif i == 4 then 
-						vx = -df
-					end 
-				
-					local px = self.vcaLastSnapPosX + vz * dx + vx * dz 
-					local pz = self.vcaLastSnapPosZ + vz * dz - vx * dx 				
-					local py = getTerrainHeightAtWorldPos( g_currentMission.terrainRootNode, px, 0, pz )
-					renderText3D( px,py+0.3,pz, 0,curSnapAngle-0.5*math.pi,0, 0.2, "+" )
-					renderText3D( px,py+0.3,pz, 0,curSnapAngle,0, 0.2, "+" )
-				end 
-			end 
+		--local dx = math.sin( curSnapAngle )
+		--local dz = math.cos( curSnapAngle )	
+		--local df = 0.5 * self.vcaSnapDistance
+		--
+		--setTextColor(0, 0, 1, 1) 
+		--
+		--for f=-df,df,0.25 do 
+		--	for i=1,4 do 
+		--		local vx, vz = f, self.vcaSnapDistance + f 
+		--		if     i == 1 then 
+		--			vz = self.vcaSnapDistance + df
+		--		elseif i == 2 then 
+		--			vz = self.vcaSnapDistance - df
+		--		elseif i == 3 then 
+		--			vx = df
+		--		elseif i == 4 then 
+		--			vx = -df
+		--		end 
+		--	
+		--		local px = self.vcaLastSnapPosX + vz * dx + vx * dz 
+		--		local pz = self.vcaLastSnapPosZ + vz * dz - vx * dx 				
+		--		local py = getTerrainHeightAtWorldPos( g_currentMission.terrainRootNode, px, 0, pz )
+		--		renderText3D( px,py+0.3,pz, 0,curSnapAngle-0.5*math.pi,0, 0.2, "+" )
+		--		renderText3D( px,py+0.3,pz, 0,curSnapAngle,0, 0.2, "+" )
+		--	end 
+		--end 
 		end 
 
 		setTextAlignment( RenderText.ALIGN_LEFT ) 
@@ -2279,12 +2298,13 @@ function vehicleControlAddon:vcaGetCurrentSnapAngle(curRot)
 	
 	local a = self.vcaLastSnapAngle
 	local c = curRot 
+	local f = 0.5 -- 0.5 for 180° and 0.25 for 90°
 
-	while a - c <= -math.pi*0.25 do 
-		a = a + math.pi*0.5
+	while a - c <= -math.pi*f do 
+		a = a + math.pi*(f+f)
 	end 
-	while a - c > math.pi*0.25 do 
-		a = a - math.pi*0.5
+	while a - c > math.pi*f do 
+		a = a - math.pi*(f+f)
 	end
 
 	return a			
@@ -2403,6 +2423,7 @@ function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, ax
 				end 
 				
 				self:vcaSetState( "vcaLastSnapAngle", vehicleControlAddon.normalizeAngle( target ) )
+				self:vcaSetState( "vcaSnapFactor", 0 )
 			end 
 			
 			local curSnapAngle = vehicleControlAddon.vcaGetCurrentSnapAngle( self, rot )
@@ -2418,22 +2439,13 @@ function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, ax
 				diffR = vehicleControlAddon.normalizeAngle( rot - curSnapAngle )
 			end 
 	
-			if self.vcaSnapDistance >= 1 then 
+			do
 				local dx    = math.sin( curSnapAngle )
 				local dz    = math.cos( curSnapAngle )			
 				local distX = wx - self.vcaLastSnapPosX
 				local distZ = wz - self.vcaLastSnapPosZ 			
-				local dist  = dist + distX * dz - distZ * dx
-
-				while dist+dist > self.vcaSnapDistance do 
-					dist = dist - self.vcaSnapDistance
-				end 
-				while dist+dist <-self.vcaSnapDistance do 
-					dist = dist + self.vcaSnapDistance
-				end 
-				
-				local alpha = math.asin( vehicleControlAddon.mbClamp( 0.1 * dist, -0.851, 0.851 ) )
-				
+				local dist  = dist + distX * dz - distZ * dx + self.vcaSnapFactor * self.vcaSnapDistance				
+				local alpha = math.asin( vehicleControlAddon.mbClamp( 0.1 * dist, -0.851, 0.851 ) )			
 				diffR = diffR + alpha
 			end 
 			
@@ -2933,6 +2945,34 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		end 
 	end 
 	
+	local speedMS   = speed / 3.6
+	local wheelRpm  = speedMS * self.gearRatio * vehicleControlAddon.factor30pi
+	local clutchRpm = wheelRpm
+	if self.gearChangeTimer <= 0 and not autoNeutral then 
+		clutchRpm = self.differentialRotSpeed * self.gearRatio * vehicleControlAddon.factor30pi
+		if wheelRpm > clutchRpm then 
+			wheelRpm = clutchRpm 
+		end 
+	end 
+	if lastRpmC == nil or lastRpmW == nil or self.gearChangeTimer > 0 or autoNeutral or self.vcaFakeRpm ~= nil then 
+		self.vcaLastRpmC = clutchRpm 
+		self.vcaLastRpmW = wheelRpm 
+	else 
+		self.vcaLastRpmC = lastRpmC + 0.05 * ( clutchRpm - lastRpmC )
+		self.vcaLastRpmW = lastRpmW + 0.05 * ( wheelRpm  - lastRpmW )
+	end 
+	
+	local slip      = 0
+	if speedMS > 0.5 and self.differentialRotSpeed > speedMS then 
+		slip = self.differentialRotSpeed / speedMS - 1
+	end 
+	if self.vehicle.vcaSlip == nil then 
+		self.vehicle.vcaSlip = 0 
+	end 
+	self.vehicle.vcaSlip = self.vehicle.vcaSlip + 0.05 * ( slip - self.vehicle.vcaSlip )
+	
+	self.speedLimit = self.speedLimit * ( 1 + self.vehicle.vcaSlip )
+	
 	if not self.vehicle:getIsMotorStarted() or dt < 0 or self.vehicle.vcaLastTransmission == nil then 
 		self.vcaClutchTimer   = nil
 		self.vcaAutoDownTimer = nil
@@ -3219,7 +3259,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 				then 
 			autoNeutral = true 
 			if lastAutoStopTimer == nil then 
-				self.vcaAutoStopTimer = 1000
+				self.vcaAutoStopTimer = 500
 			elseif lastAutoStopTimer > 0 then 
 				self.vcaAutoStopTimer = lastAutoStopTimer - dt 
 			else 
@@ -3248,38 +3288,10 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			ratio = 0.3
 		end 
 		local maxSpeed  = ratio * self.vehicle.vcaMaxSpeed 
-		local wheelRpm  = self.vehicle.lastSpeedReal * 1000 * self.maxRpm / maxSpeed 
-		local clutchRpm = wheelRpm
-		local slip      = 0
-		if self.gearChangeTimer <= 0 and not autoNeutral then 
-			clutchRpm = self.differentialRotSpeed * self.minGearRatio * vehicleControlAddon.factor30pi
-			if clutchRpm > 0 or wheelRpm > 0 then 
-				slip = ( clutchRpm - wheelRpm ) / math.max( clutchRpm, wheelRpm )
-			else 
-				slip = 1
-			end 
-			if wheelRpm > clutchRpm then 
-				wheelRpm = clutchRpm 
-			end 
-		end 
-		if lastRpmC == nil or lastRpmW == nil or self.gearChangeTimer > 0 or autoNeutral or self.vcaFakeRpm ~= nil then 
-			self.vcaLastRpmC = clutchRpm 
-			self.vcaLastRpmW = wheelRpm 
-		else 
-			self.vcaLastRpmC = lastRpmC + 0.05 * ( clutchRpm - lastRpmC )
-			self.vcaLastRpmW = lastRpmW + 0.05 * ( wheelRpm  - lastRpmW )
-		end 
-		clutchRpm = self.vcaLastRpmC 
-		wheelRpm  = self.vcaLastRpmW 
-		
-		if self.vehicle.vcaSlip == nil then 
-			self.vehicle.vcaSlip = 0 
-		end 
-		self.vehicle.vcaSlip = self.vehicle.vcaSlip + 0.05 * ( slip - self.vehicle.vcaSlip )
 		
 		self.vehicle.vcaDebugR = string.format("g: %2d, r: %5.3f, s: %5.1f, m: %4.0f, w: %4.0f, c: %4.0f",
 																	gear, ratio, maxSpeed*3.6,
-																	self.lastRealMotorRpm, wheelRpm, clutchRpm )
+																	self.lastRealMotorRpm, self.vcaLastRpmW, self.vcaLastRpmC )
 		
 		
 		--****************************************
@@ -3429,14 +3441,14 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 				end 
 			end 
 			
-			if wheelRpm > m4 and self.vcaAutoUpTimer > 250 then 
+			if     self.vcaLastRpmW > m4 and self.vcaAutoUpTimer > 250 then 
 				self.vcaAutoUpTimer = 250
-			elseif wheelRpm < autoMinRpm and self.vcaAutoUpTimer < 1000 then 
+			elseif self.vcaLastRpmW < autoMinRpm and self.vcaAutoUpTimer < 1000 then 
 				self.vcaAutoUpTimer = 1000
-			elseif wheelRpm < autoMaxRpm and self.vcaAutoUpTimer < 250 then 
+			elseif self.vcaLastRpmW < autoMaxRpm and self.vcaAutoUpTimer < 250 then 
 				self.vcaAutoUpTimer = 250
 			end 
-			if self.vcaClutchTimer <= 0 and wheelRpm < m1 and gear > launchGear and self.vcaAutoDownTimer > 250 then 
+			if self.vcaClutchTimer <= 0 and self.vcaLastRpmW < m1 and gear > launchGear and self.vcaAutoDownTimer > 250 then 
 				self.vcaAutoDownTimer = 250
 			end 
 			
@@ -3445,8 +3457,8 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 				lowGear = math.floor( lowGear * ( 1 - self.vcaLoad ) )
 			end 
 			
-			local searchUp   = ( clutchRpm > autoMaxRpm and self.vcaAutoUpTimer   <= 0 and self.vcaNoShiftTimer <= 0 )
-			local searchDown = ( wheelRpm  < autoMinRpm and self.vcaAutoDownTimer <= 0 and self.vcaNoShiftTimer <= 0 )
+			local searchUp   = ( self.vcaLastRpmC > autoMaxRpm and self.vcaAutoUpTimer   <= 0 and self.vcaNoShiftTimer <= 0 )
+			local searchDown = ( self.vcaLastRpmW  < autoMinRpm and self.vcaAutoDownTimer <= 0 and self.vcaNoShiftTimer <= 0 )
 
 			if self.vcaAutoStop or curBrake > 0 then
 				searchUp   = false 
@@ -3457,23 +3469,23 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			
 			if #gearlist > 0 then 
 				local d = 0
-				if wheelRpm < autoMinRpm then 
-					d = autoMinRpm - wheelRpm
+				if self.vcaLastRpmW < autoMinRpm then 
+					d = autoMinRpm - self.vcaLastRpmW
 				end 
-				if clutchRpm > autoMaxRpm then 
-					d = math.max( d, clutchRpm - autoMaxRpm )
+				if self.vcaLastRpmC > autoMaxRpm then 
+					d = math.max( d, self.vcaLastRpmC - autoMaxRpm )
 				end 
 				d = d - 1
 				local d1 = d
-				local rr = wheelRpm
+				local rr = self.vcaLastRpmW
 				for _,i in pairs( gearlist ) do 
 					local nr = transmission:getGearRatio( i )
-					local rpm = wheelRpm * ratio / nr
+					local rpm = self.vcaLastRpmW * ratio / nr
 					local d2 = 0
 					if rpm < autoMinRpm then 
 						d2 = autoMinRpm - rpm
 					end 
-					rpm = clutchRpm * ratio / nr
+					rpm = self.vcaLastRpmC * ratio / nr
 					if rpm > autoMaxRpm then 
 						d2 = math.max( d2, rpm - autoMaxRpm )
 					end 
@@ -3485,10 +3497,10 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 				end 
 				
 				self.vehicle.vcaDebugA = string.format( "%3.0f%%; %3.0f%%; %4.0f..%4.0f; %4.0f -> %4.0f; %d -> %d; %5.0f -> %5.0f",
-																								curAcc*100,self.vcaLoad*100,autoMinRpm,autoMaxRpm,wheelRpm, rr,gear,newGear,d1,d )
+																								curAcc*100,self.vcaLoad*100,autoMinRpm,autoMaxRpm,self.vcaLastRpmW, rr,gear,newGear,d1,d )
 			else 
 				self.vehicle.vcaDebugA = string.format( "%3.0f%%; %3.0f%%; %4.0f..%4.0f; %4.0f no gear",
-																								curAcc*100,self.vcaLoad*100,autoMinRpm,autoMaxRpm,wheelRpm)
+																								curAcc*100,self.vcaLoad*100,autoMinRpm,autoMaxRpm,self.vcaLastRpmW)
 			end 
 		end
 
