@@ -370,6 +370,7 @@ else
 	-- onCreatePaging(element)
 	--********************************
 		function _newClass_:onCreatePaging(element)
+			if self.pageSelector == nil then return end 
 			local texts = {}
 			for _, page in pairs(element.pages) do
 				table.insert(texts, self:mogliScreenGetPageTitle(page))
@@ -398,6 +399,7 @@ else
 	-- updatePageState()
 	--********************************
 		function _newClass_:updatePageState()
+			if self.pageStateBox == nil or self.pageSelector == nil then return end 
 			for index, state in pairs(self.pageStateBox.elements) do
 				state.state = GuiOverlay.STATE_NORMAL
 				if index == self.pageSelector:getState() then
@@ -431,6 +433,8 @@ else
 	-- setPageStates()
 	--********************************
 		function _newClass_:setPageStates()
+			if self.pageStateBox == nil or self.pageSelector == nil then return end 
+		
 			for i=#self.pageStateBox.elements, 1, -1 do
 				self.pageStateBox.elements[i]:delete();
 			end
