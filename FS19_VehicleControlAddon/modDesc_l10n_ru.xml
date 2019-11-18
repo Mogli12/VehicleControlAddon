@@ -59,8 +59,8 @@
 		<text name="input_vcaREVERSE"       text="VCA: Направление движения назад"/>
 		<text name="input_vcaSNAP"          text="VCA: Выровнять направление по сетке"/>
 		<text name="input_vcaSNAPRESET"     text="VCA: Отменить выравнивание направления по сетке"/>
-		<text name="input_vcaSnapUP"        text="VCA: snap forward"/>
-		<text name="input_vcaSnapDOWN"      text="VCA: snap backward"/>
+		<text name="input_vcaSnapUP"        text="VCA: rotate snap direction left"/>
+		<text name="input_vcaSnapDOWN"      text="VCA: rotate snap direction right"/>
 		<text name="input_vcaSnapLEFT"      text="VCA: snap left"/>
 		<text name="input_vcaSnapRIGHT"     text="VCA: snap right"/>
 		<text name="input_vcaNO_ARB"        text="VCA: Без автоповорота камеры назад"/>
@@ -81,6 +81,8 @@
 		<text name="input_vcaShifter6"      text="VCA: G27/G29 Передача 6 / Диапазон вниз"/>
 		<text name="input_vcaShifter7"      text="VCA: G27/G29 ЗХ"/>
 		<text name="input_vcaShifterLH"     text="VCA: G27/G29 делитель"/>
+		<text name="input_vcaHandRpm"       text="VCA: обороты ручного газа"/>
+		<text name="input_vcaHandMode"      text="VCA: режим ручного газа"/>
 	</texts>
 	
 	<longTexts>
