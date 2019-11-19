@@ -13,6 +13,7 @@
 	<transmission        type="int"   value="1"/>  <!-- 0 = Giants, 1 = IVT, 2 = 4x4, 3 = 4x4 PowerShift, 4 = 2x6, 5 = FullPowerShift -->
 	<launchGear          type="float" value="6"/>  
 	<clutchTimer         type="int"   value="3000"/> <!-- ms -->
+	<rotInertiaFactor    type="float" value="5"/>  <!-- rot. interatia is more than just the flywheel, it includes the transmission and the wheels as well -->
 	
 	<!-- defaults -->
 	<adaptiveSteering    type="bool"  value="true"/>

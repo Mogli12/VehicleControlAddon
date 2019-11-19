@@ -174,17 +174,11 @@ function vehicleControlAddonTransmissionBase:getGearText( gear, range )
 end 
 
 function vehicleControlAddonTransmissionBase:getChangeTimeGears ()
-	if self.vehicle ~= nil and self.vehicle:getIsVehicleControlledByPlayer() then 
-		return self.changeTimeGears
-	end
-	return 0
+	return self.changeTimeGears
 end 
 
 function vehicleControlAddonTransmissionBase:getChangeTimeRanges()
-	if self.vehicle ~= nil and self.vehicle:getIsVehicleControlledByPlayer() then 
-		return self.changeTimeRanges
-	end
-	return 0
+	return self.changeTimeRanges
 end 
 
 function vehicleControlAddonTransmissionBase:grindingGears()
