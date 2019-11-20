@@ -3705,7 +3705,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 
 		if autoNeutral or self.gearChangeTimer > 0 then 
 		  -- neutral or no gear
-			if self.gearChangeTimer > 0 then 
+			if self.gearChangeTimer > 0 and not autoNeutral then 
 				self.vcaFakeRpm     = vehicleControlAddon.mbClamp( math.max( self.minRpm, motorPtoRpm ), 
 																													lastFakeRpm - 0.0003 * dt * rpmRange,
 																													lastFakeRpm + 0.001  * dt * rpmRange )		
@@ -3715,7 +3715,10 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			
 			-- *******************************************
 			-- the optimal RPM before closing the clutch 
-			local f = math.max( fakeRpm, self.vcaFakeRpm )
+			local f = fakeRpm
+			if self.vcaFakeRpm ~= nil and self.vcaFakeRpm > f then 
+				f = self.vcaFakeRpm
+			end 
 			local r = math.max( self.minRpm, 0.9 * motorPtoRpm, 0.6 * self.maxRpm )
 			if     f > r then 
 				self.vcaClutchRpm = r
