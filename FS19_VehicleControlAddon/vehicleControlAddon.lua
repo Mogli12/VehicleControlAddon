@@ -2663,7 +2663,6 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 
 	if self.vcaIsLoaded and self:vcaIsVehicleControlledByPlayer() then 		
 		if self.vcaKSIsOn and self.spec_drivable.cruiseControl.state == 0 then 
-			self.vcaOldAcc = 0
 			if math.abs( self.vcaKeepSpeed ) < 0.5 then 
 				acceleration = 0
 				doHandbrake  = true 
@@ -2682,6 +2681,7 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 					self.nextMovingDirection = -1
 				end 
 			end 
+			self.vcaOldAcc = acceleration
 		end 
 	
 		if self:vcaGetShuttleCtrl() then 
@@ -3824,11 +3824,15 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 				self.vcaClutchRpm = r
 			elseif f > wheelRpm then 
 				self.vcaClutchRpm = f
-		--elseif r > wheelRpm then 
-		--	self.vcaClutchRpm = wheelRpm
-			else 
+			elseif r > wheelRpm then 
 				self.vcaClutchRpm = r
+			else 
+				self.vcaClutchRpm = wheelRpm
 			end 
+			if self.vcaFakeRpm ~= nil and self.vcaFakeRpm > self.vcaClutchRpm then 
+				self.vcaClutchRpm = self.vcaFakeRpm
+			end 
+			
 			self.vcaClutchTimer = VCAGlobals.clutchTimer
 			self.vcaMinRpm      = self.vcaClutchRpm
 			self.vcaMaxRpm      = self.vcaClutchRpm
@@ -3854,7 +3858,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 				self.vehicle.vcaClutchDisp   = self.vehicle.vcaClutchPercent
 			end 
 
-			local clutchCloseRpm = math.max( self.minRpm, 0.9 * motorPtoRpm )
+			local clutchCloseRpm = math.max( self.minRpm, 0.9 * motorPtoRpm, math.min( 1.1 * motorPtoRpm, fakeRpm ) )
 			if self.vehicle.vcaTurboClutch then 
 				clutchCloseRpm = math.max( clutchCloseRpm, 0.6 * self.maxRpm ) 
 			end 
@@ -3871,7 +3875,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 																													 lastClutchRpm - 0.001 * dt * rpmRange, lastClutchRpm + 0.001 * dt * rpmRange )
 				-- open the RPM range as maxGearRatio decreases																									
 				self.vcaMinRpm      = clutchFactor * self.vcaClutchRpm
-				self.vcaMaxRpm      = self.vcaClutchRpm + clutchFactor * math.max( self.maxRpm - self.vcaClutchRpm, 0 )
+				self.vcaMaxRpm      = self.maxRpm + clutchFactor * ( self.vcaClutchRpm - self.maxRpm )
 				self.maxGearRatio   = math.max( self.minGearRatio, math.min( 1000, self.minGearRatio / math.max( 1 - clutchFactor, 0.0001 ) ) )
 			else
 				self.vcaMinRpm      = 0
