@@ -92,6 +92,12 @@ function vehicleControlAddonTransmissionBase:new( params )
 		self.rangeTexts = params.rangeTexts 
 	end 
 	
+	if params.isIVT then 
+		self.isIVT = true 
+	else 
+		self.isIVT = false 
+	end 
+	
 	if params.autoGears == nil or params.autoGears then 
 		self.autoShiftGears = true 
 	else 
@@ -701,12 +707,12 @@ end
 vehicleControlAddonTransmissionBase.transmissionList = 
 	{ { class  = vehicleControlAddonTransmissionBase, 
 			params = { name               = "IVT",
+								 isIVT              = true,
 			           noGears            = 1, 
-			           rangeGearOverlap   = {0}, 
-			           gearRatios         = { 0.5, 1.0 }, 
-			           autoRanges´        = false, 
+			           rangeGearOverlap   = {}, 
+			           gearRatios         = { 1.0 }, 
 			           gearTexts          = {""}, 
-			           rangeTexts         = { "low", "high" } },
+			           rangeTexts         = {""} },
 			text   = "IVT" }, 
 		{ class  = vehicleControlAddonTransmissionBase, 
 			params = { name               = "4x4", 
@@ -748,15 +754,15 @@ vehicleControlAddonTransmissionBase.transmissionList =
                  noGears            = 4, 
                  timeGears          = 0, 
                  rangeGearOverlap   = {0,0,0,0,0}, 
-                 gearRatios         = 750, 
+                 timeRanges         = 750, 
                  gearRatios         = { 0.0638968, 0.0766104, 0.0916914, 0.1096000,
 																				0.1149676, 0.1378428, 0.1649775, 0.1972000,
 																				0.1844612, 0.2211636, 0.2647002, 0.3164000,
 																				0.2778578, 0.3331434, 0.3987236, 0.4766000,
 																				0.3820982, 0.4581246, 0.5483076, 0.6554000,
 																				0.5830000, 0.6990000, 0.8366000, 1.0000000 }, 
-                 autoRanges´        = false, 
-                 rangeTexts         = {"A","B","C","D"}, 
+                 autoRanges         = false, 
+                 gearTexts          = {"A","B","C","D"}, 
                  rangeTexts         = {"1","2","3","4","5","6"}, 
                  shifterIndexList   = { 3, 4, 7, 8, 11, 12, 15, 16, 19, 20, 23, 24, 3, 4 } },
 			text   = "6x4 AutoPowerShift" },
@@ -768,7 +774,17 @@ vehicleControlAddonTransmissionBase.transmissionList =
                  gearRatios         = { 0.1, 0.15, 0.2, 
 																				0.2778, 0.3889, 0.5278, 0.7222, 1, 1.3889 }, 
                  autoRanges´        = false },
-			text   = "Car with low range" }
+			text   = "Car with low range" },
+			{ class  = vehicleControlAddonTransmissionBase, 
+			params = { name               = "VARIO",
+								 isIVT              = true,
+			           noGears            = 1, 
+			           rangeGearOverlap   = {0}, 
+			           gearRatios         = { 0.5, 1.0 }, 
+			           autoRanges´        = false, 
+			           gearTexts          = {""}, 
+			           rangeTexts         = { "low", "high" } },
+			text   = "Vario" }
 	}
 	
 function vehicleControlAddonTransmissionBase.loadSettings()
