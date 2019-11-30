@@ -2627,13 +2627,15 @@ function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, ax
 	local spec = self.spec_drivable
 	if      self.vcaIsLoaded
 			and self:vcaIsVehicleControlledByPlayer()
-			and self:vcaGetShuttleCtrl()
-			and axisForward > 0
 			and spec.cruiseControl.state ~= Drivable.CRUISECONTROL_STATE_OFF then 
-		ccState = spec.cruiseControl.state
-		spec.cruiseControl.state = Drivable.CRUISECONTROL_STATE_OFF
-		local speed,_ = self:getSpeedLimit(true)
-		self:getMotor().vcaWantedSpeedLimit = nil 
+		local speed,_ = self:getSpeedLimit(true)			
+		if self:vcaGetShuttleCtrl() and axisForward > 0 then 
+			ccState = spec.cruiseControl.state
+			spec.cruiseControl.state = Drivable.CRUISECONTROL_STATE_OFF
+			self:getMotor().vcaWantedSpeedLimit = nil 
+		elseif spec.cruiseControl.state == Drivable.CRUISECONTROL_STATE_ACTIVE then
+			speed = math.min(speed, spec.cruiseControl.speed)
+		end 
 		self:getMotor().speedLimit = speed 
 	end 
 	
@@ -3110,16 +3112,21 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		self.vcaLastRpmW = lastRpmW + 0.05 * ( wheelRpm  - lastRpmW )
 	end 
 	
-	local slip      = 0
-	if speedMS > 0.5 and self.differentialRotSpeed > speedMS then 
-		slip = self.differentialRotSpeed / speedMS - 1
+	local slip       = 0
+	local wheelSpeed = self.differentialRotSpeed 
+	if self.vcaLastSpeedLimit ~= nil and wheelSpeed * 3.6 > self.vcaLastSpeedLimit then 
+		wheelSpeed = self.vcaLastSpeedLimit / 3.6
+	end 
+	if speedMS > 0.5 and wheelSpeed > speedMS then 
+		slip = wheelSpeed / speedMS - 1
 	end 
 	if self.vehicle.vcaSlip == nil then 
 		self.vehicle.vcaSlip = 0 
 	end 
 	self.vehicle.vcaSlip = self.vehicle.vcaSlip + 0.05 * ( slip - self.vehicle.vcaSlip )
 	
-	self.speedLimit = self.speedLimit * ( 1 + self.vehicle.vcaSlip )
+	self.speedLimit        = self.speedLimit * ( 1 + self.vehicle.vcaSlip )
+	self.vcaLastSpeedLimit = self.speedLimit
 	
 	if not self.vehicle:getIsMotorStarted() or dt < 0 or self.vehicle.vcaLastTransmission == nil then 
 		self.vcaClutchTimer   = nil
