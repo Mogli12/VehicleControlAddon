@@ -2627,16 +2627,13 @@ function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, ax
 	local spec = self.spec_drivable
 	if      self.vcaIsLoaded
 			and self:vcaIsVehicleControlledByPlayer()
-			and spec.cruiseControl.state ~= Drivable.CRUISECONTROL_STATE_OFF then 
+			and spec.cruiseControl.state ~= Drivable.CRUISECONTROL_STATE_OFF
+			and ( self:vcaGetShuttleCtrl() or self.movingDirection > 0 )
+			and axisForward > 0 then 
 		local speed,_ = self:getSpeedLimit(true)			
-		if self:vcaGetShuttleCtrl() and axisForward > 0 then 
-			ccState = spec.cruiseControl.state
-			spec.cruiseControl.state = Drivable.CRUISECONTROL_STATE_OFF
-			self:getMotor().vcaWantedSpeedLimit = nil 
-		elseif spec.cruiseControl.state == Drivable.CRUISECONTROL_STATE_ACTIVE then
-			speed = math.min(speed, spec.cruiseControl.speed)
-		end 
-		self:getMotor().speedLimit = speed 
+		ccState = spec.cruiseControl.state
+		spec.cruiseControl.state = Drivable.CRUISECONTROL_STATE_OFF
+		self:getMotor():setSpeedLimit( speed )
 	end 
 	
 	local res = { superFunc( self, axisForward, axisSide, doHandbrake, dt ) }
@@ -2907,14 +2904,20 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	end 
 	
 	if self.vcaWantedSpeedLimit ~= nil then 
-		if     self.speedLimit < self.vcaWantedSpeedLimit then 
-		--self.speedLimit = self.vcaWantedSpeedLimit
-			self.speedLimit = math.min( self.vcaWantedSpeedLimit, math.max( speed, self.speedLimit ) + 0.002 * dt )
-		elseif self.speedLimit > self.vcaWantedSpeedLimit then  
-			self.speedLimit = math.max( self.vcaWantedSpeedLimit, math.min( speed, self.speedLimit ) - 0.001 * dt * math.max( 2, speed * 0.1 ) )
+		if self.vcaSpeedLimit == nil then 
+			self.vcaSpeedLimit = speed
 		end 
 		local limit,_   = self.vehicle:getSpeedLimit(true)
-		self.speedLimit = math.min( limit, self.speedLimit )
+		if     self.vcaSpeedLimit > limit then 
+			self.vcaSpeedLimit = math.max( self.vcaWantedSpeedLimit, math.min( speed, self.vcaSpeedLimit ) - 0.004 * dt )
+		elseif self.vcaSpeedLimit > self.vcaWantedSpeedLimit then  
+			self.vcaSpeedLimit = math.max( self.vcaWantedSpeedLimit, math.min( speed, self.vcaSpeedLimit ) - 0.001 * dt * math.max( 2, speed * 0.1 ) )
+		elseif self.vcaSpeedLimit < self.vcaWantedSpeedLimit then 
+			self.vcaSpeedLimit = math.min( self.vcaWantedSpeedLimit, math.max( speed, self.vcaSpeedLimit ) + 0.002 * dt )
+		end 
+		self.speedLimit = self.vcaSpeedLimit
+	else 
+		self.vcaSpeedLimit = nil 
 	end 
 	
 	if      self.vehicle.vcaForceStopMotor ~= nil 
