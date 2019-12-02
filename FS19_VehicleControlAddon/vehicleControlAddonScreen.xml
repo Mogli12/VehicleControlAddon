@@ -136,6 +136,15 @@
 				<GuiElement type="text"   profile="multiTextOptionTitle" text="$mogli_vcaPITCH"/>
 				<GuiElement type="bitmap" profile="multiTextOptionBg" />
 			</GuiElement>
+
+			<!--GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="vcaPitchExponent" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_vca_tip_PITCH" onCreate="onCreateSubElement" onCreateArgs="list"
+											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="260" focusChangeTop="250" focusChangeBottom="310">
+				<GuiElement type="button" profile="multiTextOptionLeft" />
+				<GuiElement type="button" profile="multiTextOptionRight"/>
+				<GuiElement type="text"   profile="multiTextOptionText" />
+				<GuiElement type="text"   profile="multiTextOptionTitle" text="$mogli_vcaPITCH"/>
+				<GuiElement type="bitmap" profile="multiTextOptionBg" />
+			</GuiElement-->
 		</GuiElement>
 		
 		
@@ -184,16 +193,7 @@
 				<GuiElement type="text"   profile="multiTextOptionTitle" text="$mogli_vcaLIMSPEED"/>
 				<GuiElement type="bitmap" profile="multiTextOptionBg" />
 			</GuiElement>
-			<!--
-			<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="vcaLaunchGear" toolTipElementId="mogliToolTipBoxText" toolTipText="$mogli_vca_tip_LAUNCH" onCreate="onCreateSubElement" onCreateArgs="list"
-											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="360" focusChangeTop="350" focusChangeBottom="370">
-				<GuiElement type="button" profile="multiTextOptionLeft" />
-				<GuiElement type="button" profile="multiTextOptionRight"/>
-				<GuiElement type="text"   profile="multiTextOptionText" />
-				<GuiElement type="text"   profile="multiTextOptionTitle" text="$mogli_vcaLAUNCH"/>
-				<GuiElement type="bitmap" profile="multiTextOptionBg" />
-			</GuiElement>			
-			-->
+
 			<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="vcaAutoClutch" toolTipElementId="mogliToolTipBoxText" toolTipText="AutoClutch" onCreate="onCreateSubElement"
 											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="370" focusChangeTop="360" focusChangeBottom="410">
 				<GuiElement type="button" profile="multiTextOptionLeft" />
@@ -215,15 +215,6 @@
 				<GuiElement type="bitmap" profile="multiTextOptionBg" />
 			</GuiElement>	
 		
-			<!--GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="vcaSnapDistance" toolTipElementId="mogliToolTipBoxText" toolTipText="Distance" onCreate="onCreateSubElement" onCreateArgs="list"
-											onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="420" focusChangeTop="410" focusChangeBottom="430">
-				<GuiElement type="button" profile="multiTextOptionLeft" />
-				<GuiElement type="button" profile="multiTextOptionRight"/>
-				<GuiElement type="text"   profile="multiTextOptionText" />
-				<GuiElement type="text"   profile="multiTextOptionTitle" text="Distance"/>
-				<GuiElement type="bitmap" profile="multiTextOptionBg" />
-			</GuiElement-->
-			
 			<GuiElement type="textInput" profile="ingameMenuGameSettingsTextInput" id="vcaSnapDistance" onCreate="onCreateSubElement" 
 									toolTipElementId="mogliToolTipBoxText" toolTipText="Distance" maxCharacters="5"
 									imeKeyboardType="normal"> <!-- onTextChanged="vcaOnSnapDistanceChanged"-->
