@@ -2837,21 +2837,31 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 		end 
 	end 
 	
+	local rotatedTimeBackup = self.rotatedTime
 	if self:vcaGetShuttleCtrl() then 
 		self.spec_lights   = nil
 		stopAndGoBraking   = true 
+	
+		if      self.spec_motorized.motor.vcaDirTimer ~= nil 
+				and self.spec_articulatedAxis ~= nil
+				and self.spec_articulatedAxis.componentJoint ~= nil
+				and math.abs(self.rotatedTime) > 0.01 then 
+			self.rotatedTime  = 0
+		end 
 	end 
 	
 	local state, result = pcall( superFunc, self, dt, currentSpeed, acceleration, doHandbrake, stopAndGoBraking ) 
 	if not ( state ) then
 		print("Error in updateWheelsPhysics :"..tostring(result))
-		self.spec_lights = lightsBackup
+		self.spec_lights     = lightsBackup
+		self.rotatedTime     = rotatedTimeBackup
 		self.vcaShuttleCtrl  = false 
 		self.vcaTransmission = 0 
 	end
 	
 	if self:vcaGetShuttleCtrl() then 
 		self.spec_lights = lightsBackup
+		self.rotatedTime = rotatedTimeBackup
 		if type( self.setBrakeLightsVisibility ) == "function" then 
 			self:setBrakeLightsVisibility( brake )
 		end 
