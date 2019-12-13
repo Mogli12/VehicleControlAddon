@@ -18,6 +18,11 @@ All functions are switchable with the following default key combinations:
 [Shift Left]: Throttle limiter / reduced cruise control speed
 [Shift Right + Cursor]: look forward, backwards, left right
 [Space]: Change direction (aka shuttle control)
+[[]: Gear up 
+[']: Gear down 
+[]]: Range up 
+[#]: Range down 
+[;]: Neutral and handbrake 
 ]]></en>
 		<de><![CDATA[
 Dieses Script variiert abhängig von der gefahrenen Geschwindigkeit die Lenkgeschwindigkeit und dreht die Kamera passend zum Lenkeinschlag und zur Fahrtrichtung. 
@@ -26,20 +31,25 @@ Drückt man Strg Links zusammen mit W, dann richtet sich die Fahrtrichtung an fe
 
 Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tasten:
 [Strg Links + C]: Einstellungen
-[Strg Links + W]: Rastersteuerung
+[Strg Links + W]: Rastersteuerung fortsetzen
 [Alt Links + W]: Rastersteuerung neu starten
 [Umschalt Links]: Gaspedalbegrenzer / verringerter Tempomatgeschwindigkeit
 [Umschalt Rechts + Pfeiltaste]: Nach vorne, hinten, links, rechts blicken
 [Leertaste]: Fahrtrichtung wechseln
+[Ü]: Gang hochschalten
+[Ä]: Gang herunterschalten
+[+]: Gruppe hochschalten 
+[#]: Gruppe herunterschalten 
+[ö]: Neutral / Parkbremse
 		]]></de>
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>store.dds</iconFilename>
-	<version>0.0.9.9</version>
+	<version>0.1.0.0</version>
 	<l10n filenamePrefix="modDesc_l10n">
 		<text name="vcaVERSION">          
-			<de>Vehicle Control Addon 0.0.9.9</de>
-			<en>Vehicle Control Addon 0.0.9.9</en>
+			<de>Vehicle Control Addon 0.1.0.0</de>
+			<en>Vehicle Control Addon 0.1.0.0</en>
 		</text>
 	</l10n>
 	
@@ -61,6 +71,7 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 		<action name="vcaNO_ARB"    category="VEHICLE" axisType="HALF"/>
 		<action name="vcaINCHING"   category="VEHICLE" axisType="HALF"/>
 		<action name="vcaKEEPSPEED" category="VEHICLE" axisType="HALF"/>
+		<action name="vcaKEEPSPEED2" category="VEHICLE" axisType="HALF"/>
 		<action name="vcaSWAPSPEED" category="VEHICLE" axisType="HALF"/>
 		<action name="vcaGearUp"    category="VEHICLE" axisType="HALF"/>
 		<action name="vcaGearDown"  category="VEHICLE" axisType="HALF"/>
@@ -141,6 +152,9 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 		</actionBinding>	
 		<actionBinding action="vcaKEEPSPEED">
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_delete"/>
+		</actionBinding>	
+		<actionBinding action="vcaKEEPSPEED2">
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_delete"/>
 		</actionBinding>	
 		<actionBinding action="vcaSWAPSPEED">
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_4"/>

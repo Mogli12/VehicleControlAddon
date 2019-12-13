@@ -562,6 +562,7 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
 																"vcaNO_ARB",
 																"vcaINCHING",
 																"vcaKEEPSPEED",
+																"vcaKEEPSPEED2",
 																"vcaSWAPSPEED",
                                 "vcaSNAP",
                                 "vcaSNAPRESET",
@@ -607,7 +608,7 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
 					or  actionName == "vcaClutch"		
 					or  actionName == "vcaHandMode"		
 					or  actionName == "vcaHandRpm" then 	
-				addThis = self.vcaTransmission ~= nil and self.vcaTransmission > 0
+				addThis = self.vcaIsLoaded and self:vcaGetTransmissionActive()
 			end 
 			
 			if      addThis 
@@ -780,6 +781,14 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 			isPressed = not isPressed
 		end 
 		if isPressed then 
+			self:vcaSetState( "vcaKeepSpeed", self.lastSpeed * 3600 )
+			self:vcaSetState( "vcaKSIsOn", true )
+		else 
+			self:vcaSetState( "vcaKSIsOn", false )
+		end 
+	elseif actionName == "vcaKEEPSPEED2" then 
+		self:vcaSetState( "vcaKSToggle", not self.vcaKSToggle )
+		if self.vcaKSToggle then 
 			self:vcaSetState( "vcaKeepSpeed", self.lastSpeed * 3600 )
 			self:vcaSetState( "vcaKSIsOn", true )
 		else 
@@ -1062,9 +1071,7 @@ end
 function vehicleControlAddon:vcaGetAutoHold()
 	local motor = self:getMotor()
 	if 			self.vcaIsLoaded
-			and self:vcaIsVehicleControlledByPlayer()
-			and self.vcaTransmission ~= nil 
-			and self.vcaTransmission >= 1 
+			and self:vcaGetTransmissionActive()
 			and motor ~= nil 
 			and motor.vcaAutoStop then 
 		return true 
@@ -1097,12 +1104,12 @@ function vehicleControlAddon:onPreUpdate(dt, isActiveForInput, isActiveForInputI
 		end 
 	end 
 
-	if self.vcaTransmission ~= nil and self.vcaTransmission > 0 and vehicleControlAddon.origLoadFunc == nil then 
+	if self:vcaGetTransmissionActive() and vehicleControlAddon.origLoadFunc == nil then 
 		local m = g_soundManager.modifierTypeNameToIndex.MOTOR_LOAD
 		vehicleControlAddon.origLoadFunc = g_soundManager.modifierTypeIndexToDesc[m].func 
 		g_soundManager.modifierTypeIndexToDesc[m].func = function( self )
 			local l = vehicleControlAddon.origLoadFunc( self )
-			if self.vcaTransmission ~= nil and self.vcaTransmission > 0 and self.isServer and self.vcaActualLoadS ~= nil then
+			if self.vcaIsLoaded and self:vcaGetTransmissionActive() then
 				if     l <= 0 then 
 					l = 0
 				elseif l <= 0.1 then 
@@ -1129,6 +1136,28 @@ function vehicleControlAddon:onPreUpdate(dt, isActiveForInput, isActiveForInputI
 			return l 
 		end 
 	end 
+	
+	if vehicleControlAddon.origCruiseFunc == nil 
+			and ( self.vcaKSIsOn or self:vcaGetTransmissionActive() ) then 
+		local m = g_soundManager.modifierTypeNameToIndex.CRUISECONTROL
+		vehicleControlAddon.origCruiseFunc = g_soundManager.modifierTypeIndexToDesc[m].func 
+		g_soundManager.modifierTypeIndexToDesc[m].func = function( self )
+			local c = vehicleControlAddon.origCruiseFunc( self )
+			if self.vcaIsLoaded then 
+				if c < 0.01 and self.vcaKSIsOn then 
+					return 1 
+				end 
+				if self:vcaGetTransmissionActive() and self.spec_motorized.smoothedLoadPercentage < 0.1 then 
+					c = 0 
+				end 
+				if self:vcaGetNeutral() then 
+					c = 1
+				end 
+			end 
+			return c 
+		end 
+	end 
+	
 --******************************************************************************************************************************************
 
 	self.vcaUpdateGearDone = false 
@@ -1140,6 +1169,12 @@ function vehicleControlAddon:onPreUpdate(dt, isActiveForInput, isActiveForInputI
 			and self:getIsActiveForInput(true, true)
 			and self:getIsVehicleControlledByPlayer()
 			and math.abs( self.spec_drivable.lastInputValues.axisSteer ) > 0.15 then 
+		self:vcaSetState( "vcaSnapIsOn", false )
+	end 
+	
+	if      self.spec_globalPositioningSystem ~= nil
+			and self.vcaSnapIsOn
+			and self.spec_globalPositioningSystem.guidanceSteeringIsActive then
 		self:vcaSetState( "vcaSnapIsOn", false )
 	end 
 	
@@ -1161,6 +1196,10 @@ function vehicleControlAddon:onPreUpdate(dt, isActiveForInput, isActiveForInputI
 	if      self.isClient
 			and self.getIsEntered  ~= nil and self:getIsEntered()
 			and self.spec_drivable ~= nil
+			and not ( FS19_TrailerAssist ~= nil 
+						and FS19_TrailerAssist.trailerAssist ~= nil
+						and type( FS19_TrailerAssist.trailerAssist.isActive ) == "function"
+						and FS19_TrailerAssist.trailerAssist.isActive( self ) )
       and self:getIsActiveForInput(true, true)
       and self:getIsVehicleControlledByPlayer() then 
 			
@@ -1267,7 +1306,7 @@ function vehicleControlAddon:onPreUpdate(dt, isActiveForInput, isActiveForInputI
 end
 
 function vehicleControlAddon:onAIEnd()
-	if self:getIsMotorStarted() and self.vcaTransmission ~= nil and self.vcaTransmission >= 1 then 
+	if self:getIsMotorStarted() and self:vcaGetTransmissionActive() then 
 		local motor = self:getMotor()
 		if motor ~= nil then 
 			motor.vcaAutoStop = true 
@@ -1897,7 +1936,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 			and self.spec_motorized.motorSamples ~= nil
 			and self:getIsMotorStarted() then 
 		local m = g_soundManager.modifierTypeNameToIndex.MOTOR_RPM
-		if self.vcaTransmission ~= nil and self.vcaTransmission > 0 and VCAGlobals.modifyPitch then 
+		if self:vcaGetTransmissionActive() and VCAGlobals.modifyPitch then 
 			if not ( self.vcaModifiedSound ) then 
 				local function getPitch( v )
 					return ( self.spec_motorized.motor.minRpm + v * ( self.spec_motorized.motor.maxRpm - self.spec_motorized.motor.minRpm ) ) / self.spec_motorized.motor.maxRpm
@@ -2151,25 +2190,28 @@ function vehicleControlAddon:onDraw()
 				renderText(x, y, l2, text)
 				y = y + l * 1.2	
 			end 
+			
+			local showCompass = ( self.spec_globalPositioningSystem == nil )
 
 			if not self:getIsVehicleControlledByPlayer() then 
+			elseif self.spec_globalPositioningSystem ~= nil and self.spec_globalPositioningSystem.guidanceSteeringIsActive then
 			elseif self.aiveAutoSteer or not ( -4 <= self.vcaLastSnapAngle and self.vcaLastSnapAngle <= 4 ) then 
-				renderText(x, y, l, string.format( "%4.1f°", math.deg( math.pi - d )))
-				y = y + l * 1.2	
-			else
-				if self.vcaSnapIsOn then 
-					setTextColor(0, 1, 0, 0.5) 
-					if self.vcaSnapDistance >= 0.25 then 
-						renderText(x, y, l, string.format( "%4.1f° / %4.1fm", math.deg( math.pi - curSnapAngle ), self.vcaSnapDistance))
-					else 
-						renderText(x, y, l, string.format( "%4.1f° / %4.1f°", math.deg( math.pi - curSnapAngle ), math.deg( math.pi - d )))
-					end 
+				if showCompass then 
+					renderText(x, y, l, string.format( "%4.1f°", math.deg( math.pi - d )))
 					y = y + l * 1.2	
-					setTextColor(1, 1, 1, 1) 
+				end 
+			elseif self.vcaSnapIsOn then 
+				setTextColor(0, 1, 0, 0.5) 
+				if self.vcaSnapDistance >= 0.25 then 
+					renderText(x, y, l, string.format( "%4.1f° / %4.1fm", math.deg( math.pi - curSnapAngle ), self.vcaSnapDistance))
 				else
 					renderText(x, y, l, string.format( "%4.1f° / %4.1f°", math.deg( math.pi - curSnapAngle ), math.deg( math.pi - d )))
-					y = y + l * 1.2	
-				end
+				end 
+				y = y + l * 1.2	
+				setTextColor(1, 1, 1, 1) 
+			else
+				renderText(x, y, l, string.format( "%4.1f° / %4.1f°", math.deg( math.pi - curSnapAngle ), math.deg( math.pi - d )))
+				y = y + l * 1.2	
 			end
 			
 			if self.vcaKSIsOn and self.spec_drivable.cruiseControl.state == 0 then 
@@ -2333,8 +2375,7 @@ function vehicleControlAddon:newUpdateSpeedGauge( superFunc, dt )
 			 and self.vehicle.spec_motorized.motor.minRpm ~= nil
 			 and self.vehicle.spec_motorized.motor.maxRpm ~= nil
 			 and self.vehicle.spec_motorized.motor.maxRpm > self.vehicle.spec_motorized.motor.minRpm
-			 and self.vehicle.vcaTransmission ~= nil
-			 and self.vehicle.vcaTransmission >= 1 ) then 		
+			 and self.vehicle:vcaGetTransmissionActive() ) then 		
 		return superFunc( self, dt )
 	end 
 
@@ -2406,12 +2447,19 @@ function vehicleControlAddon:newDrivableGetAcDecelerationAxis( superFunc )
 	end 
 	return superFunc( self )
 end 
+function vehicleControlAddon:newDrivableGetCruiseControlAxis( superFunc )
+	if self ~= nil and self.vcaIsLoaded and self.vcaKSIsOn then 
+		return 1
+	end 
+	return superFunc( self )
+end 
 
 SpeedMeterDisplay.updateSpeedGauge = Utils.overwrittenFunction( SpeedMeterDisplay.updateSpeedGauge, vehicleControlAddon.newUpdateSpeedGauge )
 Drivable.getDrivingDirection       = Utils.overwrittenFunction( Drivable.getDrivingDirection,       vehicleControlAddon.newDrivableGetDrivingDirection )
 Drivable.getAccelerationAxis       = Utils.overwrittenFunction( Drivable.getAccelerationAxis,       vehicleControlAddon.newDrivableGetAccelerationAxis )
 Drivable.getDecelerationAxis       = Utils.overwrittenFunction( Drivable.getDecelerationAxis,       vehicleControlAddon.newDrivableGetDecelerationAxis )
 Drivable.getAcDecelerationAxis     = Utils.overwrittenFunction( Drivable.getAcDecelerationAxis,     vehicleControlAddon.newDrivableGetAcDecelerationAxis )
+Drivable.getCruiseControlAxis      = Utils.overwrittenFunction( Drivable.getCruiseControlAxis,      vehicleControlAddon.newDrivableGetCruiseControlAxis )
 --******************************************************************************************************************************************
 
 
@@ -3031,8 +3079,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		end 
 	end 
 	
-	if not ( self.vehicle:vcaGetTransmissionActive()
-			and ( ( self.vehicle.vcaTransmission ~= nil and self.vehicle.vcaTransmission > 0 ) or self.vehicle:vcaGetNeutral() ) ) then 
+	if not ( self.vehicle:vcaGetTransmissionActive() or self.vehicle:vcaGetNeutral() ) then 
 		if self.vehicle.vcaClutchDisp ~= nil and self.vehicle.vcaClutchDisp ~= 0 then 
 			self.vehicle.vcaClutchDisp = 0
 		end 
@@ -4098,7 +4145,7 @@ function vehicleControlAddon:vcaGetMaxClutchTorque( superFunc, ... )
 	if not ( self.vehicle ~= nil and self.vehicle.vcaIsLoaded ) then 
 		return superFunc( self, ... )
 	end 
-	if not ( self.vehicle.vcaTransmission ~= nil and self.vehicle:vcaGetTransmissionActive() and self.vehicle.vcaTransmission > 0 ) then 
+	if not ( self.vehicle.vcaIsLoaded and self.vehicle:vcaGetTransmissionActive() ) then 
 		return superFunc( self, ... )
 	end 
 	if self.vehicle:vcaGetNeutral() or self.gearChangeTimer > 0 or self.vehicle.vcaClutchDisp >= 1 then 
@@ -4248,8 +4295,7 @@ function vehicleControlAddon:vcaMotorGetRotInertia( superFunc )
 			and VCAGlobals.rotInertiaFactor  ~= 1
 			and self.vehicle                 ~= nil
 			and self.vehicle.vcaIsLoaded 
-			and self.vehicle.vcaTransmission ~= nil
-			and self.vehicle.vcaTransmission >= 1 
+			and self.vehicle:vcaGetTransmissionActive()
 			and self.vehicle:getIsMotorStarted()
 			and self.vehicle:vcaIsVehicleControlledByPlayer()
 			then 
@@ -4344,7 +4390,7 @@ end
 
 function vehicleControlAddon:vcaOnSetNeutral( old, new, noEventSend )
 	self.vcaNeutral = new 
-	if self.isServer and self.vcaTransmission ~= nil and self.vcaTransmission > 0 and not ( new ) and old and self.getMotor ~= nil then 
+	if self.isServer and self.vcaIsLoaded and self:vcaGetTransmissionActive() and not ( new ) and old and self.getMotor ~= nil then 
 		motor = self:getMotor() 
 		if motor ~= nil then 
 			motor.vcaAutoStop = false 

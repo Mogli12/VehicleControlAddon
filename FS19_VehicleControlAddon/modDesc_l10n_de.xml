@@ -67,6 +67,7 @@
 		<text name="input_vcaNO_ARB"    text="VCA: Kein zurück Lenken"/>
 		<text name="input_vcaINCHING"   text="VCA: Langsamer"/>
 		<text name="input_vcaKEEPSPEED" text="VCA: Geschwindigkeit halten"/>
+		<text name="input_vcaKEEPSPEED2" text="VCA: Geschwindigkeit permanent halten"/>
 		<text name="input_vcaSWAPSPEED" text="VCA: Tempomatgeschindigkeit wechseln"/>
 		<text name="input_vcaGearUp"    text="VCA: Gang hoch"/>
 		<text name="input_vcaGearDown"  text="VCA: Gang runter"/>

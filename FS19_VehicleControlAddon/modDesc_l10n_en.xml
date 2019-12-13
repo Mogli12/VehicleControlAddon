@@ -66,6 +66,7 @@
 		<text name="input_vcaNO_ARB"    text="VCA: no auto rotate back"/>
 		<text name="input_vcaINCHING"   text="VCA: inching"/>
 		<text name="input_vcaKEEPSPEED" text="VCA: keep speed"/>
+		<text name="input_vcaKEEPSPEED2" text="VCA: permanent keep speed"/>
 		<text name="input_vcaSWAPSPEED" text="VCA: swap speed"/>
 		<text name="input_vcaGearUp"    text="VCA: gear up"/>
 		<text name="input_vcaGearDown"  text="VCA: gear down"/>
