@@ -207,7 +207,6 @@ end
 
 function vehicleControlAddonTransmissionBase:gearUp()
 	vehicleControlAddon.debugPrint(tostring(self.name)..", gearUp: "..tostring(self.vehicle.vcaGear)..", "..tostring(self.numberOfGears))
-	self.vehicle:vcaSetState("vcaShifterIndex", 0)
 	if self.vehicle.vcaGear < self.numberOfGears then 
 		if self:getChangeTimeGears() > 100 then 
 			if not ( self.vehicle.vcaAutoClutch or self.vehicle.vcaNeutral ) and self.vehicle.vcaClutchPercent < 1 then 
@@ -224,7 +223,6 @@ function vehicleControlAddonTransmissionBase:gearUp()
 end 
 
 function vehicleControlAddonTransmissionBase:gearDown()
-	self.vehicle:vcaSetState("vcaShifterIndex", 0)
 	if self.vehicle.vcaGear > 1 then 
 		if self:getChangeTimeGears() > 100 then 
 			if not ( self.vehicle.vcaAutoClutch or self.vehicle.vcaNeutral ) and self.vehicle.vcaClutchPercent < 1 then 
@@ -243,7 +241,7 @@ function vehicleControlAddonTransmissionBase:rangeSpeedMatching( noSpeedMatching
 	if      self.vehicle ~= nil 
 			and not ( self.vehicle.vcaNeutral )
 			and self.speedMatching
-			and self.vehicle.vcaShifterIndex <= 0
+			and not self.vehicle.vcaShifterUsed
 			and self.rangeGearFromTo[self.vehicle.vcaRange] ~= nil 
 			and not ( noSpeedMatching ) then 
 		return true 
@@ -470,106 +468,113 @@ end
 function vehicleControlAddonTransmissionBase:actionCallback( actionName, keyStatus )
 	vehicleControlAddon.debugPrint(tostring(self.name)..": "..actionName)
 	if     actionName == "vcaGearUp"   then
+		self.vehicle:vcaSetState("vcaShifterUsed", false)
 		self:gearUp()
 	elseif actionName == "vcaGearDown" then
+		self.vehicle:vcaSetState("vcaShifterUsed", false)
 		self:gearDown()
 	elseif actionName == "vcaRangeUp"  then
+		self.vehicle:vcaSetState("vcaShifterUsed", false)
 		self:rangeUp()
 	elseif actionName == "vcaRangeDown"then
+		self.vehicle:vcaSetState("vcaShifterUsed", false)
 		self:rangeDown()
-	elseif self.vehicle.vcaG27Mode == vehicleControlAddon.g27Mode4RR
-			or self.vehicle.vcaG27Mode == vehicleControlAddon.g27Mode4RS
-			or self.vehicle.vcaG27Mode == vehicleControlAddon.g27Mode4RD then 
-		if     actionName == "vcaShifter1" then
-			self:gearShifter( 1, keyStatus >= 0.5 )
-		elseif actionName == "vcaShifter2" then
-			self:gearShifter( 2, keyStatus >= 0.5 )
-		elseif actionName == "vcaShifter3" then
-			self:gearShifter( 3, keyStatus >= 0.5 )
-		elseif actionName == "vcaShifter4" then
-			self:gearShifter( 4, keyStatus >= 0.5 )
-		elseif actionName == "vcaShifter7" then
-			self:gearShifter( 5, keyStatus >= 0.5 )
-		elseif actionName == "vcaShifter8" then
-			self:gearShifter( 6, keyStatus >= 0.5 )
-		elseif keyStatus < 0.5 then 
-		-- nothing
-		elseif actionName == "vcaShifter5" then
-			self:rangeUp( true )
-		elseif actionName == "vcaShifter6" then
-			self:rangeDown( true )
-		end 
-	elseif self.vehicle.vcaG27Mode == vehicleControlAddon.g27Mode6RR
-			or self.vehicle.vcaG27Mode == vehicleControlAddon.g27Mode6RS then 
-		if     actionName == "vcaShifter1" then
-			self:gearShifter( 1, keyStatus >= 0.5 )
-		elseif actionName == "vcaShifter2" then
-			self:gearShifter( 2, keyStatus >= 0.5 )
-		elseif actionName == "vcaShifter3" then
-			self:gearShifter( 3, keyStatus >= 0.5 )
-		elseif actionName == "vcaShifter4" then
-			self:gearShifter( 4, keyStatus >= 0.5 )
-		elseif actionName == "vcaShifter5" then
-			self:gearShifter( 5, keyStatus >= 0.5 )
-		elseif actionName == "vcaShifter6" then
-			self:gearShifter( 6, keyStatus >= 0.5 )
-		elseif actionName == "vcaShifter9" then
-			self:gearShifter( 7, keyStatus >= 0.5 )
-		elseif keyStatus < 0.5 then 
-		-- nothing
-		elseif actionName == "vcaShifter7" then
-			self:rangeUp( true )
-		elseif actionName == "vcaShifter8" then
-			self:rangeDown( true )
-		end 
-	elseif self.vehicle.vcaG27Mode == vehicleControlAddon.g27ModeSGR then 
-		if     keyStatus < 0.5 then 
-		-- nothing
-			if actionName == "vcaShifter1" or actionName == "vcaShifter2" then
-				self.vehicle:vcaSetState( "vcaNeutral", true )
-			end 
-		elseif actionName == "vcaShifter1" then
-			self.vehicle:vcaSetState( "vcaNeutral", false )
-			self.vehicle:vcaSetState( "vcaShuttleFwd", true )
-		elseif actionName == "vcaShifter2" then
-			self.vehicle:vcaSetState( "vcaNeutral", false )
-			self.vehicle:vcaSetState( "vcaShuttleFwd", false )
-		elseif actionName == "vcaShifter3" then
-			self:gearUp()
-		elseif actionName == "vcaShifter4" then
-			self:gearDown()
-		elseif actionName == "vcaShifter5" then
-			self:rangeUp( true )
-		elseif actionName == "vcaShifter6" then
-			self:rangeDown( true )
-		elseif actionName == "vcaShifter7" then
-			self.vehicle:vcaSetState( "vcaNeutral", not self.vehicle.vcaNeutral )
-		end 
 	else
-		if     actionName == "vcaShifter1" then
-			self:gearShifter( 1, keyStatus >= 0.5 )
-		elseif actionName == "vcaShifter2" then
-			self:gearShifter( 2, keyStatus >= 0.5 )
-		elseif actionName == "vcaShifter3" then
-			self:gearShifter( 3, keyStatus >= 0.5 )
-		elseif actionName == "vcaShifter4" then
-			self:gearShifter( 4, keyStatus >= 0.5 )
-		elseif actionName == "vcaShifter5" then
-			self:gearShifter( 5, keyStatus >= 0.5 )
-		elseif actionName == "vcaShifter6" then
-			self:gearShifter( 6, keyStatus >= 0.5 )
-		elseif actionName == "vcaShifter7" then 
-			self:gearShifter( 7, keyStatus >= 0.5 )
-		elseif actionName == "vcaShifter8" then 
-			self:gearShifter( 8, keyStatus >= 0.5 )
-		elseif actionName == "vcaShifter9" then 
-			self:gearShifter( 9, keyStatus >= 0.5 )
-		elseif keyStatus < 0.5 then 
-		-- nothing
-		elseif actionName == "vcaShifterLH" and self.vehicle.vcaShifterIndex > 0 then 
-			self.vehicle:vcaSetState( "vcaShifterLH", not self.vehicle.vcaShifterLH )
-			if not self.vehicle.vcaNeutral then 
-				self:gearShifter( self.vehicle.vcaShifterIndex, keyStatus >= 0.5 )
+		self.vehicle:vcaSetState("vcaShifterUsed", true)
+		if     self.vehicle.vcaG27Mode == vehicleControlAddon.g27Mode4RR
+				or self.vehicle.vcaG27Mode == vehicleControlAddon.g27Mode4RS
+				or self.vehicle.vcaG27Mode == vehicleControlAddon.g27Mode4RD then 
+			if     actionName == "vcaShifter1" then
+				self:gearShifter( 1, keyStatus >= 0.5 )
+			elseif actionName == "vcaShifter2" then
+				self:gearShifter( 2, keyStatus >= 0.5 )
+			elseif actionName == "vcaShifter3" then
+				self:gearShifter( 3, keyStatus >= 0.5 )
+			elseif actionName == "vcaShifter4" then
+				self:gearShifter( 4, keyStatus >= 0.5 )
+			elseif actionName == "vcaShifter7" then
+				self:gearShifter( 5, keyStatus >= 0.5 )
+			elseif actionName == "vcaShifter8" then
+				self:gearShifter( 6, keyStatus >= 0.5 )
+			elseif keyStatus < 0.5 then 
+			-- nothing
+			elseif actionName == "vcaShifter5" then
+				self:rangeUp( true )
+			elseif actionName == "vcaShifter6" then
+				self:rangeDown( true )
+			end 
+		elseif self.vehicle.vcaG27Mode == vehicleControlAddon.g27Mode6RR
+				or self.vehicle.vcaG27Mode == vehicleControlAddon.g27Mode6RS then 
+			if     actionName == "vcaShifter1" then
+				self:gearShifter( 1, keyStatus >= 0.5 )
+			elseif actionName == "vcaShifter2" then
+				self:gearShifter( 2, keyStatus >= 0.5 )
+			elseif actionName == "vcaShifter3" then
+				self:gearShifter( 3, keyStatus >= 0.5 )
+			elseif actionName == "vcaShifter4" then
+				self:gearShifter( 4, keyStatus >= 0.5 )
+			elseif actionName == "vcaShifter5" then
+				self:gearShifter( 5, keyStatus >= 0.5 )
+			elseif actionName == "vcaShifter6" then
+				self:gearShifter( 6, keyStatus >= 0.5 )
+			elseif actionName == "vcaShifter9" then
+				self:gearShifter( 7, keyStatus >= 0.5 )
+			elseif keyStatus < 0.5 then 
+			-- nothing
+			elseif actionName == "vcaShifter7" then
+				self:rangeUp( true )
+			elseif actionName == "vcaShifter8" then
+				self:rangeDown( true )
+			end 
+		elseif self.vehicle.vcaG27Mode == vehicleControlAddon.g27ModeSGR then 
+			if     keyStatus < 0.5 then 
+			-- nothing
+				if actionName == "vcaShifter1" or actionName == "vcaShifter2" then
+					self.vehicle:vcaSetState( "vcaNeutral", true )
+				end 
+			elseif actionName == "vcaShifter1" then
+				self.vehicle:vcaSetState( "vcaNeutral", false )
+				self.vehicle:vcaSetState( "vcaShuttleFwd", true )
+			elseif actionName == "vcaShifter2" then
+				self.vehicle:vcaSetState( "vcaNeutral", false )
+				self.vehicle:vcaSetState( "vcaShuttleFwd", false )
+			elseif actionName == "vcaShifter3" then
+				self:gearUp()
+			elseif actionName == "vcaShifter4" then
+				self:gearDown()
+			elseif actionName == "vcaShifter5" then
+				self:rangeUp( true )
+			elseif actionName == "vcaShifter6" then
+				self:rangeDown( true )
+			elseif actionName == "vcaShifter7" then
+				self.vehicle:vcaSetState( "vcaNeutral", not self.vehicle.vcaNeutral )
+			end 
+		else
+			if     actionName == "vcaShifter1" then
+				self:gearShifter( 1, keyStatus >= 0.5 )
+			elseif actionName == "vcaShifter2" then
+				self:gearShifter( 2, keyStatus >= 0.5 )
+			elseif actionName == "vcaShifter3" then
+				self:gearShifter( 3, keyStatus >= 0.5 )
+			elseif actionName == "vcaShifter4" then
+				self:gearShifter( 4, keyStatus >= 0.5 )
+			elseif actionName == "vcaShifter5" then
+				self:gearShifter( 5, keyStatus >= 0.5 )
+			elseif actionName == "vcaShifter6" then
+				self:gearShifter( 6, keyStatus >= 0.5 )
+			elseif actionName == "vcaShifter7" then 
+				self:gearShifter( 7, keyStatus >= 0.5 )
+			elseif actionName == "vcaShifter8" then 
+				self:gearShifter( 8, keyStatus >= 0.5 )
+			elseif actionName == "vcaShifter9" then 
+				self:gearShifter( 9, keyStatus >= 0.5 )
+			elseif keyStatus < 0.5 then 
+			-- nothing
+			elseif actionName == "vcaShifterLH" and self.vehicle.vcaShifterIndex > 0 then 
+				self.vehicle:vcaSetState( "vcaShifterLH", not self.vehicle.vcaShifterLH )
+				if not self.vehicle.vcaNeutral then 
+					self:gearShifter( self.vehicle.vcaShifterIndex, keyStatus >= 0.5 )
+				end 
 			end 
 		end 
 	end 

@@ -335,6 +335,7 @@ function vehicleControlAddon:onLoad(savegame)
 	vehicleControlAddon.registerState( self, "vcaNeutral",      false, vehicleControlAddon.vcaOnSetNeutral )
 	vehicleControlAddon.registerState( self, "vcaAutoShift",    true) --, vehicleControlAddon.vcaOnSetAutoShift )
 	vehicleControlAddon.registerState( self, "vcaShifterIndex", 0 )
+	vehicleControlAddon.registerState( self, "vcaShifterUsed",  false )
 	vehicleControlAddon.registerState( self, "vcaShifterLH",    true )
 	vehicleControlAddon.registerState( self, "vcaLimitSpeed",   true )
 	vehicleControlAddon.registerState( self, "vcaLaunchGear",   VCAGlobals.launchGear )
@@ -864,10 +865,11 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 		self:vcaSetState( "vcaSnapIsOn", not self.vcaSnapIsOn )
 		self:vcaSetSnapFactor()
  	elseif actionName == "vcaNeutral" then
-		if self.vcaNeutral and self.vcaShifterIndex > 0 then 
-			self:vcaSetState( "vcaShifterIndex", 0 )
+		if self.vcaNeutral and self.vcaShifterUsed then 
+			self:vcaSetState( "vcaShifterUsed", false )
+		else 
+			self:vcaSetState( "vcaNeutral", not self.vcaNeutral )
 		end 
-		self:vcaSetState( "vcaNeutral", not self.vcaNeutral )
 	elseif actionName == "vcaSETTINGS" then
 		vehicleControlAddon.vcaShowSettingsUI( self )
 	elseif actionName == "vcaHandMode" then 
@@ -969,7 +971,7 @@ function vehicleControlAddon:onLeaveVehicle()
 		self.vcaNewRotCursorKey  = nil
 		self.vcaPrevRotCursorKey = nil
 		self:vcaSetState( "vcaSnapIsOn", false )
-		self:vcaSetState( "vcaShifterIndex", 0 )
+		self:vcaSetState( "vcaShifterUsed", false )
 		self:vcaSetState( "vcaInchingIsOn", false )
 		self:vcaSetState( "vcaKSIsOn", self.vcaKSToggle )
 		self:vcaSetState( "vcaIsEnteredMP", false )
@@ -1145,12 +1147,15 @@ function vehicleControlAddon:onPreUpdate(dt, isActiveForInput, isActiveForInputI
 			local c = vehicleControlAddon.origCruiseFunc( self )
 			if self.vcaIsLoaded then 
 				if c < 0.01 and self.vcaKSIsOn then 
-					return 1 
+				-- no retarder sound with keep speed 
+					c = 1					
 				end 
 				if self:vcaGetTransmissionActive() and self.spec_motorized.smoothedLoadPercentage < 0.1 then 
+				-- retarder sound with very low load 
 					c = 0 
 				end 
 				if self:vcaGetNeutral() then 
+				-- no retarder sound if clutch is fully pressed 
 					c = 1
 				end 
 			end 
@@ -2014,6 +2019,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 	                   "vcaNeutral",     
 	                   "vcaAutoShift",   
 	                   "vcaShifterIndex",
+	                   "vcaShifterUsed",
 	                   "vcaShifterLH",   
 	                   "vcaLimitSpeed",  
 	                   "vcaLaunchGear",  
@@ -2067,13 +2073,20 @@ function vehicleControlAddon:onDraw()
 		-- no output 
 		elseif not self:vcaGetShuttleCtrl() then 
 		-- no shuttle control
-			if self.vcaShifterIndex > 0 then 
+			if self.vcaShifterUsed then 
 			-- not in (G27) gear
 			elseif self:vcaGetAutoHold() then 
 				renderOverlay( vehicleControlAddon.ovAutoHold, x-0.5*w, y-0.5*h, w, h )
 			elseif self.vcaNeutral then 
 				renderOverlay( vehicleControlAddon.ovHandBrake, x-0.5*w, y-0.5*h, w, h )
 			end 
+		elseif not self:vcaGetTransmissionActive() then 
+		-- normal shuttle control
+			if self.vcaShuttleFwd then
+				renderOverlay( vehicleControlAddon.ovArrowUpWhite, x-0.5*w, y-0.5*h, w, h )
+			else 
+				renderOverlay( vehicleControlAddon.ovArrowDownWhite, x-0.5*w, y-0.5*h, w, h )
+			end 			
 		elseif self:vcaGetAutoHold() then 
 		-- auto hold 
 			if self.vcaShuttleFwd then
@@ -2082,7 +2095,7 @@ function vehicleControlAddon:onDraw()
 				renderOverlay( vehicleControlAddon.ovAutoHoldDown, x-0.5*w, y-0.5*h, w, h )
 			end 
 		elseif self:vcaGetNeutral() then 
-			if self.vcaShifterIndex > 0 then 
+			if self.vcaShifterUsed then 
 			-- not in (G27) gear
 			elseif self.vcaNeutral then 
 			-- neutral / park break
@@ -2099,7 +2112,7 @@ function vehicleControlAddon:onDraw()
 					renderOverlay( vehicleControlAddon.ovArrowDownGray, x-0.5*w, y-0.5*h, w, h )
 				end 
 			end 
-		elseif self.vcaShifter7isR1 and self.vcaShifterIndex > 0 then
+		elseif self.vcaShifter7isR1 and self.vcaShifterUsed then
 		-- G27 
 			if self.vcaShuttleFwd then
 				renderOverlay( vehicleControlAddon.ovArrowUpGray, x-0.5*w, y-0.5*h, w, h )
@@ -2142,7 +2155,7 @@ function vehicleControlAddon:onDraw()
 					maxSpeed = 3.6 * ratio * self.vcaMaxSpeed
 					text = self.vcaGearbox:getGearText( self.vcaGear, self.vcaRange )	
 					
-					if self.vcaShifterIndex > 0 then 
+					if self.vcaShifterUsed then 
 						local rev = 0
 						if     self.vcaG27Mode == vehicleControlAddon.g27Mode6R then 
 							rev = 7
@@ -2846,11 +2859,11 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 				acceleration = 0				
 			end 
 			if self:vcaGetNeutral() then 
+				if self.vcaNeutral and not self.vcaShifterUsed then 
+					doHandbrake = true 
+				end 
 				if acceleration > -0.05 then 
 					acceleration = 0 
-				end 
-				if self.vcaNeutral and self.vcaShifterIndex <= 0 then 
-					doHandbrake = true 
 				end 
 			end 
 			if      self.spec_motorized.motor.vcaDirTimer ~= nil then 
@@ -2934,7 +2947,10 @@ WheelsUtil.updateWheelsPhysics = Utils.overwrittenFunction( WheelsUtil.updateWhe
 function vehicleControlAddon:vcaGetSmoothedAcceleratorAndBrakePedals( superFunc, acceleratorPedal, brakePedal, dt )
 	if      self.vcaIsLoaded
 			and self:vcaIsVehicleControlledByPlayer()
-			and self.vcaBrakePedal ~= nil then 
+			and self.vcaBrakePedal ~= nil
+			and ( math.abs( acceleratorPedal ) >= 0.001 
+			   or self:vcaGetNeutral() 
+				 or self.vcaBrakePedal >= 0.001 ) then 
 		return acceleratorPedal, self.vcaBrakePedal
 	end 
 	
@@ -3779,13 +3795,13 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 					self.vehicle:vcaSetState("vcaLaunchGear",gear)
 				end 
 			elseif  gear > launchGear
-					and self.vehicle.vcaShifterIndex <= 0 then 
+					and not self.vehicle.vcaShifterUsed then 
 				local gearlist = transmission:getAutoShiftIndeces( gear, launchGear, true, false )
 				if #gearlist > 0 then
 					newGear = gearlist[1]
 				end 
 			end 
-		elseif self.vehicle:vcaGetAutoShift() and self.gearChangeTimer <= 0 and not self.vehicle:vcaGetNeutral() and self.vehicle.vcaShifterIndex <= 0 then
+		elseif self.vehicle:vcaGetAutoShift() and self.gearChangeTimer <= 0 and not self.vehicle:vcaGetNeutral() and not self.vehicle.vcaShifterUsed then
 			local m1 = self.minRpm * 1.1
 			local m4 = math.min( math.max( self.vehicle.vcaRatedRpm, motorPtoRpm ), 
 													 self.vcaMaxPowerRpmH - self.maxRpm * 0.1 * math.max( 0, self.vcaAccS ),
@@ -4045,10 +4061,6 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 				self.vcaMaxRpm      = self.maxRpm + clutchFactor * ( self.vcaClutchRpm - self.maxRpm )
 				self.maxGearRatio   = math.max( self.minGearRatio, math.min( 100000, self.minGearRatio / math.max( 1 - clutchFactor, 0.00001 ) ) )
 				
-				-- let the engine rev up first
-				if clutchFactor > 0.9 and motorRpm < 0.9 * self.vcaClutchRpm then 
-					self.vehicle.vcaClutchDisp = 1
-				end 
 				-- emergency mode
 				if clutchFactor > 0.5 and motorRpm < 0.8 * self.minRpm then 
 					self.vcaFakeRpm   = vehicleControlAddon.mbClamp( 0.8 * self.minRpm,  
@@ -4155,6 +4167,14 @@ function vehicleControlAddon:vcaGetMaxClutchTorque( superFunc, ... )
 	local c = 1
 	if self.vehicle:vcaGetNoIVT() then 
 		c = 1 - self.vehicle.vcaClutchDisp
+		if 0 < c and c < 0.1 then 
+			-- let the engine rev up first
+			local t = Utils.getNoNil( self.vcaClutchRpm, 1.11 * self.minRpm )
+			local r = self.motorRotSpeed * vehicleControlAddon.factor30pi
+			if ( c < 0.05 and r < 0.9 * t ) or ( c < 0.1 and r < self.minRpm ) then 
+				c = 0
+			end 
+		end 
 	end 
 	
 	return math.min( self:getPeakTorque() * 0.75 * ( 1 - math.cos( math.pi * c ) ), superFunc( self, ... ) )
