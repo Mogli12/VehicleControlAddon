@@ -2068,20 +2068,26 @@ function vehicleControlAddon:onDraw()
 		setTextColor(1, 1, 1, 1) 
 		setTextBold(false)
 
-		if     vehicleControlAddon.ovArrowUpWhite == nil
-				or not self:vcaGetTransmissionActive() then 
+		if     vehicleControlAddon.ovArrowUpWhite == nil then 
+		-- no output 
+		elseif self.vcaNeutral and not self.vcaShifterUsed then 
+		-- handbrake
+			if not self:vcaGetShuttleCtrl() then 
+				renderOverlay( vehicleControlAddon.ovHandBrake, x-0.5*w, y-0.5*h, w, h )
+			elseif self.vcaShuttleFwd then
+				renderOverlay( vehicleControlAddon.ovHandBrakeUp, x-0.5*w, y-0.5*h, w, h )
+			else 
+				renderOverlay( vehicleControlAddon.ovHandBrakeDown, x-0.5*w, y-0.5*h, w, h )
+			end 
+		elseif not self:vcaGetTransmissionActive() and not self:vcaGetShuttleCtrl() then 
 		-- no output 
 		elseif not self:vcaGetShuttleCtrl() then 
 		-- no shuttle control
-			if self.vcaShifterUsed then 
-			-- not in (G27) gear
-			elseif self:vcaGetAutoHold() then 
+			if     self:vcaGetAutoHold() then 
 				renderOverlay( vehicleControlAddon.ovAutoHold, x-0.5*w, y-0.5*h, w, h )
-			elseif self.vcaNeutral then 
-				renderOverlay( vehicleControlAddon.ovHandBrake, x-0.5*w, y-0.5*h, w, h )
 			end 
-		elseif not self:vcaGetTransmissionActive() then 
-		-- normal shuttle control
+		elseif not self:vcaGetTransmissionActive() then 		
+		-- transmission off and shuttle control
 			if self.vcaShuttleFwd then
 				renderOverlay( vehicleControlAddon.ovArrowUpWhite, x-0.5*w, y-0.5*h, w, h )
 			else 
@@ -2097,13 +2103,6 @@ function vehicleControlAddon:onDraw()
 		elseif self:vcaGetNeutral() then 
 			if self.vcaShifterUsed then 
 			-- not in (G27) gear
-			elseif self.vcaNeutral then 
-			-- neutral / park break
-				if self.vcaShuttleFwd then
-					renderOverlay( vehicleControlAddon.ovHandBrakeUp, x-0.5*w, y-0.5*h, w, h )
-				else 
-					renderOverlay( vehicleControlAddon.ovHandBrakeDown, x-0.5*w, y-0.5*h, w, h )
-				end 
 			else
 			-- neutral / park break
 				if self.vcaShuttleFwd then
@@ -2111,13 +2110,6 @@ function vehicleControlAddon:onDraw()
 				else 
 					renderOverlay( vehicleControlAddon.ovArrowDownGray, x-0.5*w, y-0.5*h, w, h )
 				end 
-			end 
-		elseif self.vcaShifter7isR1 and self.vcaShifterUsed then
-		-- G27 
-			if self.vcaShuttleFwd then
-				renderOverlay( vehicleControlAddon.ovArrowUpGray, x-0.5*w, y-0.5*h, w, h )
-			else 
-				renderOverlay( vehicleControlAddon.ovArrowDownGray, x-0.5*w, y-0.5*h, w, h )
 			end 
 		else 
 		-- normal shuttle control
@@ -2948,10 +2940,11 @@ function vehicleControlAddon:vcaGetSmoothedAcceleratorAndBrakePedals( superFunc,
 	if      self.vcaIsLoaded
 			and self:vcaIsVehicleControlledByPlayer()
 			and self.vcaBrakePedal ~= nil
-			and ( math.abs( acceleratorPedal ) >= 0.001 
+			-- limit for automaticBrake is 0.001; take 0.003 to be on the safe side 
+			and ( math.abs( acceleratorPedal ) >= 0.003
 			   or self:vcaGetNeutral() 
-				 or self.vcaBrakePedal >= 0.001 ) then 
-		return acceleratorPedal, self.vcaBrakePedal
+				 or self.vcaBrakePedal >= 0.003 ) then 
+		brakePedal = self.vcaBrakePedal
 	end 
 	
 	return superFunc( self, acceleratorPedal, brakePedal, dt )
