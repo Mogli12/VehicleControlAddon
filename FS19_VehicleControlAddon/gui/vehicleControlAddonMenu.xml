@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<GUI onOpen="onOpen" onClose="onClose" onCreate="onCreate">
+	<GuiElement type="empty" profile="newLayer" />
+
+	<GuiElement type="bitmap" profile="vcaDialogBg" id="dialogBackground">
+		<GuiElement type="bitmap" profile="vcaMenuHeader" id="header">
+			<GuiElement type="multiTextOption" profile="vcaHeaderSelector" onClick="onClickPageSelection" id="pageSelector" soundDisabled="true">
+				<GuiElement type="button" profile="vcaPagingButtonLeft" id="pagingButtonLeft" />
+				<GuiElement type="button" profile="vcaPagingButtonRight" id="pagingButtonRight" />
+			</GuiElement>
+
+			<GuiElement type="list" profile="vcaPagingTabList" id="pagingTabList" handleFocus="false">
+				<!-- Page tab template element, will be cloned for each known page: -->
+				<GuiElement type="listItem" id="pagingTabTemplate" profile="vcaMenuPageTab" position="0px 0px" handleFocus="false">
+					<GuiElement type="button" name="tabButton" profile="vcaTabButton" handleFocus="false" />
+				</GuiElement>
+			</GuiElement>
+		</GuiElement>
+
+		<!-- Body - Central -->
+		<GuiElement type="bitmap" profile="uiElementContainerFullScreenSpanning" size="1280px 608px">
+			<GuiElement type="paging" profile="uiInGameMenuPaging" size="1280px 608px" position="0px 0px" onPageChange="onPageChange" onPageUpdate="onPageUpdate" id="pagingElement">
+				<GuiElement type="frameReference" ref="vcaFrame1" name="vcaFrame1" id="vcaFrame1" />
+				<GuiElement type="frameReference" ref="vcaFrame2" name="vcaFrame2" id="vcaFrame2" />
+				<GuiElement type="frameReference" ref="vcaFrame3" name="vcaFrame3" id="vcaFrame3" />
+				<GuiElement type="frameReference" ref="vcaFrame4" name="vcaFrame4" id="vcaFrame4" />
+			</GuiElement>
+		</GuiElement>
+	</GuiElement>
+
+	<GuiElement type="flowLayout" profile="buttonBoxDocked" screenAlign="bottomLeft" size="1280px 100px" positionOrigin="bottomLeft" id="buttonsPanel">
+		<GuiElement type="button" profile="buttonBack" onClick="onClickBack" id="menuButton[1]" />
+		<GuiElement type="button" profile="buttonBack" onClick="onClickBack" id="menuButton[2]" />
+		<GuiElement type="button" profile="buttonBack" onClick="onClickBack" id="menuButton[3]" />
+		<GuiElement type="button" profile="buttonBack" onClick="onClickBack" id="menuButton[4]" />
+	</GuiElement>
+</GUI>

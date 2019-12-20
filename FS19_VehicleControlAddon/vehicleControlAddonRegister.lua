@@ -1,8 +1,24 @@
-vehicleControlAddon_Register = {};
-vehicleControlAddon_Register.g_currentModDirectory = g_currentModDirectory
-vehicleControlAddon_Register.specName = "zzzVehicleControlAddon"
 
-function vehicleControlAddon_Register:beforeFinalizeVehicleTypes()
+local directory = g_currentModDirectory
+local modName = g_currentModName
+local specName = "zzzVehicleControlAddon"
+
+vehicleControlAddonRegister = {}
+
+local vehicleControlAddonRegister_mt = Class(vehicleControlAddonRegister)
+
+function vehicleControlAddonRegister:new( i18n )
+	self = {}
+	setmetatable(self, vehicleControlAddonRegister_mt)
+	self.vcaDirectory = directory
+	self.vcaModName = modName 
+	self.vcaSpecName = specName
+	self.i18n = i18n
+
+	return self 
+end 
+
+function vehicleControlAddonRegister:beforeFinalizeVehicleTypes()
 
 	if vehicleControlAddon == nil then 
 		print("Failed to add specialization vehicleControlAddon")
@@ -29,33 +45,39 @@ function vehicleControlAddon_Register:beforeFinalizeVehicleTypes()
 						hasWheels = true 
 					elseif name == "attachable" then 
 						isAttachable = true 
-					elseif name == vehicleControlAddon_Register.specName then 
+					elseif name == specName then 
 						hasNotVCA = false 
 					end 
 				end 
 				if hasNotVCA and isDrivable and isEnterable and hasMotor and hasLights and hasWheels and not isAttachable then 
 					print("  adding vehicleControlAddon to vehicleType '"..tostring(k).."'")
-					typeDef.specializationsByName[vehicleControlAddon_Register.specName] = vehicleControlAddon
-					table.insert(typeDef.specializationNames, vehicleControlAddon_Register.specName)
+					typeDef.specializationsByName[specName] = vehicleControlAddon
+					table.insert(typeDef.specializationNames, specName)
 					table.insert(typeDef.specializations, vehicleControlAddon)	
 				end 
 			end 
 		end 	
 	end 
 end 
-VehicleTypeManager.finalizeVehicleTypes = Utils.prependedFunction(VehicleTypeManager.finalizeVehicleTypes, vehicleControlAddon_Register.beforeFinalizeVehicleTypes)
 
-function vehicleControlAddon_Register:loadMap(name)
-	print("--- loading "..g_i18n:getText("vcaVERSION").." by mogli ---")
-
-	g_i18n.texts["vcaVERSION"] = g_i18n:getText("vcaVERSION")
-
-	vehicleControlAddon_Register.mogliTexts = {}
-	for n,t in pairs( g_i18n.texts ) do
-		vehicleControlAddon_Register.mogliTexts[n] = t
-	end
+local function postLoadMissionFinished( mission, node )
+	local state, result = pcall( vehicleControlAddonRegister.postLoadMission, g_vehicleControlAddon, mission )
+	if state then 
+		return result 
+	else 
+		print("Error calling vehicleControlAddonRegister.postLoadMission :"..tostring(result)) 
+	end 
+end 
 	
-	local l10nFilenamePrefixFull = Utils.getFilename("modDesc_l10n", vehicleControlAddon_Register.g_currentModDirectory);
+local vcaGetText
+	
+function vehicleControlAddonRegister:postLoadMission(mission)
+
+	print("--- loading "..self.i18n:getText("vcaVERSION").." by mogli ---")
+
+	self.mogliTexts = {}
+	
+	local l10nFilenamePrefixFull = Utils.getFilename("modDesc_l10n", directory);
 	local langs = {"en", "de", g_languageShort};
 	for _, lang in ipairs(langs) do
 		local l10nFilename = l10nFilenamePrefixFull.."_"..lang..".xml";
@@ -70,35 +92,94 @@ function vehicleControlAddon_Register:loadMap(name)
 				local name = getXMLString(l10nXmlFile, key.."#name");
 				local text = getXMLString(l10nXmlFile, key);
 				if name ~= nil and text ~= nil then
-					vehicleControlAddon_Register.mogliTexts[name] = text:gsub("\r\n", "\n")
+				--self.mogliTexts[name] = text:gsub("\r\n", "\n")
+					self.i18n:setText( name, text:gsub("\r\n", "\n") )
 				end;
 				textI = textI+1;
 			end;
 			delete(l10nXmlFile);
 		end
 	end 
+	
+	local function handleText( self, xmlFile, key, tag )
+		local value = self[tag]
+		if value == nil then 
+			return 
+		end 
+		local orig = getXMLString(xmlFile, key..'#'..tag)
+		local i10n
+		if orig ~= nil and orig:sub(1,6) == "$l10n_" then			
+			i10n = g_i18n:getText(orig:sub(7))
+		end 				
+	--print( tostring(self.id)..' #'..tostring(tag)..': "'..tostring(value)..'", "'..tostring(orig)..'", "'..tostring(i10n)..'"' )
+		if i10n ~= nil and i10n ~= "" then 
+			self[tag] = i10n
+		end 
+	end 
+		
+	if g_client ~= nil then 
+		local function loadGuiElement( self, xmlFile, key )		
+			handleText( self, xmlFile, key, "toolTipText" )
+		end
+		
+		local function loadTextElement( self, xmlFile, key )		
+			handleText( self, xmlFile, key, "text" )
+		end
+		
+		GuiElement.loadFromXML = Utils.appendedFunction( GuiElement.loadFromXML, loadGuiElement )
+		TextElement.loadFromXML = Utils.appendedFunction( TextElement.loadFromXML, loadTextElement )
+		
+		-- settings screen
+		g_gui:loadProfiles(Utils.getFilename("gui/guiProfiles.xml", self.vcaDirectory))
+
+		g_vehicleControlAddonScreen = vehicleControlAddonScreen:new()
+		g_gui:loadGui(self.vcaDirectory .. "vehicleControlAddonScreen.xml", "vehicleControlAddonScreen", g_vehicleControlAddonScreen)	
+		g_vehicleControlAddonScreen:setTitle( "vcaVERSION" )
+		
+		g_vehicleControlAddonTabbedMenu = VehicleControlAddonMenu:new(g_messageCenter, self.i18n, g_gui.inputManager)
+
+		g_gui:loadGui(Utils.getFilename("gui/vehicleControlAddonFrame1.xml", self.vcaDirectory), "vehicleControlAddonFrame1", VehicleControlAddonFrame1:new(g_vehicleControlAddonTabbedMenu,self.i18n), true)
+		g_gui:loadGui(Utils.getFilename("gui/vehicleControlAddonFrame2.xml", self.vcaDirectory), "vehicleControlAddonFrame2", VehicleControlAddonFrame2:new(g_vehicleControlAddonTabbedMenu,self.i18n), true)
+		g_gui:loadGui(Utils.getFilename("gui/vehicleControlAddonFrame3.xml", self.vcaDirectory), "vehicleControlAddonFrame3", VehicleControlAddonFrame3:new(g_vehicleControlAddonTabbedMenu,self.i18n), true)
+		g_gui:loadGui(Utils.getFilename("gui/vehicleControlAddonFrame4.xml", self.vcaDirectory), "vehicleControlAddonFrame4", VehicleControlAddonFrame4:new(g_vehicleControlAddonTabbedMenu,self.i18n), true)
+		g_gui:loadGui(Utils.getFilename("gui/vehicleControlAddonMenu.xml",   self.vcaDirectory), "vehicleControlAddonMenu", g_vehicleControlAddonTabbedMenu)
+	end 
 end;
 
-function vehicleControlAddon_Register:deleteMap()
+function vehicleControlAddonRegister:deleteMap()
   
 end;
 
-function vehicleControlAddon_Register:keyEvent(unicode, sym, modifier, isDown)
+function vehicleControlAddonRegister:keyEvent(unicode, sym, modifier, isDown)
 
 end;
 
-function vehicleControlAddon_Register:mouseEvent(posX, posY, isDown, isUp, button)
+function vehicleControlAddonRegister:mouseEvent(posX, posY, isDown, isUp, button)
 
 end;
 
-function vehicleControlAddon_Register:update(dt)
+function vehicleControlAddonRegister:update(dt)
 	
 end;
 
-function vehicleControlAddon_Register:draw()
+function vehicleControlAddonRegister:draw()
   
 end;
 
-addModEventListener(vehicleControlAddon_Register);
+local function beforeLoadMission(mission)
+	print("VCA beforeLoadMission")
+	assert( g_vehicleControlAddon == nil )
+	local base = vehicleControlAddonRegister:new( g_i18n )
+	getfenv(0)["g_vehicleControlAddon"] = base
+	addModEventListener(base);
+end 
 
+local function init()
+	print("VCA init")
+  Mission00.load = Utils.prependedFunction(Mission00.load, beforeLoadMission)
+	Mission00.loadMission00Finished = Utils.appendedFunction(Mission00.loadMission00Finished, postLoadMissionFinished)
+	VehicleTypeManager.finalizeVehicleTypes = Utils.prependedFunction(VehicleTypeManager.finalizeVehicleTypes, vehicleControlAddonRegister.beforeFinalizeVehicleTypes)
+end 
+
+init()
 

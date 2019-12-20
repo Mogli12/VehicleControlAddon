@@ -66,6 +66,7 @@
 		<text name="input_vcaSnapRIGHT" text="VCA: Raster rechts"/>
 		<text name="input_vcaNO_ARB"    text="VCA: Kein zurück Lenken"/>
 		<text name="input_vcaINCHING"   text="VCA: Langsamer"/>
+		<text name="input_vcaKEEPROT"   text="VCA: Kamerarichtung global fixieren"/>
 		<text name="input_vcaKEEPSPEED" text="VCA: Geschwindigkeit halten"/>
 		<text name="input_vcaKEEPSPEED2" text="VCA: Geschwindigkeit permanent halten"/>
 		<text name="input_vcaSWAPSPEED" text="VCA: Tempomatgeschindigkeit wechseln"/>
@@ -93,14 +94,28 @@
 
 	<longTexts>
 		<longText name="vca_Help_1">
-<![CDATA[
-Dieses Script variiert abhängig von der gefahrenen Geschwindigkeit die Lenkgeschwindigkeit und dreht die Kamera passend zum Lenkeinschlag und zur Fahrtrichtung. 
+<![CDATA[Dieses Script variiert abhängig von der gefahrenen Geschwindigkeit die Lenkgeschwindigkeit und dreht die Kamera passend zum Lenkeinschlag und zur Fahrtrichtung. 
 
 Mit Umschalt-Llinks wird das Gaspedal, der Tempomat und die maximale Drehzahl auf 75% begrenzt. Mit Umschalt-Rechts und den Pfeiltasten kann man in die entsprechende Richtung blicken. 
 
 Drückt man Strg Links zusammen mit W, dann richtet sich die Fahrtrichtung an festen Richtungen aus.
 
 Alle Funktionen lassen sich auch wieder ausschalten.]]>
+		</longText>
+		<longText name="vca_Help_2">
+<![CDATA[2
+2]]>
+		</longText>
+		<longText name="vca_Help_3">
+<![CDATA[3
+3
+3]]>
+		</longText>
+		<longText name="vca_Help_4">
+<![CDATA[4
+4
+4
+4]]>
 		</longText>
 	</longTexts>
 </l10n>

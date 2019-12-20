@@ -443,7 +443,7 @@ function vehicleControlAddon:onPostLoad(savegame)
 		
 		local nonDefaultTransmission = false   
 		for _,prop in pairs( listOfProperties ) do 
-			local v = prop.getFunc( savegame.xmlFile, savegame.key.."."..vehicleControlAddon_Register.specName.."#"..prop.xmlName )
+			local v = prop.getFunc( savegame.xmlFile, savegame.key.."."..g_vehicleControlAddon.vcaSpecName.."#"..prop.xmlName )
 			vehicleControlAddon.debugPrint(tostring(prop.xmlName)..": "..tostring(v))
 			if v ~= nil then 
 				if prop.propName ~= "vcaGear" or prop.propName ~= "vcaRange" or nonDefaultTransmission then 
@@ -457,7 +457,7 @@ function vehicleControlAddon:onPostLoad(savegame)
 				
 		local u = 0 
 		while true do 
-			local key  = string.format( "%s.%s.users(%d)", savegame.key, vehicleControlAddon_Register.specName, u )
+			local key  = string.format( "%s.%s.users(%d)", savegame.key, g_vehicleControlAddon.vcaSpecName, u )
 			u = u + 1 
 			local name = getXMLString(xmlFile, key.."#user")
 			if name == nil then 
@@ -562,6 +562,7 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
                                 "vcaREVERSE",
 																"vcaNO_ARB",
 																"vcaINCHING",
+																"vcaKEEPROT",
 																"vcaKEEPSPEED",
 																"vcaKEEPSPEED2",
 																"vcaSWAPSPEED",
@@ -618,6 +619,7 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
 						or  actionName == "vcaDOWN"
 						or  actionName == "vcaLEFT"
 						or  actionName == "vcaRIGHT"
+						or  actionName == "vcaKEEPROT"
 						or  actionName == "vcaSWAPSPEED" ) then 
 				-- above actions are still active for hired worker
 				local pBool1, pBool2, pBool3, pBool4 = false, true, false, true 
@@ -626,6 +628,7 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
 						or actionName == "vcaLEFT"
 						or actionName == "vcaRIGHT" 
 						or actionName == "vcaINCHING"
+						or actionName == "vcaKEEPROT"
 						or actionName == "vcaKEEPSPEED"
 						or actionName == "vcaShifter1"
 						or actionName == "vcaShifter2"
@@ -699,6 +702,9 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 		else 
 			self.vcaCloseClutchNonAnalog = true 
 		end 
+		
+	elseif actionName == "vcaKEEPROT" then 
+		self.vcaKeepCamRot = ( keyStatus >= 0.5 )
 			
 	elseif actionName == "vcaUP"
 			or actionName == "vcaDOWN"
@@ -907,7 +913,7 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 		end 
 		
 		self:vcaSetState( "vcaHandthrottle", h )
-		self:vcaSetState( "vcaWarningText", Utils.getNoNil( vehicleControlAddon_Register.mogliTexts.vcaHANDTHROTTLE, "" )..": ".. t )
+		self:vcaSetState( "vcaWarningText", Utils.getNoNil( g_vehicleControlAddon.mogliTexts.vcaHANDTHROTTLE, "" )..": ".. t )
 	elseif actionName == "vcaHandRpm" then 
 		local h = 0
 		if self.vcaHandthrottle ~= nil and self.vcaHandthrottle > 0 then 
@@ -924,14 +930,14 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 		
 		self:vcaSetState( "vcaHandthrottle", vehicleControlAddon.mbClamp( h, 0, 1 ) )
 		if h <= 0 then 
-			self:vcaSetState( "vcaWarningText", Utils.getNoNil( vehicleControlAddon_Register.mogliTexts.vcaHANDTHROTTLE, "" )..": off" )
+			self:vcaSetState( "vcaWarningText", Utils.getNoNil( g_vehicleControlAddon.mogliTexts.vcaHANDTHROTTLE, "" )..": off" )
 			self.vcaHandthrottle2 = nil 
 		elseif  self.spec_motorized ~= nil 
 				and self.spec_motorized.motor ~= nil 
 				and self.spec_motorized.motor.maxRpm ~= nil 
 				and self.spec_motorized.motor.maxRpm > 0 then 
 			local r = self.spec_motorized.motor.minRpm + h * ( self.spec_motorized.motor.maxRpm - self.spec_motorized.motor.minRpm )
-			self:vcaSetState( "vcaWarningText", string.format("%s: %4.0f U/min", Utils.getNoNil( vehicleControlAddon_Register.mogliTexts.vcaHANDTHROTTLE, "" ), r ) )
+			self:vcaSetState( "vcaWarningText", string.format("%s: %4.0f U/min", Utils.getNoNil( g_vehicleControlAddon.mogliTexts.vcaHANDTHROTTLE, "" ), r ) )
 		end 
 	end
 end
@@ -975,9 +981,10 @@ function vehicleControlAddon:onLeaveVehicle()
 		self:vcaSetState( "vcaInchingIsOn", false )
 		self:vcaSetState( "vcaKSIsOn", self.vcaKSToggle )
 		self:vcaSetState( "vcaIsEnteredMP", false )
+		self.vcaKeepCamRot = false 
 	end 
 
-	self.vcaIsEntered = false 
+	self.vcaIsEntered  = false 
 end 
 
 function vehicleControlAddon:vcaIsVehicleControlledByPlayer()
@@ -1474,8 +1481,10 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 	local newRotCursorKey = self.vcaNewRotCursorKey
 	local i               = self.spec_enterable.camIndex
 	local requestedBack   = nil
-
+	local lastWorldRotation = self.vcaCamRotWorld
+			
 	self.vcaNewRotCursorKey = nil
+	self.vcaCamRotWorld     = nil
 
 	if newRotCursorKey ~= nil then
 		self.spec_enterable.cameras[i].rotY = vehicleControlAddon.normalizeAngle( self.spec_enterable.cameras[i].origRotY + newRotCursorKey )
@@ -1705,6 +1714,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 			self.vcaZeroCamRotY  = camera.rotY
 			self.vcaLastCamRotY  = camera.rotY 
 			self.vcaLastCamFwd   = nil
+			self.vcaCamRotWorld  = nil 
 			
 		elseif  g_gameSettings:getValue("isHeadTrackingEnabled") 
 				and isHeadTrackingAvailable() 
@@ -1753,15 +1763,20 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 			end 
 			
 		elseif rotIsOn 
-				or revIsOn then
+				or revIsOn
+				or self.vcaKeepCamRot
+				or lastWorldRotation ~= nil then 
 
 			local pi2 = math.pi / 2
 			local eps = 1e-6
 			oldRotY = camera.rotY
 			local diff = oldRotY - self.vcaLastCamRotY
 			
-			
-			if newRotCursorKey ~= nil then
+			if     self.vcaKeepCamRot then 
+				self.vcaCamRotWorld = vehicleControlAddon.vcaGetRelativeYRotation(g_currentMission.terrainRootNode,self.spec_wheels.steeringCenterNode)
+			elseif lastWorldRotation ~= nil then 
+			-- reset to old rotation 	
+			elseif newRotCursorKey ~= nil then
 				self.vcaZeroCamRotY = vehicleControlAddon.normalizeAngle( camera.origRotY + newRotCursorKey )
 			elseif rotIsOn then
 				self.vcaZeroCamRotY = self.vcaZeroCamRotY + diff
@@ -1776,7 +1791,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 				isRev = true
 			end
 			
-			if revIsOn then
+			if revIsOn and not ( self.vcaKeepCamRot ) then
 				if     newRotCursorKey ~= nil then
 				-- nothing
 				elseif self.vcaLastCamFwd == nil or self.vcaLastCamFwd ~= self.vcaCamFwd then
@@ -1790,7 +1805,16 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 			
 			local newRotY = self.vcaZeroCamRotY
 			
-			if rotIsOn then
+			if self.vcaKeepCamRot then 
+				if newRotCursorKey ~= nil then
+					newRotY = vehicleControlAddon.normalizeAngle( camera.origRotY + newRotCursorKey )	
+				else 
+					newRotY = camera.rotY 
+				end 
+				if lastWorldRotation ~= nil then 
+					newRotY = vehicleControlAddon.normalizeAngle( newRotY + ( self.vcaCamRotWorld - lastWorldRotation ) )
+				end 
+			elseif rotIsOn then
 				
 				local f = 0
 				if     self.rotatedTime > 0 then
@@ -4496,17 +4520,9 @@ end
 
 
 function vehicleControlAddon:vcaShowSettingsUI()
+
 	if g_gui:getIsGuiVisible() then
 		return 
-	end
-	if g_vehicleControlAddonScreen == nil then
-		-- settings screen
-		g_vehicleControlAddonScreen = vehicleControlAddonScreen:new()
-		for n,t in pairs( vehicleControlAddon_Register.mogliTexts ) do
-			g_vehicleControlAddonScreen.mogliTexts[n] = t
-		end
-		g_gui:loadGui(vehicleControlAddon_Register.g_currentModDirectory .. "vehicleControlAddonScreen.xml", "vehicleControlAddonScreen", g_vehicleControlAddonScreen)	
-		g_vehicleControlAddonScreen:setTitle( "vcaVERSION" )
 	end
 
 	self.vcaUI = {}
@@ -4607,8 +4623,15 @@ function vehicleControlAddon:vcaShowSettingsUI()
 														"4G, R+/-, D/R",
 														"D/R , G+/-, R+/-" }
 	
-	g_vehicleControlAddonScreen:setVehicle( self )
-	g_gui:showGui( "vehicleControlAddonScreen" )
+	
+	if g_vehicleControlAddonTabbedMenu ~= nil then
+		g_gui:showGui( "vehicleControlAddonMenu" )	
+	elseif g_vehicleControlAddonScreen ~= nil then 
+		g_vehicleControlAddonScreen:setVehicle( self )
+		g_gui:showGui( "vehicleControlAddonScreen" )
+		g_vehicleControlAddonScreen:setVehicle()
+	end 
+	self:vcaSetState( "vcaKSIsOn", self.vcaKSToggle )
 end
 
 function vehicleControlAddon:vcaUIGetvcaExponent()
