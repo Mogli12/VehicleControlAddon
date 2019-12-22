@@ -21,9 +21,11 @@
 		<text name="vcaAUTOSHIFT"       text="Automático"/>
 		<text name="vcaLAUNCH"          text="Cambiar Marcha"/>
 		<text name="vcaKEEPSPEED"       text="Mantener Velc. Constante"/>
+		<text name="vcaNO_ARB"          text="Dirección Libre"/>
 		<text name="vcaHANDTHROTTLE"    text="Acelerador de Mano"/>
 		<text name="vcaPITCH"           text="Tono de sonido max. RPM"/>
 		<text name="vcaSETTINGS"        text="Ajustes"/>
+		<text name="vcaDRAWHUD"         text="HUD Transmisión"/>
 		                                
 		<text name="vca_tip_CAMERAI"    text="La cámara interior gira automáticamente acorde al ángulo de giro."/>
 		<text name="vca_tip_CAMERAO"    text="La cámara esterior gira automáticamente acorde al ángulo de giro."/>
@@ -42,8 +44,10 @@
 		<text name="vca_tip_AUTOSHIFT"  text="Cambio automático de marchas y rangos."/>
 		<text name="vca_tip_LAUNCH"     text="Rango de velocidad de la marcha de arranque."/>
 		<text name="vca_tip_KEEPSPEED"  text="Si la Velc. Mantener Constante está habilitada, el pedal de aceleración se comporta como un joystick. Esto es como conducir con control de crucero."/>
+		<text name="vca_tip_NO_ARB"     text="Si la dirección libre está habilitada, el volante no volverá solo al centro."/>
 		<text name="vca_tip_HANDTHROTTLE" text="El motor acelera automáticamente para alcanzar la aceleración de rpm."/>
 		<text name="vca_tip_PITCH"      text="Tono de sonido máximo por RPM"/>
+		<text name="vca_tip_DRAWHUD"    text="Muestra u oculta el HUD de la transmisión."/>
 		                               
 		<text name="input_vcaSETTINGS"  text="VCA: Ajustes"/>
 		<text name="input_vcaUP"        text="VCA: Alternar dirección de vista/bloquear hacia delante."/>
@@ -61,7 +65,9 @@
 		<text name="input_vcaSnapRIGHT" text="VCA: Mover Guías hacia der."/>
 		<text name="input_vcaNO_ARB"    text="VCA: No auto-rotar hacia atrás."/>
 		<text name="input_vcaINCHING"   text="VCA: Avance lento."/>
+		<text name="input_vcaKEEPROT"   text="VCA: Mantener la dirección global de la cámara"/>
 		<text name="input_vcaKEEPSPEED" text="VCA: Mantener Velc."/>
+		<text name="input_vcaKEEPSPEED2" text="VCA: Velocidad fijada permanente."/>
 		<text name="input_vcaSWAPSPEED" text="VCA: Cambiar Velc."/>
 		<text name="input_vcaGearUp"    text="VCA: Subir Marcha"/>
 		<text name="input_vcaGearDown"  text="VCA: Bajar Marcha"/>
@@ -75,8 +81,14 @@
 		<text name="input_vcaShifter4"  text="VCA: G27/G29 Marcha 4"/>
 		<text name="input_vcaShifter5"  text="VCA: G27/G29 Marcha 5 / Rango Bajar"/>
 		<text name="input_vcaShifter6"  text="VCA: G27/G29 Marcha 6 / Rango Subir"/>
-		<text name="input_vcaShifter7"  text="VCA: G27/G29 Marcha Atrás"/>
+		<text name="input_vcaShifter7"  text="VCA: G27/G29 Marcha 7 / Marcha Atrás"/>
+		<text name="input_vcaShifter8"  text="VCA: G27/G29 Marcha 8"/>
+		<text name="input_vcaShifter9"  text="VCA: G27/G29 Marcha 9 / Marcha Atrás"/>
 		<text name="input_vcaShifterLH" text="VCA: G27/G29 Marcha splitter"/>
+		<text name="input_vcaHandRpm"   text="VCA: RPM del acelerador de mano"/>
+		<text name="input_vcaHandRpm_1" text="VCA: Más acelerador de mano"/>
+		<text name="input_vcaHandRpm_2" text="VCA: Menos acelerador de mano"/>
+		<text name="input_vcaHandMode"  text="VCA: Modo acelerador de mano"/>
 	</texts>
 
 	<longTexts>
