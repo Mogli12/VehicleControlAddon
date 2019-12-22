@@ -73,7 +73,9 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="input_vcaSnapRIGHT" text="VCA: Przesuń w prawo"/>
 		<text name="input_vcaNO_ARB"    text="VCA: Wył. centrowanie kół"/>
 		<text name="input_vcaINCHING"   text="VCA: Kontroler tempomatu"/>
+		<text name="input_vcaKEEPROT"   text="VCA: Utrzmywanie globalnego kierunku kamery"/>
 		<text name="input_vcaKEEPSPEED" text="VCA: Utrzymywanie prędkości"/>
+		<text name="input_vcaKEEPSPEED2" text="VCA: Permanentne utrzymanie prędkości"/>
 		<text name="input_vcaSWAPSPEED" text="VCA: Wyrównanie prędkości"/>
 		<text name="input_vcaGearUp"    text="VCA: Bieg w górę"/>
 		<text name="input_vcaGearDown"  text="VCA: Bieg w dół"/>
