@@ -39,12 +39,12 @@ function VehicleControlAddonMenu:onGuiSetupFinished()
 
 	self.clickBackCallback = self:makeSelfCallback(self.onButtonBack) -- store to be able to apply it always when assigning menu button info
 
-	if g_screenWidth >= 2560 and g_screenHeight >= 1080 then
-		self.dialogBackground:applyProfile("vcaDialogBgWide")
-		self.header:applyProfile("vcaMenuHeaderWide")
-		self.pageSelector:applyProfile("vcaHeaderSelectorWide")
-		self.pagingTabList:applyProfile("vcaPagingTabListWide")
-	end
+--if g_screenWidth >= 2560 and g_screenHeight >= 1080 then
+--	self.dialogBackground:applyProfile("vcaDialogBgWide")
+--	self.header:applyProfile("vcaMenuHeaderWide")
+--	self.pageSelector:applyProfile("vcaHeaderSelectorWide")
+--	self.pagingTabList:applyProfile("vcaPagingTabListWide")
+--end
 
 	local alwaysVisiblePredicate = function() return true end
 
