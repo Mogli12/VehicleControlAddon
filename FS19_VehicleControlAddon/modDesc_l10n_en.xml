@@ -21,7 +21,7 @@
 		<text name="vcaAUTOSHIFT"       text="Automatic"/>
 		<text name="vcaLAUNCH"          text="Launch Gear"/>
 		<text name="vcaKEEPSPEED"       text="Permanent keep speed"/>
-		<text name="vcaNO_ARB"          text="Free steeering"/>
+		<text name="vcaNO_ARB"          text="Free steering"/>
 		<text name="vcaHANDTHROTTLE"    text="Hand throttle"/>
 		<text name="vcaPITCH"           text="Sound pitch at max. RPM"/>
 		<text name="vcaSETTINGS"        text="Settings"/>
