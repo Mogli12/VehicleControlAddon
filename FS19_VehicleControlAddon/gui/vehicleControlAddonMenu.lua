@@ -60,10 +60,17 @@ function VehicleControlAddonMenu:onGuiSetupFinished()
 	end 
 end
 
-function VehicleControlAddonMenu:onOpen()
-	VehicleControlAddonMenu:superClass().onOpen(self)
+function VehicleControlAddonMenu:onMenuOpened()
+	VehicleControlAddonMenu:superClass().onMenuOpened(self)
 
-	self.inputDisableTime = 200
+	self.vcaInputEnabled = true  
+end
+
+
+function VehicleControlAddonMenu:onClose()
+	VehicleControlAddonMenu:superClass().onClose(self)
+
+	self.vcaInputEnabled = false 
 end
 
 --- Define default properties and retrieval collections for menu buttons.
@@ -72,5 +79,7 @@ function VehicleControlAddonMenu:setupMenuButtonInfo()
 	self.defaultMenuButtonInfoByActions[InputAction.MENU_BACK] = self.defaultMenuButtonInfo[1]
 	self.defaultButtonActionCallbacks = { [InputAction.MENU_BACK] = self.clickBackCallback }
 end
+
+
 
 

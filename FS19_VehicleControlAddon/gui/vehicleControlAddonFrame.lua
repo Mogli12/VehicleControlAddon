@@ -12,6 +12,7 @@ function VehicleControlAddonFrame:new(menu, controls, target, customMt)
 	self.menu = menu 
 	self.controls = controls
 	self.vcaElements = {}
+	self.vcaIsDirty = true 
 	allControls = {}
 	for name,id in pairs(VehicleControlAddonFrame.CONTROLS) do 
 		allControls[name] = id 
@@ -34,29 +35,43 @@ function VehicleControlAddonFrame:copyAttributes(src)
 end
 function VehicleControlAddonFrame:update(dt)
 	VehicleControlAddonFrame:superClass().update(self, dt)
-	
-	if g_currentMission.controlledVehicle ~= nil and g_currentMission.controlledVehicle.vcaIsLoaded then
-		local vehicle = g_currentMission.controlledVehicle
-		
-		for name,s in pairs( self.vcaElements ) do
-			if s.parameter == "callback" then
-				local getter = vehicleControlAddon["vcaUIDraw"..name]
-				local texts  = getter( vehicle )
-				s.element:setTexts(texts)
-			end
-		end
-	end
+
+	self:vcaSetValues()
+	self:vcaGetValues()
 end
 
 function VehicleControlAddonFrame:onFrameOpen()
 	VehicleControlAddonFrame:superClass().onFrameOpen(self)
+
+	self:vcaGetValues( true ) 
+end 
+
+
+function VehicleControlAddonFrame:onFrameClose()
+	VehicleControlAddonFrame:superClass().onFrameClose(self)
+
+--print("VCA frame close @"..tostring(g_currentMission.time))
+
+	self:vcaSetValues( true )
+end	
+	
+function VehicleControlAddonFrame:vcaGetValues( force )
+	if not ( force or self.vcaIsDirty ) then 
+		return 
+	end 
+	
+--print("VCA frame get values @"..tostring(g_currentMission.time))
 	
 	if g_currentMission.controlledVehicle ~= nil and g_currentMission.controlledVehicle.vcaUI ~= nil then 
 		local vehicle = g_currentMission.controlledVehicle
 		
 		for name,s in pairs( self.vcaElements ) do
 
-			if s.parameter == "list" or s.parameter == "list0" then
+			if     s.parameter == "callback" then
+				local getter = vehicleControlAddon["vcaUIDraw"..name]
+				local texts  = getter( vehicle )
+				s.element:setTexts(texts)
+			elseif s.parameter == "list" or s.parameter == "list0" then
 				if type( vehicle.vcaUI[name] ) == "table" then
 					s.element:setTexts(vehicle.vcaUI[name])
 				else
@@ -66,11 +81,8 @@ function VehicleControlAddonFrame:onFrameOpen()
 
 			local element = s.element
 			
-			local getter = nil					
-			local debugPrint = false
-			
+			local getter = nil							
 			if     type( vehicleControlAddon["vcaUIGet"..name] ) == "function" then
-				if debugPrint then print( "vcaUIGet"..name ) end
 				getter = vehicleControlAddon["vcaUIGet"..name]
 			else
 				getter = function( vehicle ) return vehicleControlAddon.mbGetState( vehicle, name ) end
@@ -108,12 +120,20 @@ function VehicleControlAddonFrame:onFrameOpen()
 			end
 		end
 	end 
+
+	self.vcaIsDirty = false 
 end
 
-function VehicleControlAddonFrame:onFrameClose()
+function VehicleControlAddonFrame:vcaSetValues( force )
+	if self.menu == nil then 
+		print("VCA Frame: no menu")
+		return 
+	end 
+	if not ( self.menu.vcaInputEnabled ) then 
+	--print("VCA Frame not yet input enabled")
+		return 
+	end 
 
-	VehicleControlAddonFrame:superClass().onFrameClose(self)
-	
 	if g_currentMission.controlledVehicle ~= nil and g_currentMission.controlledVehicle.vcaIsLoaded then 
 		local vehicle = g_currentMission.controlledVehicle
 		
@@ -121,12 +141,35 @@ function VehicleControlAddonFrame:onFrameClose()
 		
 			local element = s.element
 			
-			local setter = nil
+			local getter
+			if     force then 
+				-- no dirty flag 
+				getter = nil 
+			elseif type( vehicleControlAddon["vcaUIGet"..name] ) == "function" then
+				getter = vehicleControlAddon["vcaUIGet"..name]
+			else
+				getter = function( vehicle ) return vehicleControlAddon.mbGetState( vehicle, name ) end
+			end		
+
+			local setter
 			if     type( vehicleControlAddon["vcaUISet"..name] ) == "function" then
 				setter = vehicleControlAddon["vcaUISet"..name]
 			else
 				setter = function( vehicle, value ) vehicleControlAddon.mbSetState( vehicle, name, value ) end
 			end
+			
+			-- dirty flag 
+			if getter ~= nil and setter ~= nil then 
+				local realSetter = setter 
+				setter = function( vehicle, value ) 
+					local v = getter( vehicle ) 
+					if v == nil or value ~= v then 
+					--print("VCA is dirty: "..tostring(name).." @"..tostring(g_currentMission.time))
+						self.vcaIsDirty = true 
+						realSetter( vehicle, value )
+					end 
+				end 
+			end 
 			
 			if     setter == nil then
 				print("Invalid UI element ID: "..tostring(name))
