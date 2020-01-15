@@ -10,7 +10,7 @@ VehicleControlAddonMenu.TAB_UV = {
 	ENVIRONMENT = {65, 144, 65, 65},
 	PLAYER      = {454, 209, 65, 65},
 	FIELD       = {432, 96, 48, 48},
-	VEHICLES    = {130, 144, 65, 65}
+	VEHICLES    = {130, 144, 65, 65},
 }
 
 VehicleControlAddonMenu.CONTROLS = {
@@ -18,14 +18,18 @@ VehicleControlAddonMenu.CONTROLS = {
 	FRAME1 = "vcaFrame1",
 	FRAME2 = "vcaFrame2",
 	FRAME3 = "vcaFrame3",
-	FRAME4 = "vcaFrame4"
+	FRAME4 = "vcaFrame4",
 }
 
 VehicleControlAddonMenu.FRAMES = {
 	{ name = "vcaFrame1", iconUVs = VehicleControlAddonMenu.TAB_UV.SETTINGS },
 	{ name = "vcaFrame2", iconUVs = VehicleControlAddonMenu.TAB_UV.VEHICLES },
 	{ name = "vcaFrame3", iconUVs = VehicleControlAddonMenu.TAB_UV.GENERAL },
-	{ name = "vcaFrame4", iconUVs = VehicleControlAddonMenu.TAB_UV.PLAYER }
+	{ name = "vcaFrame4", iconUVs = VehicleControlAddonMenu.TAB_UV.PLAYER },
+}
+
+VehicleControlAddonMenu.L10N_SYMBOL = {
+    BUTTON_BACK = "button_back",
 }
 
 function VehicleControlAddonMenu:new(messageCenter, i18n, inputManager)
@@ -37,14 +41,7 @@ end
 function VehicleControlAddonMenu:onGuiSetupFinished()
 	VehicleControlAddonMenu:superClass().onGuiSetupFinished(self)
 
-	self.clickBackCallback = self:makeSelfCallback(self.onButtonBack) -- store to be able to apply it always when assigning menu button info
-
---if g_screenWidth >= 2560 and g_screenHeight >= 1080 then
---	self.dialogBackground:applyProfile("vcaDialogBgWide")
---	self.header:applyProfile("vcaMenuHeaderWide")
---	self.pageSelector:applyProfile("vcaHeaderSelectorWide")
---	self.pagingTabList:applyProfile("vcaPagingTabListWide")
---end
+	self.clickBackCallback = self:makeSelfCallback(self.onButtonBack)
 
 	local alwaysVisiblePredicate = function() return true end
 
@@ -73,10 +70,16 @@ function VehicleControlAddonMenu:onClose()
 	self.vcaInputEnabled = false 
 end
 
---- Define default properties and retrieval collections for menu buttons.
 function VehicleControlAddonMenu:setupMenuButtonInfo()
-	self.defaultMenuButtonInfo = {{ inputAction = InputAction.MENU_BACK, text = "BACK", callback = self.clickBackCallback }}
+	VehicleControlAddonMenu:superClass().setupMenuButtonInfo(self)
+
+	self.defaultMenuButtonInfo = {{ inputAction = InputAction.MENU_BACK,
+																	text        = self.l10n:getText(VehicleControlAddonMenu.L10N_SYMBOL.BUTTON_BACK),
+																	callback    = self.clickBackCallback },
+															 }
+
 	self.defaultMenuButtonInfoByActions[InputAction.MENU_BACK] = self.defaultMenuButtonInfo[1]
+
 	self.defaultButtonActionCallbacks = { [InputAction.MENU_BACK] = self.clickBackCallback }
 end
 

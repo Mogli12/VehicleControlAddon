@@ -20,8 +20,12 @@
 		<text name="vcaLIMSPEED"        text="Snelheidsbeperking"/>
 		<text name="vcaAUTOSHIFT"       text="Automaat"/>
 		<text name="vcaLAUNCH"          text="Wegrij Versnelling"/>
-		<text name="vcaKEEPSPEED"       text="Permanente snelheid"/>	
-		<text name="vcaSETTINGS"        text="VCA: Instellingen"/>
+		<text name="vcaKEEPSPEED"       text="Permanente snelheid"/>
+		<text name="vcaNO_ARB"          text="Vrij sturen"/>
+		<text name="vcaHANDTHROTTLE"    text="Handgas"/>
+		<text name="vcaPITCH"           text="Toonhoogte op max. RPM"/>		
+		<text name="vcaSETTINGS"        text="Instellingen"/>
+		<text name="vcaDRAWHUD"         text="Transmissie HUD"/>
 		                               
 		<text name="vca_tip_CAMERAI"    text="De camera binnen draait automatisch met de stuuruitslag"/>
 		<text name="vca_tip_CAMERAO"    text="De camera buiten draait automatisch met de stuuruitslag"/>		
@@ -40,6 +44,10 @@
 		<text name="vca_tip_AUTOSHIFT"  text="Automatisch schakelen van versnellingen en bereik"/>
 		<text name="vca_tip_LAUNCH"     text="Nominale snelheid van de wegrijversnelling"/>
 		<text name="vca_tip_KEEPSPEED"  text="Wanneer permanente snelheid is geactiveerd dan gedraagd het gaspedaal zich als een joystick. Dit is als rijden met cruise control."/>
+		<text name="vca_tip_NO_ARB"     text="Als vrij sturen is ingeschakeld, draait het stuur niet automatisch terug"/>
+		<text name="vca_tip_HANDTHROTTLE" text="De motor accelereert automatisch om het toerental van het handgas te bereiken"/>
+		<text name="vca_tip_PITCH"      text="Toonhoogte op maximaal RPM"/>
+		<text name="vca_tip_DRAWHUD"    text="Transmissie HUD tonen of verbergen"/>
 		
 		<text name="input_vcaSETTINGS"  text="VCA: instellingen"/>
 		<text name="input_vcaUP"        text="VCA: Kijk vooruit"/>
@@ -51,9 +59,15 @@
 		<text name="input_vcaREVERSE"   text="VCA: Rij achteruit"/>
 		<text name="input_vcaSNAP"      text="VCA: Rasterrijrichting"/>
 		<text name="input_vcaSNAPRESET" text="VCA: Reset rasterrijrichting"/>
+		<text name="input_vcaSnapUP"    text="VCA: Draai de rasterrijrichting naar links"/>
+		<text name="input_vcaSnapDOWN"  text="VCA: Draai de rasterrijrichting naar rechts"/>
+		<text name="input_vcaSnapLEFT"  text="VCA: Richting naar links"/>
+		<text name="input_vcaSnapRIGHT" text="VCA: Richting naar rechts"/>
 		<text name="input_vcaNO_ARB"    text="VCA: Niet automatisch terugsturen"/>
 		<text name="input_vcaINCHING"   text="VCA: inching"/>
+		<text name="input_vcaKEEPROT"   text="VCA: Behoud de globale camerarichting"/>
 		<text name="input_vcaKEEPSPEED" text="VCA: Behoud snelheid"/>
+		<text name="input_vcaKEEPSPEED2" text="VCA: Behoud permannente snelheid"/>
 		<text name="input_vcaSWAPSPEED" text="VCA: Wissel snelheid"/>
 		<text name="input_vcaGearUp"    text="VCA: Opschakelen"/>
 		<text name="input_vcaGearDown"  text="VCA: Terugschakelen"/>
@@ -67,8 +81,14 @@
 		<text name="input_vcaShifter4"  text="VCA: G27/G29 versn. 4"/>
 		<text name="input_vcaShifter5"  text="VCA: G27/G29 versn. 5 / Bereik terug"/>
 		<text name="input_vcaShifter6"  text="VCA: G27/G29 versn. 6 / Bereik omhoog"/>
-		<text name="input_vcaShifter7"  text="VCA: G27/G29 Achteruit"/>
+		<text name="input_vcaShifter7"  text="VCA: G27/G29 versn. 7 / Achteruit"/>
+		<text name="input_vcaShifter8"  text="VCA: G27/G29 versn. 8"/>
+		<text name="input_vcaShifter9"  text="VCA: G27/G29 versn. 9 / Achteruit"/>		
 		<text name="input_vcaShifterLH" text="VCA: G27/G29 Versnelling Splitter"/>
+		<text name="input_vcaHandRpm"   text="VCA: Handgas RPM"/>
+		<text name="input_vcaHandRpm_1" text="VCA: Handgas verhogen"/>
+		<text name="input_vcaHandRpm_2" text="VCA: Handgas verlagen"/>
+		<text name="input_vcaHandMode"  text="VCA: Handgas mode"/>
 	</texts>
 
 	<longTexts>
@@ -83,6 +103,4 @@ Linker CTRL toets+W zorgt er voor dat je rijrichting wordt gefixeerd op rasterho
 Alle functies kunnen worden uitgeschakeld.]]>
 		</longText>
 	</longTexts>
-	
-	
 </l10n>
