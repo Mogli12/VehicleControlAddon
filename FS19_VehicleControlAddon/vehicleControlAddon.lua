@@ -972,15 +972,20 @@ end
 
 function vehicleControlAddon:onLeaveVehicle()
 	if self.vcaIsEntered then 
-		self:vcaSetState( "vcaInchingIsOn", false )
 		self:vcaSetState( "vcaNoAutoRotBack", false )
 		self.vcaNewRotCursorKey  = nil
 		self.vcaPrevRotCursorKey = nil
 		self:vcaSetState( "vcaSnapIsOn", false )
-		self:vcaSetState( "vcaShifterUsed", false )
 		self:vcaSetState( "vcaInchingIsOn", false )
 		self:vcaSetState( "vcaKSIsOn", self.vcaKSToggle )
 		self:vcaSetState( "vcaIsEnteredMP", false )
+		self:vcaSetState( "vcaShuttleFwd", true )
+		if self.vcaShifterUsed then 
+			self:vcaSetState( "vcaShifterUsed", false )
+			self:vcaSetState( "vcaNeutral", false )
+		end 
+		self:vcaSetState( "vcaCamFwd", true )
+		self.vcaMovingDir  = 1
 		self.vcaKeepCamRot = false 
 	end 
 
@@ -1022,8 +1027,8 @@ function vehicleControlAddon:vcaGetTransmissionActive()
 	end 
 	if     VCAGlobals.hiredWorker <= 0 then 
 		return false 
-	elseif not self:vcaGetNoIVT()      then 
-		return false 
+--elseif not self:vcaGetNoIVT()      then 
+--	return false 
 	elseif VCAGlobals.hiredWorker >= 2 then 
 		return self:getIsActive() 
 	else 
@@ -1588,7 +1593,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 	--*******************************************************************
 	
 
-	if self:getIsActive() and self.isServer then
+	if self:getIsActive()and self.isServer then
 		if     self.vcaExternalDir > 0 then 
 			self.vcaMovingDir = 1
 		elseif self.vcaExternalDir < 0 then 
@@ -1609,11 +1614,13 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 				
 			local maxDelta    = dt * self.vcaReverseTimer
 			self.vcaMovingDir = self.vcaMovingDir + vehicleControlAddon.mbClamp( movingDirection - self.vcaMovingDir, -maxDelta, maxDelta )
-		else
-			self.vcaMovingDir = Utils.getNoNil( self.nextMovingDirection * self.spec_drivable.reverserDirection )
+		elseif self.nextMovingDirection ~= nil and self.spec_drivable.reverserDirection ~= nil then 
+			self.vcaMovingDir = self.nextMovingDirection * self.spec_drivable.reverserDirection
+		else 
+			self.vcaMovingDir = 0
 		end
 		
-		
+			
 		if     self.vcaMovingDir < -0.5 then
 			self:vcaSetState( "vcaCamFwd", false )
 		elseif self.vcaMovingDir >  0.5 then
@@ -2109,6 +2116,11 @@ function vehicleControlAddon:onDraw()
 		-- no shuttle control
 			if     self:vcaGetAutoHold() then 
 				renderOverlay( vehicleControlAddon.ovAutoHold, x-0.5*w, y-0.5*h, w, h )
+			elseif math.abs( self.lastSpeed * 3600 ) < 0.5 then 
+			elseif self.vcaCamFwd then 
+				renderOverlay( vehicleControlAddon.ovArrowUpGray, x-0.5*w, y-0.5*h, w, h )
+			else 
+				renderOverlay( vehicleControlAddon.ovArrowDownGray, x-0.5*w, y-0.5*h, w, h )
 			end 
 		elseif not self:vcaGetTransmissionActive() then 		
 		-- transmission off and shuttle control
@@ -4754,21 +4766,36 @@ function vehicleControlAddon:vcaUISetvcaPitchExponent( value )
 end 
 
 function vehicleControlAddon:getUIMaxSpeed()
-	if     g_vehicleControlAddonScreen == nil
-			or g_vehicleControlAddonScreen.mogliScreenElements == nil
-			or g_vehicleControlAddonScreen.mogliScreenElements.vcaMaxSpeed == nil
-			or g_vehicleControlAddonScreen.mogliScreenElements.vcaMaxSpeed.element == nil
-			or g_vehicleControlAddonScreen.mogliScreenElements.vcaMaxSpeed.element.getState == nil
+	local vcaMaxSpeedElement = nil 
+	
+	if      g_vehicleControlAddonScreen                                 ~= nil
+			and g_vehicleControlAddonScreen.mogliScreenElements             ~= nil
+			and g_vehicleControlAddonScreen.mogliScreenElements.vcaMaxSpeed ~= nil
 			then
+		vcaMaxSpeedElement = g_vehicleControlAddonScreen.mogliScreenElements.vcaMaxSpeed.element
+	end 
+	if      g_vehicleControlAddonTabbedMenu                                   ~= nil
+			and g_vehicleControlAddonTabbedMenu.vcaFrame3                         ~= nil
+			and g_vehicleControlAddonTabbedMenu.vcaFrame3.vcaElements             ~= nil
+			and g_vehicleControlAddonTabbedMenu.vcaFrame3.vcaElements.vcaMaxSpeed ~= nil
+			then
+		vcaMaxSpeedElement = g_vehicleControlAddonTabbedMenu.vcaFrame3.vcaElements.vcaMaxSpeed.element
+	end 
+	
+	if vcaMaxSpeedElement == nil then 
 		print("getUIMaxSpeed: nil error I")
 		return nil 
 	end 
-	local value = g_vehicleControlAddonScreen.mogliScreenElements.vcaMaxSpeed.element:getState()
+	if type( vcaMaxSpeedElement.getState ) ~= "function" then 
+		print("getUIMaxSpeed: nil error II")
+		return nil 
+	end 
+	local value = vcaMaxSpeedElement:getState()
 	if     self.vcaUI == nil 
 			or self.vcaUI.vcaMaxSpeed_V == nil
 			or value == nil 
 			then 
-		print("getUIMaxSpeed: nil error II")
+		print("getUIMaxSpeed: nil error III")
 		return nil 
 	end 
 --print("getUIMaxSpeed: "..tostring(value)..", "..tostring(self.vcaUI.vcaMaxSpeed_V[value]))
@@ -4872,11 +4899,29 @@ function vehicleControlAddon:vcaUIDrawvcaGearRatioT()
 end
 
 function vehicleControlAddon:vcaUIGetvcaSnapDistance()
-	return tostring( self.vcaSnapDistance )
+	if g_vehicleControlAddonTabbedMenu == nil then 
+		return tostring( self.vcaSnapDistance )
+	else 
+		local d, j
+		for i,e in pairs( self.vcaUI.vcaSnapDistance_V ) do
+			local f = math.abs( e - self.vcaSnapDistance )
+			if d == nil or d > f then 
+				d = f 
+				j = i 
+			end
+		end
+		return j
+	end
 end 
 function vehicleControlAddon:vcaUISetvcaSnapDistance( value )
-	local v = tonumber( value )
-	if type( v ) == "number" and v > 0 then 
-		self:vcaSetState( "vcaSnapDistance", tonumber( value ) )
+	if g_vehicleControlAddonTabbedMenu == nil then 
+		local v = tonumber( value )
+		if type( v ) == "number" and v > 0 then 
+			self:vcaSetState( "vcaSnapDistance", tonumber( value ) )
+		end 
+	else 
+		if self.vcaUI.vcaSnapDistance_V[value] ~= nil then
+			self:vcaSetState( "vcaSnapDistance", self.vcaUI.vcaSnapDistance_V[value] )
+		end
 	end 
 end 
