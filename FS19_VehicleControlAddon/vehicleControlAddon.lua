@@ -4899,7 +4899,7 @@ function vehicleControlAddon:vcaUIDrawvcaGearRatioT()
 end
 
 function vehicleControlAddon:vcaUIGetvcaSnapDistance()
-	if g_vehicleControlAddonTabbedMenu == nil then 
+	if true then -- g_vehicleControlAddonTabbedMenu == nil then 
 		return tostring( self.vcaSnapDistance )
 	else 
 		local d, j
@@ -4914,7 +4914,7 @@ function vehicleControlAddon:vcaUIGetvcaSnapDistance()
 	end
 end 
 function vehicleControlAddon:vcaUISetvcaSnapDistance( value )
-	if g_vehicleControlAddonTabbedMenu == nil then 
+	if true then -- g_vehicleControlAddonTabbedMenu == nil then 
 		local v = tonumber( value )
 		if type( v ) == "number" and v > 0 then 
 			self:vcaSetState( "vcaSnapDistance", tonumber( value ) )

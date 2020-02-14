@@ -780,7 +780,7 @@ vehicleControlAddonTransmissionBase.transmissionList =
 																				0.2778, 0.3889, 0.5278, 0.7222, 1, 1.3889 }, 
                  autoRanges´        = false },
 			text   = "Car with low range" },
-			{ class  = vehicleControlAddonTransmissionBase, 
+		{ class  = vehicleControlAddonTransmissionBase, 
 			params = { name               = "VARIO",
 								 isIVT              = true,
 			           noGears            = 1, 
@@ -789,7 +789,22 @@ vehicleControlAddonTransmissionBase.transmissionList =
 			           autoRanges´        = false, 
 			           gearTexts          = {""}, 
 			           rangeTexts         = { "low", "high" } },
-			text   = "Vario" }
+			text   = "Vario" },
+		{ class  = vehicleControlAddonTransmissionBase,
+			params = { name               = "46A", 
+                 noGears            = 6, 
+                 timeGears          = 0, 
+                 rangeGearOverlap   = {0,0,0}, 
+                 timeRanges         = 750, 
+                 gearRatios         = { 0.0305810,	0.0364330,	0.0434047,	0.0517105,	0.0616057,	0.0733945,
+																				0.0825688,	0.0983690,	0.1171927,	0.1396184,	0.1663355,	0.1981651,
+																				0.1582569,	0.1885406,	0.2246193,	0.2676020,	0.3188098,	0.3798165,
+																				0.4166667,	0.4963992,	0.5913890,	0.7045560,	0.8393783,	1.0000000 }, 
+                 autoRanges         = false, 
+                 gearTexts          = {"1","2","3","4","5","6"}, 
+                 rangeTexts         = {"A","B","C","D"}, 
+                 shifterIndexList   = { 7, 9, 13, 15, 17, 18, 19, 20, 21, 22, 23, 24, 9, 15 } },
+			text   = "4x6 HexaShift" },
 	}
 	
 function vehicleControlAddonTransmissionBase.loadSettings()

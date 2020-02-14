@@ -113,7 +113,7 @@ function VehicleControlAddonFrame:vcaGetValues( force )
 						i = value 
 					end
 					element:setState( i )
-				elseif element.typeName == "textInput" then 
+				elseif element.typeName == "textInput" and force then 
 					local t = tostring( value )
 					element:setText( t )
 				end
@@ -195,7 +195,7 @@ function VehicleControlAddonFrame:vcaSetValues( force )
 			--print("SET: "..tostring(name)..": '"..tostring(value).."'")
 				
 				setter( vehicle, value )
-			elseif element.typeName == "textInput" then 
+			elseif element.typeName == "textInput" and force then 
 				local t = element:getText()
 				setter( vehicle, t )
 			end
