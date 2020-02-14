@@ -13,6 +13,7 @@ function VehicleControlAddonFrame:new(menu, controls, target, customMt)
 	self.controls = controls
 	self.vcaElements = {}
 	self.vcaIsDirty = true 
+	self.vcaState = {}
 	allControls = {}
 	for name,id in pairs(VehicleControlAddonFrame.CONTROLS) do 
 		allControls[name] = id 
@@ -56,9 +57,14 @@ function VehicleControlAddonFrame:onFrameClose()
 end	
 	
 function VehicleControlAddonFrame:vcaGetValues( force )
+	if self.vcaState.vcaGetValues then 
+		return 
+	end 
 	if not ( force or self.vcaIsDirty ) then 
 		return 
 	end 
+	
+	self.vcaState.vcaGetValues = true 
 	
 --print("VCA frame get values @"..tostring(g_currentMission.time))
 	
@@ -113,13 +119,14 @@ function VehicleControlAddonFrame:vcaGetValues( force )
 						i = value 
 					end
 					element:setState( i )
-				elseif element.typeName == "textInput" and force then 
-					local t = tostring( value )
-					element:setText( t )
+				elseif element.typeName == "textInput" and ( force or self.vcaIsDirty ) then 
+					element:setText( value )
 				end
 			end
 		end
 	end 
+
+	self.vcaState.vcaGetValues = false 
 
 	self.vcaIsDirty = false 
 end
@@ -133,6 +140,11 @@ function VehicleControlAddonFrame:vcaSetValues( force )
 	--print("VCA Frame not yet input enabled")
 		return 
 	end 
+	if self.vcaState.vcaSetValues then 
+		return 
+	end 
+
+	self.vcaState.vcaSetValues = true 
 
 	if g_currentMission.controlledVehicle ~= nil and g_currentMission.controlledVehicle.vcaIsLoaded then 
 		local vehicle = g_currentMission.controlledVehicle
@@ -201,7 +213,46 @@ function VehicleControlAddonFrame:vcaSetValues( force )
 			end
 		end
 	end 
+	
+	self.vcaState.vcaSetValues = false 
 end
+
+function VehicleControlAddonFrame:vcaOnTextChanged( element )
+	if self.vcaState.vcaOnTextChanged or self.vcaState.vcaGetValues then
+		return 
+	end 
+	
+	if element == nil then
+		print("Invalid element: <nil>")
+		return
+	end 
+	
+	if element.id == nil or element.typeName == nil or element.typeName ~= "textInput" then 
+		print("Invalid element: '"..tostring(element.id).."'")
+		return
+	end 
+	
+	self.vcaState.vcaOnTextChanged = true  
+	self.vcaIsDirty = true 
+	
+	local vehicle = g_currentMission.controlledVehicle
+	local name = element.id
+	
+	local setter
+	if     type( vehicleControlAddon["vcaUISet"..name] ) == "function" then
+		setter = vehicleControlAddon["vcaUISet"..name]
+	else
+		setter = function( vehicle, value ) vehicleControlAddon.mbSetState( vehicle, name, value ) end
+	end
+	
+	if     setter == nil then
+		print("Invalid UI element ID: "..tostring(name))
+	else 
+		setter( vehicle, element:getText() )
+	end 
+	
+	self.vcaState.vcaOnTextChanged = false 
+end 
 
 function VehicleControlAddonFrame:onCreateSubElement( element, parameter )
 	if element == nil or element.typeName == nil then 

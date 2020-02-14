@@ -261,14 +261,22 @@ function vehicleControlAddonTransmissionBase:rangeUp( noSpeedMatching )
 		else 
 			self:powerShiftSound()
 		end 
-		local o
+		local r 
 		if self:rangeSpeedMatching( noSpeedMatching ) then 
-			o = self.rangeGearFromTo[self.vehicle.vcaRange].overlap
+			local j = self:getRatioIndex( self.vehicle.vcaGear, self.vehicle.vcaRange )
+			r = self.gearRatios[j] 
 		end 
 		self.vehicle:vcaSetState( "vcaRange", self.vehicle.vcaRange + 1 )
-		if o ~= nil then 
-			o = self.numberOfGears - o - 1
-			self.vehicle:vcaSetState( "vcaGear", math.max( 1, self.vehicle.vcaGear - o ) )
+		if r ~= nil then 
+			local g = 1
+			for i=1,self.numberOfGears do 
+				g = i 
+				local j = self:getRatioIndex( i, self.vehicle.vcaRange )
+				if j ~= nil and self.gearRatios[j] ~= nil and self.gearRatios[j] > r * 1.1 then 
+					break 
+				end 
+			end 
+			self.vehicle:vcaSetState( "vcaGear", g )				
 		end 
 		vehicleControlAddon.debugPrint(tostring(self.name)..", result: "..tostring(self.vehicle.vcaRange)..", "..tostring(self.numberOfRanges))
 	end 
@@ -285,14 +293,22 @@ function vehicleControlAddonTransmissionBase:rangeDown( noSpeedMatching )
 		else 
 			self:powerShiftSound()
 		end 
-		self.vehicle:vcaSetState( "vcaRange", self.vehicle.vcaRange - 1 )
-		local o
+		local r 
 		if self:rangeSpeedMatching( noSpeedMatching ) then 
-			o = self.rangeGearFromTo[self.vehicle.vcaRange].overlap
+			local j = self:getRatioIndex( self.vehicle.vcaGear, self.vehicle.vcaRange )
+			r = self.gearRatios[j] 
 		end 
-		if o ~= nil then 
-			o = self.numberOfGears - o - 1
-			self.vehicle:vcaSetState( "vcaGear", math.min( self.numberOfGears, self.vehicle.vcaGear + o ) )
+		self.vehicle:vcaSetState( "vcaRange", self.vehicle.vcaRange - 1 )
+		if r ~= nil then 
+			local g = self.numberOfGears
+			for i=self.numberOfGears,1,-1 do 
+				g = i 
+				local j = self:getRatioIndex( i, self.vehicle.vcaRange )
+				if j ~= nil and self.gearRatios[j] ~= nil and self.gearRatios[j] < r / 1.1 then 
+					break 
+				end 
+			end 
+			self.vehicle:vcaSetState( "vcaGear", g )				
 		end 
 	end 
 end 
@@ -803,7 +819,7 @@ vehicleControlAddonTransmissionBase.transmissionList =
                  autoRanges         = false, 
                  gearTexts          = {"1","2","3","4","5","6"}, 
                  rangeTexts         = {"A","B","C","D"}, 
-                 shifterIndexList   = { 7, 9, 13, 15, 17, 18, 19, 20, 21, 22, 23, 24, 9, 15 } },
+                 shifterIndexList   = { 7, 9, 13, 15, 17, 18, 19, 20, 21, 22, 23, 24, 13, 17 } },
 			text   = "4x6 HexaShift" },
 	}
 	

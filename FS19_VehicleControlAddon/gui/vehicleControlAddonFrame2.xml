@@ -63,8 +63,17 @@
 					<GuiElement type="bitmap" profile="vcaMTOBg" />
 				</GuiElement>
 
+				<GuiElement type="checkedOption" profile="vcaMTOSettings" id="vcaModifyPitch" toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_PITCH" onCreate="onCreateSubElement"
+												onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="260" focusChangeTop="250" focusChangeBottom="270">
+					<GuiElement type="button" profile="vcaMTOLeft" />
+					<GuiElement type="button" profile="vcaMTORight"/>
+					<GuiElement type="text" profile="vcaMTOText" />
+					<GuiElement type="text" profile="vcaMTOTitle" text="Modify Pitch"/>
+					<GuiElement type="bitmap" profile="vcaMTOBg" />
+				</GuiElement>
+
 				<GuiElement type="multiTextOption" profile="vcaMTOSettings" id="vcaPitchFactor" toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_PITCH" onCreate="onCreateSubElement" onCreateArgs="list"
-												onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="260" focusChangeTop="250" focusChangeBottom="310">
+												onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="270" focusChangeTop="250" focusChangeBottom="270">
 					<GuiElement type="button" profile="vcaMTOLeft" />
 					<GuiElement type="button" profile="vcaMTORight"/>
 					<GuiElement type="text" profile="vcaMTOText" />
@@ -73,11 +82,11 @@
 				</GuiElement>
 
 				<GuiElement type="multiTextOption" profile="vcaMTOSettings" id="vcaPitchExponent" toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_PITCH" onCreate="onCreateSubElement" onCreateArgs="list"
-												onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="260" focusChangeTop="250" focusChangeBottom="310">
+												onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="280" focusChangeTop="270" focusChangeBottom="310">
 					<GuiElement type="button" profile="vcaMTOLeft" />
 					<GuiElement type="button" profile="vcaMTORight"/>
 					<GuiElement type="text" profile="vcaMTOText" />
-					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaPITCH"/>
+					<GuiElement type="text" profile="vcaMTOTitle" text="Pitch Exponent"/>
 					<GuiElement type="bitmap" profile="vcaMTOBg" />
 				</GuiElement>
 			</GuiElement>		

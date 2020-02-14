@@ -89,7 +89,9 @@ local listOfProperties =
 		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="pitchExponent", propName="vcaPitchExponent" },
 		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="minGearRatio",  propName="vcaGearRatioF"    },
 		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="maxGearRatio",  propName="vcaGearRatioT"    },
-		{ getFunc=getXMLInt,   setFunc=setXMLInt  , xmlName="g27Mode",       propName="vcaG27Mode"       } }
+		{ getFunc=getXMLInt,   setFunc=setXMLInt  , xmlName="g27Mode",       propName="vcaG27Mode"       },
+		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="modifyPitch",   propName="vcaModifyPitch"   },
+	}
 
 
 VCAGlobals = {}
@@ -208,8 +210,6 @@ function vehicleControlAddon:vcaIsNonDefaultProp( propName, setting )
 	end 
 	return true  
 end 
-
-
 
 
 --********************************************************************************************
@@ -359,6 +359,7 @@ function vehicleControlAddon:onLoad(savegame)
 	vehicleControlAddon.registerState( self, "vcaGearRatioT",   0 )
 	vehicleControlAddon.registerState( self, "vcaG27Mode",      0 )
 	vehicleControlAddon.registerState( self, "vcaSnapFactor",   0 )
+	vehicleControlAddon.registerState( self, "vcaModifyPitch",  VCAGlobals.modifyPitch )
 	
 	self.vcaFactor        = 1
 	self.vcaReverseTimer  = 1.5 / VCAGlobals.timer4Reverse
@@ -1972,7 +1973,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 			and self.spec_motorized.motorSamples ~= nil
 			and self:getIsMotorStarted() then 
 		local m = g_soundManager.modifierTypeNameToIndex.MOTOR_RPM
-		if self:vcaGetTransmissionActive() and VCAGlobals.modifyPitch then 
+		if self:vcaGetTransmissionActive() and self.vcaModifyPitch then 
 			if not ( self.vcaModifiedSound ) then 
 				local function getPitch( v )
 					return ( self.spec_motorized.motor.minRpm + v * ( self.spec_motorized.motor.maxRpm - self.spec_motorized.motor.minRpm ) ) / self.spec_motorized.motor.maxRpm
@@ -2180,7 +2181,7 @@ function vehicleControlAddon:onDraw()
 				local text 
 				local l2    = l
 				if gear ~= nil and ratio ~= nil and self.vcaMaxSpeed ~= nil then 
-					maxSpeed = 3.6 * ratio * self.vcaMaxSpeed
+					maxSpeed = ratio * self.vcaMaxSpeed
 					text = self.vcaGearbox:getGearText( self.vcaGear, self.vcaRange )	
 					
 					if self.vcaShifterUsed then 
@@ -2256,7 +2257,7 @@ function vehicleControlAddon:onDraw()
 			end
 			
 			if self.vcaKSIsOn and self.spec_drivable.cruiseControl.state == 0 then 
-				renderText(x, y, l, vehicleControlAddon.vcaSpeedToString( self.vcaKeepSpeed, "%5.1f" ))
+				renderText(x, y, l, vehicleControlAddon.vcaSpeedToString( self.vcaKeepSpeed / 3.6, "%5.1f" ))
 				y = y + l * 1.2	
 			end
 
@@ -3396,14 +3397,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			newMinRpm = self.minRpm
 			newMaxRpm = self.maxRpm
 		end 
-		
-	--if self.vehicle.vcaGearRatioF > 0 then 
-	--	newMinRpm = vehicleControlAddon.mbClamp( self.vehicle.lastSpeedReal * 1000 * self.maxRpm / ( maxSpeed * self.vehicle.vcaGearRatioF ), self.minRpm, self.maxRpm )
-	--end 
-	--if self.vehicle.vcaGearRatioT > 0 then 
-	--	newMaxRpm = vehicleControlAddon.mbClamp( self.vehicle.lastSpeedReal * 1000 * self.maxRpm / ( maxSpeed * self.vehicle.vcaGearRatioT ), self.minRpm, self.maxRpm )
-	--end 
-					
+							
 		if speed > 2 then 
 			self.vcaIncreaseRpm = g_currentMission.time + 2000 
 		end 
@@ -3511,10 +3505,6 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		self.minGearRatio = self.maxRpm / ( maxSpeed * vehicleControlAddon.factor30pi )
 		self.maxGearRatio = 1000
 		
-	-- this is already part of maxSpeed 
-	--if self.vehicle.vcaGearRatioT > 0 then 
-	--	self.minGearRatio = self.maxRpm / ( self.vehicle.vcaMaxSpeed * self.vehicle.vcaGearRatioT * vehicleControlAddon.factor30pi )
-	--end 
 		if self.vehicle.vcaGearRatioF > 0 then 
 			self.maxGearRatio = self.maxRpm / ( self.vehicle.vcaMaxSpeed * math.max( self.vehicle.vcaGearRatioT, self.vehicle.vcaGearRatioF ) * vehicleControlAddon.factor30pi )
 		end 
@@ -3908,7 +3898,9 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 					if rpm > autoMaxRpm then 
 						d2 = math.max( d2, rpm - autoMaxRpm )
 					end 
-					if d2 < d or ( d2 == d and searchUp ) then 
+					if 			( d2 < d or ( d2 == d and searchUp ) )
+							and ( self.vehicle.vcaGearRatioF <= 0 or nr >= self.vehicle.vcaGearRatioF )
+							and ( self.vehicle.vcaGearRatioT <= 0 or nr <= self.vehicle.vcaGearRatioT ) then 
 						newGear = i 
 						d = d2
 						rr = rpm
@@ -4517,14 +4509,33 @@ function vehicleControlAddon.vcaGetRelativeYRotation(root,node)
 	return angle
 end
 
+function vehicleControlAddon.vcaSpeedInt2Ext( speed )
+	if not ( type( speed ) == "number" ) then 
+		return -1
+	end 
+	local s = speed * 3.6 
+	if g_gameSettings.useMiles then 
+		s = s * 0.621371
+	end 
+	return 0.1 * math.floor( 10 * s + 0.5 )
+end 
+function vehicleControlAddon.vcaSpeedExt2Int( speed )
+	if not ( type( speed ) == "number" ) then 
+		return -1
+	end 
+	local s = speed / 3.6 
+	if g_gameSettings.useMiles then 
+		s = s / 0.621371
+	end 
+	return s
+end 
 function vehicleControlAddon.vcaSpeedToString( speed, numberFormat )
 	if speed == nil then	
 		return "nil" 
 	end 
-	local s = speed 
+	local s = vehicleControlAddon.vcaSpeedInt2Ext( speed )
 	local u = "km/h" 
 	if g_gameSettings.useMiles then 
-		s = s * 0.621371
 		u = "mph"
 	end 
 	return string.format( Utils.getNoNil( numberFormat, "%3.0f" ), s ).." "..u 	
@@ -4561,39 +4572,7 @@ function vehicleControlAddon:vcaShowSettingsUI()
 		table.insert( self.vcaUI.vcaTransmission , t.text )
 	end 
 	
-	local m = vehicleControlAddon.getDefaultMaxSpeed( self )
-	self.vcaUI.vcaMaxSpeed_V = { 7, 8.889, 11.944, 14.722, 16.111, 18.056, 20.417, 25, 33.333, 50 }
-	local found = -1 
-	for i,v in pairs(self.vcaUI.vcaMaxSpeed_V) do
-		if math.abs( m-v ) < 1 then 
-			self.vcaUI.vcaMaxSpeed_V[i] = m 
-			found = 0
-			break 
-		elseif v > m and found < 0 then 
-			found = i 
-		end 
-	end 
-	if found < 0 then 
-		table.insert( self.vcaUI.vcaMaxSpeed_V, m ) 
-	elseif found > 0 then 
-		table.insert( self.vcaUI.vcaMaxSpeed_V, found, m ) 
-	end 
-	self.vcaUI.vcaMaxSpeed = {}
-	for i,v in pairs(self.vcaUI.vcaMaxSpeed_V) do
-		self.vcaUI.vcaMaxSpeed[i] = vehicleControlAddon.vcaSpeedToString( v*3.6 )
-	end
 	self.vcaUI.oldTransmission = self.vcaTransmission
-	
-	self.vcaUI.vcaSnapDistance_V = {}
-	self.vcaUI.vcaSnapDistance   = {}
-	for i,v in pairs( { 0, 1.5, 1.6, 1.7, 1.8, 1.9,
-											2, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 
-											3, 3.1, 3.2, 3.4, 3.6, 3.8, 4, 4.2, 4.5, 4.8, 
-											5, 5.5, 6, 6.5, 7, 7.5, 8, 8.4, 9, 10, 12, 13.5, 15, 
-											18, 18.2, 21, 24, 28, 30, 36, 40, 48 } ) do
-		self.vcaUI.vcaSnapDistance_V[i] = v
-		self.vcaUI.vcaSnapDistance[i]   = string.format( "%4.1fm",v )
-	end 
 	
 	self.vcaUI.vcaSnapDraw = { "off", "only if inactive", "always" }
 	
@@ -4613,15 +4592,24 @@ function vehicleControlAddon:vcaShowSettingsUI()
 	
 	self.vcaUI.vcaPitchFactor   = {}
 	self.vcaUI.vcaPitchFactor_V = {}
-	self.vcaUI.vcaPitchExponent   = {}
-	self.vcaUI.vcaPitchExponent_V = {}
 	for i=1,15 do 
 		local v = 0.8 + ( i - 1 ) * 0.05
 		table.insert( self.vcaUI.vcaPitchFactor, string.format( "%3.0f%%", v*100 ) )
 		table.insert( self.vcaUI.vcaPitchFactor_V, v )
-		table.insert( self.vcaUI.vcaPitchExponent, string.format( "%3.0f%%", v*100 ) )
-		table.insert( self.vcaUI.vcaPitchExponent_V, v )
 	end 
+
+	self.vcaUI.vcaPitchExponent   = { "- - - -", "- - -", "- -", "-", "normal", "+", "+ +" , "+ + +", "+ + + +" }
+	self.vcaUI.vcaPitchExponent_V = { 
+																		0.609622719,
+																		0.681892937,
+																		0.761056004,
+																		0.871964982,
+																		1.000000000,
+																		1.118857206,
+																		1.257609580,
+																		1.424283358,
+																		1.633020986,
+																	}
 	
 	self.vcaUI.vcaG27Mode = { "6G, 1R, LH",
 														"6G, Shuttle, LH",
@@ -4634,15 +4622,11 @@ function vehicleControlAddon:vcaShowSettingsUI()
 														"4G, R+/-, Shuttle",
 														"4G, R+/-, D/R",
 														"D/R , G+/-, R+/-" }
+														
+	self.vcaUI.vcaMaxSpeed = tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed ) )
+	self.vcaUI.vcaSnapDistance = tostring( self.vcaSnapDistance )
 	
-	
-	if g_vehicleControlAddonTabbedMenu ~= nil then
-		g_gui:showGui( "vehicleControlAddonMenu" )	
-	elseif g_vehicleControlAddonScreen ~= nil then 
-		g_vehicleControlAddonScreen:setVehicle( self )
-		g_gui:showGui( "vehicleControlAddonScreen" )
-		g_vehicleControlAddonScreen:setVehicle()
-	end 
+	g_gui:showGui( "vehicleControlAddonMenu" )	
 	self:vcaSetState( "vcaKSIsOn", self.vcaKSToggle )
 end
 
@@ -4680,39 +4664,14 @@ function vehicleControlAddon:vcaUISetvcaBrakeForce( value )
 end
 
 function vehicleControlAddon:vcaUIGetvcaMaxSpeed()
-	local d, j
-	for i,e in pairs( self.vcaUI.vcaMaxSpeed_V ) do
-		local f = math.abs( e - self.vcaMaxSpeed )
-		if d == nil or d > f then 
-			d = f 
-			j = i 
-		end
-	end
-	return j
-end
-
+	return self.vcaUI.vcaMaxSpeed
+end 
 function vehicleControlAddon:vcaUISetvcaMaxSpeed( value )
-	if self.vcaUI.vcaMaxSpeed_V[value] ~= nil then
-		self:vcaSetState( "vcaMaxSpeed", self.vcaUI.vcaMaxSpeed_V[value] )
-	end
-end
-
-function vehicleControlAddon:vcaUIGetvcaSnapDistance()
-	local d, j
-	for i,e in pairs( self.vcaUI.vcaSnapDistance_V ) do
-		local f = math.abs( e - self.vcaSnapDistance )
-		if d == nil or d > f then 
-			d = f 
-			j = i 
-		end
-	end
-	return j
-end
-
-function vehicleControlAddon:vcaUISetvcaSnapDistance( value )
-	if self.vcaUI.vcaSnapDistance_V[value] ~= nil then
-		self:vcaSetState( "vcaSnapDistance", self.vcaUI.vcaSnapDistance_V[value] )
-	end
+	self.vcaUI.vcaMaxSpeed = value 
+	local v = vehicleControlAddon.vcaSpeedExt2Int( tonumber( value ) )
+	if type( v ) == "number" and v > 0 then 
+		self:vcaSetState( "vcaMaxSpeed", v )
+	end 
 end
 
 function vehicleControlAddon:vcaUISetvcaHandthrottle( value )
@@ -4762,44 +4721,10 @@ function vehicleControlAddon:vcaUIGetvcaPitchExponent()
 end 
 
 function vehicleControlAddon:vcaUISetvcaPitchExponent( value )
-	self:vcaSetState( "vcaPitchExponent", 0.8 + ( value - 1 ) * 0.05 )
-end 
-
-function vehicleControlAddon:getUIMaxSpeed()
-	local vcaMaxSpeedElement = nil 
-	
-	if      g_vehicleControlAddonScreen                                 ~= nil
-			and g_vehicleControlAddonScreen.mogliScreenElements             ~= nil
-			and g_vehicleControlAddonScreen.mogliScreenElements.vcaMaxSpeed ~= nil
-			then
-		vcaMaxSpeedElement = g_vehicleControlAddonScreen.mogliScreenElements.vcaMaxSpeed.element
+	local v = self.vcaUI.vcaPitchExponent_V[value]
+	if v ~= nil then 
+		self:vcaSetState( "vcaPitchExponent", v )
 	end 
-	if      g_vehicleControlAddonTabbedMenu                                   ~= nil
-			and g_vehicleControlAddonTabbedMenu.vcaFrame3                         ~= nil
-			and g_vehicleControlAddonTabbedMenu.vcaFrame3.vcaElements             ~= nil
-			and g_vehicleControlAddonTabbedMenu.vcaFrame3.vcaElements.vcaMaxSpeed ~= nil
-			then
-		vcaMaxSpeedElement = g_vehicleControlAddonTabbedMenu.vcaFrame3.vcaElements.vcaMaxSpeed.element
-	end 
-	
-	if vcaMaxSpeedElement == nil then 
-		print("getUIMaxSpeed: nil error I")
-		return nil 
-	end 
-	if type( vcaMaxSpeedElement.getState ) ~= "function" then 
-		print("getUIMaxSpeed: nil error II")
-		return nil 
-	end 
-	local value = vcaMaxSpeedElement:getState()
-	if     self.vcaUI == nil 
-			or self.vcaUI.vcaMaxSpeed_V == nil
-			or value == nil 
-			then 
-		print("getUIMaxSpeed: nil error III")
-		return nil 
-	end 
---print("getUIMaxSpeed: "..tostring(value)..", "..tostring(self.vcaUI.vcaMaxSpeed_V[value]))
-	return self.vcaUI.vcaMaxSpeed_V[value]
 end 
 
 function vehicleControlAddon:setUIGearSpeed( name, value )
@@ -4808,9 +4733,7 @@ function vehicleControlAddon:setUIGearSpeed( name, value )
 		self:vcaSetState( name, 0 )
 		return 
 	end 
-	local speed = vehicleControlAddon.getUIMaxSpeed( self )
-	if speed == nil or speed <= 0 then print("setUIGearSpeed nil error 2 ("..tostring(name)..")") return end 
-	speed = speed * 3.6
+	local speed = self.vcaMaxSpeed * 3.6
 	local s, i = 5, 2
 	while s < speed do 
 		if i == value then 
@@ -4830,12 +4753,10 @@ end
 
 function vehicleControlAddon:getUIGearSpeed( name )
 	if self == nil then print("getUIGearSpeed nil error 1 ("..tostring(name)..")") return 1 end 
-	local speed = self.vcaMaxSpeed -- vehicleControlAddon.getUIMaxSpeed( self )
-	if speed == nil or speed <= 0 then print("getUIGearSpeed nil error 2 ("..tostring(name)..")") return 1 end 
+	local speed = self.vcaMaxSpeed * 3.6
 	local v = self[name]
 	if v == nil then print("getUIGearSpeed nil error 3 ("..tostring(name)..")") return 1 end 
 	if v <= 0 then return 1 end 
-	speed = speed * 3.6
 	v = v * speed
 	local s, i = 5, 2
 	local t
@@ -4860,12 +4781,10 @@ end
 function vehicleControlAddon:drawUIGearSpeed()
 	if self == nil then return { "off" } end 
 	local res   = { "off" }
-	local speed = vehicleControlAddon.getUIMaxSpeed( self )
-	if speed == nil then return { "off" } end 
-	speed = speed * 3.6
+	local speed = self.vcaMaxSpeed * 3.6
 	local s = 5
 	while s < speed do 
-		table.insert( res, vehicleControlAddon.vcaSpeedToString( s ) ) 
+		table.insert( res, vehicleControlAddon.vcaSpeedToString( s / 3.6 ) ) 
 		if     s < 16 then 
 			s = s + 1 
 		elseif s < 20 then 
@@ -4899,29 +4818,12 @@ function vehicleControlAddon:vcaUIDrawvcaGearRatioT()
 end
 
 function vehicleControlAddon:vcaUIGetvcaSnapDistance()
-	if true then -- g_vehicleControlAddonTabbedMenu == nil then 
-		return tostring( self.vcaSnapDistance )
-	else 
-		local d, j
-		for i,e in pairs( self.vcaUI.vcaSnapDistance_V ) do
-			local f = math.abs( e - self.vcaSnapDistance )
-			if d == nil or d > f then 
-				d = f 
-				j = i 
-			end
-		end
-		return j
-	end
+	return self.vcaUI.vcaSnapDistance
 end 
 function vehicleControlAddon:vcaUISetvcaSnapDistance( value )
-	if true then -- g_vehicleControlAddonTabbedMenu == nil then 
-		local v = tonumber( value )
-		if type( v ) == "number" and v > 0 then 
-			self:vcaSetState( "vcaSnapDistance", tonumber( value ) )
-		end 
-	else 
-		if self.vcaUI.vcaSnapDistance_V[value] ~= nil then
-			self:vcaSetState( "vcaSnapDistance", self.vcaUI.vcaSnapDistance_V[value] )
-		end
+	self.vcaUI.vcaSnapDistance = value 
+	local v = tonumber( value )
+	if type( v ) == "number" and v > 0 then 
+		self:vcaSetState( "vcaSnapDistance", tonumber( value ) )
 	end 
 end 

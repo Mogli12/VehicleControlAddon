@@ -16,7 +16,7 @@
 
 				<GuiElement type="textInput" profile="ingameMenuGameSettingsTextInput" id="vcaSnapDistance" onCreate="onCreateSubElement" 
 										toolTipElementId="mogliToolTipBoxText" toolTipText="Distance" maxCharacters="5"
-										imeKeyboardType="normal"> <!-- onTextChanged="vcaOnSnapDistanceChanged"-->
+										imeKeyboardType="normal" onTextChanged="vcaOnTextChanged">
 					<GuiElement type="text" profile="vcaMTOTitle" text="Distance"/>
 				</GuiElement>
 				

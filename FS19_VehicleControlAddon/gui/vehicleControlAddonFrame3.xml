@@ -23,13 +23,10 @@
 					<GuiElement type="bitmap" profile="vcaMTOBg" />
 				</GuiElement>
 				
-				<GuiElement type="multiTextOption" profile="vcaMTOSettings" id="vcaMaxSpeed" toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_MAXSPEED" onCreate="onCreateSubElement" onCreateArgs="list"
-												onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="330" focusChangeTop="320" focusChangeBottom="340">
-					<GuiElement type="button" profile="vcaMTOLeft" />
-					<GuiElement type="button" profile="vcaMTORight"/>
-					<GuiElement type="text" profile="vcaMTOText" />
+				<GuiElement type="textInput" profile="ingameMenuGameSettingsTextInput" id="vcaMaxSpeed" onCreate="onCreateSubElement" 
+										toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_MAXSPEED" maxCharacters="5"
+										imeKeyboardType="normal" onTextChanged="vcaOnTextChanged">
 					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaMAXSPEED"/>
-					<GuiElement type="bitmap" profile="vcaMTOBg" />
 				</GuiElement>
 				
 				<GuiElement type="checkedOption" profile="vcaMTOSettings" id="vcaAutoShift" toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_AUTOSHIFT" onCreate="onCreateSubElement"
