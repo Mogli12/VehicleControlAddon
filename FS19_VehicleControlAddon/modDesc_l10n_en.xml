@@ -26,28 +26,66 @@
 		<text name="vcaPITCH"           text="Sound pitch at max. RPM"/>
 		<text name="vcaSETTINGS"        text="Settings"/>
 		<text name="vcaDRAWHUD"         text="Transmission HUD"/>
+		
+		<text name="vcaDISTANCE"        text="Working width"/>
+		<text name="vcaDRAWMARKER"      text="Draw marker of snap driving"/>
+		<text name="vcaPITCH1"          text="Linear sound pitch"/>
+		<text name="vcaPITCH2"          text="Sound pitch at medium RPM"/>
+		<text name="vcaAUTOCLUTCH"      text="Automatic clutch"/>
+		<text name="vcaTURBOCLUTCH"     text="Turbo clutch"/>
+		<text name="vcaGEARRATIOF"      text="Min. gear speed limit"/>
+		<text name="vcaGEARRATIOT"      text="Max. gear speed limit"/>
+		<text name="vcaG27MODE"         text="G27/G29 shifter mode"/>
+		<text name="vcaHIREDWORKER"     text="Transmission and hired worker"/>
+		<text name="vcaOWNMINSPEED"     text="Gear speed of 1st gear"/>
+		<text name="vcaOWNMINRANGE"     text="Gear speed of 1st gear and range -"/>
+		<text name="vcaOWNMAXRANGE"     text="Max. gear speed of range -"/>
+		<text name="vcaOWNGEARS"        text="Number of gears"/>
+		<text name="vcaOWNRANGES"       text="Number of ranges"/>
+		<text name="vcaOWNGEARTIME"     text="Time to shift gears"/>
+		<text name="vcaOWNRANGETIME"    text="Time to shift ranges"/>
+		<text name="vcaOWNAUTOGEARS"    text="Automatic gears"/>
 		                                
-		<text name="vca_tip_CAMERAI"    text="The interior camera rotates automatically according to the steering angle"/>
-		<text name="vca_tip_CAMERAO"    text="The exterior camera rotates automatically according to the steering angle"/>
-		<text name="vca_tip_EXPONENT"   text="Sensitivity of the adaptive steering with respect to ground speed"/>
-		<text name="vca_tip_STEERING"   text="The adaptive steering adjusts the automatic back rotation and the maximum steering angle"/>
-		<text name="vca_tip_SHUTTLE"    text="Change driving direction with space key"/>
-		<text name="vca_tip_REVERSEI"   text="If the vehicle changes direction the interior camera is rotated by 180°"/>
-		<text name="vca_tip_REVERSEO"   text="If the vehicle changes direction the exterior camera is rotated by 180°"/>
-		<text name="vca_tip_LIMIT"      text="Limiter of the throttle without and with left shift key"/>
-		<text name="vca_tip_PEEKLR"     text="Take a quick look with Shift-Right and the left/right arrow keys"/>
-		<text name="vca_tip_ANGLE"      text="Steer automatically to follow snap angle"/>
-		<text name="vca_tip_BRAKE"      text="Low brake force percentage, aka rolling resistance"/>
+		<text name="vca_tip_CAMERAI"      text="The interior camera rotates automatically according to the steering angle"/>
+		<text name="vca_tip_CAMERAO"      text="The exterior camera rotates automatically according to the steering angle"/>
+		<text name="vca_tip_EXPONENT"     text="Sensitivity of the adaptive steering with respect to ground speed"/>
+		<text name="vca_tip_STEERING"     text="The adaptive steering adjusts the automatic back rotation and the maximum steering angle"/>
+		<text name="vca_tip_SHUTTLE"      text="Change driving direction with space key"/>
+		<text name="vca_tip_REVERSEI"     text="If the vehicle changes direction the interior camera is rotated by 180°"/>
+		<text name="vca_tip_REVERSEO"     text="If the vehicle changes direction the exterior camera is rotated by 180°"/>
+		<text name="vca_tip_LIMIT"        text="Limiter of the throttle without and with left shift key"/>
+		<text name="vca_tip_PEEKLR"       text="Take a quick look with Shift-Right and the left/right arrow keys"/>
+		<text name="vca_tip_ANGLE"        text="Steer automatically to follow snap angle"/>
+		<text name="vca_tip_BRAKE"        text="Low brake force percentage, aka rolling resistance"/>
 		<text name="vca_tip_TRANSMISSION" text="Type of the transmission; IVT variable transmission, all other transmissions have 12 differnt gears, 2x6 is best for trucks"/>
-		<text name="vca_tip_MAXSPEED"   text="Maximum speed of highest gear, can be faster than the maximum speed of the vehicle"/>
-		<text name="vca_tip_LIMSPEED"   text="Limits the maximum speed of the vehicle to its default value"/>
-		<text name="vca_tip_AUTOSHIFT"  text="Automatic shifting of gears and ranges"/>
-		<text name="vca_tip_LAUNCH"     text="Rated speed of the launch gear"/>
-		<text name="vca_tip_KEEPSPEED"  text="If permanent keep speed is enabled then the acceleration pedal behaves like a joystick. This is like driving with cruise control."/>
-		<text name="vca_tip_NO_ARB"     text="If free steering is enabled then the steering will not automatically rotate back"/>
+		<text name="vca_tip_MAXSPEED"     text="Maximum speed of highest gear, can be faster than the maximum speed of the vehicle"/>
+		<text name="vca_tip_LIMSPEED"     text="Limits the maximum speed of the vehicle to its default value"/>
+		<text name="vca_tip_AUTOSHIFT"    text="Automatic shifting of gears and ranges"/>
+		<text name="vca_tip_LAUNCH"       text="Rated speed of the launch gear"/>
+		<text name="vca_tip_KEEPSPEED"    text="If permanent keep speed is enabled then the acceleration pedal behaves like a joystick. This is like driving with cruise control."/>
+		<text name="vca_tip_NO_ARB"       text="If free steering is enabled then the steering will not automatically rotate back"/>
 		<text name="vca_tip_HANDTHROTTLE" text="The engine automatically accelerates to reach hand throttle RPM"/>
-		<text name="vca_tip_PITCH"      text="Sound pitch at maximum RPM"/>
-		<text name="vca_tip_DRAWHUD"    text="Show or hide transmission HUD"/>
+		<text name="vca_tip_PITCH"        text="Sound pitch at maximum RPM"/>
+		<text name="vca_tip_DRAWHUD"      text="Show or hide transmission HUD"/>
+		
+		<text name="vca_tip_DISTANCE"     text="Distance between two snap driving rows"/>
+		<text name="vca_tip_DRAWMARKER"   text="Draw marker of snap driving"/>
+		<text name="vca_tip_PITCH1"       text="Modification of sound pitch to make it linear"/>
+		<text name="vca_tip_PITCH2"       text="Sound pitch at medium RPM"/>
+		<text name="vca_tip_AUTOCLUTCH"   text="Automatic clutch"/>
+		<text name="vca_tip_TURBOCLUTCH"  text="Additional turbo clutch"/>
+		<text name="vca_tip_GEARRATIOF"   text="Min. gear speed limit"/>
+		<text name="vca_tip_GEARRATIOT"   text="Max. gear speed limit"/>
+		<text name="vca_tip_G27MODE"      text="G27/G29 shifter mode"/>
+		<text name="vca_tip_HIREDWORKER"  text="Controls if the hired worked operates the vehicle with vanilla or modified transmission"/>
+		<text name="vca_tip_OWNMINSPEED"  text="Gear speed of 1st gear in highest range"/>
+		<text name="vca_tip_OWNMINRANGE"  text="Gear speed of 1st gear in 2nd highest range"/>
+		<text name="vca_tip_OWNMAXRANGE"  text="Gear speed of highest gear in 2nd highest range"/>
+		<text name="vca_tip_OWNGEARS"     text="Number of gears"/>
+		<text name="vca_tip_OWNRANGES"    text="Number of ranges"/>
+		<text name="vca_tip_OWNGEARTIME"  text="Time to shift gears"/>
+		<text name="vca_tip_OWNRANGETIME" text="Time to shift ranges"/>
+		<text name="vca_tip_OWNAUTOGEARS" text="Automatic gears and speed matching"/>
 		                               
 		<text name="input_vcaSETTINGS"  text="VCA: settings"/>
 		<text name="input_vcaUP"        text="VCA: toggle view direction / lock forwards"/>

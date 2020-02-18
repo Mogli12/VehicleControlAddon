@@ -90,7 +90,15 @@ local listOfProperties =
 		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="minGearRatio",  propName="vcaGearRatioF"    },
 		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="maxGearRatio",  propName="vcaGearRatioT"    },
 		{ getFunc=getXMLInt,   setFunc=setXMLInt  , xmlName="g27Mode",       propName="vcaG27Mode"       },
+		{ getFunc=getXMLInt,   setFunc=setXMLInt  , xmlName="hiredWorker",   propName="vcaHiredWorker"   },
 		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="modifyPitch",   propName="vcaModifyPitch"   },
+		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="ownGearFactor", propName="vcaOwnGearFactor" },
+		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="ownRangeFactor",propName="vcaOwnRangeFactor" },
+		{ getFunc=getXMLInt,   setFunc=setXMLInt  , xmlName="ownGears",      propName="vcaOwnGears"      },
+		{ getFunc=getXMLInt,   setFunc=setXMLInt  , xmlName="ownRanges",     propName="vcaOwnRanges"     },
+		{ getFunc=getXMLInt,   setFunc=setXMLInt  , xmlName="ownGearTime",   propName="vcaOwnGearTime"   },
+		{ getFunc=getXMLInt,   setFunc=setXMLInt  , xmlName="ownRangeTime",  propName="vcaOwnRangeTime"  },
+		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="ownAutoGears",  propName="vcaOwnAutoGears"  },
 	}
 
 
@@ -360,6 +368,15 @@ function vehicleControlAddon:onLoad(savegame)
 	vehicleControlAddon.registerState( self, "vcaG27Mode",      0 )
 	vehicleControlAddon.registerState( self, "vcaSnapFactor",   0 )
 	vehicleControlAddon.registerState( self, "vcaModifyPitch",  VCAGlobals.modifyPitch )
+	vehicleControlAddon.registerState( self, "vcaHiredWorker",  VCAGlobals.hiredWorker )
+	
+	vehicleControlAddon.registerState( self, "vcaOwnGearFactor" , 0.4096, function( self, ... ) vehicleControlAddon.vcaOnSetOwn( self, "vcaOwnGearFactor" , ... ) end )
+	vehicleControlAddon.registerState( self, "vcaOwnRangeFactor", 0.4096, function( self, ... ) vehicleControlAddon.vcaOnSetOwn( self, "vcaOwnRangeFactor", ... ) end )
+	vehicleControlAddon.registerState( self, "vcaOwnGears"      , 5     , function( self, ... ) vehicleControlAddon.vcaOnSetOwn( self, "vcaOwnGears"      , ... ) end )
+	vehicleControlAddon.registerState( self, "vcaOwnRanges"     , 3     , function( self, ... ) vehicleControlAddon.vcaOnSetOwn( self, "vcaOwnRanges"     , ... ) end )
+	vehicleControlAddon.registerState( self, "vcaOwnGearTime"   , 0     , function( self, ... ) vehicleControlAddon.vcaOnSetOwn( self, "vcaOwnGearTime"   , ... ) end )
+	vehicleControlAddon.registerState( self, "vcaOwnRangeTime"  , 750   , function( self, ... ) vehicleControlAddon.vcaOnSetOwn( self, "vcaOwnRangeTime"  , ... ) end )
+	vehicleControlAddon.registerState( self, "vcaOwnAutoGears"  , true  , function( self, ... ) vehicleControlAddon.vcaOnSetOwn( self, "vcaOwnAutoGears"  , ... ) end )
 	
 	self.vcaFactor        = 1
 	self.vcaReverseTimer  = 1.5 / VCAGlobals.timer4Reverse
@@ -1026,11 +1043,11 @@ function vehicleControlAddon:vcaGetTransmissionActive()
 	if self:vcaIsVehicleControlledByPlayer() then 
 		return true 
 	end 
-	if     VCAGlobals.hiredWorker <= 0 then 
+	if     self.vcaHiredWorker <= 0 then 
 		return false 
 --elseif not self:vcaGetNoIVT()      then 
 --	return false 
-	elseif VCAGlobals.hiredWorker >= 2 then 
+	elseif self.vcaHiredWorker >= 2 then 
 		return self:getIsActive() 
 	else 
 		return self:getIsControlled()
@@ -1092,6 +1109,53 @@ function vehicleControlAddon:vcaGetAutoHold()
 		return true 
 	end 
 	return false  
+end 
+
+function vehicleControlAddon:vcaGetTransmissionDef()
+	if self.vcaTransmission == vehicleControlAddonTransmissionBase.ownTransmission then 
+		local params = {}
+--( name, noGears, timeGears, rangeGearOverlap, timeRanges, gearRatios, autoGears, autoRanges, splitGears4Shifter, gearTexts, rangeTexts, shifterIndexList, speedMatching )
+		params.noGears   = self.vcaOwnGears
+		params.rangeGearOverlap = {}
+		for i=2,self.vcaOwnRanges do	
+			table.insert( params.rangeGearOverlap, 0 )
+		end 
+		
+		if self.vcaOwnGears > 1 and self.vcaOwnRanges >= 1 then 
+			local g = vehicleControlAddon.mbClamp( self.vcaOwnGearFactor,  0.01, 0.99 ) ^ ( 1 / math.max( 1, self.vcaOwnGears  - 1 ) ) 
+			local r = vehicleControlAddon.mbClamp( self.vcaOwnRangeFactor, 0.01, 0.99 )
+			local j = self.vcaOwnRanges * self.vcaOwnGears
+			local k = self.vcaOwnGears
+			params.gearRatios    = {}
+			params.gearRatios[j] = 1 
+			
+			while true do 
+				j = j - 1
+				if j < 1 then 
+					break 
+				end 
+				k = k - 1
+				if k < 1 then 
+					k = self.vcaOwnGears
+					params.gearRatios[j] = params.gearRatios[j + self.vcaOwnGears] * r 
+				else 
+					params.gearRatios[j] = params.gearRatios[j + 1] * g
+				end 
+			end 
+		end 
+			
+		params.timeGears  = self.vcaOwnGearTime
+		params.timeRanges = self.vcaOwnRangeTime
+		params.autoGears  = self.vcaOwnAutoGears
+		params.autoRanges = false
+		
+		return vehicleControlAddonTransmissionBase:new( params ) 
+	end 
+	
+	local def = vehicleControlAddonTransmissionBase.transmissionList[self.vcaTransmission]
+	if def ~= nil then 
+		return def.class:new( def.params )
+	end 	
 end 
 
 function vehicleControlAddon:onPreUpdate(dt, isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
@@ -1444,43 +1508,57 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 	elseif self.vcaLastTransmission == nil 
 			or self.vcaLastTransmission ~= self.vcaTransmission
 			or ( self.vcaTransmission >= 1 and self.vcaGearbox == nil ) then 
+		local lt = self.vcaLastTransmission
+		self.vcaLastTransmission = self.vcaTransmission
+		
 		vehicleControlAddon.mpDebugPrint( self, "*********************************************" )
 		vehicleControlAddon.mpDebugPrint( self, tostring(self.configFileName))
 		vehicleControlAddon.mpDebugPrint( self, "Old transmission: "..tostring(self.vcaLastTransmission)..", new transmission: "..tostring(self.vcaTransmission))
-		self.vcaLastTransmission = self.vcaTransmission
 		
 		if self.vcaGearbox ~= nil then 
 			self.vcaGearbox:delete()
 			self.vcaGearbox = nil
 		end 
 		
-		local transmissionDef = vehicleControlAddonTransmissionBase.transmissionList[self.vcaTransmission]
-		if transmissionDef ~= nil then 
-			self.vcaGearbox = transmissionDef.class:new( transmissionDef.params )
-		end 
+		self.vcaGearbox = vehicleControlAddon.vcaGetTransmissionDef( self )
 		
 		if self.vcaGearbox ~= nil then 
 			self.vcaGearbox:setVehicle( self )
 		end 
 		
-		if self.isServer and self.vcaLastTransmission == nil or self.vcaLastTransmission <= 1 then 
+		if self.isServer and lt == nil or lt <= 1 then 
 			vehicleControlAddon.mpDebugPrint( self, "New launch gear index: "..tostring(VCAGlobals.launchGear))
 			self:vcaSetState( "vcaLaunchGear", VCAGlobals.launchGear, noEventSend )
 		end 
 		
-		if self.vcaGearbox ~= nil then 
-			self.vcaGearbox:initGears( true )	
-		end 
-		
-		vehicleControlAddon.mpDebugPrint( self, "Gear: "..tostring(self.vcaGear)..", range: "..tostring(self.vcaRange))
-		vehicleControlAddon.mpDebugPrint( self, "*********************************************" )
-		
 		if self.isServer then
+			if self.vcaGearbox ~= nil then 
+				if      lt ~= nil and lt >= 1
+						and self.vcaGear ~= nil  and self.vcaGear  > 0
+						and self.vcaRange ~= nil and self.vcaRange > 0
+						then  
+					if self.vcaLastGearRange == nil then 
+						self.vcaLastGearRange = {}
+					end 
+					self.vcaLastGearRange[lt] = { self.vcaGear, self.vcaRange }
+					local g,r = 0, 0
+					if self.vcaLastGearRange[self.vcaTransmission] ~= nil then 
+						g,r = unpack( self.vcaLastGearRange[self.vcaTransmission] )
+					end 
+					self:vcaSetState( "vcaGear",  Utils.getNoNil( g, 0 ))
+					self:vcaSetState( "vcaRange", Utils.getNoNil( r, 0 ))
+				end 
+				self.vcaGearbox:initGears()	
+			end 
+		
 			local spec = self.spec_motorized
 			if spec.motorizedNode ~= nil and next(spec.differentials) ~= nil then
 				self:updateMotorProperties()
 			end 
 		end 
+				
+		vehicleControlAddon.mpDebugPrint( self, "Gear: "..tostring(self.vcaGear)..", range: "..tostring(self.vcaRange))
+		vehicleControlAddon.mpDebugPrint( self, "*********************************************" )
 	end 
 	
 	
@@ -3973,7 +4051,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			self.vcaNoShiftTimer = 1000 
 		elseif motorRpm < 0.8 * self.minRpm and not self.vcaAutoStop and self.vcaFakeRpm == nil then 
 			if curBrake > 0.1 or self.vehicle.vcaTurboClutch then   
-				self.vcaClutchTimer = self.vcaClutchTimer
+				self.vcaClutchTimer = math.max( self.vcaClutchTimer, 0.8 * self.vcaClutchTimer )
 			else 
 				if lastStallTimer == nil then 
 					self.vcaStallTimer = dt
@@ -4479,6 +4557,14 @@ function vehicleControlAddon:vcaOnSetWarningText( old, new, noEventSend )
   self.vcaWarningTimer = 2000
 end
 
+function vehicleControlAddon:vcaOnSetOwn( name, old, new, noEventSend )
+	self[name] = new 
+  if self.vcaGearbox ~= nil then 
+		self.vcaGearbox:delete() 
+	end 
+	self.vcaGearbox = nil 
+end
+
 function vehicleControlAddon:vcaGetAbsolutRotY( camIndex )
 	if     self.spec_enterable.cameras == nil
 			or self.spec_enterable.cameras[camIndex] == nil then
@@ -4538,7 +4624,15 @@ function vehicleControlAddon.vcaSpeedToString( speed, numberFormat )
 	if g_gameSettings.useMiles then 
 		u = "mph"
 	end 
-	return string.format( Utils.getNoNil( numberFormat, "%3.0f" ), s ).." "..u 	
+	local f = numberFormat
+	if f == nil then 
+		if math.abs( s ) < 9.95 then 
+			f = "%3.1f" 
+		else 
+			f = "%3.0f"
+		end 
+	end 
+	return string.format( f, s ).." "..u 	
 end 
 
 
@@ -4623,11 +4717,32 @@ function vehicleControlAddon:vcaShowSettingsUI()
 														"4G, R+/-, D/R",
 														"D/R , G+/-, R+/-" }
 														
+	self.vcaUI.vcaHiredWorker = { "off", "only if entered", "always" }
+														
 	self.vcaUI.vcaMaxSpeed = tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed ) )
 	self.vcaUI.vcaSnapDistance = tostring( self.vcaSnapDistance )
 	
+	
+	self.vcaUI.vcaOwnGears   = {}
+	self.vcaUI.vcaOwnRanges  = {}
+	self.vcaUI.vcaOwnGearFactor   = tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed * self.vcaOwnGearFactor ) )
+	self.vcaUI.vcaOwnRangeFactor  = tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed * self.vcaOwnGearFactor * self.vcaOwnRangeFactor ) )
+	self.vcaUI.vcaOwnRangeFactor2 = tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed * self.vcaOwnRangeFactor ) )
+	
+	for i=1,30 do 
+		table.insert( self.vcaUI.vcaOwnGears  , string.format("%d", i ) )
+		table.insert( self.vcaUI.vcaOwnRanges , string.format("%d", i ) )
+	end 
+	
+	self.vcaUI.vcaOwnGearTime  = {}
+	self.vcaUI.vcaOwnRangeTime = {}
+	for i=0,2000,125 do 
+		table.insert( self.vcaUI.vcaOwnGearTime,  string.format( "%4d ms", i ) )
+		table.insert( self.vcaUI.vcaOwnRangeTime, string.format( "%4d ms", i ) )
+	end 
+	
+	g_vehicleControlAddonTabbedMenu:setShowOwnTransmission( self.vcaTransmission == vehicleControlAddonTransmissionBase.ownTransmission )
 	g_gui:showGui( "vehicleControlAddonMenu" )	
-	self:vcaSetState( "vcaKSIsOn", self.vcaKSToggle )
 end
 
 function vehicleControlAddon:vcaUIGetvcaExponent()
@@ -4667,12 +4782,56 @@ function vehicleControlAddon:vcaUIGetvcaMaxSpeed()
 	return self.vcaUI.vcaMaxSpeed
 end 
 function vehicleControlAddon:vcaUISetvcaMaxSpeed( value )
-	self.vcaUI.vcaMaxSpeed = value 
 	local v = vehicleControlAddon.vcaSpeedExt2Int( tonumber( value ) )
-	if type( v ) == "number" and v > 0 then 
+	if type( v ) == "number" and v > 0 and math.abs( v - self.vcaMaxSpeed ) > 0.01 then
+		local g = self.vcaMaxSpeed * self.vcaOwnGearFactor
+		local r = self.vcaMaxSpeed * self.vcaOwnRangeFactor
 		self:vcaSetState( "vcaMaxSpeed", v )
+		self:vcaSetState( "vcaOwnGearFactor",  math.min( g / v, 0.99 ) )
+		self:vcaSetState( "vcaOwnRangeFactor", math.min( r / v, 0.99 ) )
+		self.vcaUI.vcaOwnGearFactor   = tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed * self.vcaOwnGearFactor ) )
+		self.vcaUI.vcaOwnRangeFactor2 = tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed * self.vcaOwnRangeFactor ) )
+		self.vcaUI.vcaOwnRangeFactor  = tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed * self.vcaOwnGearFactor * self.vcaOwnRangeFactor ) )
 	end 
+	self.vcaUI.vcaMaxSpeed = tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed ) )
 end
+
+function vehicleControlAddon:vcaUIGetvcaOwnGearFactor( isCapturingInput )
+	return self.vcaUI.vcaOwnGearFactor
+end 
+function vehicleControlAddon:vcaUISetvcaOwnGearFactor( value )
+	local g = vehicleControlAddon.vcaSpeedExt2Int( tonumber( value  ) )
+	if type( g ) == "number" and g > 0 then
+		self:vcaSetState( "vcaOwnGearFactor",  math.min( g / self.vcaMaxSpeed, 0.99 ) )
+		self.vcaUI.vcaOwnRangeFactor  = tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed * self.vcaOwnGearFactor * self.vcaOwnRangeFactor ) )
+	end 
+	self.vcaUI.vcaOwnGearFactor = tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed * self.vcaOwnGearFactor ) )
+end 
+
+function vehicleControlAddon:vcaUIGetvcaOwnRangeFactor()
+	return self.vcaUI.vcaOwnRangeFactor
+end 
+function vehicleControlAddon:vcaUISetvcaOwnRangeFactor( value )
+	local r = vehicleControlAddon.vcaSpeedExt2Int( tonumber( value ) )
+	if type( r ) == "number" and r > 0 then
+		self:vcaSetState( "vcaOwnRangeFactor", math.min( r / ( self.vcaMaxSpeed * self.vcaOwnGearFactor ), 0.99 ) )
+		self.vcaUI.vcaOwnRangeFactor2 = tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed * self.vcaOwnRangeFactor ) )
+	end 
+	self.vcaUI.vcaOwnRangeFactor = tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed * self.vcaOwnGearFactor * self.vcaOwnRangeFactor ) )
+end 
+
+function vehicleControlAddon:vcaUIGetvcaOwnRangeFactor2()
+	return self.vcaUI.vcaOwnRangeFactor2
+end 
+function vehicleControlAddon:vcaUISetvcaOwnRangeFactor2( value )
+	local r = vehicleControlAddon.vcaSpeedExt2Int( tonumber( value ) )
+	if type( r ) == "number" and r > 0 then
+		self:vcaSetState( "vcaOwnRangeFactor", math.min( r / self.vcaMaxSpeed, 0.99 ) )
+		self.vcaUI.vcaOwnRangeFactor  = tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed * self.vcaOwnGearFactor * self.vcaOwnRangeFactor ) )
+	end 
+	self.vcaUI.vcaOwnRangeFactor2 = tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed * self.vcaOwnRangeFactor ) )
+end 
+
 
 function vehicleControlAddon:vcaUISetvcaHandthrottle( value )
 	if self.vcaUI.vcaHandthrottle_V[value] ~= nil then
@@ -4821,9 +4980,32 @@ function vehicleControlAddon:vcaUIGetvcaSnapDistance()
 	return self.vcaUI.vcaSnapDistance
 end 
 function vehicleControlAddon:vcaUISetvcaSnapDistance( value )
-	self.vcaUI.vcaSnapDistance = value 
 	local v = tonumber( value )
 	if type( v ) == "number" and v > 0 then 
 		self:vcaSetState( "vcaSnapDistance", tonumber( value ) )
 	end 
+	self.vcaUI.vcaSnapDistance = tostring( self.vcaSnapDistance )
+end 
+
+function vehicleControlAddon:vcaUISetvcaTransmission( value )
+	self:vcaSetState("vcaTransmission", value )
+	g_vehicleControlAddonTabbedMenu:setShowOwnTransmission( self.vcaTransmission == vehicleControlAddonTransmissionBase.ownTransmission )
+end 
+
+function vehicleControlAddon:vcaUIGetvcaOwnGearTime() 
+	return vehicleControlAddon.mbClamp( math.floor( self.vcaOwnGearTime / 125 + 0.5 ), 0, 8 )
+end 
+function vehicleControlAddon:vcaUISetvcaOwnGearTime( value )
+	self:vcaSetState( "vcaOwnGearTime", value * 125 )
+end 
+
+function vehicleControlAddon:vcaUIGetvcaOwnRangeTime() 
+	return vehicleControlAddon.mbClamp( math.floor( self.vcaOwnRangeTime / 125 + 0.5 ), 0, 8 )
+end 
+function vehicleControlAddon:vcaUISetvcaOwnRangeTime( value )
+	self:vcaSetState( "vcaOwnRangeTime", value * 125 )
+end 
+
+function vehicleControlAddon:vcaUIGetvcaOwnInfo() 
+	return tostring(self.vcaOwnGears).." x "..tostring(self.vcaOwnRanges)
 end 

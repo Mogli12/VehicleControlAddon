@@ -96,6 +96,10 @@ function VehicleControlAddonFrame:vcaGetValues( force )
 			
 			if     getter == nil then
 				print("Invalid UI element ID: "..tostring(name))
+			elseif element.typeName == "text" then 
+				element:setText( getter( vehicle, false ) )
+			elseif element.typeName == "textInput" and not ( element.isCapturingInput ) then -- and ( force or self.vcaIsDirty )
+				element:setText( getter( vehicle ) )
 			else
 				local value = getter( vehicle )
 				
@@ -119,8 +123,6 @@ function VehicleControlAddonFrame:vcaGetValues( force )
 						i = value 
 					end
 					element:setState( i )
-				elseif element.typeName == "textInput" and ( force or self.vcaIsDirty ) then 
-					element:setText( value )
 				end
 			end
 		end
@@ -217,7 +219,11 @@ function VehicleControlAddonFrame:vcaSetValues( force )
 	self.vcaState.vcaSetValues = false 
 end
 
-function VehicleControlAddonFrame:vcaOnTextChanged( element )
+function VehicleControlAddonFrame:vcaOnEnterPressed( element )
+	self:vcaOnTextChanged( element, element:getText() )
+end 
+
+function VehicleControlAddonFrame:vcaOnTextChanged( element, text )
 	if self.vcaState.vcaOnTextChanged or self.vcaState.vcaGetValues then
 		return 
 	end 
@@ -233,7 +239,6 @@ function VehicleControlAddonFrame:vcaOnTextChanged( element )
 	end 
 	
 	self.vcaState.vcaOnTextChanged = true  
-	self.vcaIsDirty = true 
 	
 	local vehicle = g_currentMission.controlledVehicle
 	local name = element.id
@@ -248,9 +253,10 @@ function VehicleControlAddonFrame:vcaOnTextChanged( element )
 	if     setter == nil then
 		print("Invalid UI element ID: "..tostring(name))
 	else 
-		setter( vehicle, element:getText() )
+		setter( vehicle, text )
 	end 
 	
+	self.vcaIsDirty = true 
 	self.vcaState.vcaOnTextChanged = false 
 end 
 
@@ -298,7 +304,7 @@ function VehicleControlAddonFrame:onCreateSubElement( element, parameter )
 		end
 	end
 	if checked then
-		self.vcaElements[element.id] = { element=element, parameter=parameter }
+		self.vcaElements[element.id] = { element=element, parameter=Utils.getNoNil( parameter, "" ) }
 	else	
 		print("Error inserting UI element with ID: "..tostring(element.id))
 	end			

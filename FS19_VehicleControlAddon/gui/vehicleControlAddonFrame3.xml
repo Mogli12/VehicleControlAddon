@@ -5,8 +5,9 @@
 		<GuiElement type="bitmap" profile="ingameMenuSettingsBox" position="130px -124px" id="container">
 			<GuiElement id="boxLayout1" type="boxLayout" profile="vcaSettingsLayoutLeft">
 
-				<GuiElement type="checkedOption" profile="vcaMTOSettings" id="vcaShuttleCtrl" toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_SHUTTLE" onCreate="onCreateSubElement" 
-												onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="310" focusChangeTop="250" focusChangeBottom="320">										
+				<GuiElement type="checkedOption" profile="vcaMTOSettings" id="vcaShuttleCtrl" 
+												toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_SHUTTLE"
+												onCreate="onCreateSubElement" >										
 					<GuiElement type="button" profile="vcaMTOLeft" />
 					<GuiElement type="button" profile="vcaMTORight"/>
 					<GuiElement type="text" profile="vcaMTOText" />
@@ -14,8 +15,9 @@
 					<GuiElement type="bitmap" profile="vcaMTOBg" />
 				</GuiElement>
 
-				<GuiElement type="multiTextOption" profile="vcaMTOSettings" id="vcaTransmission" toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_TRANSMISSION" onCreate="onCreateSubElement" onCreateArgs="list0"
-												onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="320" focusChangeTop="310" focusChangeBottom="330">
+				<GuiElement type="multiTextOption" profile="vcaMTOSettings" id="vcaTransmission"
+												toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_TRANSMISSION"
+												onCreate="onCreateSubElement" onCreateArgs="list0">
 					<GuiElement type="button" profile="vcaMTOLeft" />
 					<GuiElement type="button" profile="vcaMTORight"/>
 					<GuiElement type="text" profile="vcaMTOText" />
@@ -24,25 +26,24 @@
 				</GuiElement>
 				
 				<GuiElement type="textInput" profile="ingameMenuGameSettingsTextInput" id="vcaMaxSpeed" onCreate="onCreateSubElement" 
-										toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_MAXSPEED" maxCharacters="5"
-										imeKeyboardType="normal" onTextChanged="vcaOnTextChanged">
+										toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_MAXSPEED"
+										maxCharacters="5" imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed">
 					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaMAXSPEED"/>
 				</GuiElement>
 				
-				<GuiElement type="checkedOption" profile="vcaMTOSettings" id="vcaAutoShift" toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_AUTOSHIFT" onCreate="onCreateSubElement"
-												onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="340" focusChangeTop="330" focusChangeBottom="350">
+				<GuiElement type="checkedOption" profile="vcaMTOSettings" id="vcaAutoShift"
+												toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_AUTOSHIFT"
+												onCreate="onCreateSubElement">
 					<GuiElement type="button" profile="vcaMTOLeft" />
 					<GuiElement type="button" profile="vcaMTORight"/>
 					<GuiElement type="text" profile="vcaMTOText" />
 					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaAUTOSHIFT"/>
 					<GuiElement type="bitmap" profile="vcaMTOBg" />
 				</GuiElement>
-			</GuiElement>
-			
-			
-			<GuiElement id="boxLayout2" type="boxLayout" profile="vcaSettingsLayoutMid">
-				<GuiElement type="checkedOption" profile="vcaMTOSettings" id="vcaLimitSpeed" toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_LIMSPEED" onCreate="onCreateSubElement"
-												onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="350" focusChangeTop="340" focusChangeBottom="360">
+
+				<GuiElement type="checkedOption" profile="vcaMTOSettings" id="vcaLimitSpeed" 
+												toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_LIMSPEED"
+												onCreate="onCreateSubElement">
 					<GuiElement type="button" profile="vcaMTOLeft" />
 					<GuiElement type="button" profile="vcaMTORight"/>
 					<GuiElement type="text" profile="vcaMTOText" />
@@ -50,14 +51,69 @@
 					<GuiElement type="bitmap" profile="vcaMTOBg" />
 				</GuiElement>
 
-				<GuiElement type="checkedOption" profile="vcaMTOSettings" id="vcaAutoClutch" toolTipElementId="mogliToolTipBoxText" toolTipText="AutoClutch" onCreate="onCreateSubElement"
-												onFocus="mogliFocusToolTip" onLeave="mogliLeaveToolTip" focusId="370" focusChangeTop="360" focusChangeBottom="410">
+			</GuiElement>			
+			<GuiElement id="boxLayout2" type="boxLayout" profile="vcaSettingsLayoutMid">
+
+				<GuiElement type="checkedOption" profile="vcaMTOSettings" id="vcaAutoClutch"
+												toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_AUTOCLUTCH"
+												onCreate="onCreateSubElement">
 					<GuiElement type="button" profile="vcaMTOLeft" />
 					<GuiElement type="button" profile="vcaMTORight"/>
 					<GuiElement type="text" profile="vcaMTOText" />
-					<GuiElement type="text" profile="vcaMTOTitle" text="AutoClutch"/>
+					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaAUTOCLUTCH"/>
 					<GuiElement type="bitmap" profile="vcaMTOBg" />
 				</GuiElement>
+
+				<!--GuiElement type="checkedOption" profile="vcaMTOSettings" id="vcaTurboClutch"
+												toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_TURBOCLUTCH"
+												onCreate="onCreateSubElement">
+					<GuiElement type="button" profile="vcaMTOLeft" />
+					<GuiElement type="button" profile="vcaMTORight"/>
+					<GuiElement type="text" profile="vcaMTOText" />
+					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaTURBOCLUTCH"/>
+					<GuiElement type="bitmap" profile="vcaMTOBg" />
+				</GuiElement-->
+
+				<GuiElement type="multiTextOption" profile="vcaMTOSettings" id="vcaGearRatioF"
+												toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_GEARRATIOF"
+												onCreate="onCreateSubElement" onCreateArgs="callback">
+					<GuiElement type="button" profile="vcaMTOLeft" />
+					<GuiElement type="button" profile="vcaMTORight"/>
+					<GuiElement type="text" profile="vcaMTOText" />
+					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaGEARRATIOF"/>
+					<GuiElement type="bitmap" profile="vcaMTOBg" />
+				</GuiElement>			
+ 
+				<GuiElement type="multiTextOption" profile="vcaMTOSettings" id="vcaGearRatioT"
+												toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_GEARRATIOT"
+												onCreate="onCreateSubElement" onCreateArgs="callback">
+					<GuiElement type="button" profile="vcaMTOLeft" />
+					<GuiElement type="button" profile="vcaMTORight"/>
+					<GuiElement type="text" profile="vcaMTOText" />
+					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaGEARRATIOT"/>
+					<GuiElement type="bitmap" profile="vcaMTOBg" />
+				</GuiElement>			
+				
+				<GuiElement type="multiTextOption" profile="vcaMTOSettings" id="vcaG27Mode"
+												toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_G27MODE"
+												onCreate="onCreateSubElement" onCreateArgs="list0">
+					<GuiElement type="button" profile="vcaMTOLeft" />
+					<GuiElement type="button" profile="vcaMTORight"/>
+					<GuiElement type="text" profile="vcaMTOText" />
+					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaG27MODE"/>
+					<GuiElement type="bitmap" profile="vcaMTOBg" />
+				</GuiElement>			
+
+				<GuiElement type="multiTextOption" profile="vcaMTOSettings" id="vcaHiredWorker"
+												toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_HIREDWORKER"
+												onCreate="onCreateSubElement" onCreateArgs="list0">
+					<GuiElement type="button" profile="vcaMTOLeft" />
+					<GuiElement type="button" profile="vcaMTORight"/>
+					<GuiElement type="text" profile="vcaMTOText" />
+					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaHIREDWORKER"/>
+					<GuiElement type="bitmap" profile="vcaMTOBg" />
+				</GuiElement>
+
 			</GuiElement>			
 			
 			<GuiElement id="vcaHelp" type="text" profile="vcaHelpText" text="$l10n_vca_Help_3" />				

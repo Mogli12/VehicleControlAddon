@@ -17,7 +17,7 @@
 		<text name="vcaANGLE"           text="Rastersteuerung"/>
 		<text name="vcaBRAKE"           text="Niedrige Bremskraft"/>
 		<text name="vcaTRANSMISSION"    text="Getriebe"/>
-		<text name="vcaMAXSPEED"        text="Übersetzung"/>
+		<text name="vcaMAXSPEED"        text="Übersetzung höchster Gang"/>
 		<text name="vcaLIMSPEED"        text="Geschwindigkeitsbegrenzer"/>
 		<text name="vcaAUTOSHIFT"       text="Automatik"/>
 		<text name="vcaLAUNCH"          text="Startgang"/>
@@ -27,29 +27,67 @@
 		<text name="vcaPITCH"           text="Tonhöhe bei Maximaldrehzahl"/>
 		<text name="vcaSETTINGS"        text="Einstellungen"/>
 		<text name="vcaDRAWHUD"         text="Getriebe HUD"/>
+		
+		<text name="vcaDISTANCE"        text="Arbeitsbreite"/>
+		<text name="vcaDRAWMARKER"      text="Anzeige der Rasterbahn"/>
+		<text name="vcaPITCH1"          text="Lineare Tonhöhe"/>
+		<text name="vcaPITCH2"          text="Tonhöhe bei mittlerer Drehzahl"/>
+		<text name="vcaAUTOCLUTCH"      text="Automatische Kupplung"/>
+		<text name="vcaTURBOCLUTCH"     text="Strömungskupplung"/>
+		<text name="vcaGEARRATIOF"      text="Min. Ganggeschwindigkeit"/>
+		<text name="vcaGEARRATIOT"      text="Max. Ganggeschwindigkeit"/>
+		<text name="vcaG27MODE"         text="G27/G29 Schaltschema"/>
+		<text name="vcaHIREDWORKER"     text="Getriebe und Helfer"/>
+		<text name="vcaOWNMINSPEED"     text="Übersetzung 1. Gang"/>
+		<text name="vcaOWNMINRANGE"     text="Übersetzung 1. Gang in vorletzer Gruppe"/>
+		<text name="vcaOWNMAXRANGE"     text="Übersetzung vorletzer Gruppe"/>
+		<text name="vcaOWNGEARS"        text="Anzahl Gänge"/>
+		<text name="vcaOWNRANGES"       text="Anzahl Gruppen"/>
+		<text name="vcaOWNGEARTIME"     text="Schaltgeschwindigkeit Gänge"/>
+		<text name="vcaOWNRANGETIME"    text="Schaltgeschwindigkeit Gruppen"/>
+		<text name="vcaOWNAUTOGEARS"    text="Automatische Gänge"/>
 		                                
-		<text name="vca_tip_CAMERAI"    text="Die innere Kamera dreht sich passend zum Lenkeinschlag automatisch mit."/>
-		<text name="vca_tip_CAMERAO"    text="Die äußere Kamera dreht sich passend zum Lenkeinschlag automatisch mit."/>
-		<text name="vca_tip_EXPONENT"   text="Geschwindigkeitsabhängigkeit der adaptiven Lenkung"/>
-		<text name="vca_tip_STEERING"   text="Die adaptive Lenkung verändert je nach Geschwindigkeit die Rückstellgeschwindigkeit und den maximalen Lenkwinkel"/>
-		<text name="vca_tip_SHUTTLE"    text="Fahrtrichtung mit Leertaste wechseln"/>
-		<text name="vca_tip_REVERSEI"   text="Beim Wechsel zwischen Vorwärts- und Rückwärtsfahrt wird automatisch die innere Kamera um 180° gedrecht"/>
-		<text name="vca_tip_REVERSEO"   text="Beim Wechsel zwischen Vorwärts- und Rückwärtsfahrt wird automatisch die äußere Kamera um 180° gedrecht"/>
-		<text name="vca_tip_LIMIT"      text="Gasbegrenzer mit linker Umschalttaste"/>
-		<text name="vca_tip_PEEKLR"     text="Mit Umschalt-Rechts und Pfeiltasten nur einen kurzen Blick nach hinten/rechts/links werfen"/>
-		<text name="vca_tip_ANGLE"      text="Automatisch in Richtung des Einrastwinkels lenken"/>
-		<text name="vca_tip_BRAKE"      text="Niedrige Bremskraft in Prozent / Rollwiderstand"/>
+		<text name="vca_tip_CAMERAI"      text="Die innere Kamera dreht sich passend zum Lenkeinschlag automatisch mit."/>
+		<text name="vca_tip_CAMERAO"      text="Die äußere Kamera dreht sich passend zum Lenkeinschlag automatisch mit."/>
+		<text name="vca_tip_EXPONENT"     text="Geschwindigkeitsabhängigkeit der adaptiven Lenkung"/>
+		<text name="vca_tip_STEERING"     text="Die adaptive Lenkung verändert je nach Geschwindigkeit die Rückstellgeschwindigkeit und den maximalen Lenkwinkel"/>
+		<text name="vca_tip_SHUTTLE"      text="Fahrtrichtung mit Leertaste wechseln"/>
+		<text name="vca_tip_REVERSEI"     text="Beim Wechsel zwischen Vorwärts- und Rückwärtsfahrt wird automatisch die innere Kamera um 180° gedrecht"/>
+		<text name="vca_tip_REVERSEO"     text="Beim Wechsel zwischen Vorwärts- und Rückwärtsfahrt wird automatisch die äußere Kamera um 180° gedrecht"/>
+		<text name="vca_tip_LIMIT"        text="Gasbegrenzer mit linker Umschalttaste"/>
+		<text name="vca_tip_PEEKLR"       text="Mit Umschalt-Rechts und Pfeiltasten nur einen kurzen Blick nach hinten/rechts/links werfen"/>
+		<text name="vca_tip_ANGLE"        text="Automatisch in Richtung des Einrastwinkels lenken"/>
+		<text name="vca_tip_BRAKE"        text="Niedrige Bremskraft in Prozent / Rollwiderstand"/>
 		<text name="vca_tip_TRANSMISSION" text="Typ des Getriebes; IVT ist ein stufenloses Getriebe, die anderen Getriebe haben 12 verschiedene Gänge, 2x6 eignet sich am besten für LKWs"/>
-		<text name="vca_tip_MAXSPEED"   text="Höchstgeschwindigkeit, die im höchsten Gang erreicht werdern kann"/>
-		<text name="vca_tip_LIMSPEED"   text="Begrenzung der Höchtstgeschwindigkeit auf den Standardwert des Fahrzeugs"/>
-		<text name="vca_tip_AUTOSHIFT"  text="Automatische Schaltung von Gängen und Gruppen"/>
-		<text name="vca_tip_LAUNCH"     text="Geschwindigkeit des Ganges, der zum Anfahren benutzt wird"/>
-		<text name="vca_tip_KEEPSPEED"  text="Falls ständiges Halten der Geschwindigkeit aktiviert ist, dann fährt das Fahrzeug quasi immer mit Tempomat. Das entspricht dem Fahrhebel in modernen Traktoren."/>
-		<text name="vca_tip_NO_ARB"      text="Falls freies Lenken aktiviert ist, dann lenkt das Fahrzeug nicht selbständig zurück auf Geradeaus"/>
+		<text name="vca_tip_MAXSPEED"     text="Maximale Geschwindigkeit, die im höchsten Gang (theoretisch) erreicht werdern kann"/>
+		<text name="vca_tip_LIMSPEED"     text="Begrenzung der Höchtstgeschwindigkeit auf den Standardwert des Fahrzeugs"/>
+		<text name="vca_tip_AUTOSHIFT"    text="Automatische Schaltung von Gängen und Gruppen"/>
+		<text name="vca_tip_LAUNCH"       text="Geschwindigkeit des Ganges, der zum Anfahren benutzt wird"/>
+		<text name="vca_tip_KEEPSPEED"    text="Falls ständiges Halten der Geschwindigkeit aktiviert ist, dann fährt das Fahrzeug quasi immer mit Tempomat. Das entspricht dem Fahrhebel in modernen Traktoren."/>
+		<text name="vca_tip_NO_ARB"       text="Falls freies Lenken aktiviert ist, dann lenkt das Fahrzeug nicht selbständig zurück auf Geradeaus"/>
 		<text name="vca_tip_HANDTHROTTLE" text="Der Motor beschleunigt automatisch bis zur gewählten Drehzahl"/>
-		<text name="vca_tip_PITCH"      text="Tonhöhe bei Maximaldrehzahl"/>
-		<text name="vca_tip_DRAWHUD"    text="HUD für Getriebe ein-/ausblenden"/>
-
+		<text name="vca_tip_PITCH"        text="Tonhöhe bei Maximaldrehzahl"/>
+		<text name="vca_tip_DRAWHUD"      text="HUD für Getriebe ein-/ausblenden"/>
+		
+		<text name="vca_tip_DISTANCE"     text="Abstand zwischen zwei Rasterbahnen"/>
+		<text name="vca_tip_DRAWMARKER"   text="Anzeige der aktuellen Rasterbahn"/>
+		<text name="vca_tip_PITCH1"       text="Neuberechnung der Tonhöhe, damit sie linear verläuft"/>
+		<text name="vca_tip_PITCH2"       text="Tonhöhe bei mittlerer Drehzahl"/>
+		<text name="vca_tip_AUTOCLUTCH"   text="Automatische Betätigung der Kupplung"/>
+		<text name="vca_tip_TURBOCLUTCH"  text="Zusätzliche Strömungskupplung"/>
+		<text name="vca_tip_GEARRATIOF"   text="Begrenzung der Ganggeschwindigkeit. Es wird kein kleiner Gang automatisch ausgewählt"/>
+		<text name="vca_tip_GEARRATIOT"   text="Begrenzung der Ganggeschwindigkeit. Es wird kein größerer Gang automatisch ausgewählt"/>
+		<text name="vca_tip_G27MODE"      text="G27/G29 Schaltschema"/>
+		<text name="vca_tip_HIREDWORKER"  text="Steuert, ob das Getriebe ein- oder ausgeschaltet wird, wenn das Fahrzeug vom Helfer kontrolliert wird"/>
+		<text name="vca_tip_OWNMINSPEED"  text="Maximale Geschwindigkeit, die im ersten Gang erreicht werdern kann"/>
+		<text name="vca_tip_OWNMINRANGE"  text="Maximale Geschwindigkeit, die in der zweithöchsten Gruppe im ersten Gang erreicht werdern kann"/>
+		<text name="vca_tip_OWNMAXRANGE"  text="Maximale Geschwindigkeit, die in der zweithöchsten Gruppe im höchsten Gang erreicht werdern kann"/>
+		<text name="vca_tip_OWNGEARS"     text="Anzahl Gänge"/>
+		<text name="vca_tip_OWNRANGES"    text="Anzahl Gruppen"/>
+		<text name="vca_tip_OWNGEARTIME"  text="Schaltgeschwindigkeit Gänge"/>
+		<text name="vca_tip_OWNRANGETIME" text="Schaltgeschwindigkeit Gruppen"/>
+		<text name="vca_tip_OWNAUTOGEARS" text="Automatische Schaltung von Gängen und Speedmatching"/>
+		
 		<text name="input_vcaSETTINGS"  text="VCA: Einstellungen"/>
 		<text name="input_vcaUP"        text="VCA: Blickrichtung wechseln oder nach vorne schauen"/>
 		<text name="input_vcaDOWN"      text="VCA: In die andere Richtung blicken / nach hinten schauen"/>
@@ -96,26 +134,32 @@
 		<longText name="vca_Help_1">
 <![CDATA[Dieses Script variiert abhängig von der gefahrenen Geschwindigkeit die Lenkgeschwindigkeit und dreht die Kamera passend zum Lenkeinschlag und zur Fahrtrichtung. 
 
-Mit Umschalt-Llinks wird das Gaspedal, der Tempomat und die maximale Drehzahl auf 75% begrenzt. Mit Umschalt-Rechts und den Pfeiltasten kann man in die entsprechende Richtung blicken. 
+Mit Umschalt-Rechts und den Pfeiltasten kann man in die entsprechende Richtung blicken.
 
 Drückt man Strg Links zusammen mit W, dann richtet sich die Fahrtrichtung an festen Richtungen aus.
 
 Alle Funktionen lassen sich auch wieder ausschalten.]]>
 		</longText>
 		<longText name="vca_Help_2">
-<![CDATA[2
-2]]>
+<![CDATA[Mit Umschalt-Llinks wird das Gaspedal, der Tempomat und die maximale Drehzahl auf 75% begrenzt.
+
+Drückt man die Taste entf, dann hält das Fahrzeug die aktuelle Geschwindigkeit. Wie bei modernen Traktoren auch, kann man diese Funktion auch permanent einschalten und per entf dann zeitweise ausschalten.
+
+Durch die Änderungen an der Tonhöhe kann man die aktuelle Drehzahl besser hören.]]>
 		</longText>
 		<longText name="vca_Help_3">
-<![CDATA[3
-3
-3]]>
+<![CDATA[Getriebe]]>
 		</longText>
-		<longText name="vca_Help_4">
-<![CDATA[4
-4
-4
-4]]>
+		<longText name="vca_Help_5">
+<![CDATA[Bau Dir Dein eigenes Getriebe
+
+Hier kann man sich sein eigenes Getriebe konfigurieren. Gänge können automatisch geschaltet werden. Daher sind Lastschaltstufen am besten immer Gänge. 
+
+Die Übersetzung des höchsten Gangs ist die theoretische Endgeschwindigkeit bei ausgeschaltetem Begrenzer. Die Höchstgeschwindigkeit im 1. Gang der höchsten Gruppe bestimmt
+das Verhältnis der Gänge untereinander. 
+
+Die Höchstgeschwindigkeiten in der vorletzten Gruppe sind redundant. Man muss nur einen von beiden Werten eingeben. Der andere wird automatisch angepasst.
+]]>
 		</longText>
 	</longTexts>
 </l10n>

@@ -738,7 +738,8 @@ vehicleControlAddonTransmissionBase.transmissionList =
 		{ class  = vehicleControlAddonTransmissionBase, 
 			params = { name               = "4x4", 
                  noGears            = 4, 
-                 rangeGearOverlap   = {2,1,1}, 1000,
+                 rangeGearOverlap   = {2,1,1}, 
+								 timeRanges         = 1000,
 								 autoRanges´        = false,
 								 speedMatching      = false },
 			text   = "4x4" },
@@ -821,8 +822,16 @@ vehicleControlAddonTransmissionBase.transmissionList =
                  rangeTexts         = {"A","B","C","D"}, 
                  shifterIndexList   = { 7, 9, 13, 15, 17, 18, 19, 20, 21, 22, 23, 24, 13, 17 } },
 			text   = "4x6 HexaShift" },
+		{ class  = vehicleControlAddonTransmissionBase, 
+			params = { name               = "OWN", 
+                 noGears            = 1, 
+                 rangeGearOverlap   = {},
+								 autoRanges´        = false,
+								 autoGears          = true,
+								 speedMatching      = true },
+			text   = "own configuration" },
 	}
-	
+vehicleControlAddonTransmissionBase.ownTransmission = table.getn( vehicleControlAddonTransmissionBase.transmissionList )
 function vehicleControlAddonTransmissionBase.loadSettings()
 
 	local file = getUserProfileAppPath().. "modsSettings/FS19_VehicleControlAddon/transmissions.xml"
