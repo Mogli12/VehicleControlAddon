@@ -3055,10 +3055,11 @@ function vehicleControlAddon:vcaGetSmoothedAcceleratorAndBrakePedals( superFunc,
 	if      self.vcaIsLoaded
 			and self:vcaIsVehicleControlledByPlayer()
 			and self.vcaBrakePedal ~= nil
-			-- limit for automaticBrake is 0.001; take 0.003 to be on the safe side 
-			and ( math.abs( acceleratorPedal ) >= 0.003
-			   or self:vcaGetNeutral() 
-				 or self.vcaBrakePedal >= 0.003 ) then 
+		---- limit for automaticBrake is 0.001; take 0.003 to be on the safe side 
+		--and ( math.abs( acceleratorPedal ) >= 0.003
+		--   or self:vcaGetNeutral() 
+		--	 or self.vcaBrakePedal >= 0.003 ) 
+			then 
 		brakePedal = self.vcaBrakePedal
 	end 
 	
