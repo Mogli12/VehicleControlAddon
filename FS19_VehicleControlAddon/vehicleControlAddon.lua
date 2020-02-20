@@ -1003,8 +1003,9 @@ function vehicleControlAddon:onLeaveVehicle()
 			self:vcaSetState( "vcaNeutral", false )
 		end 
 		self:vcaSetState( "vcaCamFwd", true )
-		self.vcaMovingDir  = 1
-		self.vcaKeepCamRot = false 
+		self.vcaMovingDir     = 1
+		self.vcaKeepCamRot    = false 
+		self.vcaClutchPercent = 0
 	end 
 
 	self.vcaIsEntered  = false 
