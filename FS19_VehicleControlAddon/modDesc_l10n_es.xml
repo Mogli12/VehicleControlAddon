@@ -27,6 +27,25 @@
 		<text name="vcaSETTINGS"        text="Ajustes"/>
 		<text name="vcaDRAWHUD"         text="HUD Transmisión"/>
 		                                
+		<text name="vcaDISTANCE"        text="Ancho de trabajo"/>
+		<text name="vcaDRAWMARKER"      text="Dibujar marcador rápido conducción"/>
+		<text name="vcaPITCH1"          text="Tono de sonido lineal"/>
+		<text name="vcaPITCH2"          text="Sonido A Medias RPM"/>
+		<text name="vcaAUTOCLUTCH"      text="Embrague Automático"/>
+		<text name="vcaTURBOCLUTCH"     text="Embrague Turbo"/>
+		<text name="vcaGEARRATIOF"      text="Limite Velocidad Min."/>
+		<text name="vcaGEARRATIOT"      text="Limite Velocidad Max."/>
+		<text name="vcaG27MODE"         text="Modo G27/G29"/>
+		<text name="vcaHIREDWORKER"     text="Transmisiones y empleados"/>
+		<text name="vcaOWNMINSPEED"     text="Velocidad 1º Marcha"/>
+		<text name="vcaOWNMINRANGE"     text="Velocidad 1º Marcha y rango -"/>
+		<text name="vcaOWNMAXRANGE"     text="Velocidad Max. y rango -"/>
+		<text name="vcaOWNGEARS"        text="Numero de marchas"/>
+		<text name="vcaOWNRANGES"       text="Numero de rangos"/>
+		<text name="vcaOWNGEARTIME"     text="Tiempo para cambio de marchas"/>
+		<text name="vcaOWNRANGETIME"    text="Tiempo para cambiar de rango"/>
+		<text name="vcaOWNAUTOGEARS"    text="Marchas automáticas"/>
+		                                
 		<text name="vca_tip_CAMERAI"    text="La cámara interior gira automáticamente acorde al ángulo de giro."/>
 		<text name="vca_tip_CAMERAO"    text="La cámara esterior gira automáticamente acorde al ángulo de giro."/>
 		<text name="vca_tip_EXPONENT"   text="Sensibilidad de la dirección adaptativa respecto a la velocidad de avance."/>
@@ -48,6 +67,25 @@
 		<text name="vca_tip_HANDTHROTTLE" text="El motor acelera automáticamente para alcanzar la aceleración de rpm."/>
 		<text name="vca_tip_PITCH"      text="Tono de sonido máximo por RPM"/>
 		<text name="vca_tip_DRAWHUD"    text="Muestra u oculta el HUD de la transmisión."/>
+		                               
+		<text name="vca_tip_DISTANCE"     text="Distance between two snap driving rows"/>
+		<text name="vca_tip_DRAWMARKER"   text="Dibujar marcadores rápidos para conducción"/>
+		<text name="vca_tip_PITCH1"       text="Modificación del tono del sonido para hacerlo lineal."/>
+		<text name="vca_tip_PITCH2"       text="Tono de sonido a medias RPM"/>
+		<text name="vca_tip_AUTOCLUTCH"   text="Embrague automático"/>
+		<text name="vca_tip_TURBOCLUTCH"  text="Embrague adicional del turbo"/>
+		<text name="vca_tip_GEARRATIOF"   text="Límite de velocidad mínimo de la marcha"/>
+		<text name="vca_tip_GEARRATIOT"   text="Límite de velocidad máximo de la marcha"/>
+		<text name="vca_tip_G27MODE"      text="Modo de cambio G27/G29"/>
+		<text name="vca_tip_HIREDWORKER"  text="Controles si el trabajador contratado maneja el vehículo con transmisión del juego o modificada."/>
+		<text name="vca_tip_OWNMINSPEED"  text="Velocidad de la primera marcha en el rango más alto."/>
+		<text name="vca_tip_OWNMINRANGE"  text="Velocidad de la primera marcha en el segundo rango más alto."/>
+		<text name="vca_tip_OWNMAXRANGE"  text="Velocidad máxima en el segundo rango más alto."/>
+		<text name="vca_tip_OWNGEARS"     text="Numero de marchas."/>
+		<text name="vca_tip_OWNRANGES"    text="Numero de rangos."/>
+		<text name="vca_tip_OWNGEARTIME"  text="Tiempo para el cambio entre marchas."/>
+		<text name="vca_tip_OWNRANGETIME" text="Tiempo para el cambio entre rangos."/>
+		<text name="vca_tip_OWNAUTOGEARS" text="Ajuste de velocidad y marchas automáticos."/>
 		                               
 		<text name="input_vcaSETTINGS"  text="VCA: Ajustes"/>
 		<text name="input_vcaUP"        text="VCA: Alternar dirección de vista/bloquear hacia delante."/>
