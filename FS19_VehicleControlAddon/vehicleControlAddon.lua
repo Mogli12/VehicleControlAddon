@@ -1527,15 +1527,12 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 			self.vcaGearbox:setVehicle( self )
 		end 
 		
-		if self.isServer and lt == nil or lt <= 1 then 
-			vehicleControlAddon.mpDebugPrint( self, "New launch gear index: "..tostring(VCAGlobals.launchGear))
-			self:vcaSetState( "vcaLaunchGear", VCAGlobals.launchGear, noEventSend )
-		end 
-		
-		if self.isServer then
+		if self.isServer then		
 			if self.vcaGearbox ~= nil then 
-				if      lt ~= nil and lt >= 1
-						and self.vcaGear ~= nil  and self.vcaGear  > 0
+				if lt == nil or lt <= 1 then 
+					vehicleControlAddon.mpDebugPrint( self, "New launch gear index: "..tostring(VCAGlobals.launchGear))
+					self:vcaSetState( "vcaLaunchGear", VCAGlobals.launchGear, noEventSend )
+				elseif  self.vcaGear  ~= nil and self.vcaGear  > 0
 						and self.vcaRange ~= nil and self.vcaRange > 0
 						then  
 					if self.vcaLastGearRange == nil then 
