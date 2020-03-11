@@ -170,11 +170,11 @@ end
 
 function vehicleControlAddonTransmissionBase:getGearText( gear, range )
 	if self.rangeTexts[range] ~= nil and self.gearTexts[gear] ~= nil then 
-		return self.rangeTexts[range].." "..self.gearTexts[gear]
+		return tostring(self.rangeTexts[range]).." "..tostring(self.gearTexts[gear])
 	elseif self.rangeTexts[range] ~= nil then 
-		return self.rangeTexts[range] ~= nil 
+		return tostring(self.rangeTexts[range])
 	elseif self.gearTexts[gear] then 
-		return self.gearTexts[gear]
+		return tostring(self.gearTexts[gear])
 	end 
 	return ""
 end 

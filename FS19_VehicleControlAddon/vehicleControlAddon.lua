@@ -2254,7 +2254,7 @@ function vehicleControlAddon:onDraw()
 				local gear  = self.vcaGearbox:getRatioIndex( self.vcaGear, self.vcaRange )		
 				local ratio = self.vcaGearbox:getGearRatio( gear )
 				local maxSpeed = 0
-				local text 
+				local text  
 				local l2    = l
 				if gear ~= nil and ratio ~= nil and self.vcaMaxSpeed ~= nil then 
 					maxSpeed = ratio * self.vcaMaxSpeed
