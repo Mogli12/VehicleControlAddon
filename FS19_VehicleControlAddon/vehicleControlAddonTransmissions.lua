@@ -243,7 +243,9 @@ function vehicleControlAddonTransmissionBase:rangeSpeedMatching( noSpeedMatching
 			and self.speedMatching
 			and not self.vehicle.vcaShifterUsed
 			and self.rangeGearFromTo[self.vehicle.vcaRange] ~= nil 
-			and not ( noSpeedMatching ) then 
+			and not ( noSpeedMatching )
+			and not self.vehicle:vcaGetAutoHold()
+			then
 		return true 
 	end 
 	return false 

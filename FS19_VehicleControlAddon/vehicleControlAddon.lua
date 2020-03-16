@@ -99,6 +99,7 @@ local listOfProperties =
 		{ getFunc=getXMLInt,   setFunc=setXMLInt  , xmlName="ownGearTime",   propName="vcaOwnGearTime"   },
 		{ getFunc=getXMLInt,   setFunc=setXMLInt  , xmlName="ownRangeTime",  propName="vcaOwnRangeTime"  },
 		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="ownAutoGears",  propName="vcaOwnAutoGears"  },
+		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="blowOffVolume", propName="vcaBlowOffVolume" },
 	}
 
 
@@ -133,6 +134,7 @@ function vehicleControlAddon.globalsReset( createIfMissing )
   VCAGlobals.transmission        = 0
   VCAGlobals.launchGear          = 0
 	VCAGlobals.clutchTimer         = 0
+	VCAGlobals.clutchTimerAdd      = 0
 	VCAGlobals.clutchTimerIdle     = 0
  	VCAGlobals.debugPrint          = false
  	VCAGlobals.mouseAutoRotateBack = false
@@ -369,6 +371,7 @@ function vehicleControlAddon:onLoad(savegame)
 	vehicleControlAddon.registerState( self, "vcaSnapFactor",   0 )
 	vehicleControlAddon.registerState( self, "vcaModifyPitch",  VCAGlobals.modifyPitch )
 	vehicleControlAddon.registerState( self, "vcaHiredWorker",  VCAGlobals.hiredWorker )
+	vehicleControlAddon.registerState( self, "vcaBlowOffVolume",0.5 )
 	
 	vehicleControlAddon.registerState( self, "vcaOwnGearFactor" , 0.4096, function( self, ... ) vehicleControlAddon.vcaOnSetOwn( self, "vcaOwnGearFactor" , ... ) end )
 	vehicleControlAddon.registerState( self, "vcaOwnRangeFactor", 0.4096, function( self, ... ) vehicleControlAddon.vcaOnSetOwn( self, "vcaOwnRangeFactor", ... ) end )
@@ -3721,16 +3724,16 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 					
 		if self.vcaClutchTimer == nil  then 
 			self.vcaClutchTimer = VCAGlobals.clutchTimer
-			self.vcaClutchAdd   = VCAGlobals.clutchTimer 
+			self.vcaClutchAdd   = VCAGlobals.clutchTimerAdd 
 		elseif self.vcaClutchTimer > 0 then 
 			local f = VCAGlobals.clutchTimer / VCAGlobals.clutchTimerIdle
 			if self.vcaClutchTimer >= VCAGlobals.clutchTimer or self.vcaClutchAdd == nil then
-				self.vcaClutchAdd   = VCAGlobals.clutchTimer 
+				self.vcaClutchAdd   = VCAGlobals.clutchTimerAdd 
 			end 
 			if lastFakeRpm < clutchCloseRpm and self.vcaClutchTimer < VCAGlobals.clutchTimer then 
 				if self.vcaClutchAdd > 0 then 
 					self.vcaClutchAdd = self.vcaClutchAdd - dt 
-					f = -3
+					f = -2
 				end 
 			elseif curAcc >= 0.9 then 
 				f = 1
@@ -4066,8 +4069,10 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			end
 			self.vcaNoShiftTimer = 1000 
 		elseif motorRpm < 0.8 * self.minRpm and not self.vcaAutoStop and self.vcaFakeRpm == nil then 
-			if curBrake > 0.1 or self.vehicle.vcaTurboClutch then   
-				self.vcaClutchTimer = math.max( self.vcaClutchTimer, 0.8 * self.vcaClutchTimer )
+			if     curBrake > 0.1 then   
+				self.vcaClutchTimer = math.max( self.vcaClutchTimer, VCAGlobals.clutchTimer - 1 )
+			elseif self.vehicle.vcaTurboClutch then   
+				self.vcaClutchTimer = math.max( self.vcaClutchTimer, 0.9 * VCAGlobals.clutchTimer )
 			else 
 				if lastStallTimer == nil then 
 					self.vcaStallTimer = dt
@@ -4081,8 +4086,10 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 					self.vehicle.vcaForceStopMotor = 2000
 				end 
 			end 
-		elseif wheelRpm < minRequiredRpm and ( curBrake > 0.1 or self.vehicle.vcaTurboClutch ) then 
-			self.vcaClutchTimer = math.min( self.vcaClutchTimer + dt + dt, VCAGlobals.clutchTimer )
+		elseif wheelRpm < minRequiredRpm and curBrake > 0.1 then 
+			self.vcaClutchTimer = math.max( self.vcaClutchTimer, math.min( self.vcaClutchTimer + dt + dt + dt + dt, VCAGlobals.clutchTimer - 1 ) )
+		elseif wheelRpm < minRequiredRpm and self.vehicle.vcaTurboClutch then 
+			self.vcaClutchTimer = math.max( self.vcaClutchTimer, math.min( self.vcaClutchTimer + dt + dt, 0.9 * VCAGlobals.clutchTimer ) )
 		end 
 		
 		self.vehicle.vcaDebugM = string.format("%5.0f, %5.0f, %5.0f, %3.0f%%, %s, %5.0f", motorRpm, wheelRpm, minRequiredRpm, newAcc*100, tostring(self.vcaAutoStop), self.vcaClutchTimer )
@@ -4532,11 +4539,13 @@ function vehicleControlAddon:vcaOnSetGearChanged( old, new, noEventSend )
 			and self.isClient
 			and self:vcaIsActive()
 			and vehicleControlAddon.bovSample ~= nil then 
-		local v = 0.2 * new 
-		if isSamplePlaying( vehicleControlAddon.bovSample ) then
-			setSampleVolume( vehicleControlAddon.bovSample, v )
-		else 
-			playSample( vehicleControlAddon.bovSample, 1, v, 0, 0, 0)
+		local v = 0.4 * self.vcaBlowOffVolume * new 
+		if v > 0 then
+			if isSamplePlaying( vehicleControlAddon.bovSample ) then
+				setSampleVolume( vehicleControlAddon.bovSample, v )
+			else 
+				playSample( vehicleControlAddon.bovSample, 1, v, 0, 0, 0)
+			end 
 		end 
 	end 
 	self.vcaBOVVolume = new 
@@ -4726,7 +4735,8 @@ function vehicleControlAddon:vcaShowSettingsUI()
 														"4G, R+/-, Shuttle",
 														"4G, R+/-, D/R",
 														"D/R , G+/-, R+/-" }
-														
+
+	self.vcaUI.vcaBlowOffVolume = { "0%", "10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%", "100%" }
 	self.vcaUI.vcaHiredWorker = { "off", "only if entered", "always" }
 														
 	self.vcaUI.vcaMaxSpeed = tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed ) )
@@ -5000,6 +5010,14 @@ end
 function vehicleControlAddon:vcaUISetvcaTransmission( value )
 	self:vcaSetState("vcaTransmission", value )
 	g_vehicleControlAddonTabbedMenu:setShowOwnTransmission( self.vcaTransmission == vehicleControlAddonTransmissionBase.ownTransmission )
+end 
+
+function vehicleControlAddon:vcaUIGetvcaBlowOffVolume()
+	return vehicleControlAddon.mbClamp( math.floor( self.vcaBlowOffVolume * 10 + 0.5 ), 0, 10 )
+end 
+
+function vehicleControlAddon:vcaUISetvcaBlowOffVolume( value )
+	self:vcaSetState( "vcaBlowOffVolume", 0.1 * value )
 end 
 
 function vehicleControlAddon:vcaUIGetvcaOwnGearTime() 

@@ -51,6 +51,16 @@
 					<GuiElement type="bitmap" profile="vcaMTOBg" />
 				</GuiElement>
 
+				<GuiElement type="multiTextOption" profile="vcaMTOSettings" id="vcaBlowOffVolume"
+												toolTipElementId="mogliToolTipBoxText" toolTipText="Blow off volume"
+												onCreate="onCreateSubElement" onCreateArgs="list0">
+					<GuiElement type="button" profile="vcaMTOLeft" />
+					<GuiElement type="button" profile="vcaMTORight"/>
+					<GuiElement type="text" profile="vcaMTOText" />
+					<GuiElement type="text" profile="vcaMTOTitle" text="Blow off volume"/>
+					<GuiElement type="bitmap" profile="vcaMTOBg" />
+				</GuiElement>
+
 			</GuiElement>			
 			<GuiElement id="boxLayout2" type="boxLayout" profile="vcaSettingsLayoutMid">
 
@@ -64,7 +74,7 @@
 					<GuiElement type="bitmap" profile="vcaMTOBg" />
 				</GuiElement>
 
-				<!--GuiElement type="checkedOption" profile="vcaMTOSettings" id="vcaTurboClutch"
+				<GuiElement type="checkedOption" profile="vcaMTOSettings" id="vcaTurboClutch"
 												toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_TURBOCLUTCH"
 												onCreate="onCreateSubElement">
 					<GuiElement type="button" profile="vcaMTOLeft" />
@@ -72,7 +82,7 @@
 					<GuiElement type="text" profile="vcaMTOText" />
 					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaTURBOCLUTCH"/>
 					<GuiElement type="bitmap" profile="vcaMTOBg" />
-				</GuiElement-->
+				</GuiElement>
 
 				<GuiElement type="multiTextOption" profile="vcaMTOSettings" id="vcaGearRatioF"
 												toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_GEARRATIOF"
