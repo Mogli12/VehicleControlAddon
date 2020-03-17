@@ -51,13 +51,13 @@
 					<GuiElement type="bitmap" profile="vcaMTOBg" />
 				</GuiElement>
 
-				<GuiElement type="multiTextOption" profile="vcaMTOSettings" id="vcaBlowOffVolume"
-												toolTipElementId="mogliToolTipBoxText" toolTipText="Blow off volume"
-												onCreate="onCreateSubElement" onCreateArgs="list0">
+				<GuiElement type="multiTextOption" profile="vcaMTOSettings" id="vcaHandthrottle"
+												toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_HANDTHROTTLE"
+												onCreate="onCreateSubElement" onCreateArgs="list">
 					<GuiElement type="button" profile="vcaMTOLeft" />
 					<GuiElement type="button" profile="vcaMTORight"/>
 					<GuiElement type="text" profile="vcaMTOText" />
-					<GuiElement type="text" profile="vcaMTOTitle" text="Blow off volume"/>
+					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaHANDTHROTTLE"/>
 					<GuiElement type="bitmap" profile="vcaMTOBg" />
 				</GuiElement>
 

@@ -4086,8 +4086,10 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 					self.vehicle.vcaForceStopMotor = 2000
 				end 
 			end 
+		elseif wheelRpm < 0.9 * minRequiredRpm and curBrake > 0.1 then 
+			self.vcaClutchTimer = VCAGlobals.clutchTimer - 1
 		elseif wheelRpm < minRequiredRpm and curBrake > 0.1 then 
-			self.vcaClutchTimer = math.max( self.vcaClutchTimer, math.min( self.vcaClutchTimer + dt + dt + dt + dt, VCAGlobals.clutchTimer - 1 ) )
+			self.vcaClutchTimer = math.max( self.vcaClutchTimer, math.min( self.vcaClutchTimer + dt + dt, VCAGlobals.clutchTimer - 1 ) )
 		elseif wheelRpm < minRequiredRpm and self.vehicle.vcaTurboClutch then 
 			self.vcaClutchTimer = math.max( self.vcaClutchTimer, math.min( self.vcaClutchTimer + dt + dt, 0.9 * VCAGlobals.clutchTimer ) )
 		end 
@@ -4283,14 +4285,14 @@ function vehicleControlAddon:vcaGetMaxClutchTorque( superFunc, ... )
 	local c = 1
 	if self.vehicle:vcaGetNoIVT() then 
 		c = 1 - self.vehicle.vcaClutchDisp
-		if 0 < c and c < 0.1 then 
-			-- let the engine rev up first
-			local t = Utils.getNoNil( self.vcaClutchRpm, 1.11 * self.minRpm )
-			local r = self.motorRotSpeed * vehicleControlAddon.factor30pi
-			if ( c < 0.05 and r < 0.9 * t ) or ( c < 0.1 and r < self.minRpm ) then 
-				c = 0
-			end 
-		end 
+	--if 0 < c and c < 0.1 then 
+	--	-- let the engine rev up first
+	--	local t = Utils.getNoNil( self.vcaClutchRpm, 1.11 * self.minRpm )
+	--	local r = self.motorRotSpeed * vehicleControlAddon.factor30pi
+	--	if ( c < 0.05 and r < 0.9 * t ) or ( c < 0.15 and r < self.minRpm ) then 
+	--		c = 0
+	--	end 
+	--end 
 	end 
 	
 	return math.min( self:getPeakTorque() * 0.75 * ( 1 - math.cos( math.pi * c ) ), superFunc( self, ... ) )
