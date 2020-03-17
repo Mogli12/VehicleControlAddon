@@ -1392,13 +1392,7 @@ function vehicleControlAddon:onPreUpdate(dt, isActiveForInput, isActiveForInputI
 end
 
 function vehicleControlAddon:onAIEnd()
-	if self:getIsMotorStarted() and self:vcaGetTransmissionActive() then 
-		local motor = self:getMotor()
-		if motor ~= nil then 
-			motor.vcaAutoStop = true 
-			motor.gearChangeTimer = 2000 
-		end 
-	end 
+	self.vcaAIEndTime = g_currentMission.time
 end 	
 
 function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
@@ -2923,8 +2917,14 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 	self.vcaOldHandbrake = doHandbrake
 	self.vcaBrakePedal   = nil
 
-	if self.vcaIsLoaded and self:vcaIsVehicleControlledByPlayer() then 		
-		if self.vcaKSIsOn and self.spec_drivable.cruiseControl.state == 0 then 
+	if self.vcaIsLoaded and self:vcaIsVehicleControlledByPlayer() then
+		if     self.vcaAIEndTime ~= nil and g_currentMission.time < self.vcaAIEndTime + 500 then 
+			acceleration = 0
+			doHandbrake  = true 
+			self:getMotor().vcaAutoStop = true 
+			brake = true 
+		elseif self.spec_drivable.cruiseControl.state > 0 then 
+		elseif self.vcaKSIsOn then 
 			if math.abs( self.vcaKeepSpeed ) < 0.5 then 
 				acceleration = 0
 				doHandbrake  = true 
@@ -2944,6 +2944,11 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 				end 
 			end 
 			self.vcaOldAcc = acceleration
+		elseif g_gui:getIsGuiVisible() and self:vcaGetTransmissionActive() then
+			acceleration = 0
+			doHandbrake  = true 
+			self:getMotor().vcaAutoStop = true 
+			brake = true 
 		end 
 	
 		if self:vcaGetShuttleCtrl() then 
