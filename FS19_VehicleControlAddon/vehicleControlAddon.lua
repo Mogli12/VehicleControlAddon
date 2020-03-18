@@ -54,52 +54,59 @@ local function setTransmission( xmlFile, xmlProp, value )
 	end 
 end 
 
-local listOfProperties =
-	{ { getFunc=getXMLBool , setFunc=setXMLBool , xmlName="steering",      propName="vcaSteeringIsOn"  },
-		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="shuttle",       propName="vcaShuttleCtrl"   },
-		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="peek",          propName="vcaPeekLeftRight" },
-		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="limitSpeed",    propName="vcaLimitSpeed"    },
-		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="keepSpeed",     propName="vcaKSToggle"      },
-		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="freeSteering",  propName="vcaNoARBToggle"   },
-		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="camRotInside",  propName="vcaCamRotInside"  },
-		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="camRotOutside", propName="vcaCamRotOutside" },
-		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="camRevInside",  propName="vcaCamRevInside"  },
-		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="camRevOutside", propName="vcaCamRevOutside" },
-		{ getFunc=getXMLInt  , setFunc=setXMLInt  , xmlName="exponent",      propName="vcaExponent"      },
-		{ getFunc=getXMLInt  , setFunc=setXMLInt  , xmlName="throttle",      propName="vcaLimitThrottle" },
-		{ getFunc=getXMLInt  , setFunc=setXMLInt  , xmlName="snapAngle",     propName="vcaSnapAngle"     },
-		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="snapDist",      propName="vcaSnapDistance"  },
-		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="drawHud",       propName="vcaDrawHud"       }, 
-		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="brakeForce",    propName="vcaBrakeForce"    },
-		{ getFunc=getTransmission, setFunc=setTransmission, xmlName="transmission", propName="vcaTransmission"  },
-		{ getFunc=getXMLInt  , setFunc=setXMLInt  , xmlName="launchGear",    propName="vcaLaunchGear"    },
-		{ getFunc=getXMLInt  , setFunc=setXMLInt  , xmlName="currentGear",   propName="vcaGear",         },
-		{ getFunc=getXMLInt  , setFunc=setXMLInt  , xmlName="currentRange",  propName="vcaRange",        },
-		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="autoShift",     propName="vcaAutoShift"     },
-		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="autoClutch",    propName="vcaAutoClutch"    },
-		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="turboClutch",   propName="vcaTurboClutch"   },
-		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="maxSpeed",      propName="vcaMaxSpeed"      },
-		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="ccSpeed2",      propName="vcaCCSpeed2"      },
-		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="ccSpeed3",      propName="vcaCCSpeed3"      },
-		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="snapDir",       propName="vcaLastSnapAngle" },
-		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="snapPosX",      propName="vcaLastSnapPosX"  },
-		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="snapPosZ",      propName="vcaLastSnapPosZ"  },
-		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="handthrottle",  propName="vcaHandthrottle"  },
-		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="pitchFactor",   propName="vcaPitchFactor"   },
-		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="pitchExponent", propName="vcaPitchExponent" },
-		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="minGearRatio",  propName="vcaGearRatioF"    },
-		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="maxGearRatio",  propName="vcaGearRatioT"    },
-		{ getFunc=getXMLInt,   setFunc=setXMLInt  , xmlName="g27Mode",       propName="vcaG27Mode"       },
-		{ getFunc=getXMLInt,   setFunc=setXMLInt  , xmlName="hiredWorker",   propName="vcaHiredWorker"   },
-		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="modifyPitch",   propName="vcaModifyPitch"   },
-		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="ownGearFactor", propName="vcaOwnGearFactor" },
-		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="ownRangeFactor",propName="vcaOwnRangeFactor" },
-		{ getFunc=getXMLInt,   setFunc=setXMLInt  , xmlName="ownGears",      propName="vcaOwnGears"      },
-		{ getFunc=getXMLInt,   setFunc=setXMLInt  , xmlName="ownRanges",     propName="vcaOwnRanges"     },
-		{ getFunc=getXMLInt,   setFunc=setXMLInt  , xmlName="ownGearTime",   propName="vcaOwnGearTime"   },
-		{ getFunc=getXMLInt,   setFunc=setXMLInt  , xmlName="ownRangeTime",  propName="vcaOwnRangeTime"  },
-		{ getFunc=getXMLBool , setFunc=setXMLBool , xmlName="ownAutoGears",  propName="vcaOwnAutoGears"  },
-		{ getFunc=getXMLFloat, setFunc=setXMLFloat, xmlName="blowOffVolume", propName="vcaBlowOffVolume" },
+local listOfFunctions = {}
+listOfFunctions.bool   = { getXML=getXMLBool     , setXML=setXMLBool     , streamRead=streamReadBool   , streamWrite=streamWriteBool    }
+listOfFunctions.int16  = { getXML=getXMLInt      , setXML=setXMLInt      , streamRead=streamReadInt16  , streamWrite=streamWriteInt16   }
+listOfFunctions.float  = { getXML=getXMLFloat    , setXML=setXMLFloat    , streamRead=streamReadFloat32, streamWrite=streamWriteFloat32 }
+listOfFunctions.trans  = { getXML=getTransmission, setXML=setTransmission, streamRead=streamReadInt16  , streamWrite=streamWriteInt16   }
+listOfFunctions.string = { getXML=getXMLString   , setXML=setXMLString   , streamRead=streamReadString , streamWrite=streamWriteString  }
+
+local listOfProperties = 
+	{ { func=listOfFunctions.bool , xmlName="steering",      propName="vcaSteeringIsOn"  },
+		{ func=listOfFunctions.bool , xmlName="shuttle",       propName="vcaShuttleCtrl"   },
+		{ func=listOfFunctions.bool , xmlName="peek",          propName="vcaPeekLeftRight" },
+		{ func=listOfFunctions.bool , xmlName="limitSpeed",    propName="vcaLimitSpeed"    },
+		{ func=listOfFunctions.bool , xmlName="keepSpeed",     propName="vcaKSToggle"      },
+		{ func=listOfFunctions.bool , xmlName="freeSteering",  propName="vcaNoARBToggle"   },
+		{ func=listOfFunctions.bool , xmlName="camRotInside",  propName="vcaCamRotInside"  },
+		{ func=listOfFunctions.bool , xmlName="camRotOutside", propName="vcaCamRotOutside" },
+		{ func=listOfFunctions.bool , xmlName="camRevInside",  propName="vcaCamRevInside"  },
+		{ func=listOfFunctions.bool , xmlName="camRevOutside", propName="vcaCamRevOutside" },
+		{ func=listOfFunctions.int16, xmlName="exponent",      propName="vcaExponent"      },
+		{ func=listOfFunctions.int16, xmlName="throttle",      propName="vcaLimitThrottle" },
+		{ func=listOfFunctions.int16, xmlName="snapAngle",     propName="vcaSnapAngle"     },
+		{ func=listOfFunctions.float, xmlName="snapDist",      propName="vcaSnapDistance"  },
+		{ func=listOfFunctions.bool , xmlName="drawHud",       propName="vcaDrawHud"       }, 
+		{ func=listOfFunctions.float, xmlName="brakeForce",    propName="vcaBrakeForce"    },
+		{ func=listOfFunctions.trans, xmlName="transmission",  propName="vcaTransmission"  },
+		{ func=listOfFunctions.int16, xmlName="launchGear",    propName="vcaLaunchGear"    },
+		{ func=listOfFunctions.int16, xmlName="currentGear",   propName="vcaGear",         },
+		{ func=listOfFunctions.int16, xmlName="currentRange",  propName="vcaRange",        },
+		{ func=listOfFunctions.bool , xmlName="autoShift",     propName="vcaAutoShift"     },
+		{ func=listOfFunctions.bool , xmlName="autoClutch",    propName="vcaAutoClutch"    },
+		{ func=listOfFunctions.bool , xmlName="turboClutch",   propName="vcaTurboClutch"   },
+		{ func=listOfFunctions.float, xmlName="maxSpeed",      propName="vcaMaxSpeed"      },
+		{ func=listOfFunctions.float, xmlName="ccSpeed2",      propName="vcaCCSpeed2"      },
+		{ func=listOfFunctions.float, xmlName="ccSpeed3",      propName="vcaCCSpeed3"      },
+		{ func=listOfFunctions.float, xmlName="snapDir",       propName="vcaLastSnapAngle" },
+		{ func=listOfFunctions.float, xmlName="snapPosX",      propName="vcaLastSnapPosX"  },
+		{ func=listOfFunctions.float, xmlName="snapPosZ",      propName="vcaLastSnapPosZ"  },
+		{ func=listOfFunctions.float, xmlName="handthrottle",  propName="vcaHandthrottle"  },
+		{ func=listOfFunctions.float, xmlName="pitchFactor",   propName="vcaPitchFactor"   },
+		{ func=listOfFunctions.float, xmlName="pitchExponent", propName="vcaPitchExponent" },
+		{ func=listOfFunctions.float, xmlName="minGearRatio",  propName="vcaGearRatioF"    },
+		{ func=listOfFunctions.float, xmlName="maxGearRatio",  propName="vcaGearRatioT"    },
+		{ func=listOfFunctions.int16, xmlName="g27Mode",       propName="vcaG27Mode"       },
+		{ func=listOfFunctions.int16, xmlName="hiredWorker",   propName="vcaHiredWorker"   },
+		{ func=listOfFunctions.bool , xmlName="modifyPitch",   propName="vcaModifyPitch"   },
+		{ func=listOfFunctions.float, xmlName="ownGearFactor", propName="vcaOwnGearFactor" },
+		{ func=listOfFunctions.float, xmlName="ownRangeFactor",propName="vcaOwnRangeFactor" },
+		{ func=listOfFunctions.int16, xmlName="ownGears",      propName="vcaOwnGears"      },
+		{ func=listOfFunctions.int16, xmlName="ownRanges",     propName="vcaOwnRanges"     },
+		{ func=listOfFunctions.int16, xmlName="ownGearTime",   propName="vcaOwnGearTime"   },
+		{ func=listOfFunctions.int16, xmlName="ownRangeTime",  propName="vcaOwnRangeTime"  },
+		{ func=listOfFunctions.bool , xmlName="ownAutoGears",  propName="vcaOwnAutoGears"  },
+		{ func=listOfFunctions.float, xmlName="blowOffVolume", propName="vcaBlowOffVolume" },
 	}
 
 
@@ -464,7 +471,7 @@ function vehicleControlAddon:onPostLoad(savegame)
 		
 		local nonDefaultTransmission = false   
 		for _,prop in pairs( listOfProperties ) do 
-			local v = prop.getFunc( savegame.xmlFile, savegame.key.."."..g_vehicleControlAddon.vcaSpecName.."#"..prop.xmlName )
+			local v = prop.func.getXML( savegame.xmlFile, savegame.key.."."..g_vehicleControlAddon.vcaSpecName.."#"..prop.xmlName )
 			vehicleControlAddon.debugPrint(tostring(prop.xmlName)..": "..tostring(v))
 			if v ~= nil then 
 				if prop.propName ~= "vcaGear" or prop.propName ~= "vcaRange" or nonDefaultTransmission then 
@@ -491,7 +498,7 @@ function vehicleControlAddon:onPostLoad(savegame)
 			
 			nonDefaultTransmission = false  
 			for _,prop in pairs( listOfProperties ) do 
-				local v = prop.getFunc( savegame.xmlFile, key.."#"..prop.xmlName )
+				local v = prop.func.getXML( savegame.xmlFile, key.."#"..prop.xmlName )
 				vehicleControlAddon.debugPrint("User: "..tostring(name).."; "..tostring(prop.xmlName)..": "..tostring(v))
 				if v == nil then 
 					self.vcaUserSettings[name][prop.propName] = self[prop.propName] 
@@ -536,7 +543,7 @@ function vehicleControlAddon:saveToXMLFile(xmlFile, xmlKey)
 
 	for _,prop in pairs( listOfProperties ) do 
 		if self:vcaIsNonDefaultProp( prop.propName ) then 
-			prop.setFunc( xmlFile, xmlKey.."#"..prop.xmlName, self[prop.propName] )
+			prop.func.setXML( xmlFile, xmlKey.."#"..prop.xmlName, self[prop.propName] )
 		end 
 	end 
 	
@@ -554,7 +561,7 @@ function vehicleControlAddon:saveToXMLFile(xmlFile, xmlKey)
 						u   = u + 1 
 						setXMLString( xmlFile, key.."#user", name )
 					end 
-					prop.setFunc( xmlFile, key.."#"..prop.xmlName, setting[prop.propName] )
+					prop.func.setXML( xmlFile, key.."#"..prop.xmlName, setting[prop.propName] )
 				end 
 			end 
 		end 
@@ -2580,59 +2587,17 @@ Drivable.getCruiseControlAxis      = Utils.overwrittenFunction( Drivable.getCrui
 
 function vehicleControlAddon:onReadStream(streamId, connection)
 
-	self:vcaSetState( "vcaSteeringIsOn" , streamReadBool(streamId)      , true )
-  self:vcaSetState( "vcaCamRotInside" , streamReadBool(streamId)      , true )
-  self:vcaSetState( "vcaCamRotOutside", streamReadBool(streamId)      , true )
-  self:vcaSetState( "vcaCamRevInside" , streamReadBool(streamId)      , true )
-  self:vcaSetState( "vcaCamRevOutside", streamReadBool(streamId)      , true )
-  self:vcaSetState( "vcaCamFwd"       , streamReadBool(streamId)      , true )
-  self:vcaSetState( "vcaShuttleCtrl"  , streamReadBool(streamId)      , true )
-  self:vcaSetState( "vcaShuttleFwd"   , streamReadBool(streamId)      , true )
-  self:vcaSetState( "vcaNeutral"      , streamReadBool(streamId)      , true )
-  self:vcaSetState( "vcaDrawHud"      , streamReadBool(streamId)      , true )
-	self:vcaSetState( "vcaExternalDir"  , streamReadInt16(streamId)     , true )   
-	self:vcaSetState( "vcaExponent"     , streamReadInt16(streamId)     , true )   
-	self:vcaSetState( "vcaSnapAngle"    , streamReadInt16(streamId)     , true )   
-	self:vcaSetState( "vcaPeekLeftRight", streamReadBool(streamId)      , true )
-	self:vcaSetState( "vcaAutoShift"    , streamReadBool(streamId)      , true )
-	self:vcaSetState( "vcaLimitSpeed"   , streamReadBool(streamId)      , true )
-	self:vcaSetState( "vcaLimitThrottle", streamReadInt16(streamId)     , true )
-	self:vcaSetState( "vcaBrakeForce"   , streamReadInt16(streamId)*0.05, true )
-	self:vcaSetState( "vcaLaunchGear"   , streamReadInt16(streamId)     , true )
-	self:vcaSetState( "vcaTransmission" , streamReadInt16(streamId)     , true )
-	self:vcaSetState( "vcaMaxSpeed"     , streamReadFloat32(streamId)   , true )
-	self:vcaSetState( "vcaLastSnapAngle", streamReadFloat32(streamId)   , true )
-	self:vcaSetState( "vcaLastSnapPosX" , streamReadFloat32(streamId)   , true )
-	self:vcaSetState( "vcaLastSnapPosZ" , streamReadFloat32(streamId)   , true )
-	
+	for _,prop in pairs( listOfProperties ) do 
+		self:vcaSetState( prop.propName, prop.func.streamRead( streamId ), true )
+	end 
+
 end
 
 function vehicleControlAddon:onWriteStream(streamId, connection)
 
-	streamWriteBool(streamId,    self.vcaSteeringIsOn )
-	streamWriteBool(streamId,    self.vcaCamRotInside )
-	streamWriteBool(streamId,    self.vcaCamRotOutside )
-	streamWriteBool(streamId,    self.vcaCamRevInside )
-	streamWriteBool(streamId,    self.vcaCamRevOutside )
-	streamWriteBool(streamId,    self.vcaCamFwd )     
-	streamWriteBool(streamId,    self.vcaShuttleCtrl )     
-	streamWriteBool(streamId,    self.vcaShuttleFwd )     
-	streamWriteBool(streamId,    self.vcaNeutral )     
-	streamWriteBool(streamId,    self.vcaDrawHud )     
-	streamWriteInt16(streamId,   self.vcaExternalDir )     
-	streamWriteInt16(streamId,   self.vcaExponent )     
-	streamWriteInt16(streamId,   self.vcaSnapAngle )     
-	streamWriteBool(streamId,    self.vcaPeekLeftRight )
-	streamWriteBool(streamId,    self.vcaAutoShift     )
-	streamWriteBool(streamId,    self.vcaLimitSpeed    )
-	streamWriteInt16(streamId,   self.vcaLimitThrottle )
-	streamWriteInt16(streamId,   math.floor( 20 * self.vcaBrakeForce + 0.5 ) )
-	streamWriteInt16(streamId,   self.vcaLaunchGear    )
-	streamWriteInt16(streamId,   self.vcaTransmission  )
-	streamWriteFloat32(streamId, self.vcaMaxSpeed      )
-	streamWriteFloat32(streamId, self.vcaLastSnapAngle )
-	streamWriteFloat32(streamId, self.vcaLastSnapPosX  )
-	streamWriteFloat32(streamId, self.vcaLastSnapPosZ  )
+	for _,prop in pairs( listOfProperties ) do 
+		prop.func.streamWrite( streamId , self[prop.propName] )
+	end 
 
 end 
 
