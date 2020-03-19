@@ -76,6 +76,8 @@ local listOfProperties =
 		{ func=listOfFunctions.int16, xmlName="throttle",      propName="vcaLimitThrottle" },
 		{ func=listOfFunctions.int16, xmlName="snapAngle",     propName="vcaSnapAngle"     },
 		{ func=listOfFunctions.float, xmlName="snapDist",      propName="vcaSnapDistance"  },
+		{ func=listOfFunctions.float, xmlName="snapOffset1",   propName="vcaSnapOffset1"   },
+		{ func=listOfFunctions.float, xmlName="snapOffset2",   propName="vcaSnapOffset2"   },
 		{ func=listOfFunctions.bool , xmlName="drawHud",       propName="vcaDrawHud"       }, 
 		{ func=listOfFunctions.float, xmlName="brakeForce",    propName="vcaBrakeForce"    },
 		{ func=listOfFunctions.trans, xmlName="transmission",  propName="vcaTransmission"  },
@@ -305,6 +307,8 @@ function vehicleControlAddon:onLoad(savegame)
 	self.vcaGetNeutral       = vehicleControlAddon.vcaGetNeutral
 	self.vcaGetAutoHold      = vehicleControlAddon.vcaGetAutoHold
 	self.vcaSetSnapFactor    = vehicleControlAddon.vcaSetSnapFactor
+	self.vcaGetCurrentSnapAngle = vehicleControlAddon.vcaGetCurrentSnapAngle
+	self.vcaGetSnapDistance     = vehicleControlAddon.vcaGetSnapDistance
 	
 	--********************************************************************************************
 	-- functions for others mods 
@@ -338,7 +342,9 @@ function vehicleControlAddon:onLoad(savegame)
 	vehicleControlAddon.registerState( self, "vcaWarningText" , ""   , vehicleControlAddon.vcaOnSetWarningText )
 	vehicleControlAddon.registerState( self, "vcaLimitThrottle",VCAGlobals.limitThrottle )
 	vehicleControlAddon.registerState( self, "vcaSnapAngle"   , VCAGlobals.snapAngle, vehicleControlAddon.vcaOnSetSnapAngle )
-	vehicleControlAddon.registerState( self, "vcaSnapDistance", 3 )
+	vehicleControlAddon.registerState( self, "vcaSnapDistance", 0 )
+	vehicleControlAddon.registerState( self, "vcaSnapOffset1",  0 )
+	vehicleControlAddon.registerState( self, "vcaSnapOffset2",  0 )
 	vehicleControlAddon.registerState( self, "vcaSnapIsOn" ,    false, vehicleControlAddon.vcaOnSetSnapIsOn )
 	vehicleControlAddon.registerState( self, "vcaDrawHud" ,     VCAGlobals.drawHud )
 	vehicleControlAddon.registerState( self, "vcaInchingIsOn" , false )
@@ -861,7 +867,7 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 		if lx*lx+lz*lz > 1e-6 then 
 			d = math.atan2( lx, lz )
 		end 
-		local a  = vehicleControlAddon.vcaGetCurrentSnapAngle( self, d )
+		local a  = self:vcaGetCurrentSnapAngle( d )
 		local dx = math.sin( a )
 		local dz = math.cos( a )			
 		local fx = 0
@@ -980,7 +986,7 @@ function vehicleControlAddon:vcaSetSnapFactor()
 		if lx*lx+lz*lz > 1e-6 then 
 			d = math.atan2( lx, lz )
 		end 
-		local curSnapAngle = vehicleControlAddon.vcaGetCurrentSnapAngle( self, d )
+		local curSnapAngle = self:vcaGetCurrentSnapAngle( d )
 		local dx    = math.sin( curSnapAngle )
 		local dz    = math.cos( curSnapAngle )			
 		local distX = wx - self.vcaLastSnapPosX
@@ -2242,7 +2248,7 @@ function vehicleControlAddon:onDraw()
 		if lx*lx+lz*lz > 1e-6 then 
 			d = math.atan2( lx, lz )
 		end 
-		local curSnapAngle = vehicleControlAddon.vcaGetCurrentSnapAngle( self, d )
+		local curSnapAngle, curSnapOffset = self:vcaGetCurrentSnapAngle( d )
 		
 		if self.vcaDrawHud then 
 			if VCAGlobals.snapAngleHudX >= 0 and self:getIsVehicleControlledByPlayer() then
@@ -2436,8 +2442,12 @@ function vehicleControlAddon:onDraw()
 					else 
 						z = z + 10 * zi * zi 
 					end 
-					local px = wx - dist * dz - x * 0.5 * self.vcaSnapDistance * dz + z * dx 
-					local pz = wz + dist * dx + x * 0.5 * self.vcaSnapDistance * dx + z * dz 
+					local fx = 0
+					if x ~= 0 then 
+						fx = x * 0.5 * self.vcaSnapDistance + curSnapOffset
+					end
+					local px = wx - dist * dz - fx * dz + z * dx 
+					local pz = wz + dist * dx + fx * dx + z * dz 
 					local py = getTerrainHeightAtWorldPos( g_currentMission.terrainRootNode, px, 0, pz )
 					renderText3D( px,py,pz, 0,curSnapAngle-a,0, 0.5, t )
 				end 
@@ -2663,18 +2673,55 @@ function vehicleControlAddon:vcaGetCurrentSnapAngle(curRot)
 	end
 	
 	local a = self.vcaLastSnapAngle
+	local o = self.vcaSnapOffset1
+	local p = self.vcaSnapOffset2
 	local c = curRot 
-	local f = 0.5 -- 0.5 for 180° and 0.25 for 90°
+	local f = math.pi * 0.5 -- 0.5 for 180° and 0.25 for 90°
 
-	while a - c <= -math.pi*f do 
-		a = a + math.pi*(f+f)
+	while a - c <= -f do 
+		a = a + f+f
+		o,p = p,o
 	end 
-	while a - c > math.pi*f do 
-		a = a - math.pi*(f+f)
+	while a - c > f do 
+		a = a - f-f
+		o,p = p,o
 	end
 
-	return a			
+	return a, o
 end 
+
+function vehicleControlAddon.getRelativeTranslation( refNode, node )
+	local wx, wy, wz = getWorldTranslation( node )
+	return worldToLocal( refNode, wx, wy, wz )
+end
+
+function vehicleControlAddon.getDistance( refNode, leftMarker, rightMarker )
+	local lx, ly, lz = vehicleControlAddon.getRelativeTranslation( refNode, leftMarker )
+	local rx, ry, rz = vehicleControlAddon.getRelativeTranslation( refNode, rightMarker )
+	print(string.format( "(%5.2f, %5.2f, %5.2f) / (%5.2f, %5.2f, %5.2f)", lx, ly, lz, rx, ry, rz ))
+	
+	local d = 0.1 * math.floor( 10 * math.abs( lx - rx ) + 0.5 )
+	local o = 0.1 * math.floor( 5 * ( lx + rx ) + 0.5 )
+	return d, -o, o
+end
+
+function vehicleControlAddon:vcaGetSnapDistance()
+	if     SpecializationUtil.hasSpecialization(AIVehicle, self.specializations) then
+		for _, implement in ipairs(self:getAttachedAIImplements()) do
+			local leftMarker, rightMarker, backMarker, _ = implement.object:getAIMarkers()
+			if implement.object.steeringAxleNode ~= nil and leftMarker ~= nil and rightMarker  ~= nil then 
+				return vehicleControlAddon.getDistance( implement.object.steeringAxleNode, leftMarker, rightMarker )
+			end
+		end
+	elseif SpecializationUtil.hasSpecialization(AIImplement, self.specializations) then
+		local leftMarker, rightMarker, backMarker, _ = self:getAIMarkers()
+		if self.steeringAxleNode ~= nil and leftMarker ~= nil and rightMarker  ~= nil then 
+			return vehicleControlAddon.getDistance( self.steeringAxleNode, leftMarker, rightMarker )
+		end
+	end
+	
+	return 0, 0, 0
+end
 
 function vehicleControlAddon:getDefaultTransmission()
 	if VCAGlobals.transmission <= 0 then 
@@ -2800,7 +2847,7 @@ function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, ax
 				self:vcaSetState( "vcaSnapFactor", 0 )
 			end 
 			
-			local curSnapAngle = vehicleControlAddon.vcaGetCurrentSnapAngle( self, rot )
+			local curSnapAngle = self:vcaGetCurrentSnapAngle( rot )
 			
 			local dist    = 0
 			local diffR   = vehicleControlAddon.normalizeAngle( rot - curSnapAngle )
@@ -4460,6 +4507,13 @@ function vehicleControlAddon:vcaOnSetSnapIsOn( old, new, noEventSend )
 			end 
 		end 
 		
+		if self.isServer and new and self.vcaSnapDistance < 0.1 then
+			local d, o, p = self:vcaGetSnapDistance()
+			self:vcaSetState( "vcaSnapDistance", d, noEventSend )
+			self:vcaSetState( "vcaSnapOffset1",  o, noEventSend )
+			self:vcaSetState( "vcaSnapOffset2",  p, noEventSend )
+		end
+		
 	--print("Turning off snap angle (server:"..tostring(self.isServer).."/client:"..tostring(self.isClient)..")")
 	--print("old: "..tostring(old).." => new: "..tostring(new))
 	--printCallstack()
@@ -4711,8 +4765,17 @@ function vehicleControlAddon:vcaShowSettingsUI()
 	self.vcaUI.vcaBlowOffVolume = { "0%", "10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%", "100%" }
 	self.vcaUI.vcaHiredWorker = { "off", "only if entered", "always" }
 														
-	self.vcaUI.vcaMaxSpeed = tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed ) )
+	self.vcaUI.vcaMaxSpeed     = tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed ) )
+	
+	if self.vcaSnapDistance < 0.1 then
+		local d, o, p = self:vcaGetSnapDistance()
+		self:vcaSetState( "vcaSnapDistance", d )
+		self:vcaSetState( "vcaSnapOffset1", o )
+		self:vcaSetState( "vcaSnapOffset2", p )
+	end
 	self.vcaUI.vcaSnapDistance = tostring( self.vcaSnapDistance )
+	self.vcaUI.vcaSnapOffset1  = tostring( self.vcaSnapOffset1 )
+	self.vcaUI.vcaSnapOffset2  = tostring( self.vcaSnapOffset2 )
 	
 	
 	self.vcaUI.vcaOwnGears   = {}
@@ -4973,10 +5036,48 @@ function vehicleControlAddon:vcaUIGetvcaSnapDistance()
 end 
 function vehicleControlAddon:vcaUISetvcaSnapDistance( value )
 	local v = tonumber( value )
-	if type( v ) == "number" and v > 0 then 
-		self:vcaSetState( "vcaSnapDistance", tonumber( value ) )
+	if type( v ) == "number" then 
+		if v < 0.1 then 
+			local d, o, p = self:vcaGetSnapDistance()
+			self:vcaSetState( "vcaSnapDistance", d )
+			self:vcaSetState( "vcaSnapOffset1", o )
+			self:vcaSetState( "vcaSnapOffset2", p )
+			self.vcaUI.vcaSnapOffset1 = tostring( self.vcaSnapOffset1 )
+			self.vcaUI.vcaSnapOffset2 = tostring( self.vcaSnapOffset2 )
+		else 
+			self:vcaSetState( "vcaSnapDistance", v )
+		end 
 	end 
 	self.vcaUI.vcaSnapDistance = tostring( self.vcaSnapDistance )
+end 
+
+function vehicleControlAddon:vcaUIGetvcaSnapOffset1()
+	return self.vcaUI.vcaSnapOffset1
+end 
+function vehicleControlAddon:vcaUIGetvcaSnapOffset2()
+	return self.vcaUI.vcaSnapOffset2
+end 
+function vehicleControlAddon:vcaUISetvcaSnapOffset1( value )
+	local v = tonumber( value )
+	if type( v ) == "number" then 
+		self:vcaSetState( "vcaSnapOffset1", v )
+		if     math.abs( v ) < 0.01 then 
+			self:vcaSetState( "vcaSnapOffset2", 0 )
+		elseif v * self.vcaSnapOffset2 > 0 then
+			self:vcaSetState( "vcaSnapOffset2", v )
+		else 
+			self:vcaSetState( "vcaSnapOffset2",-v )
+		end
+	end 
+	self.vcaUI.vcaSnapOffset1 = tostring( self.vcaSnapOffset1 )
+	self.vcaUI.vcaSnapOffset2 = tostring( self.vcaSnapOffset2 )
+end 
+function vehicleControlAddon:vcaUISetvcaSnapOffset2( value )
+	local v = tonumber( value )
+	if type( v ) == "number" then 
+		self:vcaSetState( "vcaSnapOffset2", v )
+	end
+	self.vcaUI.vcaSnapOffset2 = tostring( self.vcaSnapOffset2 )
 end 
 
 function vehicleControlAddon:vcaUISetvcaTransmission( value )

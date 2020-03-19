@@ -45,6 +45,16 @@
 					<GuiElement type="bitmap" profile="vcaMTOBg" />
 				</GuiElement>
 
+				<GuiElement type="checkedOption" profile="vcaMTOSettings" id="vcaDrawHud"
+												toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_DRAWHUD"
+												onCreate="onCreateSubElement">
+					<GuiElement type="button" profile="vcaMTOLeft" />
+					<GuiElement type="button" profile="vcaMTORight"/>
+					<GuiElement type="text" profile="vcaMTOText" />
+					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaDRAWHUD"/>
+					<GuiElement type="bitmap" profile="vcaMTOBg" />
+				</GuiElement>			
+	
 			</GuiElement>
 			<GuiElement id="boxLayout2" type="boxLayout" profile="vcaSettingsLayoutMid">
 
