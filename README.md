@@ -28,6 +28,8 @@ I added several settings for players with a gear shifter. These are the differen
 
 The IVT transmission has now two different ranges. The default should be the high range.
 
+VCA can now calculate the distance and offset of snap direction steering. If you want to refresh these values, then please enter 0 for distance in the VCA settings UI.
+
 ## modSettings
 I renamed the configuration file in modSettings folder to just "config.xml". Additionally, there is a new file "transmissions.xml". Here you can add your own transmissions. I propose to use the second transmission as template. Gears support automatic shifting. but ranges have to be shifted manually. 
 
