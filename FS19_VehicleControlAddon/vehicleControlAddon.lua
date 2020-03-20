@@ -408,6 +408,7 @@ function vehicleControlAddon:onLoad(savegame)
 	self.vcaClutchPercentS= 0
 	self.vcaClutchDisp    = 0
 	self.vcaClutchDispS   = 0
+	self.vcaAutoStopS     = false 
 	self.vcaRpmFactor     = 1
 	self.vcaRpmFactorS    = 1
 	self.vcaLastRpmFactor = 1
@@ -2523,7 +2524,15 @@ function vehicleControlAddon:newUpdateSpeedGauge( superFunc, dt )
 		gaugeValue = MathUtil.clamp(self.speedKmh / (self.vehicle.spec_drivable.cruiseControl.maxSpeed * 1.1), 0, 1)
 	elseif self.vehicle:getIsMotorStarted() then 
 		local rpm
-		if self.vehicle.spec_motorized.motor.vcaFakeRpm ~= nil then 
+		if not self.isServer then 
+			rpm = self.vehicle.spec_motorized.motor:getEqualizedMotorRpm()
+			if     self.vcaRpmFactor == nil then
+			elseif self.vcaRpmFactor < 0.999 then
+				rpm = self.vehicle.spec_motorized.motor.minRpm * self.vcaRpmFactor
+			elseif self.vcaRpmFactor > 1.001 then
+				rpm = self.vehicle.spec_motorized.motor.maxRpm * self.vcaRpmFactor
+			end 
+		elseif self.vehicle.spec_motorized.motor.vcaFakeRpm ~= nil then 
 			rpm = self.vehicle.spec_motorized.motor.vcaFakeRpm
 		else 
 			rpm = self.vehicle.spec_motorized.motor:getNonClampedMotorRpm()
@@ -2622,6 +2631,16 @@ function vehicleControlAddon:onReadUpdateStream(streamId, timestamp, connection)
 		-- receive vcaClutchDisp from server 
 			self.vcaClutchDisp = streamReadUIntN(streamId, 10) / 1023
 			self.vcaRpmFactor  = streamReadUIntN(streamId, 6 ) / 43
+			local autoStop = streamReadBool(streamId)
+			local motor = self:getMotor()
+			if     motor == nil then
+			elseif autoStop     then 
+				motor.vcaAutoStop = true 
+			elseif self:vcaGetTransmissionActive() then 
+				motor.vcaAutoStop = false 
+			elseif motor.vcaAutoStop ~= nil then 
+				motor.vcaAutoStop = nil 
+			end
 		end 
 	end
 end
@@ -2637,8 +2656,11 @@ function vehicleControlAddon:onWriteUpdateStream(streamId, connection, dirtyMask
 	else 
 	-- send vcaClutchDisp and vcaRpmFactor to client
 		local hasUpdate = false 
+		local autoStop  = self:vcaGetAutoHold()
 		if     math.abs( self.vcaClutchDisp - self.vcaClutchDispS ) > 0.001
-				or math.abs( self.vcaRpmFactor  - self.vcaRpmFactorS  ) > 0.02 then 
+				or math.abs( self.vcaRpmFactor  - self.vcaRpmFactorS  ) > 0.02 
+				or autoStop ~= self.vcaAutoStopS
+				then
 			hasUpdate = true 
 		end 
 			
@@ -2646,8 +2668,10 @@ function vehicleControlAddon:onWriteUpdateStream(streamId, connection, dirtyMask
 			streamWriteUIntN(streamId, vehicleControlAddon.mbClamp( math.floor( 0.5 + self.vcaClutchDisp * 1023 ), 0, 1023 ), 10)			
 			-- 0 to 1.1 * maxRpm; 3723 * 1.1 = 4095.3
 			streamWriteUIntN(streamId, vehicleControlAddon.mbClamp( math.floor( 0.5 + self.vcaRpmFactor * 43 ), 0, 63 ), 6)
+			streamWriteBool(streamId, autoStop )
 			self.vcaClutchDispS = self.vcaClutchDisp  
 			self.vcaRpmFactorS  = self.vcaRpmFactor 
+			self.vcaAutoStopS   = autoStop
 		end
 	end
 
