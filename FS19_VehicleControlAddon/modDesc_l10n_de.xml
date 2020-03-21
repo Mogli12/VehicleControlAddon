@@ -105,6 +105,7 @@
 		<text name="input_vcaNO_ARB"    text="VCA: Kein zurück Lenken"/>
 		<text name="input_vcaINCHING"   text="VCA: Langsamer"/>
 		<text name="input_vcaKEEPROT"   text="VCA: Kamerarichtung global fixieren"/>
+		<text name="input_vcaKEEPROT2"  text="VCA: Kamerarichtung permanent fixieren"/>
 		<text name="input_vcaKEEPSPEED" text="VCA: Geschwindigkeit halten"/>
 		<text name="input_vcaKEEPSPEED2" text="VCA: Geschwindigkeit permanent halten"/>
 		<text name="input_vcaSWAPSPEED" text="VCA: Tempomatgeschindigkeit wechseln"/>

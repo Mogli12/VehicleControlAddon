@@ -20,6 +20,7 @@ function vehicleControlAddon.registerEventListeners(vehicleType)
 											"onUpdate", 
 											"onPostUpdateTick",
 											"onDraw",
+											"onEnterVehicle",
 											"onLeaveVehicle",
 											"onReadStream", 
 											"onWriteStream", 
@@ -374,6 +375,7 @@ function vehicleControlAddon:onLoad(savegame)
 	vehicleControlAddon.registerState( self, "vcaLastSnapPosX", 0 )
 	vehicleControlAddon.registerState( self, "vcaLastSnapPosZ", 0 )
 	vehicleControlAddon.registerState( self, "vcaIsEnteredMP",  false )
+	vehicleControlAddon.registerState( self, "vcaIsBlocked",    false )
 	vehicleControlAddon.registerState( self, "vcaSnapDraw",     1 )
 	vehicleControlAddon.registerState( self, "vcaHandthrottle", 0 )
 	vehicleControlAddon.registerState( self, "vcaPitchFactor",  1 )
@@ -403,6 +405,8 @@ function vehicleControlAddon:onLoad(savegame)
 	self.vcaGearbox       = nil
 	self.vcaTickDt        = 0
 	self.vcaIsEntered     = false
+	self.vcaKeepCamRot    = false 
+	self.vcaKRToggle      = false 
 
 	self.vcaClutchPercent = 0
 	self.vcaClutchPercentS= 0
@@ -598,6 +602,7 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
 																"vcaNO_ARB",
 																"vcaINCHING",
 																"vcaKEEPROT",
+																"vcaKEEPROT2",
 																"vcaKEEPSPEED",
 																"vcaKEEPSPEED2",
 																"vcaSWAPSPEED",
@@ -740,6 +745,13 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 		
 	elseif actionName == "vcaKEEPROT" then 
 		self.vcaKeepCamRot = ( keyStatus >= 0.5 )
+		if self.vcaKRToggle then 
+			self.vcaKeepCamRot = not self.vcaKeepCamRot
+		end
+			
+	elseif actionName == "vcaKEEPROT2" then 
+		self.vcaKRToggle   = not self.vcaKRToggle
+		self.vcaKeepCamRot = self.vcaKRToggle 
 			
 	elseif actionName == "vcaUP"
 			or actionName == "vcaDOWN"
@@ -1005,6 +1017,14 @@ function vehicleControlAddon:vcaSetSnapFactor()
 	end 
 end
 
+function vehicleControlAddon:onEnterVehicle( isControlling )
+	self.vcaIsEntered = isControlling
+	self:vcaSetState( "vcaIsEnteredMP", self.vcaIsEntered or self.spec_drivable.cruiseControl.state == 1 )
+	self:vcaSetState( "vcaIsBlocked", false )
+	self:vcaSetState( "vcaKSIsOn", self.vcaKSToggle )
+	self.vcaKeepCamRot = self.vcaKRToggle
+end 
+
 function vehicleControlAddon:onLeaveVehicle()
 	if self.vcaIsEntered then 
 		self:vcaSetState( "vcaNoAutoRotBack", false )
@@ -1012,8 +1032,9 @@ function vehicleControlAddon:onLeaveVehicle()
 		self.vcaPrevRotCursorKey = nil
 		self:vcaSetState( "vcaSnapIsOn", false )
 		self:vcaSetState( "vcaInchingIsOn", false )
-		self:vcaSetState( "vcaKSIsOn", self.vcaKSToggle )
+		self:vcaSetState( "vcaKSIsOn", false )
 		self:vcaSetState( "vcaIsEnteredMP", false )
+		self:vcaSetState( "vcaIsBlocked", false )
 		self:vcaSetState( "vcaShuttleFwd", true )
 		if self.vcaShifterUsed then 
 			self:vcaSetState( "vcaShifterUsed", false )
@@ -1414,8 +1435,15 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 	self.vcaTickDt = dt
 
 	if self.isClient and self.getIsEntered ~= nil and self:getIsControlled() and self:getIsEntered() then 
-		self.vcaIsEntered = not g_gui:getIsGuiVisible()
-		self:vcaSetState( "vcaIsEnteredMP", self.vcaIsEntered or self.spec_drivable.cruiseControl.state == 1 )
+		self.vcaIsEntered = true
+		self:vcaSetState( "vcaIsEnteredMP", true )
+		if not g_gui:getIsGuiVisible() then 
+			self:vcaSetState( "vcaIsBlocked", false )
+		elseif g_gui.currentGui ~= nil and g_gui.guis.ChatDialog ~= nil and g_gui.currentGui == g_gui.guis.ChatDialog then 
+			self:vcaSetState( "vcaIsBlocked", false )
+		else
+			self:vcaSetState( "vcaIsBlocked", true )
+		end 
 	else 
 		self.vcaIsEntered = false 
 	end 	
@@ -2980,7 +3008,7 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 				end 
 			end 
 			self.vcaOldAcc = acceleration
-		elseif g_gui:getIsGuiVisible() and self:vcaGetTransmissionActive() then
+		elseif self.vcaIsBlocked and self.vcaIsEnteredMP then
 			acceleration = 0
 			doHandbrake  = true 
 			self:getMotor().vcaAutoStop = true 
@@ -3046,6 +3074,9 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 			if self.vcaInchingIsOn == limitThrottleIfPressed then
 				acceleration   = acceleration   * limitThrottleRatio
 				self.vcaOldAcc = self.vcaOldAcc * limitThrottleRatio
+				if self.vcaBrakePedal ~= nil then 
+					self.vcaBrakePedal = self.vcaBrakePedal * limitThrottleRatio
+				end
 			end
 		end
 	end 

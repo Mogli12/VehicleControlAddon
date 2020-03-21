@@ -45,11 +45,11 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>store.dds</iconFilename>
-	<version>0.1.2.1</version>
+	<version>0.1.2.2</version>
 	<l10n filenamePrefix="modDesc_l10n">
 		<text name="vcaVERSION">          
-			<de>Vehicle Control Addon 0.1.2.1</de>
-			<en>Vehicle Control Addon 0.1.2.1</en>
+			<de>Vehicle Control Addon 0.1.2.2</de>
+			<en>Vehicle Control Addon 0.1.2.2</en>
 		</text>
 	</l10n>
 	
@@ -71,6 +71,7 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 		<action name="vcaNO_ARB"    category="VEHICLE" axisType="HALF"/>
 		<action name="vcaINCHING"   category="VEHICLE" axisType="HALF"/>
 		<action name="vcaKEEPROT"   category="VEHICLE" axisType="HALF"/>
+		<action name="vcaKEEPROT2"  category="VEHICLE" axisType="HALF"/>
 		<action name="vcaKEEPSPEED" category="VEHICLE" axisType="HALF"/>
 		<action name="vcaKEEPSPEED2" category="VEHICLE" axisType="HALF"/>
 		<action name="vcaSWAPSPEED" category="VEHICLE" axisType="HALF"/>
@@ -153,6 +154,9 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 		</actionBinding>	
 		<actionBinding action="vcaKEEPROT">
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_insert"/>
+		</actionBinding>	
+		<actionBinding action="vcaKEEPROT2">
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_insert"/>
 		</actionBinding>	
 		<actionBinding action="vcaKEEPSPEED">
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_delete"/>
