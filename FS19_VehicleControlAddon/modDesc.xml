@@ -45,11 +45,11 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>store.dds</iconFilename>
-	<version>0.1.2.2</version>
+	<version>0.1.2.3</version>
 	<l10n filenamePrefix="modDesc_l10n">
 		<text name="vcaVERSION">          
-			<de>Vehicle Control Addon 0.1.2.2</de>
-			<en>Vehicle Control Addon 0.1.2.2</en>
+			<de>Vehicle Control Addon 0.1.2.3</de>
+			<en>Vehicle Control Addon 0.1.2.3</en>
 		</text>
 	</l10n>
 	
@@ -182,6 +182,7 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 		<sourceFile filename="gui/vehicleControlAddonFrame1.lua"/>
 		<sourceFile filename="gui/vehicleControlAddonFrame2.lua"/>
 		<sourceFile filename="gui/vehicleControlAddonFrame3.lua"/>
+		<sourceFile filename="gui/vehicleControlAddonFrame4.lua"/>
 		<sourceFile filename="gui/vehicleControlAddonFrame5.lua"/>
 		<sourceFile filename="gui/vehicleControlAddonMenu.lua"/>
 		<sourceFile filename="vehicleControlAddonRegister.lua"/>

@@ -18,18 +18,23 @@ VehicleControlAddonMenu.CONTROLS = {
 	FRAME1 = "vcaFrame1",
 	FRAME2 = "vcaFrame2",
 	FRAME3 = "vcaFrame3",
+	FRAME4 = "vcaFrame4",
 	FRAME5 = "vcaFrame5",
 }
 
 local alwaysVisiblePredicate = function() return true end
 local frame5VisiblePredicate = function() 
 	return g_currentMission.controlledVehicle.vcaTransmission == vehicleControlAddonTransmissionBase.ownTransmission 
+end
+local frame4VisiblePredicate = function() 
+	return g_server ~= nil 
 end 
 
 VehicleControlAddonMenu.FRAMES = {
-	{ name = "vcaFrame1", iconUVs = VehicleControlAddonMenu.TAB_UV.SETTINGS },
-	{ name = "vcaFrame2", iconUVs = VehicleControlAddonMenu.TAB_UV.VEHICLES },
-	{ name = "vcaFrame3", iconUVs = VehicleControlAddonMenu.TAB_UV.GENERAL, },
+	{ name = "vcaFrame1", iconUVs = VehicleControlAddonMenu.TAB_UV.SETTINGS,    predicate=alwaysVisiblePredicate },
+	{ name = "vcaFrame2", iconUVs = VehicleControlAddonMenu.TAB_UV.VEHICLES,    predicate=alwaysVisiblePredicate },
+	{ name = "vcaFrame3", iconUVs = VehicleControlAddonMenu.TAB_UV.GENERAL,     predicate=alwaysVisiblePredicate },
+	{ name = "vcaFrame4", iconUVs = VehicleControlAddonMenu.TAB_UV.ENVIRONMENT, predicate=frame4VisiblePredicate },
 	{ name = "vcaFrame5", iconUVs = VehicleControlAddonMenu.TAB_UV.PLAYER   },
 }
 

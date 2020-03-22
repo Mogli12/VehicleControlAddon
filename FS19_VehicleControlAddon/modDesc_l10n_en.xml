@@ -28,6 +28,8 @@
 		<text name="vcaDRAWHUD"         text="Transmission HUD"/>
 		
 		<text name="vcaDISTANCE"        text="Working width"/>
+		<text name="vcaOFFSET1"         text="Offset of tool"/>
+		<text name="vcaOFFSET2"         text="Inverse offset"/>
 		<text name="vcaDRAWMARKER"      text="Draw marker of snap driving"/>
 		<text name="vcaPITCH1"          text="Linear sound pitch"/>
 		<text name="vcaPITCH2"          text="Sound pitch at medium RPM"/>
@@ -69,6 +71,8 @@
 		<text name="vca_tip_DRAWHUD"      text="Show or hide transmission HUD"/>
 		
 		<text name="vca_tip_DISTANCE"     text="Distance between two snap driving rows"/>
+		<text name="vca_tip_OFFSET1"      text="Offset of snap driving rows"/>
+		<text name="vca_tip_OFFSET2"      text="Inverse offset of snap driving rows"/>
 		<text name="vca_tip_DRAWMARKER"   text="Draw marker of snap driving"/>
 		<text name="vca_tip_PITCH1"       text="Modification of sound pitch to make it linear"/>
 		<text name="vca_tip_PITCH2"       text="Sound pitch at medium RPM"/>
@@ -132,14 +136,27 @@
 
 	<longTexts>
 		<longText name="vca_Help_1">
-<![CDATA[
+<![CDATA[Steering and Camera
+
 This script varies the steering speed depending on the speed you are driving, and it rotates the camera to match the steering angle and direction.
-
 Shift-Left limits throttle, cruise control and maximum rounds per minute to 75%. With Shift-right and the cursor keys you can peek in the corresponding direction.
-
 If you press Ctrl left together with W then the driving direction snaps to fixed directions.
-
 All functions can be switched off.]]>
+		</longText>
+		<longText name="vca_Help_1">
+<![CDATA[Transmission
+
+off: the standard gearbox without customization
+IVT: Still the standard gearbox but with little adjustments to the allowed RPM range. More to come...
+4X4: An old fashioned transmissoin with 4 gears in 4 groups and shuttle control. Shifting gears takes time and you might lose momentum.
+4PS: The same transmissoin as above but with power shift for the gears
+2X6: Two groups with 6 gears. This transmission is useful for G27/G29 gear shifters. There is a low and a high range. The 6 gears in each range do not overlap with the 6 gears in the other range
+FPS: Full Power Shift: The transmission has 12 gears and shifts without interuption. 
+6PS: A John Deer AutoQuad. This transmission has 6 gears. Each gear can be reduced by about 80%
+PKW: A 6 speed transmission for cars with low range 
+VARIO: A Fendt Vario transmission. It is very similar to IVT but it has a low an a high range
+46A: A Class HexaShift transmission. It has 4 manual ranges and 6 automatic power shift gears
+OWN: Build your own transmission]]>
 		</longText>
 	</longTexts>
 </l10n>

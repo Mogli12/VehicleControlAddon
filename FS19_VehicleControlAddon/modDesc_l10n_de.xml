@@ -29,6 +29,8 @@
 		<text name="vcaDRAWHUD"         text="Getriebe HUD"/>
 		
 		<text name="vcaDISTANCE"        text="Arbeitsbreite"/>
+		<text name="vcaOFFSET1"         text="Versatz des Geräts"/>
+		<text name="vcaOFFSET2"         text="Inverser Versatz"/>
 		<text name="vcaDRAWMARKER"      text="Anzeige der Rasterbahn"/>
 		<text name="vcaPITCH1"          text="Lineare Tonhöhe"/>
 		<text name="vcaPITCH2"          text="Tonhöhe bei mittlerer Drehzahl"/>
@@ -70,6 +72,8 @@
 		<text name="vca_tip_DRAWHUD"      text="HUD für Getriebe ein-/ausblenden"/>
 		
 		<text name="vca_tip_DISTANCE"     text="Abstand zwischen zwei Rasterbahnen"/>
+		<text name="vca_tip_OFFSET1"      text="Seitlicher Versatz der Rasterbahnen"/>
+		<text name="vca_tip_OFFSET2"      text="Inverser Versatz der Rasterbahnen"/>
 		<text name="vca_tip_DRAWMARKER"   text="Anzeige der aktuellen Rasterbahn"/>
 		<text name="vca_tip_PITCH1"       text="Neuberechnung der Tonhöhe, damit sie linear verläuft"/>
 		<text name="vca_tip_PITCH2"       text="Tonhöhe bei mittlerer Drehzahl"/>
@@ -133,7 +137,9 @@
 
 	<longTexts>
 		<longText name="vca_Help_1">
-<![CDATA[Dieses Script variiert abhängig von der gefahrenen Geschwindigkeit die Lenkgeschwindigkeit und dreht die Kamera passend zum Lenkeinschlag und zur Fahrtrichtung. 
+<![CDATA[Lenkung und Kamera
+
+Dieses Script variiert abhängig von der gefahrenen Geschwindigkeit die Lenkgeschwindigkeit und dreht die Kamera passend zum Lenkeinschlag und zur Fahrtrichtung. 
 
 Mit Umschalt-Rechts und den Pfeiltasten kann man in die entsprechende Richtung blicken.
 
@@ -142,23 +148,38 @@ Drückt man Strg Links zusammen mit W, dann richtet sich die Fahrtrichtung an fe
 Alle Funktionen lassen sich auch wieder ausschalten.]]>
 		</longText>
 		<longText name="vca_Help_2">
-<![CDATA[Mit Umschalt-Llinks wird das Gaspedal, der Tempomat und die maximale Drehzahl auf 75% begrenzt.
+<![CDATA[Gaspedal und Rastersteuerung
 
+Mit Umschalt-Llinks wird das Gaspedal, der Tempomat und die maximale Drehzahl auf 75% begrenzt.
 Drückt man die Taste entf, dann hält das Fahrzeug die aktuelle Geschwindigkeit. Wie bei modernen Traktoren auch, kann man diese Funktion auch permanent einschalten und per entf dann zeitweise ausschalten.
-
 Durch die Änderungen an der Tonhöhe kann man die aktuelle Drehzahl besser hören.]]>
 		</longText>
 		<longText name="vca_Help_3">
-<![CDATA[Getriebe]]>
+<![CDATA[Getriebe
+
+off: Das Standardgetriebe 
+IVT: Das Standardgetriebe  mit kleinen Anpassungen der Drehzahl
+4X4: Ein altmodisches Getriebe mit 4 Gängen in 4 Bereichen und Wendeschaltung. Das Schalten der Gänge benötigt Zeit und man könnte Schwung verlieren.
+4PS: Das gleiche Getriebe wie das 4X4, aber mit Lastschaltung für die Gänge
+2X6: 2 Bereiche mit jeweils 6 Gängen. Dieses Getriebe ist nützlich für G27/G29 Shifter. Die 6 Gänge im Bereich L überlappen nicht mit den 6 Gängen im Bereich H.
+FPS: Full Power Shift: Dieses Getriebe 12 Gänge und schaltet ohne Zugkraftunterbrechung.
+6PS: John Deer AutoQuad
+PKW:
+VARIO: Fendt Vario
+46A: Claas HexaShift
+OWN: Bau Dir Dein eigenes Getriebe]]>
+		</longText>
+		<longText name="vca_Help_4">
+<![CDATA[Globale Einstellungen
+
+Änderungen an den globale Einstellungen haben keinen Einfluss auf das aktuelle Fahrzeug. Sie werden in der Datei modsSettings/FS19_VehicleControlAddon/config.xml gespeichert]]>
 		</longText>
 		<longText name="vca_Help_5">
 <![CDATA[Bau Dir Dein eigenes Getriebe
 
 Hier kann man sich sein eigenes Getriebe konfigurieren. Gänge können automatisch geschaltet werden. Daher sind Lastschaltstufen am besten immer Gänge. 
-
 Die Übersetzung des höchsten Gangs ist die theoretische Endgeschwindigkeit bei ausgeschaltetem Begrenzer. Die Höchstgeschwindigkeit im 1. Gang der höchsten Gruppe bestimmt
 das Verhältnis der Gänge untereinander. 
-
 Die Höchstgeschwindigkeiten in der vorletzten Gruppe sind redundant. Man muss nur einen von beiden Werten eingeben. Der andere wird automatisch angepasst.
 ]]>
 		</longText>

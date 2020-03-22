@@ -130,52 +130,39 @@ vehicleControlAddon.g27ModeSGR =10 -- Fwd/back , Gear up/down, Range up/down
 
 
 function vehicleControlAddon.globalsReset( createIfMissing )
-	VCAGlobals                     = {}
-	VCAGlobals.cameraRotFactor     = 0
-	VCAGlobals.cameraRotFactorRev  = 0
-	VCAGlobals.cameraRotTime       = 0
-  VCAGlobals.timer4Reverse       = 0
-  VCAGlobals.limitThrottle       = 0
-  VCAGlobals.snapAngle           = 0
-  VCAGlobals.brakeForceFactor    = 0
-  VCAGlobals.snapAngleHudX       = 0
-  VCAGlobals.snapAngleHudY       = 0
-	VCAGlobals.drawHud             = false  
-  VCAGlobals.transmission        = 0
-  VCAGlobals.launchGear          = 0
-	VCAGlobals.clutchTimer         = 0
-	VCAGlobals.clutchTimerAdd      = 0
-	VCAGlobals.clutchTimerIdle     = 0
- 	VCAGlobals.debugPrint          = false
- 	VCAGlobals.mouseAutoRotateBack = false
- 	VCAGlobals.rotInertiaFactor    = 0
- 	VCAGlobals.modifyPitch         = false
-	
--- defaults	
-	VCAGlobals.adaptiveSteering    = false
-  VCAGlobals.camOutsideRotation  = false
-  VCAGlobals.camInsideRotation   = false
- 	VCAGlobals.camReverseRotation  = false
- 	VCAGlobals.camRevOutRotation   = false
-	VCAGlobals.shuttleControl      = false	
-	VCAGlobals.peekLeftRight       = false	
-	VCAGlobals.hiredWorker         = 0
-	
-	local file
-	file = vehicleControlAddon.baseDirectory.."vehicleControlAddonConfig.xml"
-	if fileExists(file) then	
-		vehicleControlAddon.globalsLoad( file, "VCAGlobals", VCAGlobals )	
-	else
-		print("ERROR: NO GLOBALS IN "..file)
-	end
-	
-	file = getUserProfileAppPath().. "modsSettings/FS19_VehicleControlAddon/config.xml"
-	if fileExists(file) then	
-		print('Loading "'..file..'"...')
-		vehicleControlAddon.globalsLoad( file, "VCAGlobals", VCAGlobals )	
-	elseif createIfMissing then
-		vehicleControlAddon.globalsCreate( file, "VCAGlobals", VCAGlobals, true )	
-	end
+	local nameList ={ "cameraRotFactor",
+										"cameraRotFactorRev",
+										"cameraRotTime",
+										"timer4Reverse",
+										"limitThrottle",
+										"snapAngle",
+										"brakeForceFactor",
+										"snapAngleHudX",
+										"snapAngleHudY",
+										"drawHud",
+										"transmission",
+										"launchGear",
+										"clutchTimer",
+										"clutchTimerAdd",
+										"clutchTimerIdle",
+										"debugPrint",
+										"mouseAutoRotateBack",
+										"rotInertiaFactor",
+										"modifyPitch",
+										"adaptiveSteering",
+										"camOutsideRotation",
+										"camInsideRotation",
+										"camReverseRotation",
+										"camRevOutRotation",
+										"shuttleControl",
+										"peekLeftRight",
+										"hiredWorker",
+										"g27Mode",
+									}
+
+	local fileDft = vehicleControlAddon.baseDirectory.."vehicleControlAddonConfig.xml"
+	local fileUsr = getUserProfileAppPath().. "modsSettings/FS19_VehicleControlAddon/config.xml"
+	vehicleControlAddon.globalsLoadNew( fileDft, fileUsr, nameList, "VCAGlobals", "VCAGlobals", "VCADefaults" )
 	
 	print("vehicleControlAddon initialized");
 end
@@ -382,7 +369,7 @@ function vehicleControlAddon:onLoad(savegame)
 	vehicleControlAddon.registerState( self, "vcaPitchExponent",1 )
 	vehicleControlAddon.registerState( self, "vcaGearRatioF",   0 )
 	vehicleControlAddon.registerState( self, "vcaGearRatioT",   0 )
-	vehicleControlAddon.registerState( self, "vcaG27Mode",      0 )
+	vehicleControlAddon.registerState( self, "vcaG27Mode",      VCAGlobals.g27Mode )
 	vehicleControlAddon.registerState( self, "vcaSnapFactor",   0 )
 	vehicleControlAddon.registerState( self, "vcaModifyPitch",  VCAGlobals.modifyPitch )
 	vehicleControlAddon.registerState( self, "vcaHiredWorker",  VCAGlobals.hiredWorker )

@@ -26,16 +26,17 @@
 -- 3.20 WARNING: undefined input in gearboxMogli:  
 -- 4.00 FS19
 -- 4.01 problem with events
+-- 4.02 globalsLoad with typeList
 
 -- Usage:  source(Utils.getFilename("mogliBase.lua", g_currentModDirectory));
 --         _G[g_currentModDirectory.."mogliBase"].newClass( "AutoCombine", "acParameters" )
 
-local mogliBaseVersion   = 4.01
+local mogliBaseVersion   = 4.02
 local mogliBaseClass     = g_currentModName..".mogliBase"
 local mogliEventClass    = g_currentModName..".mogliEvent"
 local mogliSyncRequest   = g_currentModName..".mogliSyncRequest"
 local mogliSyncReply     = g_currentModName..".mogliSyncReply"
---local mogliEventClass_mt = g_currentModDirectory.."mogliEvent_mt"
+local mogliGlobalsClass  = g_currentModName..".mogliGlobalsClass"
 
 if _G[mogliBaseClass] ~= nil and _G[mogliBaseClass].version ~= nil and _G[mogliBaseClass].version >= mogliBaseVersion then
 	print("Factory class "..tostring(mogliBaseClass).." already exists in version "..tostring(_G[mogliBaseClass].version))
@@ -52,6 +53,7 @@ else
 	local mogliBase30Event = {} 
 	local mogliBase30Request = {}
 	local mogliBase30Reply = {}
+	local mogliBase40Globals = {}
 	
 --=======================================================================================
 -- mogliBase30.checkForKeyModifiers
@@ -95,7 +97,7 @@ else
 	--********************************
 		function _newClass_.globalsLoad( file , rootTag, globals, writeLog )	
 			local xmlFile = loadXMLFile( "mogliBasics", file, rootTag )
-			_newClass_.globalsLoad2( xmlFile , rootTag, globals, writeLog )	
+			_newClass_.globalsLoad2( xmlFile , rootTag, globals, writeLog, typeList )	
 		end
 		
 	--********************************
@@ -107,6 +109,9 @@ else
 			for name,value in pairs(globals) do
 				local tp = getXMLString(xmlFile, rootTag.."." .. name .. "#type")
 				local tm = 1
+				if type( typeList ) == "table" then
+					typeList[name] = tp 
+				end
 				if     tp == nil then
 					tm = 0
 				elseif tp == "bool" then
@@ -204,6 +209,172 @@ else
 			end
 		end
 
+	--********************************
+	-- globalsLoadNew
+	--********************************
+		function _newClass_.globalsLoadNew( fileDft, fileUsr, nameList, rootTag, globalsName, defaultsName )	
+			_newClass_._globals_ = { fileUsr      = fileUsr,
+															 rootTag      = rootTag,
+															 globalsName  = globalsName,
+															 defaultsName = defaultsName,
+														 }
+			local xmlFileDft, xmlFileUsr
+			if fileExists( fileDft ) then xmlFileDft = loadXMLFile( "mogliBasics", fileDft, rootTag ) end 
+			if fileExists( fileUsr ) then xmlFileUsr = loadXMLFile( "mogliBasics", fileDft, rootTag ) end 
+			_G[globalsName], _G[defaultsName] = _newClass_.globalsLoadNew2( xmlFileDft, xmlFileUsr, nameList, rootTag )	
+		end
+		
+	--********************************
+	-- globalsLoadNew2
+	--********************************
+		local function getXMLDegree( xmlFile, tag )
+			local f = getXMLFloat( xmlFile, tag )
+			if type( f ) == "number" then 	
+				return math.rad( f )
+			end
+		end 
+		
+		local function getXMLWithFunc( xmlFileDft, xmlFileUsr, func, tag )
+			local d, u
+			if xmlFileDft ~= nil then 
+				d = func( xmlFileDft, tag )
+			end 
+			if xmlFileUsr ~= nil then 
+				u = func( xmlFileUsr, tag )
+			end
+			if u ~= nil then 
+				return u, d
+			end
+			return d, d 
+		end
+		
+		function _newClass_.globalsLoadNew2( xmlFileDft, xmlFileUsr, nameList, rootTag )	
+			local globals  = {}
+			local defaults = {}
+			
+			local wl = true
+			for pos, name in pairs(nameList) do
+				local tp = getXMLString(xmlFileDft, rootTag.."." .. name .. "#type")
+				local tm = 1
+				
+				defaults[name] = {}
+				defaults[name].tp = tp
+				
+				local func, dft
+				if     tp == nil then
+					tm = 0
+				elseif tp == "bool" then
+					func = getXMLBool
+					dft  = false 
+				elseif tp == "float" then
+					func = getXMLFloat
+					dft  = 0
+				elseif tp == "degree" then
+					func = getXMLDegree
+					dft  = 0
+				elseif tp == "int" then
+					func = getXMLInt
+					dft  = 0
+				elseif tp == "string" then
+					func = getXMLString 
+					dft  = ""
+				else
+					tm = 2
+					print('    <'..name..": invalid XML type : "..tp)
+				end
+				
+				if func ~= nil then
+					globals[name], defaults[name].v = getXMLWithFunc( xmlFileDft, xmlFileUsr, func, rootTag.."." .. name .. "#value" )
+				end
+				
+				if defaults[name].v == nil or defaults[name].v ~= globals[name] then 
+					if wl then
+						wl = false
+						print('Loading settings...')
+					end
+					if tm == 1 then
+						print('    <'..name..' type="'..tostring(tp)..'" value="'..tostring(globals[name])..'"/>')
+						if globals[name] == nil then 
+							globals[name] = dft 
+						end 
+						if defaults[name].v == nil then 
+							defaults[name].v = dft 
+						end 
+					else
+						print('    <'..name..' .../>: invalid XML type : '..tostring(tp))
+					end
+				end
+			end
+			
+			return globals, defaults
+		end
+		
+	--********************************
+	-- globalsCreateNew 
+	--********************************
+		function _newClass_.globalsCreateNew( noEventSend )
+			if _newClass_._globals_ == nil then
+				return
+			end 
+			local file     = _newClass_._globals_.fileUsr
+			local rootTag  = _newClass_._globals_.rootTag
+			local globals  = _G[_newClass_._globals_.globalsName]
+			local defaults = _G[_newClass_._globals_.defaultsName]
+			if noEventSend then
+			elseif g_server == nil then 
+				local eventObject = mogliBase40Globals:new(_globalClassName_, globals )
+				g_client:getServerConnection():sendEvent( eventObject ) 
+			end 
+			print('Creating file "'..file..'"...')
+			local xmlFile = createXMLFile( "mogliBasics", file, rootTag )
+			_newClass_.globalsCreateNew2( xmlFile , rootTag, globals, defaults )	
+			saveXMLFile(xmlFile)
+		end 
+		
+	--********************************
+	-- globalsCreateNew2 
+	--********************************
+		function _newClass_.globalsCreateNew2( xmlFile , rootTag, globals, defaults )
+
+			local wl = true
+			for name,value in pairs(globals) do
+				local tp = defaults[name].tp	
+				local tm = 1
+				if     tp == nil then
+					tm = 0
+				elseif mogliBase30.compare( value, defaults[name].v ) then
+					tm = 0
+				elseif tp == "bool"   then
+					setXMLBool( xmlFile, rootTag.."." .. name .. "#value", value )
+				elseif tp == "float"  then
+					setXMLFloat( xmlFile, rootTag.."." .. name .. "#value", value )
+				elseif tp == "degree"  then
+					setXMLFloat( xmlFile, rootTag.."." .. name .. "#value", math.deg( value ) )
+				elseif tp == "int"    then
+					setXMLInt( xmlFile, rootTag.."." .. name .. "#value", value )
+				elseif tp == "string" then
+					setXMLString( xmlFile, rootTag.."." .. name .. "#value", value )
+				else
+					tm = 2
+					print('    <'..name..": invalid XML type : "..tp)
+				end
+				if tm == 1 then 
+					setXMLString(xmlFile, rootTag.."." .. name .. "#type", tp)
+				end 
+				if writeLog and tm > 0 then
+					if wl then
+						wl = false
+						print('Writing settings...')
+					end
+					if tm == 1 then
+						print('    <'..name..' type="'..tostring(tp)..'" value="'..tostring(globals[name])..'"/>')
+					else
+						print('    <'..name..' .../>: invalid XML type : '..tostring(tp))
+					end
+				end
+			end
+		end 
+	
 	--********************************
 	-- getUiScale
 	--********************************
@@ -361,6 +532,13 @@ else
 	--********************************
 		function _newClass_.getValueType( value )
 			return mogliBase30.getValueType( value )
+		end
+
+	--********************************
+	-- getValueType
+	--********************************
+		function _newClass_.mbCompare( value1, value2 )
+			return mogliBase30.compare( value1, value2 )
 		end
 
 	--********************************
@@ -868,8 +1046,6 @@ else
 				return false
 			end
 			return true
-		elseif vt1 == vt2 then
-			return value1 == value2 
 		elseif  ( vt1 == "int8" or vt1 == "int32" )
 				and ( vt2 == "int8" or vt2 == "int32" ) then
 			return value1 == value2 
@@ -882,6 +1058,8 @@ else
 				return false
 			end
 			return true
+		elseif vt1 == vt2 then
+			return value1 == value2 
 		end
 					
 		return false
@@ -1043,5 +1221,60 @@ else
 		self.object[self.className.."SyncReceived"] = true
 	end
 	
+
+	local mogliBase40Globals_mt = Class(mogliBase40Globals, Event) 
+	InitEventClass(mogliBase40Globals, mogliGlobalsClass) 
+
+--=======================================================================================
+-- mogliBase40Globals:emptyNew
+--=======================================================================================
+	function mogliBase40Globals:emptyNew()
+		local self = Event:new(mogliBase40Globals_mt) 
+		return self 
+	end 
 	
+--=======================================================================================
+-- mogliBase40Globals:new
+--=======================================================================================
+	function mogliBase40Globals:new(className, globalsTable )
+		local self = mogliBase40Globals:emptyNew() 
+		self.className    = className
+		self.globalsTable = globalsTable
+		return self 
+	end 
+	
+
+--=======================================================================================
+-- readStream
+--=======================================================================================
+	function mogliBase40Globals:readStream(streamId, connection)
+		self.className, self.globalsTable = _G[mogliBaseClass].readStreamEx( streamId )
+		local state, message = pcall( mogliBase40Globals.run, self, connection )
+		if not state then
+			print("Error: "..tostring(message)) 
+		end 
+	end 
+	
+--=======================================================================================
+-- writeStream
+--=======================================================================================
+	function mogliBase40Globals:writeStream(streamId, connection)
+		_G[mogliBaseClass].writeStreamEx( streamId, self.className, self.globalsTable )
+	end 
+	
+--=======================================================================================
+-- run
+--=======================================================================================
+	function mogliBase40Globals:run(connection)
+		----both clients and server can "run" this event (after reading it)	
+		if self.className == nil or self.className == "" then
+			print("Error running event: nil ("..tostring(self.className)..")")
+			return 
+		end
+		
+		for n,v in pairs(self.globalsTable) do 
+			_G[_newClass_._globals_.globalsName][n] = v
+		end 
+		_G[self.className].globalsCreateNew( true )
+	end 	
 end

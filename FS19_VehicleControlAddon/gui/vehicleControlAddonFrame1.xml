@@ -96,15 +96,15 @@
 				</GuiElement>
 				
 				<GuiElement type="textInput" profile="ingameMenuGameSettingsTextInput" id="vcaSnapOffset1" onCreate="onCreateSubElement" 
-										toolTipElementId="mogliToolTipBoxText" toolTipText="Offset1"
+										toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_OFFSET1"
 										maxCharacters="5" imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed">
-					<GuiElement type="text" profile="vcaMTOTitle" text="Offset1"/>
+					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaOFFSET1"/>
 				</GuiElement>
 				
 				<GuiElement type="textInput" profile="ingameMenuGameSettingsTextInput" id="vcaSnapOffset2" onCreate="onCreateSubElement" 
-										toolTipElementId="mogliToolTipBoxText" toolTipText="Offset2"
+										toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_OFFSET2"
 										maxCharacters="5" imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed">
-					<GuiElement type="text" profile="vcaMTOTitle" text="Offset2"/>
+					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaOFFSET2"/>
 				</GuiElement>
 				
 				<GuiElement type="multiTextOption" profile="vcaMTOSettings" id="vcaSnapDraw"
