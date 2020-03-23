@@ -2,7 +2,7 @@
 <GUI name="vcaFrame4">
 
 	<GuiElement type="empty" profile="uiInGameMenuFrame">
-		<GuiElement type="bitmap" profile="ingameMenuSettingsBox" position="130px -124px" id="container">
+		<GuiElement type="bitmap" profile="vcaSettingsBox" id="container">
 			<GuiElement id="boxLayout1" type="boxLayout" profile="vcaSettingsLayoutLeft">	
 
 				<GuiElement type="multiTextOption" profile="vcaMTOSettings" id="VCA_transmission"
@@ -134,7 +134,7 @@
 		</GuiElement>
 	
 	
-		<GuiElement type="bitmap" profile="ingameMenuHelpRowBg" position="210px 64px" size="1500px 48px" id="mogliToolTipBox" visible="true">
+		<GuiElement type="bitmap" profile="ingameMenuHelpRowBg" position="110px 64px" size="1500px 48px" id="mogliToolTipBox" visible="true">
 			<GuiElement type="bitmap" profile="ingameMenuHelpRowIcon" id="mogliToolTipBoxIcon"/>
 			<GuiElement type="text" profile="ingameMenuHelpRowText" id="mogliToolTipBoxText" text=""/>
 		</GuiElement>

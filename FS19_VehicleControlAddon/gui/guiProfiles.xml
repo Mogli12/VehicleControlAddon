@@ -176,7 +176,8 @@
 	</Profile>
 
 	<Profile name="vcaSettingsBox" extends="ingameMenuSettingsBox">
-		<Value name="position" value="130px -124px"/>
+		<Value name="size" value="1660px 800px"/>
+		<Value name="position" value="130px -50px"/>
 	</Profile>
 
 	<Profile name="vcaSettingsLayout" extends="ingameMenuSettingsLayout">
@@ -184,26 +185,26 @@
 	</Profile>
 		
 	<Profile name="vcaSettingsLayoutLeft" extends="vcaSettingsLayout">
-		<Value name="size" value="426px 620px"/>
-		<Value name="position" value="0px 0px"/>
+		<Value name="size" value="426px 700px"/>
+		<Value name="position" value="0px -20px"/>
 	</Profile>
 
 	<Profile name="vcaSettingsLayoutMid" extends="vcaSettingsLayout">
-		<Value name="size" value="426px 620px"/>
-		<Value name="position" value="427px 0px"/>
+		<Value name="size" value="426px 700px"/>
+		<Value name="position" value="427px -20px"/>
 	</Profile>
 
 	<Profile name="vcaSettingsLayoutRight" extends="vcaSettingsLayout">
-		<Value name="size" value="426px 620px"/>
-		<Value name="position" value="854px 0px"/>
+		<Value name="size" value="426px 700px"/>
+		<Value name="position" value="854px -20px"/>
 	</Profile>
 
 	<Profile name="vcaHelpText" extends="textDefault">
 		<Value name="textAlignment" value="left"/>
-		<Value name="size" value="426px 620px"/>
+		<Value name="size" value="700px 700px"/>
 		<Value name="position" value="854px 50px"/> 
 		<Value name="positionOrigin" value="bottomLeft"/>
-		<Value name="textWrapWidth" value="620px"/>
+		<Value name="textWrapWidth" value="700px"/>
 		<Value name="textVerticalAlignment" value="top"/>
 		<Value name="textSize" value="20px"/>
 	</Profile>

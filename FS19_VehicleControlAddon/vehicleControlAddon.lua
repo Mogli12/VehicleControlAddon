@@ -83,6 +83,7 @@ local listOfProperties =
 		{ func=listOfFunctions.float, xmlName="brakeForce",    propName="vcaBrakeForce"    },
 		{ func=listOfFunctions.trans, xmlName="transmission",  propName="vcaTransmission"  },
 		{ func=listOfFunctions.int16, xmlName="launchGear",    propName="vcaLaunchGear"    },
+		{ func=listOfFunctions.int16, xmlName="singleReverse", propName="vcaSingleReverse" },
 		{ func=listOfFunctions.int16, xmlName="currentGear",   propName="vcaGear",         },
 		{ func=listOfFunctions.int16, xmlName="currentRange",  propName="vcaRange",        },
 		{ func=listOfFunctions.bool , xmlName="autoShift",     propName="vcaAutoShift"     },
@@ -341,6 +342,7 @@ function vehicleControlAddon:onLoad(savegame)
 	vehicleControlAddon.registerState( self, "vcaBrakeForce",   VCAGlobals.brakeForceFactor )
 	vehicleControlAddon.registerState( self, "vcaTransmission", vehicleControlAddon.getDefaultTransmission( self ), vehicleControlAddon.onSetTransmission )
 	vehicleControlAddon.registerState( self, "vcaMaxSpeed",     vehicleControlAddon.getDefaultMaxSpeed( self ) )
+	vehicleControlAddon.registerState( self, "vcaSingleReverse",0 ) 
 	vehicleControlAddon.registerState( self, "vcaGear",         0 ) --, vehicleControlAddon.vcaOnSetGear )
 	vehicleControlAddon.registerState( self, "vcaRange",        0 ) --, vehicleControlAddon.vcaOnSetRange )
 	vehicleControlAddon.registerState( self, "vcaNeutral",      false, vehicleControlAddon.vcaOnSetNeutral )
@@ -1670,6 +1672,13 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 		end
 		self.spec_motorized.motor.maxForwardSpeed  = self.vcaMaxSpeed 
 		self.spec_motorized.motor.maxBackwardSpeed = self.vcaMaxSpeed 
+	elseif self:vcaGetTransmissionActive() then 
+		if self.vcaMaxForwardSpeed == nil then 
+			self.vcaMaxForwardSpeed  = self.spec_motorized.motor.maxForwardSpeed 
+			self.vcaMaxBackwardSpeed = self.spec_motorized.motor.maxBackwardSpeed
+		end
+		self.spec_motorized.motor.maxForwardSpeed  = self.vcaMaxForwardSpeed 
+		self.spec_motorized.motor.maxBackwardSpeed = math.max( self.vcaMaxForwardSpeed, self.vcaMaxBackwardSpeed )
 	elseif self.vcaMaxForwardSpeed ~= nil then 
 		self.spec_motorized.motor.maxForwardSpeed  = self.vcaMaxForwardSpeed 
 		self.spec_motorized.motor.maxBackwardSpeed = self.vcaMaxBackwardSpeed
@@ -3871,14 +3880,14 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		elseif self.vcaAutoUpTimer > 0 then 
 			self.vcaAutoUpTimer = self.vcaAutoUpTimer - dt 
 		end 
-		if self.vcaAutoLowTimer == nil then 
+		if self.vcaAutoLowTimer == nil or lastFwd ~= fwd or self.vcaAutoStop then 
 			self.vcaAutoLowTimer = 5000
 		elseif self.vcaAutoLowTimer > 0 then 
 			self.vcaAutoLowTimer = self.vcaAutoLowTimer - dt 
 		end 
 		if self.vcaNoShiftTimer == nil or self.gearChangeTimer > 0 then 
 			self.vcaNoShiftTimer = 1000 
-		elseif self.vcaNoShiftTimer > 0 and self.vcaClutchTimer <= 0 then 
+		elseif self.vcaNoShiftTimer > 0 then 
 			self.vcaNoShiftTimer = self.vcaNoShiftTimer - dt 
 		end 
 		if self.gearChangeTimer > 0 and self.vcaAutoDownTimer < 1000 then 
@@ -3919,11 +3928,16 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		if self.vcaAccS < 0.1 and self.vcaAutoUpTimer < 1000 then 
 			self.vcaAutoUpTimer = 1000 
 		end 
-		if motorPtoRpm < self.minRpm and self.vcaAutoShiftLoad < 0.8 then 
+		if motorPtoRpm < self.minRpm and self.vcaAutoShiftLoad < 0.667 then 
 			self.vcaAutoLowTimer = 5000 
 		end 
 		if curAcc < 0.1 and self.vcaAutoLowTimer < 2000 then 
 			self.vcaAutoLowTimer = 2000
+		end 
+		if lastStallTimer ~= nil and lastStallTimer >= 100 then
+			self.vcaNoShiftTimer  = 0
+			self.vcaAutoDownTimer = 0
+			self.vcaAutoLowTimer  = 0
 		end 
 	--if maxSpeed > 0.41667 * self:getSpeedLimit() and self.vcaAutoDownTimer > 1000 then -- 0.41667 = 1.5 / 3.6
 	--	self.vcaAutoDownTimer = 1000
@@ -3938,24 +3952,19 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		-- Courseplay
 				or ( self.vehicle.cp ~= nil and self.vehicle.cp.isDriving ) then 
 			self.vcaAILaunchGear = nil 
-		elseif self.vcaAILaunchGear == nil then 
-			launchGear = nil 
+		elseif self.vcaAILaunchGear == nil or setLaunchGear then 
+			launchGear = self.vehicle.vcaLaunchGear 
 			delta      = math.huge 
 			for i=1,self.vehicle.vcaLaunchGear do 
 				local r = transmission:getGearRatio(i)
 				if r ~= nil then 
 					local d = math.abs( 3.6 * r * self.vehicle.vcaMaxSpeed - 10 )
-					if launchGear == nil or d < delta then 
+					if d < delta then 
 						launchGear = i 
 						delta      = d
 					end 
 				end 
-			end 
-		--print("AI launch gear: "..tostring(launchGear).." ("..tostring(delta)..")")
-			if launchGear == nil then 
-				launchGear = self.vehicle.vcaLaunchGear 
-			end 
-			
+			end 		
 			self.vcaAILaunchGear = launchGear 
 		else 
 			launchGear = self.vcaAILaunchGear 
@@ -3963,20 +3972,23 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		
 		if initGear then 
 			newGear = launchGear
-		elseif  self.vehicle:vcaGetAutoShift() 
-				and setLaunchGear then 
-			if      self.vcaSetLaunchGear then 
-				if self.vcaAutoStop and gear ~= launchGear then 
-					self.vehicle:vcaSetState("vcaLaunchGear",gear)
-				end 
-			elseif  gear > launchGear
-					and not self.vehicle.vcaShifterUsed then 
+		elseif not self.vehicle:vcaGetAutoShift() then 
+		elseif self.vehicle.vcaShifterUsed then 
+		elseif setLaunchGear then 
+			if      gear == launchGear then 
+			elseif  self.vcaGearIndex ~= nil
+					and self.vcaGearIndex ~= gear
+					and self.vcaAutoStop
+					and ( fwd or self.vehicle.vcaSingleReverse == 0 )
+					then 
+				self.vehicle:vcaSetState("vcaLaunchGear",gear)
+			elseif gear > launchGear then 
 				local gearlist = transmission:getAutoShiftIndeces( gear, launchGear, true, false )
 				if #gearlist > 0 then
 					newGear = gearlist[1]
 				end 
 			end 
-		elseif self.vehicle:vcaGetAutoShift() and self.gearChangeTimer <= 0 and not self.vehicle:vcaGetNeutral() and not self.vehicle.vcaShifterUsed then
+		elseif self.gearChangeTimer <= 0 and not self.vehicle:vcaGetNeutral() then
 			local m1 = self.minRpm * 1.1
 			local m4 = math.min( math.max( self.vehicle.vcaRatedRpm, motorPtoRpm ), 
 													 self.vcaMaxPowerRpmH - self.maxRpm * 0.1 * math.max( 0, self.vcaAccS ),
@@ -4017,22 +4029,32 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 				self.vcaAutoDownTimer = 250
 			end 
 			
-			local lowGear = launchGear 
-			if self.vcaAutoLowTimer <= 0 and self.vcaAutoShiftLoad > 0.8 then 
-				lowGear = math.floor( lowGear * ( 1 - self.vcaAutoShiftLoad ) )
-			end 
-			
 			local searchUp   = ( self.vcaLastRpmC > autoMaxRpm and self.vcaAutoUpTimer   <= 0 and self.vcaNoShiftTimer <= 0 )
 			local searchDown = ( self.vcaLastRpmW  < autoMinRpm and self.vcaAutoDownTimer <= 0 and self.vcaNoShiftTimer <= 0 )
 
+			lowGear    = launchGear
 			if self.vcaAutoStop or curBrake > 0.1 then
-				searchUp   = false 
-				lowGear    = launchGear
+				searchUp = false 
+			elseif self.vcaAutoLowTimer <= 0 then 
+				if lastStallTimer == nil or lastStallTimer < 1000 then 
+					lowGear = math.min( launchGear, gear ) - 1 
+				else 
+					lowGear  = 1
+				end 
 			end 
 			
 			local gearlist = transmission:getAutoShiftIndeces( gear, lowGear, searchDown, searchUp )
 			
-			if #gearlist > 0 then 
+			if #gearlist <= 0 then
+				self.vehicle.vcaDebugA = string.format( "%3.0f%%; %3.0f%%; %4.0f..%4.0f; %4.0f no gear\n%4d; %2d; %s; %s",
+																								curAcc*100,self.vcaAutoShiftLoad*100,autoMinRpm,autoMaxRpm,self.vcaLastRpmW,
+																								self.vcaAutoLowTimer, lowGear, tostring( searchDown ), tostring( searchUp ))
+			elseif self.vcaLastRpmW <= 1 then 
+				self.vehicle.vcaDebugA = string.format( "%3.0f%%; %3.0f%%; %4.0f..%4.0f; %4.0f stoppedn%4d; %2d; %s; %s",
+																								curAcc*100,self.vcaAutoShiftLoad*100,autoMinRpm,autoMaxRpm,self.vcaLastRpmW,
+																								self.vcaAutoLowTimer, lowGear, tostring( searchDown ), tostring( searchUp ))
+				newGear = gearlist[1]
+			else 
 				local d = 0
 				if self.vcaLastRpmW < autoMinRpm then 
 					d = autoMinRpm - self.vcaLastRpmW
@@ -4063,15 +4085,11 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 					end 
 				end 
 				
-				self.vehicle.vcaDebugA = string.format( "%3.0f%%; %3.0f%%; %4.0f..%4.0f; %4.0f -> %4.0f; %d -> %d; %5.0f -> %5.0f",
-																								curAcc*100,self.vcaAutoShiftLoad*100,autoMinRpm,autoMaxRpm,self.vcaLastRpmW, rr,gear,newGear,d1,d )
-			else 
-				self.vehicle.vcaDebugA = string.format( "%3.0f%%; %3.0f%%; %4.0f..%4.0f; %4.0f no gear",
-																								curAcc*100,self.vcaAutoShiftLoad*100,autoMinRpm,autoMaxRpm,self.vcaLastRpmW)
+				self.vehicle.vcaDebugA = string.format( "%3.0f%%; %3.0f%%; %4.0f..%4.0f; %4.0f -> %4.0f; %d -> %d; %5.0f -> %5.0f\n%4d; %2d; %s; %s",
+																								curAcc*100,self.vcaAutoShiftLoad*100,autoMinRpm,autoMaxRpm,self.vcaLastRpmW, rr,gear,newGear,d1,d,
+																								self.vcaAutoLowTimer, lowGear, tostring( searchDown ), tostring( searchUp ))
 			end 
 		end
-
-		self.vcaSetLaunchGear = setLaunchGear
 		
 		if gear ~= newGear then 
 			if self.vehicle.vcaDebugA ~= nil then 
@@ -4094,6 +4112,10 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			local rangeTime = transmission:getChangeTimeRanges()
 			if not self.vehicle:vcaIsVehicleControlledByPlayer() then 
 				gearTime, rangeTime = -1, -1  
+			end 
+			if lastStallTimer ~= nil and self.vehicle:vcaGetAutoClutch() then 
+				gearTime  = math.max( 250, gearTime  )
+				rangeTime = math.max( 250, rangeTime )
 			end 
 			if gearTime < 1 then	
 				gearTime = -1 
@@ -5151,4 +5173,59 @@ end
 
 function vehicleControlAddon:vcaUIGetvcaOwnInfo() 
 	return tostring(self.vcaOwnGears).." x "..tostring(self.vcaOwnRanges)
+end 
+
+function vehicleControlAddon:vcaGetNumberOfGears()
+	if self.vcaTransmission == vehicleControlAddonTransmissionBase.ownTransmission then 
+		return self.vcaOwnGears, self.vcaOwnRanges
+	end 
+	
+	local def = vehicleControlAddonTransmissionBase.transmissionList[self.vcaTransmission]
+	if def ~= nil and def.params ~= nil then 
+		if def.params.isIVT then
+			return 1, 1 + #def.params.rangeGearOverlap
+		end 
+		return def.params.noGears, 1 + #def.params.rangeGearOverlap
+	end 
+	return 0, 0
+end
+
+function vehicleControlAddon:vcaUIDrawvcaSingleReverse()
+	local texts = { "off" }
+	local ng, nr = vehicleControlAddon.vcaGetNumberOfGears( self )
+	if ng > 1 then 
+		for i =1,ng do 
+			table.insert( texts, "Gear "..tostring(i) )
+		end 
+	end 
+	if nr > 1 then 
+		for i =1,nr do 
+			table.insert( texts, "Range "..tostring(i) )
+		end 
+	end 
+	return texts 
+end 
+function vehicleControlAddon:vcaUIGetvcaSingleReverse()
+	if self.vcaSingleReverse >= 0 then 
+		return 1 + self.vcaSingleReverse
+	end 
+	local ng, nr = vehicleControlAddon.vcaGetNumberOfGears( self )
+	if ng > 1 then 
+		return 1 + ng - self.vcaSingleReverse
+	end
+	return 1 - self.vcaSingleReverse
+end 
+function vehicleControlAddon:vcaUISetvcaSingleReverse( value )
+	if value <= 1 then 
+		self:vcaSetState( "vcaSingleReverse", 0 )
+	else 
+		local ng, nr = vehicleControlAddon.vcaGetNumberOfGears( self )
+		if     ng <= 1 then 
+			self:vcaSetState( "vcaSingleReverse", 1 - value )
+		elseif value <= 1 + ng then 
+			self:vcaSetState( "vcaSingleReverse", value - 1 )
+		else
+			self:vcaSetState( "vcaSingleReverse", 1 + ng - value )
+		end 
+	end 
 end 

@@ -2,7 +2,7 @@
 <GUI name="vcaFrame3">
 
 	<GuiElement type="empty" profile="uiInGameMenuFrame">
-		<GuiElement type="bitmap" profile="ingameMenuSettingsBox" position="130px -124px" id="container">
+		<GuiElement type="bitmap" profile="vcaSettingsBox" id="container">
 			<GuiElement id="boxLayout1" type="boxLayout" profile="vcaSettingsLayoutLeft">
 
 				<GuiElement type="checkedOption" profile="vcaMTOSettings" id="vcaShuttleCtrl" 
@@ -31,6 +31,16 @@
 					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaMAXSPEED"/>
 				</GuiElement>
 				
+				<GuiElement type="multiTextOption" profile="vcaMTOSettings" id="vcaSingleReverse"
+												toolTipElementId="mogliToolTipBoxText" toolTipText="Single Reverse"
+												onCreate="onCreateSubElement" onCreateArgs="callback">
+					<GuiElement type="button" profile="vcaMTOLeft" />
+					<GuiElement type="button" profile="vcaMTORight"/>
+					<GuiElement type="text" profile="vcaMTOText" />
+					<GuiElement type="text" profile="vcaMTOTitle" text="Single Reverse"/>
+					<GuiElement type="bitmap" profile="vcaMTOBg" />
+				</GuiElement>
+
 				<GuiElement type="checkedOption" profile="vcaMTOSettings" id="vcaAutoShift"
 												toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_AUTOSHIFT"
 												onCreate="onCreateSubElement">

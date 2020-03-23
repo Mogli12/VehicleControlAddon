@@ -169,12 +169,23 @@ function vehicleControlAddonTransmissionBase:getName()
 end 
 
 function vehicleControlAddonTransmissionBase:getGearText( gear, range )
-	if self.rangeTexts[range] ~= nil and self.gearTexts[gear] ~= nil then 
-		return tostring(self.rangeTexts[range]).." "..tostring(self.gearTexts[gear])
-	elseif self.rangeTexts[range] ~= nil then 
-		return tostring(self.rangeTexts[range])
-	elseif self.gearTexts[gear] then 
-		return tostring(self.gearTexts[gear])
+	local rt = self.rangeTexts[range]
+	local gt = self.gearTexts[gear]
+
+	if self.vehicle.vcaSingleReverse ~= 0 and self.vehicle.vcaMovingDir < 0 then 
+		if self.vehicle.vcaSingleReverse > 0 then 
+			gt = "R"
+		else
+			rt = "R"
+		end 
+	end 
+
+	if rt ~= nil and gt ~= nil then 
+		return tostring(rt).." "..tostring(gt)
+	elseif rt ~= nil then 
+		return tostring(rt)
+	elseif gt then 
+		return tostring(gt)
 	end 
 	return ""
 end 
@@ -207,6 +218,11 @@ end
 
 function vehicleControlAddonTransmissionBase:gearUp()
 	vehicleControlAddon.debugPrint(tostring(self.name)..", gearUp: "..tostring(self.vehicle.vcaGear)..", "..tostring(self.numberOfGears))
+	
+	if self.vehicle.vcaSingleReverse > 0 and self.vehicle.vcaMovingDir < 0 then 
+		return 
+	end 
+	
 	if self.vehicle.vcaGear < self.numberOfGears then 
 		if self:getChangeTimeGears() > 100 then 
 			if not ( self.vehicle.vcaAutoClutch or self.vehicle.vcaNeutral ) and self.vehicle.vcaClutchPercent < 1 then 
@@ -223,6 +239,11 @@ function vehicleControlAddonTransmissionBase:gearUp()
 end 
 
 function vehicleControlAddonTransmissionBase:gearDown()
+	
+	if self.vehicle.vcaSingleReverse > 0 and self.vehicle.vcaMovingDir < 0 then 
+		return 
+	end 
+	
 	if self.vehicle.vcaGear > 1 then 
 		if self:getChangeTimeGears() > 100 then 
 			if not ( self.vehicle.vcaAutoClutch or self.vehicle.vcaNeutral ) and self.vehicle.vcaClutchPercent < 1 then 
@@ -253,6 +274,11 @@ end
 
 function vehicleControlAddonTransmissionBase:rangeUp( noSpeedMatching )
 	vehicleControlAddon.debugPrint(tostring(self.name)..", rangeUp: "..tostring(self.vehicle.vcaRange)..", "..tostring(self.numberOfRanges))
+	
+	if self.vehicle.vcaSingleReverse < 0 and self.vehicle.vcaMovingDir < 0 then 
+		return 
+	end 
+	
 	if self.vehicle.vcaRange < self.numberOfRanges then 
 		if self:getChangeTimeRanges() > 100 then
 			if not ( self.vehicle.vcaAutoClutch or self.vehicle.vcaNeutral ) and self.vehicle.vcaClutchPercent < 1 then 
@@ -285,6 +311,11 @@ function vehicleControlAddonTransmissionBase:rangeUp( noSpeedMatching )
 end 
 
 function vehicleControlAddonTransmissionBase:rangeDown( noSpeedMatching )
+	
+	if self.vehicle.vcaSingleReverse < 0 and self.vehicle.vcaMovingDir < 0 then 
+		return 
+	end 
+	
 	if self.vehicle.vcaRange > 1 then 
 		if self:getChangeTimeRanges() > 100 then
 			if not ( self.vehicle.vcaAutoClutch or self.vehicle.vcaNeutral ) and self.vehicle.vcaClutchPercent < 1 then 
@@ -363,25 +394,58 @@ function vehicleControlAddonTransmissionBase:getAutoShiftIndeces( curIndex, minI
 		delta = 0.5 / self.vehicle.vcaMaxSpeed 
 	end
 	
-	if self.autoShiftGears and self.autoShiftRange then 
+	local ag = self.autoShiftGears
+	local ar = self.autoShiftRange
+	local cg = self.vehicle.vcaGear
+	local cr = self.vehicle.vcaRange
+
+	if self.vehicle.vcaSingleReverse ~= 0 and self.vehicle.vcaMovingDir < 0 then 
+		if self.vehicle.vcaSingleReverse > 0 then 
+			ag = false 
+			cg = math.min( self.vehicle.vcaSingleReverse, self.numberOfGears )
+		else
+			ar = false 
+			cr = math.min( -self.vehicle.vcaSingleReverse, self.numberOfRanges )
+		end 
+	end 
+	
+	local rf = math.max( 0, self.vehicle.vcaGearRatioF - delta )
+	local rt = math.huge
+	if self.vehicle.spec_motorized.motor.minRpm > 0 then 
+		local l1   = math.huge
+		local l2,c = self.vehicle:getSpeedLimit()
+		if self.vehicle.vcaLimitSpeed then 
+			if self.vehicle.vcaMovingDir < 0 then	
+				l1 = self.vehicle.spec_motorized.motor.maxBackwardSpeed
+			else 
+				l1 = self.vehicle.spec_motorized.motor.maxForwardSpeed
+			end 
+		end 
+		if c or self.vehicle.vcaLimitSpeed then 
+			rt = self.vehicle.spec_motorized.motor.maxRpm * math.min( l1, l2 ) / ( self.vehicle.spec_motorized.motor.minRpm * self.vehicle.vcaMaxSpeed )
+		end 
+	end 
+	if self.vehicle.vcaGearRatioT > 0 then
+		rt = math.min( rt, self.vehicle.vcaGearRatioT + delta )
+	end 
+	
+	if ag and ar then 
 		for i=1,table.getn( self.gearRatios ) do 
-			if 			( self.vehicle.vcaGearRatioF <= 0 or self.gearRatios[i] >= self.vehicle.vcaGearRatioF - delta )
-					and ( self.vehicle.vcaGearRatioT <= 0 or self.gearRatios[i] <= self.vehicle.vcaGearRatioT + delta )
+			if 			( rf <= self.gearRatios[i] and self.gearRatios[i] <= rt )
 					and ( ( i < curIndex and searchDown and i >= minIndex ) or ( searchUp and i > curIndex ) ) then 
 				table.insert( gearList, i )
 			end 
 		end 
 	else
 		local tmpList = nil
-		if     self.autoShiftGears then 
-			tmpList = self:getRatioIndexListOfRange( self.vehicle.vcaRange )
-		elseif self.autoShiftRange then 
-			tmpList = self:getRatioIndexListOfGear( self.vehicle.vcaGear )
+		if     ag then 
+			tmpList = self:getRatioIndexListOfRange( cr )
+		elseif ar then 
+			tmpList = self:getRatioIndexListOfGear( cg )
 		end 
 		if tmpList ~= nil then 
 			for _,i in pairs(tmpList) do 
-				if 			( self.vehicle.vcaGearRatioF <= 0 or self.gearRatios[i] >= self.vehicle.vcaGearRatioF - delta )
-						and ( self.vehicle.vcaGearRatioT <= 0 or self.gearRatios[i] <= self.vehicle.vcaGearRatioT + delta )
+				if 			( rf <= self.gearRatios[i] and self.gearRatios[i] <= rt )
 						and ( ( i < curIndex and searchDown and i >= minIndex ) or ( searchUp and i > curIndex ) ) then 
 					table.insert( gearList, i )
 				end 
@@ -393,6 +457,13 @@ function vehicleControlAddonTransmissionBase:getAutoShiftIndeces( curIndex, minI
 end 
 
 function vehicleControlAddonTransmissionBase:getRatioIndex( gear, range )
+	if self.vehicle.vcaSingleReverse ~= 0 and self.vehicle.vcaMovingDir < 0 then 
+		if self.vehicle.vcaSingleReverse > 0 then
+			gear  =  self.vehicle.vcaSingleReverse
+		else
+			range = -self.vehicle.vcaSingleReverse
+		end 
+	end 
 	if gear == nil or range == nil or self.rangeGearFromTo[range] == nil then 
 		return 0
 	end

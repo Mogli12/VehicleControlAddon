@@ -2,7 +2,7 @@
 <GUI name="vcaFrame2">
 
 	<GuiElement type="empty" profile="uiInGameMenuFrame">
-		<GuiElement type="bitmap" profile="ingameMenuSettingsBox" position="130px -124px" id="container">
+		<GuiElement type="bitmap" profile="vcaSettingsBox" id="container">
 			<GuiElement id="boxLayout1" type="boxLayout" profile="vcaSettingsLayoutLeft">
 
 				<GuiElement type="multiTextOption" profile="vcaMTOSettings" id="vcaLimitThrottle"
