@@ -295,6 +295,7 @@ function vehicleControlAddon:onLoad(savegame)
 	self.vcaGetShuttleCtrl   = vehicleControlAddon.vcaGetShuttleCtrl
 	self.vcaGetNeutral       = vehicleControlAddon.vcaGetNeutral
 	self.vcaGetAutoHold      = vehicleControlAddon.vcaGetAutoHold
+	self.vcaGetIsReverse     = vehicleControlAddon.vcaGetIsReverse
 	self.vcaSetSnapFactor    = vehicleControlAddon.vcaSetSnapFactor
 	self.vcaGetCurrentSnapAngle = vehicleControlAddon.vcaGetCurrentSnapAngle
 	self.vcaGetSnapDistance     = vehicleControlAddon.vcaGetSnapDistance
@@ -1126,6 +1127,26 @@ function vehicleControlAddon:vcaGetNeutral()
 		end 
 	end 
 	return false  
+end 
+
+function vehicleControlAddon:vcaGetIsReverse()
+	if self:vcaGetShuttleCtrl() then 
+		return not self.vcaShuttleFwd 
+	elseif  self.isServer
+			and self.spec_motorized ~= nil 
+			and self.spec_motorized.motor ~= nil 
+			and self.spec_motorized.motor.vcaLastFwd ~= nil then 
+		return not self.spec_motorized.motor.vcaLastFwd
+	elseif g_currentMission.missionInfo.stopAndGoBraking then
+		local movingDirection = self.movingDirection * self.spec_drivable.reverserDirection
+		if math.abs( self.lastSpeed ) < 0.000278 then
+			return false 
+		end
+		return movingDirection < 0
+	elseif self.nextMovingDirection ~= nil and self.spec_drivable.reverserDirection ~= nil then 
+		return self.nextMovingDirection * self.spec_drivable.reverserDirection < 0
+	end 
+	return false 
 end 
 
 function vehicleControlAddon:vcaGetAutoHold()

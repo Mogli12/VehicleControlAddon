@@ -172,7 +172,7 @@ function vehicleControlAddonTransmissionBase:getGearText( gear, range )
 	local rt = self.rangeTexts[range]
 	local gt = self.gearTexts[gear]
 
-	if self.vehicle.vcaSingleReverse ~= 0 and self.vehicle.vcaMovingDir < 0 then 
+	if self.vehicle.vcaSingleReverse ~= 0 and self.vehicle:vcaGetIsReverse() then 
 		if self.vehicle.vcaSingleReverse > 0 then 
 			gt = "R"
 		else
@@ -219,7 +219,7 @@ end
 function vehicleControlAddonTransmissionBase:gearUp()
 	vehicleControlAddon.debugPrint(tostring(self.name)..", gearUp: "..tostring(self.vehicle.vcaGear)..", "..tostring(self.numberOfGears))
 	
-	if self.vehicle.vcaSingleReverse > 0 and self.vehicle.vcaMovingDir < 0 then 
+	if self.vehicle.vcaSingleReverse > 0 and self.vehicle:vcaGetIsReverse() then 
 		return 
 	end 
 	
@@ -240,7 +240,7 @@ end
 
 function vehicleControlAddonTransmissionBase:gearDown()
 	
-	if self.vehicle.vcaSingleReverse > 0 and self.vehicle.vcaMovingDir < 0 then 
+	if self.vehicle.vcaSingleReverse > 0 and self.vehicle:vcaGetIsReverse() then 
 		return 
 	end 
 	
@@ -275,7 +275,7 @@ end
 function vehicleControlAddonTransmissionBase:rangeUp( noSpeedMatching )
 	vehicleControlAddon.debugPrint(tostring(self.name)..", rangeUp: "..tostring(self.vehicle.vcaRange)..", "..tostring(self.numberOfRanges))
 	
-	if self.vehicle.vcaSingleReverse < 0 and self.vehicle.vcaMovingDir < 0 then 
+	if self.vehicle.vcaSingleReverse < 0 and self.vehicle:vcaGetIsReverse() then 
 		return 
 	end 
 	
@@ -312,7 +312,7 @@ end
 
 function vehicleControlAddonTransmissionBase:rangeDown( noSpeedMatching )
 	
-	if self.vehicle.vcaSingleReverse < 0 and self.vehicle.vcaMovingDir < 0 then 
+	if self.vehicle.vcaSingleReverse < 0 and self.vehicle:vcaGetIsReverse() then 
 		return 
 	end 
 	
@@ -399,7 +399,7 @@ function vehicleControlAddonTransmissionBase:getAutoShiftIndeces( curIndex, minI
 	local cg = self.vehicle.vcaGear
 	local cr = self.vehicle.vcaRange
 
-	if self.vehicle.vcaSingleReverse ~= 0 and self.vehicle.vcaMovingDir < 0 then 
+	if self.vehicle.vcaSingleReverse ~= 0 and self.vehicle:vcaGetIsReverse() then 
 		if self.vehicle.vcaSingleReverse > 0 then 
 			ag = false 
 			cg = math.min( self.vehicle.vcaSingleReverse, self.numberOfGears )
@@ -415,7 +415,7 @@ function vehicleControlAddonTransmissionBase:getAutoShiftIndeces( curIndex, minI
 		local l1   = math.huge
 		local l2,c = self.vehicle:getSpeedLimit()
 		if self.vehicle.vcaLimitSpeed then 
-			if self.vehicle.vcaMovingDir < 0 then	
+			if self.vehicle:vcaGetIsReverse() then	
 				l1 = self.vehicle.spec_motorized.motor.maxBackwardSpeed
 			else 
 				l1 = self.vehicle.spec_motorized.motor.maxForwardSpeed
@@ -457,7 +457,7 @@ function vehicleControlAddonTransmissionBase:getAutoShiftIndeces( curIndex, minI
 end 
 
 function vehicleControlAddonTransmissionBase:getRatioIndex( gear, range )
-	if self.vehicle.vcaSingleReverse ~= 0 and self.vehicle.vcaMovingDir < 0 then 
+	if self.vehicle.vcaSingleReverse ~= 0 and self.vehicle:vcaGetIsReverse() then 
 		if self.vehicle.vcaSingleReverse > 0 then
 			gear  =  self.vehicle.vcaSingleReverse
 		else
