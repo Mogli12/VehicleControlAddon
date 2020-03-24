@@ -19,7 +19,7 @@
 		<text name="vcaMAXSPEED"        text="Axle Speed"/>
 		<text name="vcaLIMSPEED"        text="Speed Limiter"/>
 		<text name="vcaAUTOSHIFT"       text="Automatic"/>
-		<text name="vcaLAUNCH"          text="Launch Gear"/>
+		<text name="vcaLAUNCH"          text="Launch gear speed"/>
 		<text name="vcaKEEPSPEED"       text="Permanent keep speed"/>
 		<text name="vcaNO_ARB"          text="Free steering"/>
 		<text name="vcaHANDTHROTTLE"    text="Hand throttle"/>
@@ -33,6 +33,8 @@
 		<text name="vcaDRAWMARKER"      text="Draw marker of snap driving"/>
 		<text name="vcaPITCH1"          text="Linear sound pitch"/>
 		<text name="vcaPITCH2"          text="Sound pitch at medium RPM"/>
+		<text name="vcaBLOWOFFVOL"      text="Wastegate volume"/>
+		<text name="vcaSINGLEREV"       text="Single Reverse Gear"/>
 		<text name="vcaAUTOCLUTCH"      text="Automatic clutch"/>
 		<text name="vcaTURBOCLUTCH"     text="Turbo clutch"/>
 		<text name="vcaGEARRATIOF"      text="Min. gear speed limit"/>
@@ -76,6 +78,8 @@
 		<text name="vca_tip_DRAWMARKER"   text="Draw marker of snap driving"/>
 		<text name="vca_tip_PITCH1"       text="Modification of sound pitch to make it linear"/>
 		<text name="vca_tip_PITCH2"       text="Sound pitch at medium RPM"/>
+		<text name="vca_tip_BLOWOFFVOL"   text="Volume of the turbo wastegate"/>
+		<text name="vca_tip_SINGLEREV"    text="With single reverse the transmission uses a single reverse gear or reverse range instead of shuttle control"/>
 		<text name="vca_tip_AUTOCLUTCH"   text="Automatic clutch"/>
 		<text name="vca_tip_TURBOCLUTCH"  text="Additional turbo clutch"/>
 		<text name="vca_tip_GEARRATIOF"   text="Min. gear speed limit"/>
@@ -139,11 +143,19 @@
 <![CDATA[Steering and Camera
 
 This script varies the steering speed depending on the speed you are driving, and it rotates the camera to match the steering angle and direction.
-Shift-Left limits throttle, cruise control and maximum rounds per minute to 75%. With Shift-right and the cursor keys you can peek in the corresponding direction.
+With Shift-right and the cursor keys you can peek in the corresponding direction.
 If you press Ctrl left together with W then the driving direction snaps to fixed directions.
 All functions can be switched off.]]>
 		</longText>
-		<longText name="vca_Help_1">
+		<longText name="vca_Help_2">
+<![CDATA[Throttle and Snap Driving Direction
+
+Shift-Left limits throttle, cruise control and maximum rounds per minute to 75%. 
+If you press delete then the vehicle will keep its speed. Acceleration and brake pedal increase and descrease the speed. The vehicle drives like a modern tractor with joystick.
+If you press Ctrl left together with W then the driving direction snaps to fixed directions.
+The linear pitch modification makes it easier to hear the RPM.]]>
+		</longText>
+		<longText name="vca_Help_3">
 <![CDATA[Transmission
 
 off: the standard gearbox without customization
@@ -157,6 +169,18 @@ PKW: A 6 speed transmission for cars with low range
 VARIO: A Fendt Vario transmission. It is very similar to IVT but it has a low an a high range
 46A: A Class HexaShift transmission. It has 4 manual ranges and 6 automatic power shift gears
 OWN: Build your own transmission]]>
+		</longText>
+		<longText name="vca_Help_4">
+<![CDATA[Global Settings
+
+Changes to the global settings have no effect on the current vehicle. They are saved to file modsSettings/FS19_VehicleControlAddon/config.xml.]]>
+		</longText>
+		<longText name="vca_Help_5">
+<![CDATA[Build your own transmission
+
+Here you can configure your own transmission. Gears may be switched automatically.. 
+The maximum speed in highest gear may be theoretical only. You can reach it only without speed limiter. The ratios between gears is calculated from the maximum speed of 1st gear. 
+The two maximum speeds of 2nd highest range are redundant. If you enter one value, the other one is changed accordingly.]]>
 		</longText>
 	</longTexts>
 </l10n>

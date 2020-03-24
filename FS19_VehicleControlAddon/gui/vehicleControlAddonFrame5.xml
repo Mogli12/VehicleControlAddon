@@ -83,6 +83,16 @@
 					<GuiElement type="bitmap" profile="vcaMTOBg" />
 				</GuiElement>
 
+				<GuiElement type="checkedOption" profile="vcaMTOSettings" id="vcaOwnAutoRange" 
+												toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_OWNAUTORANGE" 
+												onCreate="onCreateSubElement">
+					<GuiElement type="button" profile="vcaMTOLeft" />
+					<GuiElement type="button" profile="vcaMTORight"/>
+					<GuiElement type="text" profile="vcaMTOText" />
+					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaOWNAUTORANGE"/>
+					<GuiElement type="bitmap" profile="vcaMTOBg" />
+				</GuiElement>
+
 			</GuiElement>
 		
 			<GuiElement id="vcaHelp" type="text" profile="vcaHelpText" text="$l10n_vca_Help_5" />				

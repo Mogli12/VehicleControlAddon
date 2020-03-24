@@ -89,12 +89,12 @@
 				</GuiElement>
 
 				<GuiElement type="multiTextOption" profile="vcaMTOSettings" id="vcaBlowOffVolume"
-												toolTipElementId="mogliToolTipBoxText" toolTipText="Blow off volume"
+												toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_BLOWOFFVOL"
 												onCreate="onCreateSubElement" onCreateArgs="list0">
 					<GuiElement type="button" profile="vcaMTOLeft" />
 					<GuiElement type="button" profile="vcaMTORight"/>
 					<GuiElement type="text" profile="vcaMTOText" />
-					<GuiElement type="text" profile="vcaMTOTitle" text="Blow off volume"/>
+					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaBLOWOFFVOL"/>
 					<GuiElement type="bitmap" profile="vcaMTOBg" />
 				</GuiElement>
 

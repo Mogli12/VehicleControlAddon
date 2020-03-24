@@ -20,7 +20,7 @@
 		<text name="vcaMAXSPEED"        text="Übersetzung höchster Gang"/>
 		<text name="vcaLIMSPEED"        text="Geschwindigkeitsbegrenzer"/>
 		<text name="vcaAUTOSHIFT"       text="Automatik"/>
-		<text name="vcaLAUNCH"          text="Startgang"/>
+		<text name="vcaLAUNCH"          text="Geschwindigkeit Startgang"/>
 		<text name="vcaKEEPSPEED"       text="Geschwindigkeit permanent halten"/>
 		<text name="vcaNO_ARB"          text="Freies Lenken"/>
 		<text name="vcaHANDTHROTTLE"    text="Handgas"/>
@@ -34,6 +34,8 @@
 		<text name="vcaDRAWMARKER"      text="Anzeige der Rasterbahn"/>
 		<text name="vcaPITCH1"          text="Lineare Tonhöhe"/>
 		<text name="vcaPITCH2"          text="Tonhöhe bei mittlerer Drehzahl"/>
+		<text name="vcaBLOWOFFVOL"      text="Lautstärke des Trubo-Wastegates"/>
+		<text name="vcaSINGLEREV"       text="Einzelner Rückwärtsgang"/>
 		<text name="vcaAUTOCLUTCH"      text="Automatische Kupplung"/>
 		<text name="vcaTURBOCLUTCH"     text="Strömungskupplung"/>
 		<text name="vcaGEARRATIOF"      text="Min. Ganggeschwindigkeit"/>
@@ -48,6 +50,7 @@
 		<text name="vcaOWNGEARTIME"     text="Schaltgeschwindigkeit Gänge"/>
 		<text name="vcaOWNRANGETIME"    text="Schaltgeschwindigkeit Gruppen"/>
 		<text name="vcaOWNAUTOGEARS"    text="Automatische Gänge"/>
+		<text name="vcaOWNAUTORANGE"    text="Automatische Gruppen"/>
 		                                
 		<text name="vca_tip_CAMERAI"      text="Die innere Kamera dreht sich passend zum Lenkeinschlag automatisch mit."/>
 		<text name="vca_tip_CAMERAO"      text="Die äußere Kamera dreht sich passend zum Lenkeinschlag automatisch mit."/>
@@ -77,6 +80,8 @@
 		<text name="vca_tip_DRAWMARKER"   text="Anzeige der aktuellen Rasterbahn"/>
 		<text name="vca_tip_PITCH1"       text="Neuberechnung der Tonhöhe, damit sie linear verläuft"/>
 		<text name="vca_tip_PITCH2"       text="Tonhöhe bei mittlerer Drehzahl"/>
+		<text name="vca_tip_BLOWOFFVOL"   text="Lautstärke des Wastegates bei aufgeladenen Motoren"/>
+		<text name="vca_tip_SINGLEREV"    text="Beim Rückwärtsfahren wird ein einzelner Gang oder eine einzelne Gruppe anstelle der Wendeschaltung verwendet"/>
 		<text name="vca_tip_AUTOCLUTCH"   text="Automatische Betätigung der Kupplung"/>
 		<text name="vca_tip_TURBOCLUTCH"  text="Zusätzliche Strömungskupplung"/>
 		<text name="vca_tip_GEARRATIOF"   text="Begrenzung der Ganggeschwindigkeit. Es wird kein kleiner Gang automatisch ausgewählt"/>
@@ -91,6 +96,7 @@
 		<text name="vca_tip_OWNGEARTIME"  text="Schaltgeschwindigkeit Gänge"/>
 		<text name="vca_tip_OWNRANGETIME" text="Schaltgeschwindigkeit Gruppen"/>
 		<text name="vca_tip_OWNAUTOGEARS" text="Automatische Schaltung von Gängen und Speedmatching"/>
+		<text name="vca_tip_OWNAUTORANGE" text="Automatische Schaltung von Gruppen und Speedmatching"/>
 		
 		<text name="input_vcaSETTINGS"  text="VCA: Einstellungen"/>
 		<text name="input_vcaUP"        text="VCA: Blickrichtung wechseln oder nach vorne schauen"/>
@@ -140,11 +146,7 @@
 <![CDATA[Lenkung und Kamera
 
 Dieses Script variiert abhängig von der gefahrenen Geschwindigkeit die Lenkgeschwindigkeit und dreht die Kamera passend zum Lenkeinschlag und zur Fahrtrichtung. 
-
 Mit Umschalt-Rechts und den Pfeiltasten kann man in die entsprechende Richtung blicken.
-
-Drückt man Strg Links zusammen mit W, dann richtet sich die Fahrtrichtung an festen Richtungen aus.
-
 Alle Funktionen lassen sich auch wieder ausschalten.]]>
 		</longText>
 		<longText name="vca_Help_2">
@@ -152,6 +154,7 @@ Alle Funktionen lassen sich auch wieder ausschalten.]]>
 
 Mit Umschalt-Llinks wird das Gaspedal, der Tempomat und die maximale Drehzahl auf 75% begrenzt.
 Drückt man die Taste entf, dann hält das Fahrzeug die aktuelle Geschwindigkeit. Wie bei modernen Traktoren auch, kann man diese Funktion auch permanent einschalten und per entf dann zeitweise ausschalten.
+Drückt man Strg Links zusammen mit W, dann richtet sich die Fahrtrichtung an festen Richtungen aus.
 Durch die Änderungen an der Tonhöhe kann man die aktuelle Drehzahl besser hören.]]>
 		</longText>
 		<longText name="vca_Help_3">
@@ -162,11 +165,11 @@ IVT: Das Standardgetriebe  mit kleinen Anpassungen der Drehzahl
 4X4: Ein altmodisches Getriebe mit 4 Gängen in 4 Bereichen und Wendeschaltung. Das Schalten der Gänge benötigt Zeit und man könnte Schwung verlieren.
 4PS: Das gleiche Getriebe wie das 4X4, aber mit Lastschaltung für die Gänge
 2X6: 2 Bereiche mit jeweils 6 Gängen. Dieses Getriebe ist nützlich für G27/G29 Shifter. Die 6 Gänge im Bereich L überlappen nicht mit den 6 Gängen im Bereich H.
-FPS: Full Power Shift: Dieses Getriebe 12 Gänge und schaltet ohne Zugkraftunterbrechung.
-6PS: John Deer AutoQuad
-PKW:
-VARIO: Fendt Vario
-46A: Claas HexaShift
+FPS: Full Power Shift: Dieses Getriebe hat 12 Gänge und schaltet ohne Zugkraftunterbrechung.
+6PS: John Deer AutoQuad: 6 manuell zu schaltende Bereiche mit jeweils 4 automatischen Lastschaltstufen
+PKW: 6 Gänge abgestuft für PKW mit Untersetzung fürs Gelände
+VARIO: Fendt Vario: Stufenloses Getriebe mit 2 Bereichen "low" und "high"
+46A: Claas HexaShift: 4 manuell zu schaltende Bereiche mit jeweils 6 automatischen Lastschaltstufen
 OWN: Bau Dir Dein eigenes Getriebe]]>
 		</longText>
 		<longText name="vca_Help_4">
@@ -180,8 +183,7 @@ OWN: Bau Dir Dein eigenes Getriebe]]>
 Hier kann man sich sein eigenes Getriebe konfigurieren. Gänge können automatisch geschaltet werden. Daher sind Lastschaltstufen am besten immer Gänge. 
 Die Übersetzung des höchsten Gangs ist die theoretische Endgeschwindigkeit bei ausgeschaltetem Begrenzer. Die Höchstgeschwindigkeit im 1. Gang der höchsten Gruppe bestimmt
 das Verhältnis der Gänge untereinander. 
-Die Höchstgeschwindigkeiten in der vorletzten Gruppe sind redundant. Man muss nur einen von beiden Werten eingeben. Der andere wird automatisch angepasst.
-]]>
+Die Höchstgeschwindigkeiten in der vorletzten Gruppe sind redundant. Man muss nur einen von beiden Werten eingeben. Der andere wird automatisch angepasst.]]>
 		</longText>
 	</longTexts>
 </l10n>

@@ -745,7 +745,7 @@ function vehicleControlAddonTransmissionBase:gearShifter( number, isPressed )
 			elseif self.splitGears4Shifter then 
 				num2 = 2
 				for i,l in pairs(list) do  
-					if i > 1 and l > self.vehicle.vcaLaunchGear then 
+					if i > 1 and self.gearRatios[l] * self.vehicle.vcaMaxSpeed > self.vehicle.vcaLaunchSpeed then 
 						break 
 					end 
 					num2 = i  
