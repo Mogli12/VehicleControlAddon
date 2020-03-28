@@ -350,6 +350,7 @@ function vehicleControlAddon:onLoad(savegame)
 	vehicleControlAddon.registerState( self, "vcaAutoShift",    true) --, vehicleControlAddon.vcaOnSetAutoShift )
 	vehicleControlAddon.registerState( self, "vcaShifterIndex", 0 )
 	vehicleControlAddon.registerState( self, "vcaShifterUsed",  false )
+	vehicleControlAddon.registerState( self, "vcaShifterPark",  false )
 	vehicleControlAddon.registerState( self, "vcaShifterLH",    true )
 	vehicleControlAddon.registerState( self, "vcaLimitSpeed",   true )
 	vehicleControlAddon.registerState( self, "vcaLaunchSpeed",  vehicleControlAddon.getDefaultLaunchSpeed( self ) )
@@ -909,8 +910,8 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 		self:vcaSetState( "vcaSnapIsOn", not self.vcaSnapIsOn )
 		self:vcaSetSnapFactor()
  	elseif actionName == "vcaNeutral" then
-		if self.vcaNeutral and self.vcaShifterUsed then 
-			self:vcaSetState( "vcaShifterUsed", false )
+		if self.vcaShifterUsed then 
+			self:vcaSetState( "vcaShifterPark", not self.vcaShifterPark )
 		else 
 			self:vcaSetState( "vcaNeutral", not self.vcaNeutral )
 		end 
@@ -1029,6 +1030,7 @@ function vehicleControlAddon:onLeaveVehicle()
 		self:vcaSetState( "vcaShuttleFwd", true )
 		if self.vcaShifterUsed then 
 			self:vcaSetState( "vcaShifterUsed", false )
+			self:vcaSetState( "vcaShifterPark", false )
 			self:vcaSetState( "vcaNeutral", false )
 		end 
 		self:vcaSetState( "vcaCamFwd", true )
@@ -1135,7 +1137,7 @@ function vehicleControlAddon:vcaGetNeutral()
 		elseif self.spec_motorized.motorStartTime ~= nil and g_currentMission.time <= self.spec_motorized.motorStartTime then 
 			return true 
 		elseif self:vcaIsVehicleControlledByPlayer() then 
-			if self.vcaClutchPercent >= 1 or self.vcaNeutral then 
+			if self.vcaClutchPercent >= 1 or self.vcaNeutral or ( self.vcaShifterUsed and self.vcaShifterPark ) then 
 				return true 
 			end 
 			return false 
@@ -1505,6 +1507,10 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 		self.vcaShifter7isR1 = false 
 	elseif self.vcaG27Mode == vehicleControlAddon.g27ModeSGR then 
 		self.vcaShifter7isR1 = false 
+	end 
+	
+	if self.isServer and self.vcaShifterPark and not self.vcaShifterUsed then 
+		self:vcaSetState( "vcaShifterPark", false )
 	end 
 	
 	--*******************************************************************
@@ -2247,7 +2253,7 @@ function vehicleControlAddon:onDraw()
 
 		if     vehicleControlAddon.ovArrowUpWhite == nil then 
 		-- no output 
-		elseif self.vcaNeutral and not self.vcaShifterUsed then 
+		elseif ( self.vcaNeutral and not self.vcaShifterUsed ) or ( self.vcaShifterPark and self.vcaShifterUsed ) then 
 		-- handbrake
 			if not self:vcaGetShuttleCtrl() then 
 				renderOverlay( vehicleControlAddon.ovHandBrake, x-0.5*w, y-0.5*h, w, h )
@@ -2283,7 +2289,7 @@ function vehicleControlAddon:onDraw()
 				renderOverlay( vehicleControlAddon.ovAutoHoldDown, x-0.5*w, y-0.5*h, w, h )
 			end 
 		elseif self:vcaGetNeutral() then 
-			if self.vcaShifterUsed then 
+			if self.vcaShifterUsed and not self.vcaShifterPark then 
 			-- not in (G27) gear
 			else
 			-- neutral / park break
@@ -3089,7 +3095,7 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 				acceleration = 0				
 			end 
 			if self:vcaGetNeutral() then 
-				if self.vcaNeutral and not self.vcaShifterUsed then 
+				if ( self.vcaNeutral and not self.vcaShifterUsed ) or ( self.vcaShifterPark and self.vcaShifterUsed ) then 
 					doHandbrake = true 
 				end 
 				if acceleration > -0.05 then 
