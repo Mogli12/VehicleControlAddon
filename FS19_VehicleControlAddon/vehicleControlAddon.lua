@@ -4010,7 +4010,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		if initGear then 
 			local delta    = math.huge
 			for i,r in pairs(transmission.gearRatios) do 
-				local d = math.abs( r * self.vehicle.vcaMaxSpeed - launchSpeed )
+				local d = math.abs( r * self.vehicle.vcaMaxSpeed - self.vehicle.vcaLaunchSpeed  )
 				if d < delta then 
 					newGear = i 
 					delta   = d
