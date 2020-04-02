@@ -399,6 +399,7 @@ function vehicleControlAddon:onLoad(savegame)
 	self.vcaIsEntered     = false
 	self.vcaKeepCamRot    = false 
 	self.vcaKRToggle      = false 
+	self.vcaShifterUsed2  = 0
 
 	self.vcaClutchPercent = 0
 	self.vcaClutchPercentS= 0
@@ -1010,8 +1011,7 @@ function vehicleControlAddon:vcaSetSnapFactor()
 end
 
 function vehicleControlAddon:onEnterVehicle( isControlling )
-	self.vcaIsEntered = isControlling
-	self:vcaSetState( "vcaIsEnteredMP", self.vcaIsEntered or self.spec_drivable.cruiseControl.state == 1 )
+	self:vcaSetState( "vcaIsEnteredMP", true )
 	self:vcaSetState( "vcaIsBlocked", false )
 	self:vcaSetState( "vcaKSIsOn", self.vcaKSToggle )
 	self.vcaKeepCamRot = self.vcaKRToggle
@@ -1019,6 +1019,11 @@ end
 
 function vehicleControlAddon:onLeaveVehicle()
 	if self.vcaIsEntered then 
+		if self.vcaShifterUsed then
+			self:vcaSetState( "vcaShifterUsed", false )
+			self:vcaSetState( "vcaShifterPark", false )
+			self:vcaSetState( "vcaNeutral", false )
+		end 
 		self:vcaSetState( "vcaNoAutoRotBack", false )
 		self.vcaNewRotCursorKey  = nil
 		self.vcaPrevRotCursorKey = nil
@@ -1027,12 +1032,7 @@ function vehicleControlAddon:onLeaveVehicle()
 		self:vcaSetState( "vcaKSIsOn", false )
 		self:vcaSetState( "vcaIsEnteredMP", false )
 		self:vcaSetState( "vcaIsBlocked", false )
-		self:vcaSetState( "vcaShuttleFwd", true )
-		if self.vcaShifterUsed then 
-			self:vcaSetState( "vcaShifterUsed", false )
-			self:vcaSetState( "vcaShifterPark", false )
-			self:vcaSetState( "vcaNeutral", false )
-		end 
+		self:vcaSetState( "vcaShuttleFwd", true )	
 		self:vcaSetState( "vcaCamFwd", true )
 		self.vcaMovingDir     = 1
 		self.vcaKeepCamRot    = false 
@@ -1460,6 +1460,8 @@ end
 function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
 
 	self.vcaTickDt = dt
+	
+	local lastIsEntered = self.vcaIsEntered
 
 	if self.isClient and self.getIsEntered ~= nil and self:getIsControlled() and self:getIsEntered() then 
 		self.vcaIsEntered = true
@@ -1485,6 +1487,32 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 	
 	--*******************************************************************
 	-- G27 mode
+	if self.vcaIsEntered then
+		if not ( lastIsEntered ) then 
+			local bits = self.vcaShifterUsed2
+			self:vcaSetState( "vcaShifterUsed", self.vcaShifterUsed2 >= 1 )
+			if self.vcaShifterUsed2 > 0 then 
+				self:vcaSetState( "vcaShuttleFwd", bits >= 16 )
+				if bits >= 16 then bits = bits - 16 end 
+				self:vcaSetState( "vcaShifter7isR1", bits >= 8 )
+				if bits >= 8 then bits = bits - 8 end 
+				self:vcaSetState( "vcaShifterPark", bits >= 4 )
+				if bits >= 8 then bits = bits - 4 end 
+				self:vcaSetState( "vcaNeutral", bits >= 2 )
+				if bits >= 8 then bits = bits - 2 end 
+			end
+		else 
+			self.vcaShifterUsed2 = 0
+			if self.vcaShifterUsed then 
+				self.vcaShifterUsed2 = 1
+				if self.vcaNeutral      then self.vcaShifterUsed2 = self.vcaShifterUsed2 +  2 end 
+				if self.vcaShifterPark  then self.vcaShifterUsed2 = self.vcaShifterUsed2 +  4 end 
+				if self.vcaShifter7isR1 then self.vcaShifterUsed2 = self.vcaShifterUsed2 +  8 end 
+				if self.vcaShuttleFwd   then self.vcaShifterUsed2 = self.vcaShifterUsed2 + 16 end 
+			end 
+		end 
+	end 
+	
 	if     self.vcaG27Mode == vehicleControlAddon.g27Mode6R  then 
 		self.vcaShifter7isR1 = true 
 	elseif self.vcaG27Mode == vehicleControlAddon.g27Mode6S  then 
