@@ -27,11 +27,12 @@
 -- 4.00 FS19
 -- 4.01 problem with events
 -- 4.02 globalsLoad with typeList
+-- 4.03 globalsLoadNew
 
 -- Usage:  source(Utils.getFilename("mogliBase.lua", g_currentModDirectory));
 --         _G[g_currentModDirectory.."mogliBase"].newClass( "AutoCombine", "acParameters" )
 
-local mogliBaseVersion   = 4.02
+local mogliBaseVersion   = 4.03
 local mogliBaseClass     = g_currentModName..".mogliBase"
 local mogliEventClass    = g_currentModName..".mogliEvent"
 local mogliSyncRequest   = g_currentModName..".mogliSyncRequest"
@@ -220,7 +221,7 @@ else
 														 }
 			local xmlFileDft, xmlFileUsr
 			if fileExists( fileDft ) then xmlFileDft = loadXMLFile( "mogliBasics", fileDft, rootTag ) end 
-			if fileExists( fileUsr ) then xmlFileUsr = loadXMLFile( "mogliBasics", fileDft, rootTag ) end 
+			if fileExists( fileUsr ) then xmlFileUsr = loadXMLFile( "mogliBasics", fileUsr, rootTag ) end 
 			_G[globalsName], _G[defaultsName] = _newClass_.globalsLoadNew2( xmlFileDft, xmlFileUsr, nameList, rootTag )	
 		end
 		
@@ -234,18 +235,21 @@ else
 			end
 		end 
 		
-		local function getXMLWithFunc( xmlFileDft, xmlFileUsr, func, tag )
+		local function getXMLWithFunc( xmlFileDft, xmlFileUsr, func, dft, tag )
 			local d, u
 			if xmlFileDft ~= nil then 
 				d = func( xmlFileDft, tag )
+			end 
+			if d == nil then 
+				d = dft 
 			end 
 			if xmlFileUsr ~= nil then 
 				u = func( xmlFileUsr, tag )
 			end
 			if u ~= nil then 
-				return u, d
+				return u, d, true
 			end
-			return d, d 
+			return d, d, false
 		end
 		
 		function _newClass_.globalsLoadNew2( xmlFileDft, xmlFileUsr, nameList, rootTag )	
@@ -256,13 +260,14 @@ else
 			for pos, name in pairs(nameList) do
 				local tp = getXMLString(xmlFileDft, rootTag.."." .. name .. "#type")
 				local tm = 1
-				
+
 				defaults[name] = {}
-				defaults[name].tp = tp
 				
 				local func, dft
 				if     tp == nil then
-					tm = 0
+					tp   = "bool"
+					func = getXMLBool
+					dft  = false 
 				elseif tp == "bool" then
 					func = getXMLBool
 					dft  = false 
@@ -282,24 +287,20 @@ else
 					tm = 2
 					print('    <'..name..": invalid XML type : "..tp)
 				end
+
+				defaults[name].tp = tp
 				
 				if func ~= nil then
-					globals[name], defaults[name].v = getXMLWithFunc( xmlFileDft, xmlFileUsr, func, rootTag.."." .. name .. "#value" )
+					globals[name], defaults[name].v, defaults[name].u = getXMLWithFunc( xmlFileDft, xmlFileUsr, func, dft, rootTag.."." .. name .. "#value" )
 				end
 				
-				if defaults[name].v == nil or defaults[name].v ~= globals[name] then 
+				if defaults[name].u then 
 					if wl then
 						wl = false
 						print('Loading settings...')
 					end
 					if tm == 1 then
-						print('    <'..name..' type="'..tostring(tp)..'" value="'..tostring(globals[name])..'"/>')
-						if globals[name] == nil then 
-							globals[name] = dft 
-						end 
-						if defaults[name].v == nil then 
-							defaults[name].v = dft 
-						end 
+						print('    <'..name..' value="'..tostring(globals[name])..'"/> <!-- '..tostring(tp)..' -->')
 					else
 						print('    <'..name..' .../>: invalid XML type : '..tostring(tp))
 					end
@@ -325,7 +326,7 @@ else
 				local eventObject = mogliBase40Globals:new(_globalClassName_, globals )
 				g_client:getServerConnection():sendEvent( eventObject ) 
 			end 
-			print('Creating file "'..file..'"...')
+			print('Writing file "'..file..'"...')
 			local xmlFile = createXMLFile( "mogliBasics", file, rootTag )
 			_newClass_.globalsCreateNew2( xmlFile , rootTag, globals, defaults )	
 			saveXMLFile(xmlFile)
@@ -342,7 +343,7 @@ else
 				local tm = 1
 				if     tp == nil then
 					tm = 0
-				elseif mogliBase30.compare( value, defaults[name].v ) then
+				elseif not ( defaults[name].u ) and mogliBase30.compare( value, defaults[name].v ) then
 					tm = 0
 				elseif tp == "bool"   then
 					setXMLBool( xmlFile, rootTag.."." .. name .. "#value", value )
@@ -356,18 +357,17 @@ else
 					setXMLString( xmlFile, rootTag.."." .. name .. "#value", value )
 				else
 					tm = 2
-					print('    <'..name..": invalid XML type : "..tp)
 				end
-				if tm == 1 then 
-					setXMLString(xmlFile, rootTag.."." .. name .. "#type", tp)
-				end 
-				if writeLog and tm > 0 then
+			--if tm == 1 then 
+			--	setXMLString(xmlFile, rootTag.."." .. name .. "#type", tp)
+			--end 
+				if tm > 0 then
 					if wl then
 						wl = false
 						print('Writing settings...')
 					end
 					if tm == 1 then
-						print('    <'..name..' type="'..tostring(tp)..'" value="'..tostring(globals[name])..'"/>')
+						print('    <'..name..' value="'..tostring(globals[name])..'"/> <!-- '..tostring(tp)..' -->')
 					else
 						print('    <'..name..' .../>: invalid XML type : '..tostring(tp))
 					end
@@ -1099,7 +1099,7 @@ else
 		self.className = streamReadString(streamId)
 		self.level1, self.value = _G[mogliBaseClass].readStreamEx( streamId )
 		if self.object == nil then 
-			print("Error: mogliBase30Event received invalid NodeObject")
+			print("Warning: mogliBase30Event received invalid NodeObject")
 			print(tostring(self.className).."; "..tostring(self.level1).."; "..tostring(self.value))
 		else 
 			local state, message = pcall( mogliBase30Event.run, self, connection )
@@ -1115,6 +1115,8 @@ else
 	function mogliBase30Event:writeStream(streamId, connection)
 		if self.object == nil then 
 			print("Error: mogliBase30Event has empty object")
+			print(tostring(self.className).."; "..tostring(self.level1).."; "..tostring(self.value))
+			mogliBase30.printCallStack()
 		end
 		NetworkUtil.writeNodeObject( streamId, self.object )
 		streamWriteString(streamId, self.className )
@@ -1158,7 +1160,7 @@ else
 		self.object    = NetworkUtil.readNodeObject( streamId )				
 		self.className = streamReadString(streamId)
 		if self.object == nil then 
-			print("Error: mogliBase30Request received invalid NodeObject")
+			print("Warning: mogliBase30Request received invalid NodeObject")
 		else 
 			local state, message = pcall( mogliBase30Request.run, self, connection )
 			if not state then
@@ -1169,6 +1171,7 @@ else
 	function mogliBase30Request:writeStream(streamId, connection)
 		if self.object == nil then 
 			print("Error: mogliBase30Request has empty object")
+			mogliBase30.printCallStack()
 		end
 		NetworkUtil.writeNodeObject( streamId, self.object )
 		streamWriteString(streamId, self.className )

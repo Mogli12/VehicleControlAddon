@@ -16,6 +16,7 @@
 	<clutchTimerIdle     type="int"   value="5000"/> <!-- ms -->
 	<rotInertiaFactor    type="float" value="5"/>  <!-- rot. interatia is more than just the flywheel, it includes the transmission and the wheels as well -->
 	<modifyPitch         type="bool"  value="true"/>
+	<mouseAutoRotateBack type="bool"  value="false"/>
 	
 	<!-- defaults -->
 	<adaptiveSteering    type="bool"  value="true"/>

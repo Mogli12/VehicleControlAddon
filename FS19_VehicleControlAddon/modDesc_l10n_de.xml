@@ -147,6 +147,7 @@
 
 Dieses Script variiert abhängig von der gefahrenen Geschwindigkeit die Lenkgeschwindigkeit und dreht die Kamera passend zum Lenkeinschlag und zur Fahrtrichtung. 
 Mit Umschalt-Rechts und den Pfeiltasten kann man in die entsprechende Richtung blicken.
+Drückt man Strg Links zusammen mit W, dann richtet sich die Fahrtrichtung an festen Richtungen aus.
 Alle Funktionen lassen sich auch wieder ausschalten.]]>
 		</longText>
 		<longText name="vca_Help_2">
@@ -154,7 +155,6 @@ Alle Funktionen lassen sich auch wieder ausschalten.]]>
 
 Mit Umschalt-Llinks wird das Gaspedal, der Tempomat und die maximale Drehzahl auf 75% begrenzt.
 Drückt man die Taste entf, dann hält das Fahrzeug die aktuelle Geschwindigkeit. Wie bei modernen Traktoren auch, kann man diese Funktion auch permanent einschalten und per entf dann zeitweise ausschalten.
-Drückt man Strg Links zusammen mit W, dann richtet sich die Fahrtrichtung an festen Richtungen aus.
 Durch die Änderungen an der Tonhöhe kann man die aktuelle Drehzahl besser hören.]]>
 		</longText>
 		<longText name="vca_Help_3">

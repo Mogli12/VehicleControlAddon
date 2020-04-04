@@ -115,7 +115,8 @@ local listOfProperties =
 	}
 
 
-VCAGlobals = {}
+VCAGlobals  = {}
+VCADefaults = {}
 vehicleControlAddon.snapAngles = { 1, 5, 15, 22.5, 45, 90 }
 vehicleControlAddon.factor30pi = 9.5492965855137201461330258023509
 vehicleControlAddon.g27Mode6R  = 0 -- 6 Gears, 1 Reverse, Range Splitter
