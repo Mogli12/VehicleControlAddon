@@ -4,26 +4,96 @@
     <description><![CDATA[Aggiunge la specializzazione per lo sterzo adattivo da tastiera]]></description>
 
     <texts>
-		<text name="vcaCAMERA"         	text="Rotazione telecamera" />
-		<text name="vcaEXPONENT"       	text="Sensibilità"/>
+		<text name="vcaCAMERA"         	text="Rotazione Telecamera Interna" />
+    <text name="vcaCAMERAO"         text="Rotazione Telecamera Esterna"/>
+    <text name="vcaEXPONENT"       	text="Sensibilità"/>
 		<text name="vcaSTEERING"       	text="Sterzo adattivo"/>
 		<text name="vcaSHUTTLE"        	text="Inverti" />
-		<text name="vcaREVERSE"        	text="Guarda all'indietro" />
+		<text name="vcaREVERSE"        	text="Guarda all'indietro (Interno)" />
+    <text name="vcaREVERSEO"        text="Guarda all'indietro (Esterno)"/>
 		<text name="vcaLIMIT"          	text="Limitatore di accelerazione"/>
 		<text name="vcaPEEKLR"          text="Occhiata di lato"/>
-		<text name="vcaANGLE"           text="Angolo snap"/>
+		<text name="vcaANGLE"           text="Angolo linee guida"/>
 		<text name="vcaBRAKE"           text="Frenata lenta"/>
-		<text name="vcaSETTINGS"       	text="Impostazioni"/>
+    <text name="vcaTRANSMISSION"    text="Trasmissione"/>
+		<text name="vcaMAXSPEED"        text="Velocità Asse"/>
+		<text name="vcaLIMSPEED"        text="Limitatore di velocità"/>
+		<text name="vcaAUTOSHIFT"       text="Cambio automatico"/>
+		<text name="vcaLAUNCH"          text="Cambio marcia"/>
+		<text name="vcaKEEPSPEED"       text="Mantieni Velocità Permanente"/>
+		<text name="vcaNO_ARB"          text="Free Steering"/>
+		<text name="vcaHANDTHROTTLE"    text="Acceleratore Manuale"/>
+		<text name="vcaPITCH"           text="Tonalità del suono a RPM Max"/>
+		<text name="vcaSETTINGS"        text="Impostazioni"/>
+		<text name="vcaDRAWHUD"         text="PANNELLO Trasmissione"/>
 
-		<text name="vca_tip_CAMERA"    	text="La telecamera ruota automaticamente in base all'angolo di sterzata"/>
-		<text name="vca_tip_EXPONENT"  	text="Sensibilità dello sterzo adattivo in base alla velocità sul terreno"/>
-		<text name="vca_tip_STEERING"  	text="Lo sterzo adattivo regola la rotazione posteriore automatica e l'angolo di sterzata massimo"/>
-		<text name="vca_tip_SHUTTLE"   	text="Cambia direzione di guida con <barra spazio>"/>
-		<text name="vca_tip_REVERSE"   	text="Se il veicolo cambia direzione la telecamera viene ruotata di 180°"/>
+    <text name="vcaDISTANCE"        text="Larghezza di Lavoro"/>
+		<text name="vcaOFFSET1"         text="Scentratura dell'attrezzo"/>
+		<text name="vcaOFFSET2"         text="Scentratura Inversa"/>
+		<text name="vcaDRAWMARKER"      text="Visualizza linee guida"/>
+		<text name="vcaPITCH1"          text="Tonalità suono lineare"/>
+		<text name="vcaPITCH2"          text="Tonalità del suono a RPM Medi"/>
+		<text name="vcaBLOWOFFVOL"      text="Volume Valvola Wastegate"/>
+		<text name="vcaSINGLEREV"       text="Retromarcia Singola"/>
+		<text name="vcaAUTOCLUTCH"      text="Frizione Automatica"/>
+		<text name="vcaTURBOCLUTCH"     text="Turbo clutch"/>
+		<text name="vcaGEARRATIOF"      text="Min. gear speed limit"/>
+		<text name="vcaGEARRATIOT"      text="Max. gear speed limit"/>
+		<text name="vcaG27MODE"         text="G27/G29 shifter mode"/>
+		<text name="vcaHIREDWORKER"     text="Trasmissione e operai"/>
+		<text name="vcaOWNMINSPEED"     text="Velocità 1a Marcia"/>
+		<text name="vcaOWNMINRANGE"     text="Velocità 1a Marcia e Range"/>
+		<text name="vcaOWNMAXRANGE"     text="Velocità Max e range -"/>
+		<text name="vcaOWNGEARS"        text="Numero di Marce"/>
+		<text name="vcaOWNRANGES"       text="Numero di Range"/>
+		<text name="vcaOWNGEARTIME"     text="Tempo per il cambio marcia"/>
+		<text name="vcaOWNRANGETIME"    text="Tempo per il cambio range"/>
+		<text name="vcaOWNAUTOGEARS"    text="Cambio Automatico"/>
+
+    <text name="vca_tip_CAMERAI"      text="La telecamera interna ruota automaticamente in base all'angolo di sterzata"/>
+    <text name="vca_tip_CAMERAO"      text="La telecamera esterna ruota automaticamente in base all'angolo di sterzata"/>
+		<text name="vca_tip_EXPONENT"  	  text="Sensibilità dello sterzo adattivo in base alla velocità sul terreno"/>
+		<text name="vca_tip_STEERING"  	  text="Lo sterzo adattivo regola la rotazione posteriore automatica e l'angolo di sterzata massimo"/>
+		<text name="vca_tip_SHUTTLE"   	  text="Cambia direzione di guida con <barra spazio>"/>
+    <text name="vca_tip_REVERSEI"     text="Se il veicolo cambia direzione la telecamera Interna viene ruotata di 180°"/>
+		<text name="vca_tip_REVERSEO"     text="Se il veicolo cambia direzione la telecamera Esterna viene ruotata di 180°"/>
 		<text name="vca_tip_LIMIT"     	text="Limiter dell'acceleratore con e senza tasto shift sinistro"/>
 		<text name="vca_tip_PEEKLR"     text="Dai un'occhiata con Shift-Destro e i tasti freccia accanto"/>
-		<text name="vca_tip_ANGLE"      text="Sterzare automaticamente per seguire l'angolo di snap"/>
+		<text name="vca_tip_ANGLE"      text="Sterzare automaticamente per seguire l'angolo delle linee guida"/>
 		<text name="vca_tip_BRAKE"      text="Percentuale frenata lenta, aka resistenza inerzia"/>
+    <text name="vca_tip_TRANSMISSION" text="Tipo di trasmissione; IVT trasmissione variabile, tutte le altre trasmissioni hanno 12 marce differenti, 2x6 è la migliore per i camion"/>
+		<text name="vca_tip_MAXSPEED"     text="Velocità massima della marcia più alta, può essere più alta della velocità massima del veicolo"/>
+		<text name="vca_tip_LIMSPEED"     text="Limita la velocità massima del veicolo a questo valore"/>
+		<text name="vca_tip_AUTOSHIFT"    text="Cambio automatico di marcia e range"/>
+		<text name="vca_tip_LAUNCH"       text="Velocità nominale della marcia iniziale"/>
+		<text name="vca_tip_KEEPSPEED"    text="Se Mantieni velocità è abilitato, il pedale dell'acceleratore funziona come un joystick. Così è come guidare con il cruise control."/>
+		<text name="vca_tip_NO_ARB"       text="Se Free Steering è abilitato allora il volante non tornerà indietro automaticamente"/>
+		<text name="vca_tip_HANDTHROTTLE" text="I giri del motore aumenteranno fino a raggiungere il valore dell'acceleratore manuale"/>
+		<text name="vca_tip_PITCH"        text="Tonalità del suono ai massimi giri"/>
+		<text name="vca_tip_DRAWHUD"      text="Mostra o nascondi il PANNELLO trasmissione"/>
+
+		<text name="vca_tip_DISTANCE"     text="Distanza tra due linee guida"/>
+		<text name="vca_tip_OFFSET1"      text="Offset delle linee guida"/>
+		<text name="vca_tip_OFFSET2"      text="Offset inverso delle linee guida"/>
+		<text name="vca_tip_DRAWMARKER"   text="Visualizza linee guida"/>
+		<text name="vca_tip_PITCH1"       text="Modifica della tonalità del suono per renderlo lineare"/>
+		<text name="vca_tip_PITCH2"       text="Tonalità del suono a medi RPM"/>
+		<text name="vca_tip_BLOWOFFVOL"   text="Volume della valvola wastegate"/>
+		<text name="vca_tip_SINGLEREV"    text="Con Retromarcia Singola la trasmissione usa un solo rapporto in Retromarcia o singolo range invece dello shuttle control"/>
+		<text name="vca_tip_AUTOCLUTCH"   text="Frizione automatica"/>
+		<text name="vca_tip_TURBOCLUTCH"  text="Frizione addizionale del turbo"/>
+		<text name="vca_tip_GEARRATIOF"   text="Limite min. velocità della marcia"/>
+		<text name="vca_tip_GEARRATIOT"   text="Limite max. velotità della marcia"/>
+		<text name="vca_tip_G27MODE"      text="Modalità cambio G27/G29"/>
+		<text name="vca_tip_HIREDWORKER"  text="Controllo se l'operaio guida un veicolo standard o MOD con trasmissione modificata"/>
+		<text name="vca_tip_OWNMINSPEED"  text="velotità di marcia della 1a marcia del range più alto"/>
+		<text name="vca_tip_OWNMINRANGE"  text="Velocità di marcia della 1a marcia del 2o range più alto"/>
+		<text name="vca_tip_OWNMAXRANGE"  text="Velocità di marcia della marcia più alta del 2o range più alto"/>
+		<text name="vca_tip_OWNGEARS"     text="Numero di marce"/>
+		<text name="vca_tip_OWNRANGES"    text="Numero di ranges"/>
+		<text name="vca_tip_OWNGEARTIME"  text="È ora di cambiare marcia"/>
+		<text name="vca_tip_OWNRANGETIME" text="È ora di cambiare range"/>
+		<text name="vca_tip_OWNAUTOGEARS" text="Cambio automatico e regolazione della velocità"/>
 
 		<text name="input_vcaSETTINGS" 	text="VCA: impostazioni"/>
 		<text name="input_vcaUP"      	text="VCA: scambia direzione vista / guarda indietro " />
@@ -33,23 +103,84 @@
 		<text name="input_vcaDIRECTION"	text="VCA: scambia direzione di guida" />
 		<text name="input_vcaFORWARD"  	text="VCA: guida in avanti" />
 		<text name="input_vcaREVERSE" 	text="VCA: guida all'indietro" />
-		<text name="input_vcaSNAP"      text="VCA: snap direzione guida"/>
+		<text name="input_vcaSNAP"      text="VCA: Linee guida"/>
+    <text name="input_vcaSNAPRESET" text="VCA: reset delle linee guida"/>
+    <text name="input_vcaSnapUP"    text="VCA: Ruota le linee guida a sinistra"/>
+		<text name="input_vcaSnapDOWN"  text="VCA: Ruota le linee guida a destra"/>
+		<text name="input_vcaSnapLEFT"  text="VCA: Muovi le linee guida a sinistra"/>
+		<text name="input_vcaSnapRIGHT" text="VCA: Muovi le linee guida a destra"/>
 		<text name="input_vcaNO_ARB"    text="VCA: disabilita ritorno automatico"/>
-		<text name="input_vcaINCHING"   text="VCA: inching"/>
-		
+		<text name="input_vcaINCHING"   text="VCA: accelera lentamente"/>
+    <text name="input_vcaKEEPROT"   text="VCA: Mantieni la direzione globale della videocamera"/>
+		<text name="input_vcaKEEPROT2"  text="VCA: Mantieni permanentemente la direzione della videocamera"/>
+		<text name="input_vcaKEEPSPEED" text="VCA: Mantieni la velocità"/>
+		<text name="input_vcaKEEPSPEED2" text="VCA: Mantieni permanentemente la velocità"/>
+		<text name="input_vcaSWAPSPEED" text="VCA: Cambia velotità"/>
+		<text name="input_vcaGearUp"    text="VCA: marcia SU"/>
+		<text name="input_vcaGearDown"  text="VCA: marcia GIU"/>
+		<text name="input_vcaRangeUp"   text="VCA: range SU"/>
+		<text name="input_vcaRangeDown" text="VCA: range GIU"/>
+		<text name="input_vcaNeutral"   text="VCA: Folle on/off"/>
+		<text name="input_vcaClutch"    text="VCA: Asse della Frizione"/>
+		<text name="input_vcaShifter1"  text="VCA: G27/G29 1a marcia"/>
+		<text name="input_vcaShifter2"  text="VCA: G27/G29 2a marcia"/>
+		<text name="input_vcaShifter3"  text="VCA: G27/G29 3a marcia"/>
+		<text name="input_vcaShifter4"  text="VCA: G27/G29 4a marcia"/>
+		<text name="input_vcaShifter5"  text="VCA: G27/G29 5a marcia / range giù"/>
+		<text name="input_vcaShifter6"  text="VCA: G27/G29 6a marcia / range su"/>
+		<text name="input_vcaShifter7"  text="VCA: G27/G29 7a marcia / retromarcia"/>
+		<text name="input_vcaShifter8"  text="VCA: G27/G29 8a marcia"/>
+		<text name="input_vcaShifter9"  text="VCA: G27/G29 9a marcia / retromarcia"/>
+		<text name="input_vcaShifterLH" text="VCA: G27/G29 splitter di marcia"/>
+		<text name="input_vcaHandRpm"   text="VCA: Acceleratore manuale"/>
+		<text name="input_vcaHandRpm_1" text="VCA: aumenta Acceleratore manuale"/>
+		<text name="input_vcaHandRpm_2" text="VCA: diminuisci Acceleratore manuale"/>
+		<text name="input_vcaHandMode"  text="VCA: modalità acceleratore manuale"/>
     </texts>
 
 	<longTexts>
 		<longText name="vca_Help_1">
-<![CDATA[
-Questo script varia la velocità di sterzata in base alla velocità che si sta guidando e ruota la telecamera per adattarla all'angolo e alla direzione dello sterzo.
+<![CDATA[ Sterzo e Telecamera
 
-Shift-Sinistro limita l'acceleratore, il cambio e il regime massimo al 75%. Con Shift-Destro e i tasti cursore puoi sbirciare nella direzione corrispondente.
+Questo script varia la velocità di sterzata in base alla velocità alla quale si sta guidando e ruota la telecamera per adattarla all'angolo e alla direzione dello sterzo.
+Shift-Sinistro limita l'acceleratore, il cambio e il regime massimo al 75%. Con Shift-Destro e i tasti cursore puoi guardare nella direzione corrispondente.
+Se premi Ctrl-Sinistro insieme a W, la direzione di guida viene impostata verso direzioni fisse.
+Tutte le funzioni possono essere disattivate.]]>
+		</longText>
+    <longText name="vca_Help_2">
+<![CDATA[Acceleratore e direzione di Guida
 
-Se premi Ctrl-Sinistro insieme a W, la direzione di guida scatta verso direzioni fisse.
+Shift-Left limita l'accelerazione, il cruise control e i giri massimi al minuto al 75%.
+Se premi DEL il veicolo manterrà la sua velocità. L'acceleratore e il freno aumenteranno o diminuiranno la velocità. Il veicolo si guida come un moderno trattore con il joystick.
+Se premi insieme CTRL-Sinisto + W il mezzo seguirà la direzione delle linee guida.
+La modifica della tonalità del suono lineare semplifica l'ascolto dei giri motore.]]>
+		</longText>
+		<longText name="vca_Help_3">
+<![CDATA[Trasmissione
 
-Tutte le funzioni possono essere nuovamente disattivate.]]>
+off: la trasmissione standard senza modifiche
+IVT: Ancora il cambio standard ma con piccole regolazioni alla gamma di giri consentita. E c'è dell'altro...
+4X4: Una trasmissione vecchio stile con 4 marce in 4 range e controllo inversione. Cambiare marcia richiede del tempo e potresti perdere slancio.
+4PS: La stessa trasmissione di cui sopra ma con il sistema power shift (a doppia frizione)
+2X6: Due ranges da 6 marce. Questa trasmissione e indicata per i volanti G27/G29. C'è un range lento e un range veloce. Le 6 marce in ogni gruppo non si sovrappongono a quelle dell'altro range
+FPS: Full Power Shift: La trasmissione ha 12 marce e cambia senza interruzioni.
+6PS: La trasmissione John Deer AutoQuad. Questa trasmisisone ha 6 marce. Ogni marcia può essere ridotta dell'80% circa
+PKW: Una trasmissione a 6 marce per auto a bassa portata
+VARIO: La trasmisisone Fendt Vario. Molto simile all'IVT ma ha un range veloce e un range lento
+46A: La trasmissione Class HexaShift. Ha 4 ranges manuali e 6 marce automatiche con il Power shift
+OWN: Configura la tua trasmissione]]>
+		</longText>
+		<longText name="vca_Help_4">
+<![CDATA[Impostazioni Generali
+
+I cambiamenti sulle impostazioni generali non hanno effetto sul veicolo corrente. Sono salvate sul file modsSettings/FS19_VehicleControlAddon/config.xml.]]>
+		</longText>
+		<longText name="vca_Help_5">
+<![CDATA[Configura la Tua Trasmssione
+
+Qui puoi configurare la tua strasmissione personalizzata. Le marce possono essere automatiche..
+La velocità massima nella marcia più alta può essere solo teorica. Puoi raggiungerla solo senza limitatore di velocità. I rapporti tra le marce sono calcolati dalla velocità massima della 1a marcia.
+Le due velocità massime del secondo range più alto sono ridondanti. Se inserisci un valore in una, l'altro viene cambiato di conseguenza.]]>
 		</longText>
 	</longTexts>
-
 </l10n>
