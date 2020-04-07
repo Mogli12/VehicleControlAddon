@@ -145,6 +145,7 @@
 This script varies the steering speed depending on the speed you are driving, and it rotates the camera to match the steering angle and direction.
 With Shift-right and the cursor keys you can peek in the corresponding direction.
 If you press Ctrl left together with W then the driving direction snaps to fixed directions.
+If you press Ctrl left together with W then the driving direction snaps to fixed directions.
 All functions can be switched off.]]>
 		</longText>
 		<longText name="vca_Help_2">
@@ -152,7 +153,6 @@ All functions can be switched off.]]>
 
 Shift-Left limits throttle, cruise control and maximum rounds per minute to 75%. 
 If you press delete then the vehicle will keep its speed. Acceleration and brake pedal increase and descrease the speed. The vehicle drives like a modern tractor with joystick.
-If you press Ctrl left together with W then the driving direction snaps to fixed directions.
 The linear pitch modification makes it easier to hear the RPM.]]>
 		</longText>
 		<longText name="vca_Help_3">

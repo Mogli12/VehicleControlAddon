@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="no" ?>
-<modDesc descVersion="42">
+<modDesc descVersion="47">
 	<author>mogli</author>
 	<title>
 		<en>Vehicle Control Addon</en>
@@ -45,11 +45,11 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>store.dds</iconFilename>
-	<version>0.1.2.6</version>
+	<version>0.1.3.0</version>
 	<l10n filenamePrefix="modDesc_l10n">
 		<text name="vcaVERSION">          
-			<de>Vehicle Control Addon 0.1.2.6</de>
-			<en>Vehicle Control Addon 0.1.2.6</en>
+			<de>Vehicle Control Addon 0.1.3.0</de>
+			<en>Vehicle Control Addon 0.1.3.0</en>
 		</text>
 	</l10n>
 	

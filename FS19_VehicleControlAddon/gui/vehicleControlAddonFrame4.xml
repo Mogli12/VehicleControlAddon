@@ -134,7 +134,7 @@
 		</GuiElement>
 	
 	
-		<GuiElement type="bitmap" profile="ingameMenuHelpRowBg" position="110px 64px" size="1500px 48px" id="mogliToolTipBox" visible="true">
+		<GuiElement type="bitmap" profile="ingameMenuHelpRowBg" position="210px 64px" size="1500px 48px" id="mogliToolTipBox" visible="true">
 			<GuiElement type="bitmap" profile="ingameMenuHelpRowIcon" id="mogliToolTipBoxIcon"/>
 			<GuiElement type="text" profile="ingameMenuHelpRowText" id="mogliToolTipBoxText" text=""/>
 		</GuiElement>
