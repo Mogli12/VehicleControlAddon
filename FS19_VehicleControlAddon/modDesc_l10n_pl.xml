@@ -34,6 +34,29 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vcaPITCH"           text="Wysokość dźwięku przy maks. RPM"/>
 		<text name="vcaSETTINGS"        text="Ustawienia"/>
 		<text name="vcaDRAWHUD"         text="HUD skrzyni"/>
+		
+		<text name="vcaDISTANCE"        text="Szerokość robocza"/>
+		<text name="vcaOFFSET1"         text="Przesunięcie narzędzia"/>
+		<text name="vcaOFFSET2"         text="Odwróć przesunięcie"/>
+		<text name="vcaDRAWMARKER"      text="Pokaż linie kierunku jazdy"/>
+		<text name="vcaPITCH1"          text="Liniowa wysokość dźwięku"/>
+		<text name="vcaPITCH2"          text="Wysokość dźwięku przy średnich RPM"/>
+		<text name="vcaBLOWOFFVOL"      text="Głośność Wastegate"/>
+		<text name="vcaSINGLEREV"       text="Pojedynczy bieg wsteczny"/>
+		<text name="vcaAUTOCLUTCH"      text="Automatyczne sprzęgło"/>
+		<text name="vcaTURBOCLUTCH"     text="Turbo sprzęgło"/>
+		<text name="vcaGEARRATIOF"      text="Min. prędkość biegu"/>
+		<text name="vcaGEARRATIOT"      text="Max. prędkość biegu"/>
+		<text name="vcaG27MODE"         text="Tryb skrzyni G27/G29"/>
+		<text name="vcaHIREDWORKER"     text="Skrzynia i pracownik"/>
+		<text name="vcaOWNMINSPEED"     text="Prędkość na 1 biegu"/>
+		<text name="vcaOWNMINRANGE"     text="Prędkość na 1 biegu i zakresie -"/>
+		<text name="vcaOWNMAXRANGE"     text="Max. prędkość biegu na zakresie -"/>
+		<text name="vcaOWNGEARS"        text="Ilość biegów"/>
+		<text name="vcaOWNRANGES"       text="Ilość zakresów"/>
+		<text name="vcaOWNGEARTIME"     text="Czas zmiany biegów"/>
+		<text name="vcaOWNRANGETIME"    text="Czas zmiany zakresów"/>
+		<text name="vcaOWNAUTOGEARS"    text="Biegi automatyczne"/>
 
 		<text name="vca_tip_CAMERAI"    text="Kamera wewnętrzna obraca się automatycznie zgodnie z kątem skrętu"/>
 		<text name="vca_tip_CAMERAO"    text="Kamera zewnętrzna obraca się automatycznie zgodnie z kątem skrętu"/>
@@ -56,7 +79,30 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vca_tip_HANDTHROTTLE" text="Silnik automatycznie osiąga ustalone obroty."/>
 		<text name="vca_tip_PITCH"      text="Wysokość dźwięku przy maksymalnych obrotach silnika"/>
 		<text name="vca_tip_DRAWHUD"    text="Pokazuje lub ukrywa HUD skrzyni"/>
-
+		
+		<text name="vca_tip_DISTANCE"     text="Odległość pomiędzy kolejnymi ścieżkami"/>
+		<text name="vca_tip_OFFSET1"      text="Przesunięcie względem obecnej ścieżki"/>
+		<text name="vca_tip_OFFSET2"      text="Odwraca przesunięcie na obecnej ścieżce"/>
+		<text name="vca_tip_DRAWMARKER"   text="Pokazuje ścieżkę jazdy"/>
+		<text name="vca_tip_PITCH1"       text="Modyfikacja wysokości dźwięku aby stworzyć go bardziej liniowym"/>
+		<text name="vca_tip_PITCH2"       text="Wysokość dźwięku przy średnich RPM"/>
+		<text name="vca_tip_BLOWOFFVOL"   text="Głośność dźwięki zaworu wastegate"/>
+		<text name="vca_tip_SINGLEREV"    text="W przypadku pojedynczego biegu wstecznego skrzynia biegów używa jednego biegu wstecznego lub zakresu biegu wstecznego zamiast rewersu"/>
+		<text name="vca_tip_AUTOCLUTCH"   text="Automatyczne sprzęgło"/>
+		<text name="vca_tip_TURBOCLUTCH"  text="Dodatkowe turbo sprzęgło"/>
+		<text name="vca_tip_GEARRATIOF"   text="Minimalna prędkość na biegu"/>
+		<text name="vca_tip_GEARRATIOT"   text="Maksymalna prędkość na biegu"/>
+		<text name="vca_tip_G27MODE"      text="Skrzynia biegów G27/G29"/>
+		<text name="vca_tip_HIREDWORKER"  text="Ustawia z jaką skrzynią biegów ma pracować pracownik (domyślną czy zmodyfikowaną)"/>
+		<text name="vca_tip_OWNMINSPEED"  text="Prędkość na 1 biegu na najwyższym zakresie"/>
+		<text name="vca_tip_OWNMINRANGE"  text="Prędkość na 1 biegu na drugim najwyższym zakresie"/>
+		<text name="vca_tip_OWNMAXRANGE"  text="Prędkość na najwyższym biegu na drugim najwyższym zakresie"/>
+		<text name="vca_tip_OWNGEARS"     text="Ilość rang"/>
+		<text name="vca_tip_OWNRANGES"    text="Ilość zakresów"/>
+		<text name="vca_tip_OWNGEARTIME"  text="Czas pomiędzy przełączeniem biegów"/>
+		<text name="vca_tip_OWNRANGETIME" text="Czas pomiędzy przełączeniem zakresów"/>
+		<text name="vca_tip_OWNAUTOGEARS" text="Automatyczna zmiana biegów i dopasowanie prędkości"/>
+		
 		<text name="input_vcaSETTINGS"  text="VCA: Ustawienia"/>
 		<text name="input_vcaUP"        text="VCA: Zmiana widok / Widok w przód"/>
 		<text name="input_vcaDOWN"      text="VCA: Zmiana zerknięcia / Widok w tył"/>
@@ -73,7 +119,8 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="input_vcaSnapRIGHT" text="VCA: Przesuń w prawo"/>
 		<text name="input_vcaNO_ARB"    text="VCA: Wył. centrowanie kół"/>
 		<text name="input_vcaINCHING"   text="VCA: Kontroler tempomatu"/>
-		<text name="input_vcaKEEPROT"   text="VCA: Utrzmywanie globalnego kierunku kamery"/>
+		<text name="input_vcaKEEPROT"   text="VCA: Utrzymywanie globalnego kierunku kamery"/>
+		<text name="input_vcaKEEPROT2"  text="VCA: Permanentne utrzymywanie kierunku kamery"/>
 		<text name="input_vcaKEEPSPEED" text="VCA: Utrzymywanie prędkości"/>
 		<text name="input_vcaKEEPSPEED2" text="VCA: Permanentne utrzymanie prędkości"/>
 		<text name="input_vcaSWAPSPEED" text="VCA: Wyrównanie prędkości"/>
@@ -102,10 +149,56 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 	<longTexts>
 		<longText name="vca_Help_1">
 <![CDATA[Skrypt ten zmienia prędkość skrętu, centrowania kół i maksymalny kąt skrętu w zależności od aktualnej prędkości pojazdu.
-Ponadto kamera jest obracana zgodnie z kątem skrętu i kierunkiem jazdy. Gaz i hamulec na klawiaturze (klawisze W i S) może być ograniczony,
-tylko przy naciśnięciu Lewy Shift w tym samym czasie, następuje wtedy 100% przyspieszenie lub hamowanie.
+Ponadto kamera jest obracana zgodnie z kątem skrętu i kierunkiem jazdy. 
+
+Gaz i hamulec na klawiaturze (klawisze W i S) może być ograniczony, tylko przy naciśnięciu Lewy Shift w tym samym czasie, następuje wtedy 100% przyspieszenie lub hamowanie.
 Jeśli ogranicznik przyspieszenia jest ustawiony na 100%, wówczas przyspieszenie i hamowanie są ograniczone, gdy używany jest Lewy Shift.
+
 Wszystkie funkcje można wyłączyć.]]>
+		</longText>
+	</longTexts>
+	<longTexts>
+		<longText name="vca_Help_1">
+<![CDATA[Sterowanie i kamera
+
+Skrypt ten zmienia prędkość skrętu, centrowania kół i maksymalny kąt skrętu w zależności od aktualnej prędkości pojazdu. Ponadto kamera jest obracana zgodnie z kątem skrętu i kierunkiem jazdy.
+Za pomocą prawego Shifta i klawiszy strzałki możesz zerknąć w odpowiednim kierunku.
+Jeśli naciśniesz lewy Ctrl + W, wówczas kierunek jazdy zostanie ustawiony do ustalonego kierunku.
+Wszystkie te funkcje można wyłączyć.]]>
+		</longText>
+		<longText name="vca_Help_2">
+<![CDATA[Kontrola gazu i wyrównanie kierunku jazdy
+
+Lewy Shift ogranicza przepustnicę, tempomat i max RPM do 75%.
+Jeśli naciśniesz Delete, pojazd utrzyma stałą prędkość. Wciśnięcie pedału gazu lub hamulca zwiększy lub zmniejszy prędkość. Pojazd jeździ jak nowoczesny ciągnik z joystickiem.
+Liniowa modyfikacja wysokości dźwięku ułatwia usłyszenie RPM.]]>
+		</longText>
+		<longText name="vca_Help_3">
+<![CDATA[Skrzynia biegów
+
+off: Standardowa skrzynia biegów bez żadnych zmian
+IVT: Nadal standardowa skrzynia biegów, ale z niewielkimi zmianami dopuszczalnego zakresu obrotów. Więcej w przyszłości...
+4X4: Staromodna skrzynia biegów z 4 biegami w 4 grupach i rewersem. Zmiana biegów wymaga czasu i możesz stracić rozpęd.
+4PS: Ta sama skrzynia biegów jak powyżej, ale z przesunięciem mocy dla biegów
+2X6: Dwie grupy z 6 biegami. Ta przekładnia jest przydatna w przypadku dźwigni zmiany biegów G27/G29. Istnieje niski i wysoki zakres. 6 biegów w jednym zakresie nie pokrywa się z 6 biegami w innym zakresie
+FPS: Skrzynia Full Power Shift: Ma 12 biegów które można zmieniać bez sprzęgła.
+6PS: Skrzynia John Deer AutoQuad. Ma 6 biegów, a każdy z nich można zredukować o około 80%
+PKW: 6-biegowa skrzynia biegów do samochodów o niskim zasięgu
+VARIO: Skrzynia Fendt Vario. Jest bardzo podobna do IVT, ale ma niski i wysoki zakres
+46A: Skrzynia Class HexaShift. Ma 4 ręczne zakresy i 6 automatycznych biegów
+OWN: Stwórz własną skrzynię biegów]]>
+		</longText>
+		<longText name="vca_Help_4">
+<![CDATA[Ustawienia globalne
+
+Zmiany w ustawieniach globalnych nie mają wpływu na bieżący pojazd. Są zapisywane w modsSettings/FS19_VehicleControlAddon/config.xml.]]>
+		</longText>
+		<longText name="vca_Help_5">
+<![CDATA[Stwórz własną skrzynię biegów
+
+Tutaj możesz stworzyć własną skrzynię biegów. Przełożenia mogą być przełączane automatycznie.
+Maksymalna prędkość na najwyższym biegu może być tylko teoretyczna. Możesz ją osiągnąć tylko bez ogranicznika prędkości. Przełożenia między biegami są obliczane na podstawie maksymalnej prędkości 1. biegu.
+Dwie maksymalne prędkości drugiego najwyższego zakresu są zbędne. Jeśli wpiszesz jedną wartość, druga zostanie odpowiednio zmieniona.]]>
 		</longText>
 	</longTexts>
 </l10n>
