@@ -148,17 +148,6 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 	
 	<longTexts>
 		<longText name="vca_Help_1">
-<![CDATA[Skrypt ten zmienia prędkość skrętu, centrowania kół i maksymalny kąt skrętu w zależności od aktualnej prędkości pojazdu.
-Ponadto kamera jest obracana zgodnie z kątem skrętu i kierunkiem jazdy. 
-
-Gaz i hamulec na klawiaturze (klawisze W i S) może być ograniczony, tylko przy naciśnięciu Lewy Shift w tym samym czasie, następuje wtedy 100% przyspieszenie lub hamowanie.
-Jeśli ogranicznik przyspieszenia jest ustawiony na 100%, wówczas przyspieszenie i hamowanie są ograniczone, gdy używany jest Lewy Shift.
-
-Wszystkie funkcje można wyłączyć.]]>
-		</longText>
-	</longTexts>
-	<longTexts>
-		<longText name="vca_Help_1">
 <![CDATA[Sterowanie i kamera
 
 Skrypt ten zmienia prędkość skrętu, centrowania kół i maksymalny kąt skrętu w zależności od aktualnej prędkości pojazdu. Ponadto kamera jest obracana zgodnie z kątem skrętu i kierunkiem jazdy.
