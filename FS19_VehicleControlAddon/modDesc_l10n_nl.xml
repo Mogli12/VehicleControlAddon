@@ -31,7 +31,7 @@
 		<text name="vca_tip_CAMERAO"    text="De camera buiten draait automatisch met de stuuruitslag"/>		
 		<text name="vca_tip_EXPONENT"   text="Gevoeligheid van de adaptieve besturing ten opzichte van de grondsnelheid"/>
 		<text name="vca_tip_STEERING"   text="Aanpassing van de automatisch terugsturing en maximale stuuruitslag van de adaptieve besturing"/>
-		<text name="vca_tip_SHUTTLE"    text="Verander de rijrichting met <spatiebalk>"/>
+		<text name="vca_tip_SHUTTLE"    text="Verander de rijrichting met &lt;spatiebalk&gt;"/>
 		<text name="vca_tip_REVERSEI"   text="Wanneer de rijrichting verandert, draait de camera binnen 180°"/>
 		<text name="vca_tip_REVERSEO"   text="Wanneer de rijrichting verandert, draait de camera buiten 180°"/>
 		<text name="vca_tip_LIMIT"      text="Beperkt de snelheid met en zonder linker shift toets"/>

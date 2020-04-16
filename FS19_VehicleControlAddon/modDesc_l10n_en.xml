@@ -54,7 +54,7 @@
 		<text name="vca_tip_CAMERAO"      text="The exterior camera rotates automatically according to the steering angle"/>
 		<text name="vca_tip_EXPONENT"     text="Sensitivity of the adaptive steering with respect to ground speed"/>
 		<text name="vca_tip_STEERING"     text="The adaptive steering adjusts the automatic back rotation and the maximum steering angle"/>
-		<text name="vca_tip_SHUTTLE"      text="Change driving direction with space key"/>
+		<text name="vca_tip_SHUTTLE"      text="Change driving direction with &lt;space&gt; key"/>
 		<text name="vca_tip_REVERSEI"     text="If the vehicle changes direction the interior camera is rotated by 180°"/>
 		<text name="vca_tip_REVERSEO"     text="If the vehicle changes direction the exterior camera is rotated by 180°"/>
 		<text name="vca_tip_LIMIT"        text="Limiter of the throttle without and with left shift key"/>

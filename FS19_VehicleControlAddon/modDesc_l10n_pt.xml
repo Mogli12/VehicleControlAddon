@@ -29,7 +29,7 @@
 		<text name="vca_tip_CAMERAO"    text="A câmera exterior gira automaticamente de acordo com o ângulo de direção"/>
 		<text name="vca_tip_EXPONENT"   text="Sensibilidade da direção adaptativa em relação à velocidade no solo"/>
 		<text name="vca_tip_STEERING"   text="A direção adaptativa ajusta a rotação traseira automática e o ângulo máximo de direção"/>
-		<text name="vca_tip_SHUTTLE"    text="Alterar a direção de condução <space>"/>
+		<text name="vca_tip_SHUTTLE"    text="Alterar a direção de condução &lt;space&gt;"/>
 		<text name="vca_tip_REVERSEI"   text="Se o veículo mudar de direção, a câmera interna é girada em 180 °"/>
 		<text name="vca_tip_REVERSEO"   text="Se o veículo mudar de direção, a câmera exterior é girada em 180 °"/>
 		<text name="vca_tip_LIMIT"      text="Limitador do acelerador sem e com tecla Shift-Esquerda"/>

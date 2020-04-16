@@ -54,7 +54,7 @@
     <text name="vca_tip_CAMERAO"      text="La telecamera esterna ruota automaticamente in base all'angolo di sterzata"/>
 		<text name="vca_tip_EXPONENT"  	  text="Sensibilità dello sterzo adattivo in base alla velocità sul terreno"/>
 		<text name="vca_tip_STEERING"  	  text="Lo sterzo adattivo regola la rotazione posteriore automatica e l'angolo di sterzata massimo"/>
-		<text name="vca_tip_SHUTTLE"   	  text="Cambia direzione di guida con <barra spazio>"/>
+		<text name="vca_tip_SHUTTLE"   	  text="Cambia direzione di guida con &lt;barra spazio&gt;"/>
     <text name="vca_tip_REVERSEI"     text="Se il veicolo cambia direzione la telecamera Interna viene ruotata di 180°"/>
 		<text name="vca_tip_REVERSEO"     text="Se il veicolo cambia direzione la telecamera Esterna viene ruotata di 180°"/>
 		<text name="vca_tip_LIMIT"     	text="Limiter dell'acceleratore con e senza tasto shift sinistro"/>

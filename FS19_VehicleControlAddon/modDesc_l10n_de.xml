@@ -56,7 +56,7 @@
 		<text name="vca_tip_CAMERAO"      text="Die äußere Kamera dreht sich passend zum Lenkeinschlag automatisch mit."/>
 		<text name="vca_tip_EXPONENT"     text="Geschwindigkeitsabhängigkeit der adaptiven Lenkung"/>
 		<text name="vca_tip_STEERING"     text="Die adaptive Lenkung verändert je nach Geschwindigkeit die Rückstellgeschwindigkeit und den maximalen Lenkwinkel"/>
-		<text name="vca_tip_SHUTTLE"      text="Fahrtrichtung mit Leertaste wechseln"/>
+		<text name="vca_tip_SHUTTLE"      text="Fahrtrichtung mit &lt;Leertaste&gt; wechseln"/>
 		<text name="vca_tip_REVERSEI"     text="Beim Wechsel zwischen Vorwärts- und Rückwärtsfahrt wird automatisch die innere Kamera um 180° gedrecht"/>
 		<text name="vca_tip_REVERSEO"     text="Beim Wechsel zwischen Vorwärts- und Rückwärtsfahrt wird automatisch die äußere Kamera um 180° gedrecht"/>
 		<text name="vca_tip_LIMIT"        text="Gasbegrenzer mit linker Umschalttaste"/>

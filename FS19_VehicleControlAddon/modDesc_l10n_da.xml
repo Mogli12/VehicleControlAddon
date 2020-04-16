@@ -18,7 +18,7 @@
 		<text name="ksm_tip_CAMERA"     text="Kameraet roterer automatisk i forhold den låste vinkel"/>
 		<text name="ksm_tip_EXPONENT"   text="Følsomhed af den apdaptive styring i forhold til hastighed"/>
 		<text name="ksm_tip_STEERING"   text="Den apdaptive styring justerer den automatiske rotation bagud og den maksimale styre vinkel"/>
-		<text name="ksm_tip_SHUTTLE"    text="Ændrer køre retning med <mellemrum>"/>
+		<text name="ksm_tip_SHUTTLE"    text="Ændrer køre retning med &lt;mellemrum&gt;"/>
 		<text name="ksm_tip_REVERSE"    text="Hvis køretøjet ændrer retning så roterer kameraet 180°"/>
 		<text name="ksm_tip_LIMIT"      text="Begrænsning af speeder med og uden venstre shift tast"/>
 		<text name="ksm_tip_PEEKLR"     text="Kig hurtigt med højre shift key og højre/venstre tast"/>
