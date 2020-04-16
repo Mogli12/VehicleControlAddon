@@ -3784,6 +3784,10 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			end 
 		end 
 		
+		if self.vehicle.vcaShifterUsed or not self.vehicle:vcaIsVehicleControlledByPlayer() then 
+			self.vcaAutoStop = false 
+		end 
+		
 		self.vehicle:vcaSetState("vcaAutoClutch",true)
 		self.vehicle:vcaSetState("vcaBOVVolume",0)
 		if not autoNeutral then 
@@ -3868,6 +3872,10 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			else 
 				self.vcaAutoStop = true 
 			end 
+		end 
+		
+		if self.vehicle.vcaShifterUsed or not self.vehicle:vcaIsVehicleControlledByPlayer() then 
+			self.vcaAutoStop = false 
 		end 
 		
 		if self.gearChangeTimer == nil then 
