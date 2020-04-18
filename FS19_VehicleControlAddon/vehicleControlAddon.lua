@@ -163,8 +163,8 @@ function vehicleControlAddon.globalsReset( createIfMissing )
 									}
 
 	local fileDft = vehicleControlAddon.baseDirectory.."vehicleControlAddonConfig.xml"
-	local fileUsr = getUserProfileAppPath().. "modsSettings/FS19_VehicleControlAddon/config.xml"
-	vehicleControlAddon.globalsLoadNew( fileDft, fileUsr, nameList, "VCAGlobals", "VCAGlobals", "VCADefaults" )
+	local dirUsr  = getUserProfileAppPath().. "modsSettings/FS19_VehicleControlAddon"
+	vehicleControlAddon.globalsLoadNew( fileDft, "config.xml", nameList, "VCAGlobals", "VCAGlobals", "VCADefaults", dirUsr, false )
 	
 	print("vehicleControlAddon initialized");
 end
@@ -1724,7 +1724,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 	end 
 	
 	if     self.spec_motorized.motor.lowBrakeForceScale == nil then
-	elseif self:vcaIsActive() and self.vcaBrakeForce <= 0.99 then 
+	elseif self:vcaIsActive() and 0.99 < self.vcaBrakeForce and self.vcaBrakeForce < 1.01 then 
 		if self.vcaLowBrakeForceScale == nil then 
 			self.vcaLowBrakeForceScale                 = self.spec_motorized.motor.lowBrakeForceScale
 		end 
@@ -3216,10 +3216,11 @@ function vehicleControlAddon:vcaGetSmoothedAcceleratorAndBrakePedals( superFunc,
 	if      self.vcaIsLoaded
 			and self:vcaIsVehicleControlledByPlayer()
 			and self.vcaBrakePedal ~= nil
-		---- limit for automaticBrake is 0.001; take 0.003 to be on the safe side 
-		--and ( math.abs( acceleratorPedal ) >= 0.003
-		--   or self:vcaGetNeutral() 
-		--	 or self.vcaBrakePedal >= 0.003 ) 
+			-- limit for automaticBrake is 0.001; take 0.003 to be on the safe side 
+			and ( math.abs( acceleratorPedal ) >= 0.003
+				or self:vcaGetNeutral() 
+				or self.vcaBrakePedal >= 0.003
+				or self.vcaBrakeForce <  0.005 )
 			then 
 		brakePedal = self.vcaBrakePedal
 	end 
@@ -4894,7 +4895,7 @@ function vehicleControlAddon:vcaShowSettingsUI()
 	for i,v in pairs( vehicleControlAddon.snapAngles ) do 
 		self.vcaUI.vcaSnapAngle[i] = string.format( "%3d°", v )
 	end 
-	self.vcaUI.vcaBrakeForce_V = { 0, 0.05, 0.10, 0.15, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1 }
+	self.vcaUI.vcaBrakeForce_V = { 0, 0.05, 0.10, 0.15, 0.2, 0.25, 0.4, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2 }
 	self.vcaUI.vcaBrakeForce = {}
 	for i,e in pairs( self.vcaUI.vcaBrakeForce_V ) do
 		self.vcaUI.vcaBrakeForce[i] = string.format("%3.0f %%", 100 * e )

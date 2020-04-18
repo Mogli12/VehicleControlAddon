@@ -28,11 +28,12 @@
 -- 4.01 problem with events
 -- 4.02 globalsLoad with typeList
 -- 4.03 globalsLoadNew
+-- 4.04 globalsLoadNew with createFolder
 
 -- Usage:  source(Utils.getFilename("mogliBase.lua", g_currentModDirectory));
 --         _G[g_currentModDirectory.."mogliBase"].newClass( "AutoCombine", "acParameters" )
 
-local mogliBaseVersion   = 4.03
+local mogliBaseVersion   = 4.04
 local mogliBaseClass     = g_currentModName..".mogliBase"
 local mogliEventClass    = g_currentModName..".mogliEvent"
 local mogliSyncRequest   = g_currentModName..".mogliSyncRequest"
@@ -213,16 +214,23 @@ else
 	--********************************
 	-- globalsLoadNew
 	--********************************
-		function _newClass_.globalsLoadNew( fileDft, fileUsr, nameList, rootTag, globalsName, defaultsName )	
-			_newClass_._globals_ = { fileUsr      = fileUsr,
+		function _newClass_.globalsLoadNew( fileDft, fileUsr, nameList, rootTag, globalsName, defaultsName, dirUsr, writeLog )	
+			if dirUsr ~= nil then 
+				fileUsr = dirUsr .."/".. fileUsr
+			end 
+			_newClass_._globals_ = { dirUsr       = fileUsr,
+															 fileUsr      = fileUsr,
 															 rootTag      = rootTag,
 															 globalsName  = globalsName,
 															 defaultsName = defaultsName,
+															 writeLog     = writeLog,
 														 }
 			local xmlFileDft, xmlFileUsr
 			if fileExists( fileDft ) then xmlFileDft = loadXMLFile( "mogliBasics", fileDft, rootTag ) end 
 			if fileExists( fileUsr ) then xmlFileUsr = loadXMLFile( "mogliBasics", fileUsr, rootTag ) end 
 			_G[globalsName], _G[defaultsName] = _newClass_.globalsLoadNew2( xmlFileDft, xmlFileUsr, nameList, rootTag )	
+			delete( xmlFileDft )
+			delete( xmlFileUsr )
 		end
 		
 	--********************************
@@ -294,7 +302,7 @@ else
 					globals[name], defaults[name].v, defaults[name].u = getXMLWithFunc( xmlFileDft, xmlFileUsr, func, dft, rootTag.."." .. name .. "#value" )
 				end
 				
-				if defaults[name].u then 
+				if defaults[name].u and ( _newClass_._globals_.writeLog or tm ~= 1 ) then 
 					if wl then
 						wl = false
 						print('Loading settings...')
@@ -326,10 +334,22 @@ else
 				local eventObject = mogliBase40Globals:new(_globalClassName_, globals )
 				g_client:getServerConnection():sendEvent( eventObject ) 
 			end 
-			print('Writing file "'..file..'"...')
+			if _newClass_._globals_.dirUsr ~= nil then 
+				createFolder(_newClass_._globals_.dirUsr)
+			end 
 			local xmlFile = createXMLFile( "mogliBasics", file, rootTag )
-			_newClass_.globalsCreateNew2( xmlFile , rootTag, globals, defaults )	
-			saveXMLFile(xmlFile)
+			if xmlFile ~= nil and xmlFile ~= 0 then 
+				_newClass_.globalsCreateNew2( xmlFile , rootTag, globals, defaults )	
+				local bool = saveXMLFile(xmlFile)
+				if bool then	
+					print('Settings saved into file "'..file..'"')
+				else 
+					print('Error saving settings into file "'..file..'"')
+				end 
+				delete( xmlFile )
+			else 
+				print('Error creating settings file "'..file..'"')
+			end 
 		end 
 		
 	--********************************
@@ -361,7 +381,7 @@ else
 			--if tm == 1 then 
 			--	setXMLString(xmlFile, rootTag.."." .. name .. "#type", tp)
 			--end 
-				if tm > 0 then
+				if tm > 1 or ( tm > 0 and _newClass_._globals_.writeLog ) then 
 					if wl then
 						wl = false
 						print('Writing settings...')

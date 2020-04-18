@@ -80,7 +80,7 @@
 		<text name="vca_tip_DRAWMARKER"   text="Anzeige der aktuellen Rasterbahn"/>
 		<text name="vca_tip_PITCH1"       text="Neuberechnung der Tonhöhe, damit sie linear verläuft"/>
 		<text name="vca_tip_PITCH2"       text="Tonhöhe bei mittlerer Drehzahl"/>
-		<text name="vca_tip_BLOWOFFVOL"   text="Lautstärke des Wastegates bei aufgeladenen Motoren"/>
+		<text name="vca_tip_BLOWOFFVOL"   text="Lautstärke des Turbo-Wastegates bei aufgeladenen Motoren"/>
 		<text name="vca_tip_SINGLEREV"    text="Beim Rückwärtsfahren wird ein einzelner Gang oder eine einzelne Gruppe anstelle der Wendeschaltung verwendet"/>
 		<text name="vca_tip_AUTOCLUTCH"   text="Automatische Betätigung der Kupplung"/>
 		<text name="vca_tip_TURBOCLUTCH"  text="Zusätzliche Strömungskupplung"/>

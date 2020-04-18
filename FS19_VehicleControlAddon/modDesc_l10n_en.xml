@@ -9,6 +9,7 @@
 		<text name="vcaEXPONENT"        text="Sensitivity"/>
 		<text name="vcaSTEERING"        text="Adaptive Steering"/>
 		<text name="vcaSHUTTLE"         text="Shuttle"/>
+		<text name="vcaREVERSE"         text="Look Backwards"/>
 		<text name="vcaREVERSEI"        text="Look Backwards (inside)"/>
 		<text name="vcaREVERSEO"        text="Look Backwards (outside)"/>
 		<text name="vcaLIMIT"           text="Throttle Limiter"/>
@@ -33,7 +34,7 @@
 		<text name="vcaDRAWMARKER"      text="Draw marker of snap driving"/>
 		<text name="vcaPITCH1"          text="Linear sound pitch"/>
 		<text name="vcaPITCH2"          text="Sound pitch at medium RPM"/>
-		<text name="vcaBLOWOFFVOL"      text="Wastegate volume"/>
+		<text name="vcaBLOWOFFVOL"      text="Turbo wastegate volume"/>
 		<text name="vcaSINGLEREV"       text="Single Reverse Gear"/>
 		<text name="vcaAUTOCLUTCH"      text="Automatic clutch"/>
 		<text name="vcaTURBOCLUTCH"     text="Turbo clutch"/>
@@ -49,6 +50,7 @@
 		<text name="vcaOWNGEARTIME"     text="Time to shift gears"/>
 		<text name="vcaOWNRANGETIME"    text="Time to shift ranges"/>
 		<text name="vcaOWNAUTOGEARS"    text="Automatic gears"/>
+		<text name="vcaOWNAUTORANGE"    text="Automatic ranges"/>
 		                                
 		<text name="vca_tip_CAMERAI"      text="The interior camera rotates automatically according to the steering angle"/>
 		<text name="vca_tip_CAMERAO"      text="The exterior camera rotates automatically according to the steering angle"/>
@@ -94,6 +96,7 @@
 		<text name="vca_tip_OWNGEARTIME"  text="Time to shift gears"/>
 		<text name="vca_tip_OWNRANGETIME" text="Time to shift ranges"/>
 		<text name="vca_tip_OWNAUTOGEARS" text="Automatic gears and speed matching"/>
+		<text name="vca_tip_OWNAUTORANGE" text="Automatic ranges and speed matching"/>
 		                               
 		<text name="input_vcaSETTINGS"  text="VCA: settings"/>
 		<text name="input_vcaUP"        text="VCA: toggle view direction / lock forwards"/>
