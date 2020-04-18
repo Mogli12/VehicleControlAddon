@@ -164,7 +164,7 @@ function vehicleControlAddon.globalsReset( createIfMissing )
 
 	local fileDft = vehicleControlAddon.baseDirectory.."vehicleControlAddonConfig.xml"
 	local dirUsr  = getUserProfileAppPath().. "modsSettings/FS19_VehicleControlAddon"
-	vehicleControlAddon.globalsLoadNew( fileDft, "config.xml", nameList, "VCAGlobals", "VCAGlobals", "VCADefaults", dirUsr, false )
+	vehicleControlAddon.globalsLoadNew( fileDft, "config.xml", nameList, "VCAGlobals", "VCAGlobals", "VCADefaults", dirUsr, true ) -- false for public version
 	
 	print("vehicleControlAddon initialized");
 end

@@ -229,8 +229,8 @@ else
 			if fileExists( fileDft ) then xmlFileDft = loadXMLFile( "mogliBasics", fileDft, rootTag ) end 
 			if fileExists( fileUsr ) then xmlFileUsr = loadXMLFile( "mogliBasics", fileUsr, rootTag ) end 
 			_G[globalsName], _G[defaultsName] = _newClass_.globalsLoadNew2( xmlFileDft, xmlFileUsr, nameList, rootTag )	
-			delete( xmlFileDft )
-			delete( xmlFileUsr )
+			if xmlFileDft ~= nil and xmlFileDft ~= 0 then delete( xmlFileDft ) end 
+			if xmlFileUsr ~= nil and xmlFileUsr ~= 0 then delete( xmlFileUsr ) end 
 		end
 		
 	--********************************
@@ -331,7 +331,7 @@ else
 			local defaults = _G[_newClass_._globals_.defaultsName]
 			if noEventSend then
 			elseif g_server == nil then 
-				local eventObject = mogliBase40Globals:new(_globalClassName_, globals )
+				local eventObject = mogliBase40Globals:new(_globalClassName_, globals, true )
 				g_client:getServerConnection():sendEvent( eventObject ) 
 			end 
 			if _newClass_._globals_.dirUsr ~= nil then 
@@ -394,7 +394,27 @@ else
 				end
 			end
 		end 
-	
+	--********************************
+	-- globalsSetNew 
+	--********************************
+		function _newClass_.globalsSetNew( values )
+			if _newClass_._globals_ == nil then
+				return
+			end 
+			local globals  = _G[_newClass_._globals_.globalsName]
+			local w1 = true 
+			for name,value in pairs(globals) do
+				if values[name] ~= nil then 
+					if w1 then 
+						w1 = false 
+						print('Settings '..tostring(_newClass_._globals_.globalsName)..' on server...')
+					end
+					print('old: '..tostring(globals[name])..', new: '..tostring(values[name]))
+					globals[name] = values[name] 
+				end 
+			end 
+		end 
+		
 	--********************************
 	-- getUiScale
 	--********************************
@@ -1259,10 +1279,11 @@ else
 --=======================================================================================
 -- mogliBase40Globals:new
 --=======================================================================================
-	function mogliBase40Globals:new(className, globalsTable )
+	function mogliBase40Globals:new(className, globalsTable, saveFile )
 		local self = mogliBase40Globals:emptyNew() 
 		self.className    = className
 		self.globalsTable = globalsTable
+		self.saveFile     = saveFile 
 		return self 
 	end 
 	
@@ -1272,6 +1293,7 @@ else
 --=======================================================================================
 	function mogliBase40Globals:readStream(streamId, connection)
 		self.className, self.globalsTable = _G[mogliBaseClass].readStreamEx( streamId )
+		self.saveFile = streamReadBool(streamId)
 		local state, message = pcall( mogliBase40Globals.run, self, connection )
 		if not state then
 			print("Error: "..tostring(message)) 
@@ -1283,6 +1305,7 @@ else
 --=======================================================================================
 	function mogliBase40Globals:writeStream(streamId, connection)
 		_G[mogliBaseClass].writeStreamEx( streamId, self.className, self.globalsTable )
+		streamWriteBool( streamId, self.saveFile )
 	end 
 	
 --=======================================================================================
@@ -1294,10 +1317,10 @@ else
 			print("Error running event: nil ("..tostring(self.className)..")")
 			return 
 		end
-		
-		for n,v in pairs(self.globalsTable) do 
-			_G[_newClass_._globals_.globalsName][n] = v
+	
+		_G[self.className].globalsSetNew( self.globalsTable )
+		if self.saveFile then 
+			_G[self.className].globalsCreateNew( true )
 		end 
-		_G[self.className].globalsCreateNew( true )
 	end 	
 end
