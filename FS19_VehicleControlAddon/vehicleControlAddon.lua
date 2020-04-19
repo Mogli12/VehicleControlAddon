@@ -115,8 +115,6 @@ local listOfProperties =
 	}
 
 
-VCAGlobals  = {}
-VCADefaults = {}
 vehicleControlAddon.snapAngles = { 1, 5, 15, 22.5, 45, 90 }
 vehicleControlAddon.factor30pi = 9.5492965855137201461330258023509
 vehicleControlAddon.g27Mode6R  = 0 -- 6 Gears, 1 Reverse, Range Splitter
@@ -130,46 +128,6 @@ vehicleControlAddon.g27Mode4RR = 7 -- 4 Gears, Range up/down, 1 Reverse
 vehicleControlAddon.g27Mode4RS = 8 -- 4 Gears, Range up/down, Shuttle
 vehicleControlAddon.g27Mode4RD = 9 -- 4 Gears, Range up/down, Fwd/back
 vehicleControlAddon.g27ModeSGR =10 -- Fwd/back , Gear up/down, Range up/down
-
-
-function vehicleControlAddon.globalsReset( createIfMissing )
-	local nameList ={ "cameraRotFactor",
-										"cameraRotFactorRev",
-										"cameraRotTime",
-										"timer4Reverse",
-										"limitThrottle",
-										"snapAngle",
-										"brakeForceFactor",
-										"snapAngleHudX",
-										"snapAngleHudY",
-										"drawHud",
-										"transmission",
-										"clutchTimer",
-										"clutchTimerAdd",
-										"clutchTimerIdle",
-										"debugPrint",
-										"mouseAutoRotateBack",
-										"rotInertiaFactor",
-										"modifyPitch",
-										"adaptiveSteering",
-										"camOutsideRotation",
-										"camInsideRotation",
-										"camReverseRotation",
-										"camRevOutRotation",
-										"shuttleControl",
-										"peekLeftRight",
-										"hiredWorker",
-										"g27Mode",
-									}
-
-	local fileDft = vehicleControlAddon.baseDirectory.."vehicleControlAddonConfig.xml"
-	local dirUsr  = getUserProfileAppPath().. "modsSettings/FS19_VehicleControlAddon"
-	vehicleControlAddon.globalsLoadNew( fileDft, "config.xml", nameList, "VCAGlobals", "VCAGlobals", "VCADefaults", dirUsr, true ) -- false for public version
-	
-	print("vehicleControlAddon initialized");
-end
-
-vehicleControlAddon.globalsReset(g_server ~= nil and g_client == nil)
 
 function vehicleControlAddon.debugPrint( ... )
 	if VCAGlobals.debugPrint then
@@ -2947,6 +2905,9 @@ function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, ax
 		local m = self.movingDirection
 		if self.lastSpeedReal * 3600 < 1 or ( -0.5 < m and m < 0.5 ) then 
 			m = self.vcaMovingDir 
+		end 
+		if self.spec_reverseDriving  ~= nil and self.spec_reverseDriving.isReverseDriving then
+			m = -m 
 		end 
 		if m < 0 then 
 			lx,_,lz = localDirectionToWorld( self:vcaGetSteeringNode(), 0, 0, -1 )	

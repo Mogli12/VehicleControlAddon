@@ -218,7 +218,7 @@ else
 			if dirUsr ~= nil then 
 				fileUsr = dirUsr .."/".. fileUsr
 			end 
-			_newClass_._globals_ = { dirUsr       = fileUsr,
+			_newClass_._globals_ = { dirUsr       = dirUsr,
 															 fileUsr      = fileUsr,
 															 rootTag      = rootTag,
 															 globalsName  = globalsName,
@@ -226,8 +226,8 @@ else
 															 writeLog     = writeLog,
 														 }
 			local xmlFileDft, xmlFileUsr
-			if fileExists( fileDft ) then xmlFileDft = loadXMLFile( "mogliBasics", fileDft, rootTag ) end 
-			if fileExists( fileUsr ) then xmlFileUsr = loadXMLFile( "mogliBasics", fileUsr, rootTag ) end 
+			if fileDft ~= nil and fileExists( fileDft ) then xmlFileDft = loadXMLFile( "mogliBasics", fileDft, rootTag ) end 
+			if fileUsr ~= nil and fileExists( fileUsr ) then xmlFileUsr = loadXMLFile( "mogliBasics", fileUsr, rootTag ) end 
 			_G[globalsName], _G[defaultsName] = _newClass_.globalsLoadNew2( xmlFileDft, xmlFileUsr, nameList, rootTag )	
 			if xmlFileDft ~= nil and xmlFileDft ~= 0 then delete( xmlFileDft ) end 
 			if xmlFileUsr ~= nil and xmlFileUsr ~= 0 then delete( xmlFileUsr ) end 
@@ -305,18 +305,29 @@ else
 				if defaults[name].u and ( _newClass_._globals_.writeLog or tm ~= 1 ) then 
 					if wl then
 						wl = false
-						print('Loading settings...')
+						print('Loading "'..tostring(_newClass_._globals_.fileUsr)..'"...')
 					end
 					if tm == 1 then
-						print('    <'..name..' value="'..tostring(globals[name])..'"/> <!-- '..tostring(tp)..' -->')
+						print('    '..name..': value="'..tostring(globals[name])..'", type="'..tostring(tp)..'"')
 					else
-						print('    <'..name..' .../>: invalid XML type : '..tostring(tp))
+						print('    '..name..': invalid XML type : "'..tostring(tp)..'"')
 					end
 				end
 			end
 			
 			return globals, defaults
 		end
+
+	--********************************
+	-- createGlobalsEvent 
+	--********************************
+		function _newClass_.createGlobalsEvent(saveFile) 
+			if _newClass_._globals_ == nil then
+				return
+			end 
+			local globals  = _G[_newClass_._globals_.globalsName]
+			return mogliBase40Globals:new(_globalClassName_, globals, saveFile )
+		end 
 		
 	--********************************
 	-- globalsCreateNew 
@@ -329,26 +340,27 @@ else
 			local rootTag  = _newClass_._globals_.rootTag
 			local globals  = _G[_newClass_._globals_.globalsName]
 			local defaults = _G[_newClass_._globals_.defaultsName]
-			if noEventSend then
-			elseif g_server == nil then 
+			if g_server ~= nil then 
+				if _newClass_._globals_.dirUsr ~= nil then 
+					createFolder(_newClass_._globals_.dirUsr)
+				end 
+				local xmlFile = createXMLFile( "mogliBasics", file, rootTag )
+				if xmlFile ~= nil and xmlFile ~= 0 then 
+					_newClass_.globalsCreateNew2( xmlFile , rootTag, globals, defaults )	
+					local bool = saveXMLFile(xmlFile)
+					if bool then	
+						print('Settings saved into file "'..file..'"')
+					else 
+						print('Error saving settings into file "'..file..'"')
+					end 
+					delete( xmlFile )
+				else 
+					print('Error creating settings file "'..file..'"')
+				end 
+			elseif noEventSend then
+			else
 				local eventObject = mogliBase40Globals:new(_globalClassName_, globals, true )
 				g_client:getServerConnection():sendEvent( eventObject ) 
-			end 
-			if _newClass_._globals_.dirUsr ~= nil then 
-				createFolder(_newClass_._globals_.dirUsr)
-			end 
-			local xmlFile = createXMLFile( "mogliBasics", file, rootTag )
-			if xmlFile ~= nil and xmlFile ~= 0 then 
-				_newClass_.globalsCreateNew2( xmlFile , rootTag, globals, defaults )	
-				local bool = saveXMLFile(xmlFile)
-				if bool then	
-					print('Settings saved into file "'..file..'"')
-				else 
-					print('Error saving settings into file "'..file..'"')
-				end 
-				delete( xmlFile )
-			else 
-				print('Error creating settings file "'..file..'"')
 			end 
 		end 
 		
@@ -405,11 +417,15 @@ else
 			local w1 = true 
 			for name,value in pairs(globals) do
 				if values[name] ~= nil then 
-					if w1 then 
-						w1 = false 
-						print('Settings '..tostring(_newClass_._globals_.globalsName)..' on server...')
-					end
-					print('old: '..tostring(globals[name])..', new: '..tostring(values[name]))
+					if _newClass_._globals_.writeLog then 
+						if w1 then 
+							w1 = false 
+							print('Settings '..tostring(_newClass_._globals_.globalsName)..' on server...')
+						end
+						if not mogliBase30.compare( globals[name], values[name] ) then 
+							print('old: '..tostring(globals[name])..', new: '..tostring(values[name]))
+						end 
+					end 
 					globals[name] = values[name] 
 				end 
 			end 
@@ -1283,7 +1299,7 @@ else
 		local self = mogliBase40Globals:emptyNew() 
 		self.className    = className
 		self.globalsTable = globalsTable
-		self.saveFile     = saveFile 
+		self.saveFile     = Utils.getNoNil( saveFile, false )
 		return self 
 	end 
 	

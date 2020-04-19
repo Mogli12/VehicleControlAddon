@@ -3,6 +3,9 @@ local directory = g_currentModDirectory
 local modName = g_currentModName
 local specName = "zzzVehicleControlAddon"
 
+VCAGlobals  = {}
+VCADefaults = {}
+
 vehicleControlAddonRegister = {}
 
 local vehicleControlAddonRegister_mt = Class(vehicleControlAddonRegister)
@@ -149,6 +152,69 @@ function vehicleControlAddonRegister:postLoadMission(mission)
 	end 
 end;
 
+function vehicleControlAddonRegister:loadMap(name)
+	local configDir, configFile
+	
+	if g_server ~= nil then 
+		self.isDedi = g_dedicatedServerInfo ~= nil  
+		if self.isDedi then 
+			if g_careerScreen and type( g_careerScreen.selectedIndex ) == "number" then 
+				configFile = getUserProfileAppPath() .. "savegame" .. g_careerScreen.selectedIndex .. "/vehicleControlAddonConfig.xml"
+			end 
+			self.isMP = true 
+		else 
+			configDir  = getUserProfileAppPath().. "modsSettings/FS19_VehicleControlAddon"
+			configFile = "config.xml" 
+			
+			if g_currentMission.missionDynamicInfo ~= nil and g_currentMission.missionDynamicInfo.isMultiplayer then 
+				self.isMP = true 
+			else 
+				self.isMP = false 
+			end 
+		end 
+	else 
+		self.isMP   = true 
+	end 
+	
+	local nameList ={ "cameraRotFactor",
+										"cameraRotFactorRev",
+										"cameraRotTime",
+										"timer4Reverse",
+										"limitThrottle",
+										"snapAngle",
+										"brakeForceFactor",
+										"snapAngleHudX",
+										"snapAngleHudY",
+										"drawHud",
+										"transmission",
+										"clutchTimer",
+										"clutchTimerAdd",
+										"clutchTimerIdle",
+										"debugPrint",
+										"mouseAutoRotateBack",
+										"rotInertiaFactor",
+										"modifyPitch",
+										"adaptiveSteering",
+										"camOutsideRotation",
+										"camInsideRotation",
+										"camReverseRotation",
+										"camRevOutRotation",
+										"shuttleControl",
+										"peekLeftRight",
+										"hiredWorker",
+										"g27Mode",
+									}
+
+	print('VCAregister; isMP: '..tostring(self.isMP)..', isDedi: '..tostring(self.isDedi)..', local config: "'..tostring(configFile)..'", local directory: "'..tostring(configDir)..'"')
+
+	local fileDft = self.vcaDirectory.."vehicleControlAddonConfig.xml"
+	vehicleControlAddon.globalsLoadNew( fileDft, configFile, nameList, "VCAGlobals", "VCAGlobals", "VCADefaults", configDir, true ) -- false for public version
+	
+	if not self.isMP then 
+		vehicleControlAddonTransmissionBase.loadSettings()
+	end 
+end;
+
 function vehicleControlAddonRegister:deleteMap()
   
 end;
@@ -170,18 +236,23 @@ function vehicleControlAddonRegister:draw()
 end;
 
 local function beforeLoadMission(mission)
-	print("VCA beforeLoadMission")
 	assert( g_vehicleControlAddon == nil )
 	local base = vehicleControlAddonRegister:new( g_i18n )
 	getfenv(0)["g_vehicleControlAddon"] = base
 	addModEventListener(base);
 end 
 
+local function afterConnectionFinishedLoading(mission, connection, x,y,z, viewDistanceCoeff)
+-- call on server after a client connected to the server 
+-- send event with settings from server to new client 
+  connection:sendEvent(vehicleControlAddon.createGlobalsEvent(false))
+end 
+
 local function init()
-	print("VCA init")
   Mission00.load = Utils.prependedFunction(Mission00.load, beforeLoadMission)
 	Mission00.loadMission00Finished = Utils.appendedFunction(Mission00.loadMission00Finished, postLoadMissionFinished)
 	VehicleTypeManager.finalizeVehicleTypes = Utils.prependedFunction(VehicleTypeManager.finalizeVehicleTypes, vehicleControlAddonRegister.beforeFinalizeVehicleTypes)
+	FSBaseMission.onConnectionFinishedLoading = Utils.appendedFunction( FSBaseMission.onConnectionFinishedLoading, afterConnectionFinishedLoading )
 end 
 
 init()

@@ -27,6 +27,9 @@ local frame5VisiblePredicate = function()
 	return g_currentMission.controlledVehicle.vcaTransmission == vehicleControlAddonTransmissionBase.ownTransmission 
 end
 local frame4VisiblePredicate = function() 
+	if g_vehicleControlAddon.isMP then 
+		return g_currentMission.isMasterUser 
+	end 
 	return g_server ~= nil 
 end 
 

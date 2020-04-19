@@ -906,6 +906,7 @@ vehicleControlAddonTransmissionBase.transmissionList =
 	}
 vehicleControlAddonTransmissionBase.ownTransmission = table.getn( vehicleControlAddonTransmissionBase.transmissionList )
 function vehicleControlAddonTransmissionBase.loadSettings()
+	if g_server == nil or g_client == nil then return end 
 
 	local file = getUserProfileAppPath().. "modsSettings/FS19_VehicleControlAddon/transmissions.xml"
 	
@@ -1120,6 +1121,6 @@ function vehicleControlAddonTransmissionBase.loadSettings()
 
 end 
 
-vehicleControlAddonTransmissionBase.loadSettings()
+
 
 
