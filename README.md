@@ -1,6 +1,20 @@
 # VehicleControlAddon for Farming Simulator 2019
 
-## How to download?
+## Developer version
+Please be aware you're using a developer version, which may and will contain errors, bugs, mistakes and unfinished code. 
+
+You have been warned.
+
+If you're still ok with this, please remember to post possible issues that you find in the developer version. 
+That's the only way we can find sources of error and fix them. 
+Be as specific as possible:
+
+* tell us the version number
+* only use the vehicles necessary, not 10 other ones at a time
+* which vehicles are involved, what is the intended action?
+* Post! The! Log! to [Gist](https://gist.github.com/) or [PasteBin](http://pastebin.com/)
+
+From today on I will close all new issues without the above information!## How to download?
 
 Just click here: [Latest version](https://github.com/Mogli12/VehicleControlAddon/blob/master/FS19_VehicleControlAddon.zip?raw=true)
 
@@ -26,33 +40,20 @@ I added several settings for players with a gear shifter. These are the differen
 * "4G, R+/-, D/R" - for 8+1 shifters: gears 1 to 4 change the highes 4 gears, gear 5 and 6 increase/decrease the range, gear 7 switches to forward, gear 8 switches to backward
 * "D/R , G+/-, R+/-" - gear 1 swtiches to forward, gear 2 switches to backward, vehicle is in neutral in neither 1 nor 2 are pressed, gears 3 and 4 change the gear, gears 5 and 6 change the range
 
-The IVT transmission has now two different ranges. The default should be the high range.
-
 VCA can now calculate the distance and offset of snap direction steering. If you want to refresh these values, then please enter 0 for distance in the VCA settings UI.
 
 ## modSettings
+
+### Single Player
 I renamed the configuration file in modSettings folder to just "config.xml". Additionally, there is a new file "transmissions.xml". Here you can add your own transmissions. I propose to use the second transmission as template. Gears support automatic shifting. but ranges have to be shifted manually. 
+
+### Multi Player
+It is not possible to add transmission via "transmission.xml" file. The modsSettings will be save in the savegame folder of the dedicated server. You need to logon as admin if you want to change global settings.
 
 ## VehicleControlAddon is the new KeyboardSteer
 Please check section status why I renamed the mod. Please use VCA as abbreviation.
 
 You will have to choose the new mod after replacing it in the mods folder. But settings in old save games are still read.
-
-## Developer version
-Please be aware you're using a developer version, which may and will contain errors, bugs, mistakes and unfinished code. 
-
-You have been warned.
-
-If you're still ok with this, please remember to post possible issues that you find in the developer version. 
-That's the only way we can find sources of error and fix them. 
-Be as specific as possible:
-
-* tell us the version number
-* only use the vehicles necessary, not 10 other ones at a time
-* which vehicles are involved, what is the intended action?
-* Post! The! Log! to [Gist](https://gist.github.com/) or [PasteBin](http://pastebin.com/)
-
-From today on I will close all new issues without the above information!
 
 ## Motivation
 Although I have a steering wheel, but almost always play with the keyboard. On winding roads, I am again and again landed in the ditch in front of nights or power poles.
@@ -80,20 +81,6 @@ All functions are switchable with the following default key combinations:
 * Please check the keys for shifting. G27/G29 gear shifters are supported.
 * The 7th gear of the gear shifter is special. If you use action binding ksmShifter7 please make sure that shuttle control is enabled. This action binding will swtich into 1st reverse gear. 
 * Best transmission in combination with a gear shifter are 2X6, FPS and 6PS. 
-
-## Developer version
-Please be aware you're using a developer version, which may and will contain errors, bugs, mistakes and unfinished code. 
-
-You have been warned.
-
-If you're still ok with this, please remember to post possible issues that you find in the developer version. 
-That's the only way we can find sources of error and fix them. 
-Be as specific as possible:
-
-* tell us the version number
-* only use the vehicles necessary, not 10 other ones at a time
-* which vehicles are involved, what is the intended action?
-* Post! The! Log! to [Gist](https://gist.github.com/) or [PasteBin](http://pastebin.com/)
 
 ## Credits
 * Stefan Biedenstein
