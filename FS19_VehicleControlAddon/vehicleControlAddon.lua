@@ -156,6 +156,19 @@ function vehicleControlAddon:vcaIsValidCam( index )
 	return false
 end
 
+function vehicleControlAddon.getText( id, default )
+	if id == nil then 
+		return "NIL" 
+	end 
+	if g_i18n:hasText( id ) then 
+		return g_i18n:getText( id )
+	end 
+	if default ~= nil then 
+		return default 
+	end 
+	return id 
+end 
+
 function vehicleControlAddon:vcaIsNonDefaultProp( propName, setting )
 	if setting == nil then 
 		setting = self 
@@ -905,14 +918,14 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 		elseif self.vcaHandthrottle2 ~= nil then 
 			h = self.vcaHandthrottle2
 			local r = self.spec_motorized.motor.minRpm + h * ( self.spec_motorized.motor.maxRpm - self.spec_motorized.motor.minRpm )
-			t = string.format( "%4.0f U/min", r )
+			t = string.format( "%4.0f %s", r, vehicleControlAddon.getText( "vcaValueRPM", "RPM"  ) )
 		else 
 			h = 0
 			t = "off"
 		end 
 		
 		self:vcaSetState( "vcaHandthrottle", h )
-		self:vcaSetState( "vcaWarningText", Utils.getNoNil( g_vehicleControlAddon.mogliTexts.vcaHANDTHROTTLE, "" )..": ".. t )
+		self:vcaSetState( "vcaWarningText", vehicleControlAddon.getText( "vcaHANDTHROTTLE", "" )..": ".. t )
 	elseif actionName == "vcaHandRpm" then 
 		local h = 0
 		if self.vcaHandthrottle ~= nil and self.vcaHandthrottle > 0 then 
@@ -936,7 +949,7 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 				and self.spec_motorized.motor.maxRpm ~= nil 
 				and self.spec_motorized.motor.maxRpm > 0 then 
 			local r = self.spec_motorized.motor.minRpm + h * ( self.spec_motorized.motor.maxRpm - self.spec_motorized.motor.minRpm )
-			self:vcaSetState( "vcaWarningText", string.format("%s: %4.0f U/min", Utils.getNoNil( g_vehicleControlAddon.mogliTexts.vcaHANDTHROTTLE, "" ), r ) )
+			self:vcaSetState( "vcaWarningText", string.format("%s: %4.0f %s", vehicleControlAddon.getText( "vcaHANDTHROTTLE", "" ), r, vehicleControlAddon.getText( "vcaValueRPM", "RPM"  ) ) )
 		end 
 	end
 end
@@ -2906,9 +2919,6 @@ function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, ax
 		if self.lastSpeedReal * 3600 < 1 or ( -0.5 < m and m < 0.5 ) then 
 			m = self.vcaMovingDir 
 		end 
-		if self.spec_reverseDriving  ~= nil and self.spec_reverseDriving.isReverseDriving then
-			m = -m 
-		end 
 		if m < 0 then 
 			lx,_,lz = localDirectionToWorld( self:vcaGetSteeringNode(), 0, 0, -1 )	
 		else 
@@ -2976,6 +2986,9 @@ function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, ax
 			end 
 			local a = vehicleControlAddon.mbClamp( diffR / 0.174, -1, 1 ) 
 			if m < 0 then 
+				a = -a 
+			end
+			if self.spec_reverseDriving  ~= nil and self.spec_reverseDriving.isReverseDriving then
 				a = -a 
 			end
 
@@ -4868,9 +4881,12 @@ function vehicleControlAddon:vcaShowSettingsUI()
 	
 	self.vcaUI.oldTransmission = self.vcaTransmission
 	
-	self.vcaUI.vcaSnapDraw = { "off", "only if inactive", "always" }
+	self.vcaUI.vcaSnapDraw = { vehicleControlAddon.getText("vcaValueNever", "NEVER"), 
+														 vehicleControlAddon.getText("vcaValueInactive", "INACTIVE"), 
+														 vehicleControlAddon.getText("vcaValueAlways", "ALWAYS"), 
+													 }
 	
-	self.vcaUI.vcaHandthrottle = { "off", "PTO ECO", "90% PTO", "100% PTO" } 
+	self.vcaUI.vcaHandthrottle = { vehicleControlAddon.getText("vcaValueOff", "OFF"), "PTO ECO", "90% PTO", "100% PTO" } 
 	self.vcaUI.vcaHandthrottle_V = { 0, -0.7, -0.9, -1 }
 	local m1 = self.spec_motorized.motor.minRpm 
 	local m2 = self.spec_motorized.motor.maxRpm 
@@ -4879,7 +4895,7 @@ function vehicleControlAddon:vcaShowSettingsUI()
 	local r = m1 + 100 
 	while r <= m2 do 
 		h = ( r - m1 ) / md 
-		table.insert( self.vcaUI.vcaHandthrottle, string.format( "%4d U/min", r ) )
+		table.insert( self.vcaUI.vcaHandthrottle, string.format( "%4d %s", r, vehicleControlAddon.getText( "vcaValueRPM", "RPM" ) ) )
 		table.insert( self.vcaUI.vcaHandthrottle_V, h )
 		r = r + 100
 	end 
@@ -4892,7 +4908,7 @@ function vehicleControlAddon:vcaShowSettingsUI()
 		table.insert( self.vcaUI.vcaPitchFactor_V, v )
 	end 
 
-	self.vcaUI.vcaPitchExponent   = { "- - - -", "- - -", "- -", "-", "normal", "+", "+ +" , "+ + +", "+ + + +" }
+	self.vcaUI.vcaPitchExponent   = { "- - - -", "- - -", "- -", "-", vehicleControlAddon.getText( "vcaValueNormal", "NORMAL" ), "+", "+ +" , "+ + +", "+ + + +" }
 	self.vcaUI.vcaPitchExponent_V = { 
 																		0.609622719,
 																		0.681892937,
@@ -4918,7 +4934,10 @@ function vehicleControlAddon:vcaShowSettingsUI()
 														"D/R , G+/-, R+/-" }
 
 	self.vcaUI.vcaBlowOffVolume = { "0%", "10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%", "100%" }
-	self.vcaUI.vcaHiredWorker = { "off", "only if entered", "always" }
+	self.vcaUI.vcaHiredWorker = { vehicleControlAddon.getText("vcaValueOff", "OFF"), 
+																vehicleControlAddon.getText("vcaValueEntered", "ENTERED"), 
+																vehicleControlAddon.getText("vcaValueAlways", "ALWAYS"), 
+															}
 														
 	self.vcaUI.vcaMaxSpeed     = tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed ) )
 	self.vcaUI.vcaLaunchSpeed  = tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaLaunchSpeed ) )

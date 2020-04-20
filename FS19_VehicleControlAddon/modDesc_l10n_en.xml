@@ -139,6 +139,15 @@
 		<text name="input_vcaHandRpm_1" text="VCA: more hand throttle"/>
 		<text name="input_vcaHandRpm_2" text="VCA: less hand throttle"/>
 		<text name="input_vcaHandMode"  text="VCA: hand throttle mode"/>
+		
+		<text name="vcaValueOn"         text="on"/>
+		<text name="vcaValueOff"        text="off"/>
+		<text name="vcaValueNever"      text="never"/>
+		<text name="vcaValueAlways"     text="always"/>
+		<text name="vcaValueNormal"     text="normal"/>
+		<text name="vcaValueEntered"    text="if entered"/>
+		<text name="vcaValueInactive"   text="if inactive"/>
+		<text name="vcaValueRPM"        text="RPM"/>
 	</texts>
 
 	<longTexts>

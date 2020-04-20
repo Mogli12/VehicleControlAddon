@@ -139,6 +139,15 @@
 		<text name="input_vcaHandRpm_1" text="VCA: mehr Handgas"/>
 		<text name="input_vcaHandRpm_2" text="VCA: weniger Handgas"/>
 		<text name="input_vcaHandMode"  text="VCA: Handgas Modus"/>
+		
+		<text name="vcaValueOn"         text="an"/>
+		<text name="vcaValueOff"        text="aus"/>
+		<text name="vcaValueNever"      text="never"/>
+		<text name="vcaValueAlways"     text="immer"/>
+		<text name="vcaValueNormal"     text="normal"/>
+		<text name="vcaValueEntered"    text="falls eingestiegen"/>
+		<text name="vcaValueInactive"   text="falls inaktiv"/>
+		<text name="vcaValueRPM"        text="U/min"/>
 	</texts>   
 
 	<longTexts>
