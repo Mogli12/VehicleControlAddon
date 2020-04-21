@@ -1694,16 +1694,16 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 		self.vcaReverseDriveSample               = nil
 	end 
 	
-	if     self.spec_motorized.motor.lowBrakeForceScale == nil then
-	elseif self:vcaIsActive() and 0.99 < self.vcaBrakeForce and self.vcaBrakeForce < 1.01 then 
-		if self.vcaLowBrakeForceScale == nil then 
-			self.vcaLowBrakeForceScale                 = self.spec_motorized.motor.lowBrakeForceScale
-		end 
-		self.spec_motorized.motor.lowBrakeForceScale = self.vcaBrakeForce * self.vcaLowBrakeForceScale 
-	elseif self.vcaLowBrakeForceScale ~= nil then  
-		self.spec_motorized.motor.lowBrakeForceScale = self.vcaLowBrakeForceScale 
-		self.vcaLowBrakeForceScale                   = nil
-	end 
+--if     self.spec_motorized.motor.lowBrakeForceScale == nil then
+--elseif self:vcaIsActive() and 0.99 < self.vcaBrakeForce and self.vcaBrakeForce < 1.01 then 
+--	if self.vcaLowBrakeForceScale == nil then 
+--		self.vcaLowBrakeForceScale                 = self.spec_motorized.motor.lowBrakeForceScale
+--	end 
+--	self.spec_motorized.motor.lowBrakeForceScale = self.vcaBrakeForce * self.vcaLowBrakeForceScale 
+--elseif self.vcaLowBrakeForceScale ~= nil then  
+--	self.spec_motorized.motor.lowBrakeForceScale = self.vcaLowBrakeForceScale 
+--	self.vcaLowBrakeForceScale                   = nil
+--end 
 	
 	if not self.vcaLimitSpeed then 
 		if self.vcaMaxForwardSpeed == nil then 
@@ -3077,7 +3077,11 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 			brake = true 
 		end 
 	
-		if self:vcaGetShuttleCtrl() then 
+	
+		if ( self.vcaNeutral and not self.vcaShifterUsed ) or ( self.vcaShifterPark and self.vcaShifterUsed ) then 
+			doHandbrake        = true 
+			self.vcaBrakePedal = 1
+		elseif self:vcaGetShuttleCtrl() then 
 			if     self.vcaShuttleFwd then 
 				self.nextMovingDirection = 1 
 			else 
@@ -3098,9 +3102,6 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 				acceleration = 0				
 			end 
 			if self:vcaGetNeutral() then 
-				if ( self.vcaNeutral and not self.vcaShifterUsed ) or ( self.vcaShifterPark and self.vcaShifterUsed ) then 
-					doHandbrake = true 
-				end 
 				if acceleration > -0.05 then 
 					acceleration = 0 
 				end 
@@ -3187,16 +3188,23 @@ WheelsUtil.updateWheelsPhysics = Utils.overwrittenFunction( WheelsUtil.updateWhe
 --******************************************************************************************************************************************
 -- getSmoothedAcceleratorAndBrakePedals
 function vehicleControlAddon:vcaGetSmoothedAcceleratorAndBrakePedals( superFunc, acceleratorPedal, brakePedal, dt )
-	if      self.vcaIsLoaded
-			and self:vcaIsVehicleControlledByPlayer()
-			and self.vcaBrakePedal ~= nil
-			-- limit for automaticBrake is 0.001; take 0.003 to be on the safe side 
-			and ( math.abs( acceleratorPedal ) >= 0.003
-				or self:vcaGetNeutral() 
-				or self.vcaBrakePedal >= 0.003
-				or self.vcaBrakeForce <  0.005 )
-			then 
-		brakePedal = self.vcaBrakePedal
+	if self.vcaIsLoaded and self:vcaIsVehicleControlledByPlayer() and self.vcaOldAcc ~= nil then 
+		
+		if     self.vcaBrakePedal ~= nil and self.vcaBrakePedal >= 0.001 then  
+		-- shuttle control and braking 
+			brakePedal = self.vcaBrakePedal
+		elseif self.vcaBrakePedal ~= nil and self:vcaGetNeutral() then 
+		-- neutral, shuttle control and not brakinng
+			brakePedal = 0
+		elseif math.abs( self.vcaOldAcc ) < 0.001 then
+		-- neither accelerating nor braking 
+			if self:vcaGetNeutral() or self.vcaBrakeForce <= 0 or brakePedal <= 0 then 
+			-- neutral 
+				brakePedal = 0
+			else  
+				brakePedal = brakePedal * self.vcaBrakeForce 
+			end 
+		end 
 	end 
 	
 	return superFunc( self, acceleratorPedal, brakePedal, dt )
