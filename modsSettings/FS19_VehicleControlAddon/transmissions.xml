@@ -23,7 +23,7 @@
 	</transmission>	
 
 	<transmission label="Test 6-speed with low range">
-		<gears shiftTimeMS="750" baseSpeed="180">
+		<gears shiftTimeMs="750" baseSpeed="180">
 			<gear speed="50"  text="I"/>
 			<gear speed="70"  text="II"/>
 			<gear speed="95"  text="III"/>
@@ -31,7 +31,7 @@
 			<gear speed="180" text="V"/>
 			<gear speed="250" text="VI"/>
 		</gears>
-		<ranges shiftTimeMS="1500">
+		<ranges shiftTimeMs="1500">
 			<range ratio="0.357" text="Low" />
 			<range ratio="1.0"   text="High"/>
 		</ranges>
