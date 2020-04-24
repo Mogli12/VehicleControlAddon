@@ -27,13 +27,14 @@ function vehicleControlAddonRegister:beforeFinalizeVehicleTypes()
 		print("Failed to add specialization vehicleControlAddon")
 	else 
 		for k, typeDef in pairs(g_vehicleTypeManager.vehicleTypes) do
-			if typeDef ~= nil and k ~= "locomotive" then 
+			if typeDef ~= nil and k ~= "locomotive" and k ~= "woodCrusherTrailerDrivable" then 
 				local isDrivable   = false
 				local isEnterable  = false
 				local hasMotor     = false 
 				local hasLights    = false 
 				local hasWheels    = false 
 				local isAttachable = false 
+				local isAiVehicle  = false 
 				local hasNotVCA    = true 
 				for name, spec in pairs(typeDef.specializationsByName) do
 					if     name == "drivable"   then 
@@ -48,11 +49,13 @@ function vehicleControlAddonRegister:beforeFinalizeVehicleTypes()
 						hasWheels = true 
 					elseif name == "attachable" then 
 						isAttachable = true 
+					elseif name == "aiVehicle" then 
+						isAiVehicle = true 
 					elseif name == specName then 
 						hasNotVCA = false 
 					end 
 				end 
-				if hasNotVCA and isDrivable and isEnterable and hasMotor and hasLights and hasWheels and not isAttachable then 
+				if hasNotVCA and isDrivable and isEnterable and hasMotor and hasLights and hasWheels and ( isAiVehicle or not isAttachable ) then 
 					print("  adding vehicleControlAddon to vehicleType '"..tostring(k).."'")
 					typeDef.specializationsByName[specName] = vehicleControlAddon
 					table.insert(typeDef.specializationNames, specName)

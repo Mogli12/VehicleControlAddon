@@ -2959,6 +2959,9 @@ function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, ax
 			end 
 			
 			local curSnapAngle = self:vcaGetCurrentSnapAngle( rot )
+			if self.spec_reverseDriving  ~= nil and self.spec_reverseDriving.isReverseDriving then
+				curSnapAngle = -curSnapAngle 
+			end 
 			
 			local dist    = 0
 			local diffR   = vehicleControlAddon.normalizeAngle( rot - curSnapAngle )
