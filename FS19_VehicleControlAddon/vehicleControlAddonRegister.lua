@@ -206,6 +206,9 @@ function vehicleControlAddonRegister:loadMap(name)
 										"peekLeftRight",
 										"hiredWorker",
 										"g27Mode",
+										"blowOffVolume",
+										"rotSpeedOut",
+										"rotSpeedIn",
 									}
 
 	print('VCAregister; isMP: '..tostring(self.isMP)..', isDedi: '..tostring(self.isDedi)..', local config: "'..tostring(configFile)..'", local directory: "'..tostring(configDir)..'"')

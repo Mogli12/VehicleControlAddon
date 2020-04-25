@@ -28,6 +28,9 @@
 	<peekLeftRight       type="bool"  value="true"/>
 	<hiredWorker         type="int"   value="1"/> <!-- transmission for hired worker: 0 off, 1 only if entered, 2 always on -->
 	<g27Mode             type="int"   value="0"/> 
+	<blowOffVolume       type="float" value="0.5"/> 
+	<rotSpeedOut         type="float" value="0.5"/> 
+	<rotSpeedIn          type="float" value="0.5"/> 
 </VCAGlobals>
 
 

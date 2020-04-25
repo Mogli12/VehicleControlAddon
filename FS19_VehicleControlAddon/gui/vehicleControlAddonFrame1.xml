@@ -66,6 +66,16 @@
 					<GuiElement type="bitmap" profile="vcaMTOBg" />
 				</GuiElement>			
 				
+				<GuiElement type="multiTextOption" profile="vcaMTOSettings" id="vcaSnapDraw"
+												toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_DRAWMARKER"
+												onCreate="onCreateSubElement" onCreateArgs="list0">
+					<GuiElement type="button" profile="vcaMTOLeft" />
+					<GuiElement type="button" profile="vcaMTORight"/>
+					<GuiElement type="text" profile="vcaMTOText" />
+					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaDRAWMARKER"/>
+					<GuiElement type="bitmap" profile="vcaMTOBg" />
+				</GuiElement>			
+				
 			</GuiElement>
 			<GuiElement id="boxLayout2" type="boxLayout" profile="vcaSettingsLayoutMid">
 				
@@ -78,6 +88,26 @@
 					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaSTEERING"/>
 					<GuiElement type="bitmap" profile="vcaMTOBg" />
 				</GuiElement>
+
+				<GuiElement type="multiTextOption" profile="vcaMTOSettings" id="vcaRotSpeedOut"
+												toolTipElementId="mogliToolTipBoxText" toolTipText="Steering Speed"
+												onCreate="onCreateSubElement" onCreateArgs="percent5">
+					<GuiElement type="button" profile="vcaMTOLeft" />
+					<GuiElement type="button" profile="vcaMTORight"/>
+					<GuiElement type="text" profile="vcaMTOText" />
+					<GuiElement type="text" profile="vcaMTOTitle" text="Steering Speed"/>
+					<GuiElement type="bitmap" profile="vcaMTOBg" />
+				</GuiElement>	
+
+				<GuiElement type="multiTextOption" profile="vcaMTOSettings" id="vcaRotSpeedIn"
+												toolTipElementId="mogliToolTipBoxText" toolTipText="Steering inverse speed"
+												onCreate="onCreateSubElement" onCreateArgs="percent5">
+					<GuiElement type="button" profile="vcaMTOLeft" />
+					<GuiElement type="button" profile="vcaMTORight"/>
+					<GuiElement type="text" profile="vcaMTOText" />
+					<GuiElement type="text" profile="vcaMTOTitle" text="Steering inverse speed"/>
+					<GuiElement type="bitmap" profile="vcaMTOBg" />
+				</GuiElement>	
 				
 				<GuiElement type="multiTextOption" profile="vcaMTOSettings" id="vcaSnapAngle"
 												toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_ANGLE"
@@ -106,16 +136,6 @@
 										maxCharacters="5" imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed">
 					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaOFFSET2"/>
 				</GuiElement>
-				
-				<GuiElement type="multiTextOption" profile="vcaMTOSettings" id="vcaSnapDraw"
-												toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_DRAWMARKER"
-												onCreate="onCreateSubElement" onCreateArgs="list0">
-					<GuiElement type="button" profile="vcaMTOLeft" />
-					<GuiElement type="button" profile="vcaMTORight"/>
-					<GuiElement type="text" profile="vcaMTOText" />
-					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaDRAWMARKER"/>
-					<GuiElement type="bitmap" profile="vcaMTOBg" />
-				</GuiElement>			
 				
 			</GuiElement>
 			
