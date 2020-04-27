@@ -3266,7 +3266,7 @@ function vehicleControlAddon:getAccelerationLimit( superFunc, ... )
 	if not (  self.vehicle ~= nil
 				and self.vehicle.vcaIsLoaded
 				and self.vehicle.vcaLastTransmission ~= nil
-				and self.vehicle.vcaActualLoad       ~= nil
+				and self.vehicle.vcaActualLoadF      ~= nil
 				and self.vehicle.vcaLastTransmission >= 1 ) then 
 		return superFunc( self, ... )
 	end 
@@ -3274,7 +3274,7 @@ function vehicleControlAddon:getAccelerationLimit( superFunc, ... )
 --	return superFunc( self, ... )
 --end 
 	local a = superFunc( self, ... )
-	local f = 0.01 + vehicleControlAddon.mbClamp( 3 * ( 1 - math.max( self.vehicle.vcaActualLoad, self.vehicle.vcaActualLoadS ) ), 0, 0.99 )
+	local f = 0.01 + vehicleControlAddon.mbClamp( 3 * ( 1 - self.vehicle.vcaActualLoadF ), 0, 0.99 )
 	if f >= 1 then 
 		return a 
 	end 
@@ -3282,6 +3282,113 @@ function vehicleControlAddon:getAccelerationLimit( superFunc, ... )
 end 
 
 VehicleMotor.getAccelerationLimit = Utils.overwrittenFunction( VehicleMotor.getAccelerationLimit, vehicleControlAddon.getAccelerationLimit )
+
+
+
+--******************************************************************************************************************************************
+--******************************************************************************************************************************************
+-- max moving average calculateion
+local maxMovingAverage = {}
+
+function maxMovingAverage:new( timeMs, stepMs, avgMs )
+	self = {}
+	setmetatable( self, { __metatable = maxMovingAverage, __index  = maxMovingAverage } )
+	
+	self.timeMs = timeMs 
+	self.stepMs = stepMs 
+	self.skip   = math.max( math.floor( avgMs / stepMs ) )
+	
+	local i = 0 
+	local t = 0
+	
+	self.data = {}
+	
+	while t < timeMs do 
+		i = i + 1
+		t = t + stepMs 
+		self.data[i] = { 0, 0 } 
+	end 
+	
+	if self.skip > #self.data then 
+		self.skip = #self.data 
+	end 
+	
+	self.index = 1 
+	self.value = 0
+	self.count = 0
+	self.sumDt = 0 
+	
+	self.mma   = 0
+	
+	return self
+end 
+
+function maxMovingAverage:collect( dt, value )
+
+	self.sumDt = self.sumDt + dt 
+	
+	if self.sumDt > self.stepMs then 
+		-- store avg. over 100 ms 
+		while self.sumDt > self.stepMs do 
+			self.data[self.index][1] = self.value
+			self.data[self.index][2] = self.count
+			self.sumDt = self.sumDt - self.stepMs 
+			self.index = self.index + 1
+			if self.index > #self.data then 
+				self.index = 1 
+			end 
+		end 
+		
+		-- build average
+		local j = self.index - 1
+		local a = {}
+		local v_cumul, n_cumul = 0, 0
+		for i=1,#self.data do 
+			if j < 1 then 
+				j = #self.data
+			end 
+			local v, n = unpack( self.data[j] )
+			v_cumul = v_cumul + v
+			n_cumul = n_cumul + n
+			if n_cumul > 1 then 	
+				a[i] = v_cumul / n_cumul 
+			else 
+				a[i] = v_cumul
+			end 
+			j = j - 1
+		end 
+
+		-- get maximum
+		self.mma = 0
+				
+		for i=self.skip,#a do 
+			if self.mma < a[i] then 
+				self.mma = a[i] 
+			end 
+		end 
+		
+		self.value = value 
+		self.count = 1
+		
+		self.firstTimeRun = true 
+	else
+		self.value = self.value + value
+		self.count = self.count + 1
+		
+		if not ( self.firstTimeRun ) then 
+			self.mma = self.value / self.count 
+		end 
+	end 
+		
+end 
+
+function maxMovingAverage:get() 
+	return self.mma
+end 
+
+--******************************************************************************************************************************************
+--******************************************************************************************************************************************
+
 
 --******************************************************************************************************************************************
 -- select gear
@@ -3520,29 +3627,50 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	else 
 		self.vehicle.vcaActualLoad = self.motorAppliedTorque / math.max(self.motorAvailableTorque, 0.0001)
 	end 
-
-	if     self.vehicle.vcaActualLoadS == nil then 
-	-- first time run 
-		self.vehicle.vcaActualLoadS = self.vehicle.vcaActualLoad
-	elseif self.vcaDirTimer ~= nil or self.gearChangeTimer > 0 then 
-	-- no load during shift
-		if self.vehicle.vcaActualLoadN == nil then 
-			self.vehicle.vcaActualLoadN = self.vehicle.vcaActualLoadS 
-		end 
-		self.vehicle.vcaActualLoadS = self.vehicle.vcaActualLoadS + 0.015 * ( self.vehicle.vcaActualLoad - self.vehicle.vcaActualLoadS )
-	elseif self.vehicle.vcaActualLoadN ~= nil then 
-	-- use previous load after shift 
-		self.vehicle.vcaActualLoadS = self.vehicle.vcaActualLoadN 
-		self.vehicle.vcaActualLoadN = nil 
-	elseif self.vehicle.vcaActualLoadS > 0.9 then 
-		self.vehicle.vcaActualLoadS = self.vehicle.vcaActualLoadS + 0.050 * ( self.vehicle.vcaActualLoad - self.vehicle.vcaActualLoadS )
-	elseif self.vehicle.vcaActualLoad > self.vehicle.vcaActualLoadS and self.vehicle.vcaActualLoad > 0.95 then 
-	-- smooth up 
-		self.vehicle.vcaActualLoadS = self.vehicle.vcaActualLoadS + 0.025 * ( self.vehicle.vcaActualLoad - self.vehicle.vcaActualLoadS )
+	if self.vehicle.vcaActualLoadF == nil then 
+		self.vehicle.vcaActualLoadF = self.vehicle.vcaActualLoad
 	else 
-	-- smooth down 
-		self.vehicle.vcaActualLoadS = self.vehicle.vcaActualLoadS + 0.005 * ( self.vehicle.vcaActualLoad - self.vehicle.vcaActualLoadS )
+		self.vehicle.vcaActualLoadF = self.vehicle.vcaActualLoadF + 0.03 * ( self.vehicle.vcaActualLoad - self.vehicle.vcaActualLoadF )
 	end 
+	
+	if self.vcaLoadMMA == nil then 	
+		self.vcaLoadMMA = maxMovingAverage:new( 10000, 100, 1000 )
+	end 
+		
+	self.vcaLoadMMA:collect( dt, self.vehicle.vcaActualLoad )
+		
+	self.vehicle.vcaActualLoadS = self.vcaLoadMMA:get()
+	
+--if     self.vehicle.vcaActualLoadS == nil then 
+---- first time run 
+--	self.vehicle.vcaActualLoadS = self.vehicle.vcaActualLoad
+--elseif self.vcaDirTimer ~= nil or self.gearChangeTimer > 0 then 
+---- no load during shift
+--	if self.vehicle.vcaActualLoadN == nil then 
+--		self.vehicle.vcaActualLoadN = self.vehicle.vcaActualLoadS 
+--	end 
+--	self.vehicle.vcaActualLoadS = self.vehicle.vcaActualLoadS + 0.015 * ( self.vehicle.vcaActualLoad - self.vehicle.vcaActualLoadS )
+--elseif self.vehicle.vcaActualLoadN ~= nil then 
+---- use previous load after shift 
+--	self.vehicle.vcaActualLoadS = self.vehicle.vcaActualLoadN 
+--	self.vehicle.vcaActualLoadN = nil 
+--else
+--	local dtu, dtd = 0.00005, 0.00005
+--	if     self.vehicle.vcaActualLoadS > 0.9 then 
+--	 dtd = math.max( dtd, ( self.vehicle.vcaActualLoadS - 0.75 ) * 0.005 ) -- 0.0005 / 0.1
+--	elseif self.vehicle.vcaActualLoadS < 0.65 then
+--	 dtd = math.max( dtd, ( 0.65 - self.vehicle.vcaActualLoadS ) * 0.001 ) -- 0.00065 / 0.65
+--	end 
+--	if     self.vehicle.vcaActualLoad  > 0.75 then 
+--	 dtu = math.max( dtu, ( self.vehicle.vcaActualLoad  - 0.75 ) * 0.002 ) -- 0.0005 / 0.25
+--	elseif self.vehicle.vcaActualLoad  < 0.65 then 
+--	 dtu = math.max( dtu, ( 0.65 - self.vehicle.vcaActualLoad  ) * 0.001 ) -- 0.00065 / 0.65
+--	end
+--	
+--	self.vehicle.vcaActualLoadS = vehicleControlAddon.mbClamp( self.vehicle.vcaActualLoadF,
+--																														 self.vehicle.vcaActualLoadS - dt * dtd ,
+--																														 self.vehicle.vcaActualLoadS + dt * dtu )
+--end 
 
 	local speedMS   = speed / 3.6
 	local wheelRpm  = speedMS * curGearRatio * vehicleControlAddon.factor30pi
@@ -3642,7 +3770,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			self.vcaIncreaseRpm = g_currentMission.time + 2000 
 		end 
 		
-		local minReducedRpm = math.min( math.max( newMinRpm, 0.5*math.min( 2200, self.maxRpm ) ), newMaxRpm )
+		local minReducedRpm = math.min( math.max( newMinRpm, 0.45*math.min( 2200, self.maxRpm ) ), newMaxRpm )
 		if self.vehicle.spec_combine ~= nil then 
 			minReducedRpm = math.min( math.max( newMinRpm, 0.8*math.min( 2200, self.maxRpm ) ), newMaxRpm )
 		end 
@@ -3670,7 +3798,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			end 
 		end		
 		
-		minReducedRpm = minReducedRpm + 0.2 * self.maxRpm
+		minReducedRpm = math.min( minReducedRpm + 0.1*math.min( 2200, self.maxRpm ), newMaxRpm ) 
 		
 		if self.vehicle.spec_combine == nil and self.vehicle.vcaLimitThrottle ~= nil and self.vehicle.vcaInchingIsOn ~= nil then 
 				
@@ -3694,10 +3822,10 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			-- vehicle should be able to reach max speed 
 			local speedFactor = 0
 			if maxSpeed > 0 then 
-				speedFactor = self.maxRpm / ( 3.6 * maxSpeed ) 
+				speedFactor = rpmRange / ( 3.6 * maxSpeed ) 
 			end 
 			if speed > 0 then 
-				newMinRpm = vehicleControlAddon.mbClamp( speedFactor * math.min( speed, 3.6 * maxSpeed ), newMinRpm, newMaxRpm )
+				newMinRpm = vehicleControlAddon.mbClamp( self.minRpm + speedFactor * math.min( speed, 3.6 * maxSpeed ), newMinRpm, newMaxRpm )
 			end 
 			if self.vcaAccS > 0.25 and newMaxRpm > self.vcaMaxPowerRpmL then 
 				-- reduce max RPM at high acceleration; note: we are still at 97% max. power
@@ -3749,16 +3877,16 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			self.maxGearRatio = self.maxRpm / ( self.vehicle.vcaMaxSpeed * math.max( self.vehicle.vcaGearRatioT, self.vehicle.vcaGearRatioF ) * vehicleControlAddon.factor30pi )
 		end 
 		
-		if not autoNeutral then 
-			if curGearRatio > 0 and self.minGearRatio > 0 and self.maxGearRatio > 0 then 
-				local g1 = 1 / curGearRatio 
-				local gm = 1 / self.minGearRatio
-				local gn = 1 / self.maxGearRatio
-				local gd = dt * 0.0001
-				self.minGearRatio = 1 / vehicleControlAddon.mbClamp( g1 + gd, gn, gm )
-				self.maxGearRatio = 1 / vehicleControlAddon.mbClamp( g1 - gd, gn, gm )
-			end
-		end 
+	--if not ( autoNeutral or speed > self.speedLimit + 0.2  or curBrake > 0.1 ) then 
+	--	if curGearRatio > 0 and self.minGearRatio > 0 and self.maxGearRatio > 0 then 
+	--		local g1 = 1 / curGearRatio 
+	--		local gm = 1 / self.minGearRatio
+	--		local gn = 1 / self.maxGearRatio
+	--		local gd = dt * 0.0001
+	--		self.minGearRatio = 1 / vehicleControlAddon.mbClamp( g1 + gd, gn, gm )
+	--		self.maxGearRatio = 1 / vehicleControlAddon.mbClamp( g1 - gd, gn, gm )
+	--	end
+	--end 
 		
 		if not fwd then 
 			self.minGearRatio = -self.minGearRatio
