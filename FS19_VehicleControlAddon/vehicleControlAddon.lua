@@ -2245,7 +2245,9 @@ function vehicleControlAddon:onPostUpdateTick( dt, isActiveForInput, isActiveFor
 			and self.getIsMotorStarted  ~= nil 		
 			and self.vcaUpdateGearTimer > g_currentMission.time
 			and self:getIsMotorStarted()
-			and ( self.spec_aiVehicle == nil or not ( self.spec_aiVehicle.isActive ) )
+			and not ( self.spec_aiVehicle ~= nil and self.spec_aiVehicle.isActive )
+			and not ( self.ad ~= nil and self.ad.isActive  ) 
+			and not ( self.cp ~= nil and self.cp.isDriving )
 			and not ( self.vcaUpdateGearDone ) then 
 		WheelsUtil.updateWheelsPhysics( self, dt, self.lastSpeedReal*self.movingDirection, 0, true, g_currentMission.missionInfo.stopAndGoBraking)
 	end 
@@ -2920,7 +2922,10 @@ function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, ax
 	if self.vcaSnapIsOn then 
 		if not ( self.vcaIsEnteredMP ) then
 			self:vcaSetState( "vcaSnapIsOn", false )
-		elseif self.spec_aiVehicle ~= nil and self.spec_aiVehicle.isActive then 
+		elseif ( self.spec_aiVehicle ~= nil and self.spec_aiVehicle.isActive )
+				or ( self.ad ~= nil and self.ad.isActive  ) 
+				or ( self.cp ~= nil and self.cp.isDriving )
+				then 
 			self:vcaSetState( "vcaSnapIsOn", false )
 		elseif self.aiveAutoSteer then 
 			self:vcaSetState( "vcaSnapIsOn", false )
@@ -3060,7 +3065,7 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 	self.vcaOldHandbrake = doHandbrake
 	self.vcaBrakePedal   = nil
 
-	if self.vcaIsLoaded and self:vcaIsVehicleControlledByPlayer() then
+	if self:vcaIsVehicleControlledByPlayer() then
 		if     self.vcaAIEndTime ~= nil and g_currentMission.time < self.vcaAIEndTime + 500 then 
 			acceleration = 0
 			doHandbrake  = true 
@@ -3400,7 +3405,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 
 	self.vehicle.vcaUpdateGearDone    = true 
 	if self.vehicle.vcaIsEnteredMP  then 
-	  self.vehicle.vcaUpdateGearTimer = g_currentMission.time + 1000
+	  self.vehicle.vcaUpdateGearTimer = g_currentMission.time + 2500
 	end 
 		
 	local lastMinRpm        = Utils.getNoNil( self.vcaMinRpm,   self.minRpm )
@@ -3554,7 +3559,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	end 
 
 	local newAcc = acceleratorPedal
-	local autoNeutral =  self.vcaAutoStop or self.vehicle:vcaGetNeutral() or lastAutoStopTimer ~= nil
+	local autoNeutral =  self.vcaAutoStop or self.vehicle:vcaGetNeutral() or lastAutoStopTimer ~= nil or self.vehicle.vcaNewHandbrake
 	
 	if self.vcaDirTimer ~= nil then 
 		autoNeutral = true 
