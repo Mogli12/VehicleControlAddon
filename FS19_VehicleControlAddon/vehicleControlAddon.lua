@@ -3077,7 +3077,7 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 				acceleration = 0
 				doHandbrake  = true 
 				self:getMotor().vcaAutoStop = true 
-				brake = true 
+				brake = self:getIsMotorStarted()  
 			else 
 				self.spec_motorized.motor:setSpeedLimit( math.min( self:getSpeedLimit(true), math.abs(self.vcaKeepSpeed) ) )
 				if self:vcaGetShuttleCtrl() then 
@@ -3092,6 +3092,8 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 				end 
 			end 
 			self.vcaOldAcc = acceleration
+		elseif self.vcaHandthrottle > 0 and self:vcaGetShuttleCtrl() and self:vcaGetNoIVT() and not self:vcaGetNeutral() then 
+		-- fixed gear transmission and hand throttle => treat like cruise control
 		elseif self.vcaIsBlocked and self.vcaIsEnteredMP then
 			acceleration = 0
 			doHandbrake  = true 
