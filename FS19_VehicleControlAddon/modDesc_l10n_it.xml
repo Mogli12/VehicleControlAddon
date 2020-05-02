@@ -3,19 +3,20 @@
 	<!-- Note that 'description' is only here for easier translations. It needs to be manually copied to ModDesc.XML later. -->
     <description><![CDATA[Aggiunge la specializzazione per lo sterzo adattivo da tastiera]]></description>
 
-    <texts>
-		<text name="vcaCAMERA"         	text="Rotazione Telecamera Interna" />
-    <text name="vcaCAMERAO"         text="Rotazione Telecamera Esterna"/>
-    <text name="vcaEXPONENT"       	text="Sensibilità"/>
+    	<texts>
+		<text name="vcaCAMERAI"         	text="Rotazione Telecamera Interna" />
+    	<text name="vcaCAMERAO"         text="Rotazione Telecamera Esterna"/>
+    	<text name="vcaEXPONENT"       	text="Sensibilità"/>
 		<text name="vcaSTEERING"       	text="Sterzo adattivo"/>
 		<text name="vcaSHUTTLE"        	text="Inverti" />
-		<text name="vcaREVERSE"        	text="Guarda all'indietro (Interno)" />
-    <text name="vcaREVERSEO"        text="Guarda all'indietro (Esterno)"/>
+		<text name="vcaREVERSE"        	text="Guarda all'indietro" />
+		<text name="vcaREVERSEI"		text="Guarda all'indietro (Interno)"/>
+    	<text name="vcaREVERSEO"        text="Guarda all'indietro (Esterno)"/>
 		<text name="vcaLIMIT"          	text="Limitatore di accelerazione"/>
 		<text name="vcaPEEKLR"          text="Occhiata di lato"/>
 		<text name="vcaANGLE"           text="Angolo linee guida"/>
 		<text name="vcaBRAKE"           text="Frenata lenta"/>
-    <text name="vcaTRANSMISSION"    text="Trasmissione"/>
+	    <text name="vcaTRANSMISSION"    text="Trasmissione"/>
 		<text name="vcaMAXSPEED"        text="Velocità Asse"/>
 		<text name="vcaLIMSPEED"        text="Limitatore di velocità"/>
 		<text name="vcaAUTOSHIFT"       text="Cambio automatico"/>
@@ -27,7 +28,7 @@
 		<text name="vcaSETTINGS"        text="Impostazioni"/>
 		<text name="vcaDRAWHUD"         text="PANNELLO Trasmissione"/>
 
-    <text name="vcaDISTANCE"        text="Larghezza di Lavoro"/>
+	    <text name="vcaDISTANCE"        text="Larghezza di Lavoro"/>
 		<text name="vcaOFFSET1"         text="Scentratura dell'attrezzo"/>
 		<text name="vcaOFFSET2"         text="Scentratura Inversa"/>
 		<text name="vcaDRAWMARKER"      text="Visualizza linee guida"/>
@@ -49,19 +50,20 @@
 		<text name="vcaOWNGEARTIME"     text="Tempo per il cambio marcia"/>
 		<text name="vcaOWNRANGETIME"    text="Tempo per il cambio range"/>
 		<text name="vcaOWNAUTOGEARS"    text="Cambio Automatico"/>
+		<text name="vcaOWNAUTORANGE"    text="Cambio Range Automatico"/>
 
-    <text name="vca_tip_CAMERAI"      text="La telecamera interna ruota automaticamente in base all'angolo di sterzata"/>
-    <text name="vca_tip_CAMERAO"      text="La telecamera esterna ruota automaticamente in base all'angolo di sterzata"/>
+    	<text name="vca_tip_CAMERAI"      text="La telecamera interna ruota automaticamente in base all'angolo di sterzata"/>
+    	<text name="vca_tip_CAMERAO"      text="La telecamera esterna ruota automaticamente in base all'angolo di sterzata"/>
 		<text name="vca_tip_EXPONENT"  	  text="Sensibilità dello sterzo adattivo in base alla velocità sul terreno"/>
 		<text name="vca_tip_STEERING"  	  text="Lo sterzo adattivo regola la rotazione posteriore automatica e l'angolo di sterzata massimo"/>
 		<text name="vca_tip_SHUTTLE"   	  text="Cambia direzione di guida con &lt;barra spazio&gt;"/>
-    <text name="vca_tip_REVERSEI"     text="Se il veicolo cambia direzione la telecamera Interna viene ruotata di 180°"/>
+    	<text name="vca_tip_REVERSEI"     text="Se il veicolo cambia direzione la telecamera Interna viene ruotata di 180°"/>
 		<text name="vca_tip_REVERSEO"     text="Se il veicolo cambia direzione la telecamera Esterna viene ruotata di 180°"/>
 		<text name="vca_tip_LIMIT"     	text="Limiter dell'acceleratore con e senza tasto shift sinistro"/>
 		<text name="vca_tip_PEEKLR"     text="Dai un'occhiata con Shift-Destro e i tasti freccia accanto"/>
 		<text name="vca_tip_ANGLE"      text="Sterzare automaticamente per seguire l'angolo delle linee guida"/>
 		<text name="vca_tip_BRAKE"      text="Percentuale frenata lenta, aka resistenza inerzia"/>
-    <text name="vca_tip_TRANSMISSION" text="Tipo di trasmissione; IVT trasmissione variabile, tutte le altre trasmissioni hanno 12 marce differenti, 2x6 è la migliore per i camion"/>
+    	<text name="vca_tip_TRANSMISSION" text="Tipo di trasmissione; IVT trasmissione variabile, tutte le altre trasmissioni hanno 12 marce differenti, 2x6 è la migliore per i camion"/>
 		<text name="vca_tip_MAXSPEED"     text="Velocità massima della marcia più alta, può essere più alta della velocità massima del veicolo"/>
 		<text name="vca_tip_LIMSPEED"     text="Limita la velocità massima del veicolo a questo valore"/>
 		<text name="vca_tip_AUTOSHIFT"    text="Cambio automatico di marcia e range"/>
@@ -93,7 +95,8 @@
 		<text name="vca_tip_OWNRANGES"    text="Numero di ranges"/>
 		<text name="vca_tip_OWNGEARTIME"  text="È ora di cambiare marcia"/>
 		<text name="vca_tip_OWNRANGETIME" text="È ora di cambiare range"/>
-		<text name="vca_tip_OWNAUTOGEARS" text="Cambio automatico e regolazione della velocità"/>
+		<text name="vca_tip_OWNAUTOGEARS" text="Cambio automatico in base alla velocità"/>
+		<text name="vca_tip_OWNAUTORANGE" text="Cambio Range automatico in base alla velocità"/>
 
 		<text name="input_vcaSETTINGS" 	text="VCA: impostazioni"/>
 		<text name="input_vcaUP"      	text="VCA: scambia direzione vista / guarda indietro " />
@@ -104,14 +107,14 @@
 		<text name="input_vcaFORWARD"  	text="VCA: guida in avanti" />
 		<text name="input_vcaREVERSE" 	text="VCA: guida all'indietro" />
 		<text name="input_vcaSNAP"      text="VCA: Linee guida"/>
-    <text name="input_vcaSNAPRESET" text="VCA: reset delle linee guida"/>
-    <text name="input_vcaSnapUP"    text="VCA: Ruota le linee guida a sinistra"/>
+    	<text name="input_vcaSNAPRESET" text="VCA: reset delle linee guida"/>
+    	<text name="input_vcaSnapUP"    text="VCA: Ruota le linee guida a sinistra"/>
 		<text name="input_vcaSnapDOWN"  text="VCA: Ruota le linee guida a destra"/>
 		<text name="input_vcaSnapLEFT"  text="VCA: Muovi le linee guida a sinistra"/>
 		<text name="input_vcaSnapRIGHT" text="VCA: Muovi le linee guida a destra"/>
 		<text name="input_vcaNO_ARB"    text="VCA: disabilita ritorno automatico"/>
 		<text name="input_vcaINCHING"   text="VCA: accelera lentamente"/>
-    <text name="input_vcaKEEPROT"   text="VCA: Mantieni la direzione globale della videocamera"/>
+    	<text name="input_vcaKEEPROT"   text="VCA: Mantieni la direzione globale della videocamera"/>
 		<text name="input_vcaKEEPROT2"  text="VCA: Mantieni permanentemente la direzione della videocamera"/>
 		<text name="input_vcaKEEPSPEED" text="VCA: Mantieni la velocità"/>
 		<text name="input_vcaKEEPSPEED2" text="VCA: Mantieni permanentemente la velocità"/>
@@ -136,6 +139,15 @@
 		<text name="input_vcaHandRpm_1" text="VCA: aumenta Acceleratore manuale"/>
 		<text name="input_vcaHandRpm_2" text="VCA: diminuisci Acceleratore manuale"/>
 		<text name="input_vcaHandMode"  text="VCA: modalità acceleratore manuale"/>
+
+		<text name="vcaValueOn"         text="on"/>
+		<text name="vcaValueOff"        text="off"/>
+		<text name="vcaValueNever"      text="Mai"/>
+		<text name="vcaValueAlways"     text="Sempre"/>
+		<text name="vcaValueNormal"     text="Normale"/>
+		<text name="vcaValueEntered"    text="Se inserito"/>
+		<text name="vcaValueInactive"   text="Se inattivo"/>
+		<text name="vcaValueRPM"        text="RPM"/>
     </texts>
 
 	<longTexts>
@@ -147,7 +159,7 @@ Shift-Sinistro limita l'acceleratore, il cambio e il regime massimo al 75%. Con 
 Se premi Ctrl-Sinistro insieme a W, la direzione di guida viene impostata verso direzioni fisse.
 Tutte le funzioni possono essere disattivate.]]>
 		</longText>
-    <longText name="vca_Help_2">
+    	<longText name="vca_Help_2">
 <![CDATA[Acceleratore e direzione di Guida
 
 Shift-Left limita l'accelerazione, il cruise control e i giri massimi al minuto al 75%.
