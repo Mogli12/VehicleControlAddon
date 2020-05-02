@@ -254,11 +254,21 @@ local function afterConnectionFinishedLoading(mission, connection, x,y,z, viewDi
   connection:sendEvent(vehicleControlAddon.createGlobalsEvent(false))
 end 
 
+local function newLoadSampleAttributesFromTemplate( self, superFunc, ... )
+	local res = { superFunc( self, ... ) }
+	print('========================================================')
+	DebugUtil.printTableRecursively( {...}, "..", 1, 3 )
+	print('--------------------------------------------------------')
+	DebugUtil.printTableRecursively( res, "..", 1, 3 )
+	return unpack( res ) 
+end 
+
 local function init()
   Mission00.load = Utils.prependedFunction(Mission00.load, beforeLoadMission)
 	Mission00.loadMission00Finished = Utils.appendedFunction(Mission00.loadMission00Finished, postLoadMissionFinished)
 	VehicleTypeManager.finalizeVehicleTypes = Utils.prependedFunction(VehicleTypeManager.finalizeVehicleTypes, vehicleControlAddonRegister.beforeFinalizeVehicleTypes)
 	FSBaseMission.onConnectionFinishedLoading = Utils.appendedFunction( FSBaseMission.onConnectionFinishedLoading, afterConnectionFinishedLoading )
+--SoundManager.loadSampleAttributesFromTemplate = Utils.overwrittenFunction( SoundManager.loadSampleAttributesFromTemplate, newLoadSampleAttributesFromTemplate )
 end 
 
 init()

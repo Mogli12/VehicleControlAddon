@@ -1,0 +1,161 @@
+InGameMenu.TAB_UV is a table (table: 0x01fce3a35810) with 14 elements
+InGameMenu.TAB_UV.FARMS is a table (table: 0x01fce3a36ef8) with 4 elements
+InGameMenu.TAB_UV.FARMS[1] = 585 (number)
+InGameMenu.TAB_UV.FARMS[2] = 144 (number)
+InGameMenu.TAB_UV.FARMS[3] = 65 (number)
+InGameMenu.TAB_UV.FARMS[4] = 65 (number)
+InGameMenu.TAB_UV.CONTRACTS is a table (table: 0x01fce3a36998) with 4 elements
+InGameMenu.TAB_UV.CONTRACTS[1] = 260 (number)
+InGameMenu.TAB_UV.CONTRACTS[2] = 209 (number)
+InGameMenu.TAB_UV.CONTRACTS[3] = 65 (number)
+InGameMenu.TAB_UV.CONTRACTS[4] = 65 (number)
+InGameMenu.TAB_UV.USERS is a table (table: 0x01fce3a36f68) with 4 elements
+InGameMenu.TAB_UV.USERS[1] = 910 (number)
+InGameMenu.TAB_UV.USERS[2] = 144 (number)
+InGameMenu.TAB_UV.USERS[3] = 65 (number)
+InGameMenu.TAB_UV.USERS[4] = 65 (number)
+InGameMenu.TAB_UV.ANIMALS is a table (table: 0x01fce3a35970) with 4 elements
+InGameMenu.TAB_UV.ANIMALS[1] = 195 (number)
+InGameMenu.TAB_UV.ANIMALS[2] = 144 (number)
+InGameMenu.TAB_UV.ANIMALS[3] = 65 (number)
+InGameMenu.TAB_UV.ANIMALS[4] = 65 (number)
+InGameMenu.TAB_UV.TUTORIAL is a table (table: 0x01fce3a36fd8) with 4 elements
+InGameMenu.TAB_UV.TUTORIAL[1] = 325 (number)
+InGameMenu.TAB_UV.TUTORIAL[2] = 209 (number)
+InGameMenu.TAB_UV.TUTORIAL[3] = 65 (number)
+InGameMenu.TAB_UV.TUTORIAL[4] = 65 (number)
+InGameMenu.TAB_UV.VEHICLES is a table (table: 0x01fce3a35900) with 4 elements
+InGameMenu.TAB_UV.VEHICLES[1] = 130 (number)
+InGameMenu.TAB_UV.VEHICLES[2] = 144 (number)
+InGameMenu.TAB_UV.VEHICLES[3] = 65 (number)
+InGameMenu.TAB_UV.VEHICLES[4] = 65 (number)
+InGameMenu.TAB_UV.MAP is a table (table: 0x01fce3a35858) with 4 elements
+InGameMenu.TAB_UV.MAP[1] = 0 (number)
+InGameMenu.TAB_UV.MAP[2] = 144 (number)
+InGameMenu.TAB_UV.MAP[3] = 65 (number)
+InGameMenu.TAB_UV.MAP[4] = 65 (number)
+InGameMenu.TAB_UV.GENERAL_SETTINGS is a table (table: 0x01fce3a36a78) with 4 elements
+InGameMenu.TAB_UV.GENERAL_SETTINGS[1] = 65 (number)
+InGameMenu.TAB_UV.GENERAL_SETTINGS[2] = 209 (number)
+InGameMenu.TAB_UV.GENERAL_SETTINGS[3] = 65 (number)
+InGameMenu.TAB_UV.GENERAL_SETTINGS[4] = 65 (number)
+InGameMenu.TAB_UV.PRICES is a table (table: 0x01fce3a36b40) with 4 elements
+InGameMenu.TAB_UV.PRICES[1] = 325 (number)
+InGameMenu.TAB_UV.PRICES[2] = 144 (number)
+InGameMenu.TAB_UV.PRICES[3] = 65 (number)
+InGameMenu.TAB_UV.PRICES[4] = 65 (number)
+InGameMenu.TAB_UV.CONTROLS_SETTINGS is a table (table: 0x01fce3a36e88) with 4 elements
+InGameMenu.TAB_UV.CONTROLS_SETTINGS[1] = 130 (number)
+InGameMenu.TAB_UV.CONTROLS_SETTINGS[2] = 209 (number)
+InGameMenu.TAB_UV.CONTROLS_SETTINGS[3] = 65 (number)
+InGameMenu.TAB_UV.CONTROLS_SETTINGS[4] = 65 (number)
+InGameMenu.TAB_UV.GAME_SETTINGS is a table (table: 0x01fce3a36bb0) with 4 elements
+InGameMenu.TAB_UV.GAME_SETTINGS[1] = 0 (number)
+InGameMenu.TAB_UV.GAME_SETTINGS[2] = 209 (number)
+InGameMenu.TAB_UV.GAME_SETTINGS[3] = 65 (number)
+InGameMenu.TAB_UV.GAME_SETTINGS[4] = 65 (number)
+InGameMenu.TAB_UV.STATISTICS is a table (table: 0x01fce3a36c90) with 4 elements
+InGameMenu.TAB_UV.STATISTICS[1] = 520 (number)
+InGameMenu.TAB_UV.STATISTICS[2] = 144 (number)
+InGameMenu.TAB_UV.STATISTICS[3] = 65 (number)
+InGameMenu.TAB_UV.STATISTICS[4] = 65 (number)
+InGameMenu.TAB_UV.FINANCES is a table (table: 0x01fce3a36a08) with 4 elements
+InGameMenu.TAB_UV.FINANCES[1] = 260 (number)
+InGameMenu.TAB_UV.FINANCES[2] = 144 (number)
+InGameMenu.TAB_UV.FINANCES[3] = 65 (number)
+InGameMenu.TAB_UV.FINANCES[4] = 65 (number)
+InGameMenu.TAB_UV.HELP is a table (table: 0x01fce3a36c20) with 4 elements
+InGameMenu.TAB_UV.HELP[1] = 455 (number)
+InGameMenu.TAB_UV.HELP[2] = 144 (number)
+InGameMenu.TAB_UV.HELP[3] = 65 (number)
+InGameMenu.TAB_UV.HELP[4] = 65 (number)
+
+ModHubScreen.TAB_UV is a table (table: 0x0268f29cb7b0) with 9 elements
+ModHubScreen.TAB_UV.DLCS is a table (table: 0x0268f29cba58) with 4 elements
+ModHubScreen.TAB_UV.DLCS[1] = 73 (number)
+ModHubScreen.TAB_UV.DLCS[2] = 4 (number)
+ModHubScreen.TAB_UV.DLCS[3] = 65 (number)
+ModHubScreen.TAB_UV.DLCS[4] = 65 (number)
+ModHubScreen.TAB_UV.UPDATES is a table (table: 0x0268f29cb9e8) with 4 elements
+ModHubScreen.TAB_UV.UPDATES[1] = 73 (number)
+ModHubScreen.TAB_UV.UPDATES[2] = 73 (number)
+ModHubScreen.TAB_UV.UPDATES[3] = 65 (number)
+ModHubScreen.TAB_UV.UPDATES[4] = 65 (number)
+ModHubScreen.TAB_UV.LATEST is a table (table: 0x0268f29cb910) with 4 elements
+ModHubScreen.TAB_UV.LATEST[1] = 280 (number)
+ModHubScreen.TAB_UV.LATEST[2] = 4 (number)
+ModHubScreen.TAB_UV.LATEST[3] = 65 (number)
+ModHubScreen.TAB_UV.LATEST[4] = 65 (number)
+ModHubScreen.TAB_UV.CATEGORIES is a table (table: 0x0268f29cb7f8) with 4 elements
+ModHubScreen.TAB_UV.CATEGORIES[1] = 4 (number)
+ModHubScreen.TAB_UV.CATEGORIES[2] = 4 (number)
+ModHubScreen.TAB_UV.CATEGORIES[3] = 65 (number)
+ModHubScreen.TAB_UV.CATEGORIES[4] = 65 (number)
+ModHubScreen.TAB_UV.BEST is a table (table: 0x0268f29cbc00) with 4 elements
+ModHubScreen.TAB_UV.BEST[1] = 142 (number)
+ModHubScreen.TAB_UV.BEST[2] = 4 (number)
+ModHubScreen.TAB_UV.BEST[3] = 65 (number)
+ModHubScreen.TAB_UV.BEST[4] = 65 (number)
+ModHubScreen.TAB_UV.CONTEST is a table (table: 0x0268f29cbce0) with 4 elements
+ModHubScreen.TAB_UV.CONTEST[1] = 349 (number)
+ModHubScreen.TAB_UV.CONTEST[2] = 4 (number)
+ModHubScreen.TAB_UV.CONTEST[3] = 65 (number)
+ModHubScreen.TAB_UV.CONTEST[4] = 65 (number)
+ModHubScreen.TAB_UV.MOST_DOWNLOADED is a table (table: 0x0268f29cbc70) with 4 elements
+ModHubScreen.TAB_UV.MOST_DOWNLOADED[1] = 211 (number)
+ModHubScreen.TAB_UV.MOST_DOWNLOADED[2] = 4 (number)
+ModHubScreen.TAB_UV.MOST_DOWNLOADED[3] = 65 (number)
+ModHubScreen.TAB_UV.MOST_DOWNLOADED[4] = 65 (number)
+ModHubScreen.TAB_UV.INSTALLED is a table (table: 0x0268f29cb8a0) with 4 elements
+ModHubScreen.TAB_UV.INSTALLED[1] = 142 (number)
+ModHubScreen.TAB_UV.INSTALLED[2] = 73 (number)
+ModHubScreen.TAB_UV.INSTALLED[3] = 65 (number)
+ModHubScreen.TAB_UV.INSTALLED[4] = 65 (number)
+ModHubScreen.TAB_UV.DOWNLOADS is a table (table: 0x0268f29cbb90) with 4 elements
+ModHubScreen.TAB_UV.DOWNLOADS[1] = 4 (number)
+ModHubScreen.TAB_UV.DOWNLOADS[2] = 73 (number)
+ModHubScreen.TAB_UV.DOWNLOADS[3] = 65 (number)
+ModHubScreen.TAB_UV.DOWNLOADS[4] = 65 (number)
+
+ShopMenu.TAB_UV is a table (table: 0x0268f2940788) with 8 elements
+ShopMenu.TAB_UV.GARAGE is a table (table: 0x0268f2940c48) with 4 elements
+ShopMenu.TAB_UV.GARAGE[1] = 128 (number)
+ShopMenu.TAB_UV.GARAGE[2] = 144 (number)
+ShopMenu.TAB_UV.GARAGE[3] = 65 (number)
+ShopMenu.TAB_UV.GARAGE[4] = 65 (number)
+ShopMenu.TAB_UV.TOOLS is a table (table: 0x0268f29409c0) with 4 elements
+ShopMenu.TAB_UV.TOOLS[1] = 715 (number)
+ShopMenu.TAB_UV.TOOLS[2] = 144 (number)
+ShopMenu.TAB_UV.TOOLS[3] = 65 (number)
+ShopMenu.TAB_UV.TOOLS[4] = 65 (number)
+ShopMenu.TAB_UV.LANDSCAPING is a table (table: 0x0268f2940bd8) with 4 elements
+ShopMenu.TAB_UV.LANDSCAPING[1] = 0 (number)
+ShopMenu.TAB_UV.LANDSCAPING[2] = 0 (number)
+ShopMenu.TAB_UV.LANDSCAPING[3] = 64 (number)
+ShopMenu.TAB_UV.LANDSCAPING[4] = 64 (number)
+ShopMenu.TAB_UV.ANIMALS is a table (table: 0x0268f2940878) with 4 elements
+ShopMenu.TAB_UV.ANIMALS[1] = 195 (number)
+ShopMenu.TAB_UV.ANIMALS[2] = 144 (number)
+ShopMenu.TAB_UV.ANIMALS[3] = 65 (number)
+ShopMenu.TAB_UV.ANIMALS[4] = 65 (number)
+ShopMenu.TAB_UV.BRANDS is a table (table: 0x0268f29408e8) with 4 elements
+ShopMenu.TAB_UV.BRANDS[1] = 780 (number)
+ShopMenu.TAB_UV.BRANDS[2] = 144 (number)
+ShopMenu.TAB_UV.BRANDS[3] = 65 (number)
+ShopMenu.TAB_UV.BRANDS[4] = 65 (number)
+ShopMenu.TAB_UV.OBJECTS is a table (table: 0x0268f2940a30) with 4 elements
+ShopMenu.TAB_UV.OBJECTS[1] = 650 (number)
+ShopMenu.TAB_UV.OBJECTS[2] = 144 (number)
+ShopMenu.TAB_UV.OBJECTS[3] = 65 (number)
+ShopMenu.TAB_UV.OBJECTS[4] = 65 (number)
+ShopMenu.TAB_UV.PLACEABLES is a table (table: 0x0268f2940b68) with 4 elements
+ShopMenu.TAB_UV.PLACEABLES[1] = 585 (number)
+ShopMenu.TAB_UV.PLACEABLES[2] = 144 (number)
+ShopMenu.TAB_UV.PLACEABLES[3] = 65 (number)
+ShopMenu.TAB_UV.PLACEABLES[4] = 65 (number)
+ShopMenu.TAB_UV.VEHICLES is a table (table: 0x0268f29407d0) with 4 elements
+ShopMenu.TAB_UV.VEHICLES[1] = 130 (number)
+ShopMenu.TAB_UV.VEHICLES[2] = 144 (number)
+ShopMenu.TAB_UV.VEHICLES[3] = 65 (number)
+ShopMenu.TAB_UV.VEHICLES[4] = 65 (number)
+
