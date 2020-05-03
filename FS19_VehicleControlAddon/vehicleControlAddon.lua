@@ -594,7 +594,9 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
 																"vcaShifterLH",
 																"vcaClutch",
 																"vcaHandMode",
-																"vcaHandRpm" }) do
+																"vcaHandRpm",
+																"vcaAutoShift",
+															}) do
 																
 			local addThis = true  
 			if      actionName == "vcaDIRECTION" 
@@ -618,7 +620,9 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
 					or  actionName == "vcaShifterLH"			
 					or  actionName == "vcaClutch"		
 					or  actionName == "vcaHandMode"		
-					or  actionName == "vcaHandRpm" then 	
+					or  actionName == "vcaHandRpm"
+					or  actionName == "vcaAutoShift"
+					then 	
 				addThis = self.vcaIsLoaded and self:vcaGetTransmissionActive()
 			end 
 			
@@ -629,7 +633,11 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
 						or  actionName == "vcaLEFT"
 						or  actionName == "vcaRIGHT"
 						or  actionName == "vcaKEEPROT"
-						or  actionName == "vcaSWAPSPEED" ) then 
+						or  actionName == "vcaSWAPSPEED"
+						or  actionName == "vcaGearUp"
+						or  actionName == "vcaGearDown"
+						or  actionName == "vcaRangeUp"
+						or  actionName == "vcaRangeDown") then 
 				-- above actions are still active for hired worker
 				local pBool1, pBool2, pBool3, pBool4 = false, true, false, true 
 				if     actionName == "vcaUP"
@@ -669,7 +677,7 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
 					if isSelected then
 						g_inputBinding.events[eventName].displayPriority = 1
 					elseif  isOnActiveVehicle then
-						g_inputBinding.events[eventName].displayPriority = 3
+						g_inputBinding.events[eventName].displayPriority = 4
 					end
 				end
 			end
@@ -894,6 +902,8 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 		end 
 	elseif actionName == "vcaSETTINGS" then
 		vehicleControlAddon.vcaShowSettingsUI( self )
+	elseif actionName == "vcaAutoShift" then
+		self:vcaSetState( "vcaAutoShift", not self.vcaAutoShift )
 	elseif actionName == "vcaHandMode" then 
 		local h, t = 0, "vcaHANDTHROTTLE"
 		if self.vcaHandthrottle ~= nil then 
