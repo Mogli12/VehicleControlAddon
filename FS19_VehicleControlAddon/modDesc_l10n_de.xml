@@ -140,6 +140,9 @@
 		<text name="input_vcaHandRpm_2" text="VCA: weniger Handgas"/>
 		<text name="input_vcaHandMode"  text="VCA: Handgas Modus"/>
 		<text name="input_vcaAutoShift" text="VCA: Automatische Schaltung an/aus"/>
+		<text name="input_vcaDiffLockF" text="VCA: Differentialsperre vorne an/aus"/>
+		<text name="input_vcaDiffLockM" text="VCA: Allrad an/aus"/>
+		<text name="input_vcaDiffLockB" text="VCA: Differentialsperre hinten an/aus"/>
 		
 		<text name="vcaValueOn"         text="an"/>
 		<text name="vcaValueOff"        text="aus"/>

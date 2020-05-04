@@ -114,6 +114,11 @@ local listOfProperties =
 		{ func=listOfFunctions.float, xmlName="blowOffVolume", propName="vcaBlowOffVolume" },
 		{ func=listOfFunctions.float, xmlName="rotSpeedOut",   propName="vcaRotSpeedOut"   },
 		{ func=listOfFunctions.float, xmlName="rotSpeedIn",    propName="vcaRotSpeedIn"    },
+		{ func=listOfFunctions.bool,  xmlName="antiSlip",      propName="vcaAntiSlip"      },
+		{ func=listOfFunctions.bool,  xmlName="diffLockFront", propName="vcaDiffLockFront" },
+		{ func=listOfFunctions.int16, xmlName="diffLockMid",   propName="vcaDiffLockMid"   },
+		{ func=listOfFunctions.bool,  xmlName="diffLockBack",  propName="vcaDiffLockBack"  },
+		{ func=listOfFunctions.bool,  xmlName="diffLockSwap",  propName="vcaDiffLockSwap"  },
 	}
 
 
@@ -270,6 +275,9 @@ function vehicleControlAddon:onLoad(savegame)
 	self.vcaGetNeutral       = vehicleControlAddon.vcaGetNeutral
 	self.vcaGetAutoHold      = vehicleControlAddon.vcaGetAutoHold
 	self.vcaGetIsReverse     = vehicleControlAddon.vcaGetIsReverse
+	self.vcaGetDiffState     = vehicleControlAddon.vcaGetDiffState
+	self.vcaHasDiffFront     = vehicleControlAddon.vcaHasDiffFront
+	self.vcaHasDiffBack      = vehicleControlAddon.vcaHasDiffBack 
 	self.vcaSetSnapFactor    = vehicleControlAddon.vcaSetSnapFactor
 	self.vcaGetCurrentSnapAngle = vehicleControlAddon.vcaGetCurrentSnapAngle
 	self.vcaGetSnapDistance     = vehicleControlAddon.vcaGetSnapDistance
@@ -354,6 +362,11 @@ function vehicleControlAddon:onLoad(savegame)
 	vehicleControlAddon.registerState( self, "vcaBlowOffVolume",VCAGlobals.blowOffVolume )
 	vehicleControlAddon.registerState( self, "vcaRotSpeedOut",  VCAGlobals.rotSpeedOut )
 	vehicleControlAddon.registerState( self, "vcaRotSpeedIn",   VCAGlobals.rotSpeedIn )
+	vehicleControlAddon.registerState( self, "vcaAntiSlip",     true )
+	vehicleControlAddon.registerState( self, "vcaDiffLockFront",false )
+	vehicleControlAddon.registerState( self, "vcaDiffLockMid",  0 )
+	vehicleControlAddon.registerState( self, "vcaDiffLockBack", false )
+	vehicleControlAddon.registerState( self, "vcaDiffLockSwap", false )
 	
 	vehicleControlAddon.registerState( self, "vcaOwnGearFactor" , 0.4096, function( self, ... ) vehicleControlAddon.vcaOnSetOwn( self, "vcaOwnGearFactor" , ... ) end )
 	vehicleControlAddon.registerState( self, "vcaOwnRangeFactor", 0.4096, function( self, ... ) vehicleControlAddon.vcaOnSetOwn( self, "vcaOwnRangeFactor", ... ) end )
@@ -428,6 +441,11 @@ function vehicleControlAddon:onLoad(savegame)
 			vehicleControlAddon.ovAutoHoldUp     = createImageOverlay( Utils.getFilename( "auto_hold_up.dds",     vehicleControlAddon.baseDirectory ))
 			vehicleControlAddon.ovAutoHoldDown   = createImageOverlay( Utils.getFilename( "auto_hold_down.dds",   vehicleControlAddon.baseDirectory ))
 			vehicleControlAddon.ovAutoHold       = createImageOverlay( Utils.getFilename( "auto_hold.dds",        vehicleControlAddon.baseDirectory ))
+			vehicleControlAddon.ovDiffLockFront  = createImageOverlay( Utils.getFilename( "diff_front.dds",       vehicleControlAddon.baseDirectory ))
+			vehicleControlAddon.ovDiffLockMid    = createImageOverlay( Utils.getFilename( "diff_middle.dds",      vehicleControlAddon.baseDirectory ))
+			vehicleControlAddon.ovDiffLockBack   = createImageOverlay( Utils.getFilename( "diff_back.dds",        vehicleControlAddon.baseDirectory ))
+			vehicleControlAddon.ovDiffLockBg     = createImageOverlay( Utils.getFilename( "diff_wheels.dds",      vehicleControlAddon.baseDirectory ))
+			
 		end 
 	end 
 
@@ -517,6 +535,37 @@ function vehicleControlAddon:onPostLoad(savegame)
 		self.vcaRatedRpm = mMax2 
 	end 
 	
+	self.vcaDiffIndexFront = 0
+	self.vcaDiffStateFront = 0
+	self.vcaDiffIndexBack  = 0
+	self.vcaDiffStateBack  = 0
+	self.vcaDiffIndexMid   = 0
+	self.vcaDiffStateMid   = 0
+	
+	if self.functionStatus == nil or not self:functionStatus("differential") then 
+		local spec = self.spec_motorized
+		if     table.getn( spec.differentials ) == 1 then 
+			self.vcaDiffIndexBack = 1
+		elseif table.getn( spec.differentials ) == 3 or table.getn( spec.differentials ) == 7 then
+			local doit = true
+			local pattern = {}
+			if table.getn(spec.differentials) == 3 then
+				pattern = {true, true, false}
+			else
+				pattern = {true, true, true, true, false, false, false}
+			end
+
+			for k,differential in pairs(spec.differentials) do
+				doit = doit and differential.diffIndex1IsWheel==pattern[k] and differential.diffIndex2IsWheel==pattern[k]
+			end			
+			
+			if doit then 
+				self.vcaDiffIndexFront = table.getn( spec.differentials ) - 2
+				self.vcaDiffIndexBack  = table.getn( spec.differentials ) - 1
+				self.vcaDiffIndexMid   = table.getn( spec.differentials )
+			end 
+		end
+	end
 end 
 
 function vehicleControlAddon:saveToXMLFile(xmlFile, xmlKey)
@@ -596,6 +645,9 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
 																"vcaHandMode",
 																"vcaHandRpm",
 																"vcaAutoShift",
+																"vcaDiffLockF",
+																"vcaDiffLockM",
+																"vcaDiffLockB",
 															}) do
 																
 			local addThis = true  
@@ -904,6 +956,24 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 		vehicleControlAddon.vcaShowSettingsUI( self )
 	elseif actionName == "vcaAutoShift" then
 		self:vcaSetState( "vcaAutoShift", not self.vcaAutoShift )
+	elseif actionName == "vcaDiffLockF" then
+		if self:vcaIsVehicleControlledByPlayer() and self:vcaHasDiffFront() then
+			self:vcaSetState( "vcaDiffLockFront", not self.vcaDiffLockFront )
+		end 
+	elseif actionName == "vcaDiffLockM" then
+		if self:vcaIsVehicleControlledByPlayer() then 
+			local d = self.vcaDiffLockMid + 1
+			local m = 1
+			if self.vcaDiffIndexMid > 0 then 
+				m = 2 
+			end 
+			if d > m then d = 0 end
+			self:vcaSetState( "vcaDiffLockMid", d )
+		end 
+	elseif actionName == "vcaDiffLockB" then
+		if self:vcaIsVehicleControlledByPlayer() and self:vcaHasDiffBack() then
+			self:vcaSetState( "vcaDiffLockBack", not self.vcaDiffLockBack )
+		end 
 	elseif actionName == "vcaHandMode" then 
 		local h, t = 0, "vcaHANDTHROTTLE"
 		if self.vcaHandthrottle ~= nil then 
@@ -1162,6 +1232,60 @@ function vehicleControlAddon:vcaGetAutoHold()
 	end 
 	return false  
 end 
+
+function vehicleControlAddon:vcaHasDiffFront()
+	if self.vcaDiffIndexFront <= 0 then 
+		return false 
+	end 
+	if self.vcaDiffIndexMid > 0 and self.vcaDiffLockMid == 2 then 
+		return true 
+	end 
+	if self.vcaDiffLockSwap then 
+		return true 
+	end 
+	return false 
+end 
+
+function vehicleControlAddon:vcaHasDiffBack()
+	if self.vcaDiffIndexBack <= 0 then 
+		return false 
+	end 
+	if self.vcaDiffIndexMid > 0 and self.vcaDiffLockMid == 2 then 
+		return true 
+	end 
+	if not self.vcaDiffLockSwap then 
+		return true 
+	end 
+	return false 
+end 
+		
+function vehicleControlAddon:vcaGetDiffState()
+	if not self:vcaIsVehicleControlledByPlayer() then 
+		return 0, 0, 0
+	end 
+	if self.vcaDiffLockMid <= 0 then 
+		return 0, 0, 0
+	end 
+
+	local f, m, b = 0, 0, 0
+	if self.vcaDiffIndexMid > 0 then 
+		m = self.vcaDiffLockMid
+	end 
+	if self.vcaDiffIndexMid > 0 and self.vcaDiffLockMid >= 2 then 
+		f = 1 
+		if self.vcaDiffLockFront then f = f + 1 end
+		b = 1
+		if self.vcaDiffLockBack  then b = b + 1 end
+	elseif self.vcaDiffLockSwap then 
+		f = 1
+		if self.vcaDiffLockFront then f = f + 1 end
+	else 
+		b = 1
+		if self.vcaDiffLockBack  then b = b + 1 end
+	end 
+	return f, m, b 
+end 
+
 
 function vehicleControlAddon:vcaGetTransmissionDef()
 	if self.vcaTransmission == vehicleControlAddonTransmissionBase.ownTransmission then 
@@ -2212,6 +2336,48 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 	end 
 	
 --******************************************************************************************************************************************
+	if self.isServer then 
+		local spec = self.spec_motorized 
+		
+		local f, m, b = self:vcaGetDiffState()
+		
+		local function setDiff( index, oldState, newState, torqueRatioOpen )
+			if index <= 0 then 
+				return 0
+			end 
+			if not self:vcaIsVehicleControlledByPlayer() then 
+				newState = 0
+			end 
+			if oldState == newState then 
+				return oldState 
+			end 
+			
+			local diff = spec.differentials[index]		
+			local r, m = diff.torqueRatio, diff.maxSpeedRatio
+			if     newState == 1 then 
+				if torqueRatioOpen ~= nil then 
+					r = torqueRatioOpen
+				end 
+				m = 1e20
+			elseif newState == 2 then 
+				m = 0
+			end 
+			
+			updateDifferential( spec.motorizedNode, index-1, r, m )
+					
+			return newState 
+		end 
+
+		self.vcaDiffStateFront = setDiff( self.vcaDiffIndexFront, self.vcaDiffStateFront, f )
+		self.vcaDiffStateBack  = setDiff( self.vcaDiffIndexBack , self.vcaDiffStateBack , b  )
+		if self.vcaDiffLockSwap then
+			self.vcaDiffStateMid = setDiff( self.vcaDiffIndexMid  , self.vcaDiffStateMid  , m, 1 )
+		else 
+			self.vcaDiffStateMid = setDiff( self.vcaDiffIndexMid  , self.vcaDiffStateMid  , m, 0 )
+		end 
+	end 
+	
+--******************************************************************************************************************************************
 -- Simple fix if vcaMaxSpeed was cleared for unknown reasons on Dedi
 	local somethingWentWrong = false 
 	for _,n in pairs({ "vcaSteeringIsOn",
@@ -2451,7 +2617,63 @@ function vehicleControlAddon:onDraw()
 				renderText(x, y, l, vehicleControlAddon.vcaSpeedToString( self.vcaKeepSpeed / 3.6, "%5.1f" ))
 				y = y + l * 1.2	
 			end
-
+			
+			if      ( self.vcaDiffIndexFront > 0 or self.vcaDiffIndexMid > 0 or self.vcaDiffIndexBack > 0 )
+					and self:vcaIsVehicleControlledByPlayer()
+					then 
+				local diffLock = ""
+				if self.vcaAntiSlip then 
+					diffLock = "a "
+				end 
+				
+			--local function renderDiff( state )
+			--	if     state == nil then 
+			--		diffLock = diffLock.."_ "
+			--	elseif state == 0 then 
+			--		diffLock = diffLock.."A "
+			--	elseif state == 1 then 
+			--		diffLock = diffLock.."O "
+			--	elseif state == 2 then 
+			--		diffLock = diffLock.."L "
+			--	else
+			--		diffLock = diffLock.."? "
+			--	end 
+			--end 
+			--
+			--renderDiff( self.vcaDiffLockFront )
+			--renderDiff( self.vcaDiffLockMid   )
+			--renderDiff( self.vcaDiffLockBack  )
+			--renderText(x, y, l, diffLock)
+			
+				local function getRenderColor( state )
+					if     state == nil then 
+						return 0,0,0,1
+					elseif state == 0 then 
+						return 0.25,0.25,0.25,1
+					elseif state == 1 then 
+						return 1,1,1,1
+					elseif state == 2 then 
+						return 0,1,0,1
+					end 
+					return 0,0,0,1
+				end 
+				
+				local f, m, b = self:vcaGetDiffState()
+							
+				setOverlayColor( vehicleControlAddon.ovDiffLockFront, getRenderColor( f ) )
+				setOverlayColor( vehicleControlAddon.ovDiffLockMid  , getRenderColor( m ) )
+				setOverlayColor( vehicleControlAddon.ovDiffLockBack , getRenderColor( b ) )
+			
+				local x = g_currentMission.inGameMenu.hud.speedMeter.gaugeCenterX + g_currentMission.inGameMenu.hud.speedMeter.fuelGaugeRadiusX
+				local y = g_currentMission.inGameMenu.hud.speedMeter.gaugeCenterY - g_currentMission.inGameMenu.hud.speedMeter.fuelGaugeRadiusY * 1.333
+				local w = 0.03 * vehicleControlAddon.getUiScale()
+				local h = w * g_screenAspectRatio
+				renderOverlay( vehicleControlAddon.ovDiffLockBg   , x, y, w, h )
+				renderOverlay( vehicleControlAddon.ovDiffLockFront, x, y, w, h )
+				renderOverlay( vehicleControlAddon.ovDiffLockMid  , x, y, w, h )
+				renderOverlay( vehicleControlAddon.ovDiffLockBack , x, y, w, h )
+				y = y + l * 1.2	
+			end 
 		end 
 		
 		if not ( self.vcaSnapIsOn ) and self.vcaDrawSnapIsOn == nil then 
@@ -3736,18 +3958,22 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		self.vcaSlip = wheelSpeed / speedMS - 1
 	end 
 
---if self.vehicle.vcaSlipS == nil then 
---	self.vehicle.vcaSlipS = 0 
---end 
---self.vehicle.vcaSlipS   = self.vehicle.vcaSlipS + 0.05 * ( self.vcaSlip - self.vehicle.vcaSlipS )
+	if self.vcaSlipF == nil then 
+		self.vcaSlipF = 0 
+	end 
+	self.vcaSlipF   = self.vcaSlipF + 0.07 * ( self.vcaSlip - self.vcaSlipF )
 	
 	if self.vcaSlipMMA == nil then 	
 		self.vcaSlipMMA = maxMovingAverage:new( 5000, 50, 0 )
 	end 	
 	self.vcaSlipMMA:collect( dt, self.vcaSlip )
-	self.vehicle.vcaSlipS = self.vcaSlipMMA:get()
+	self.vcaSlipS = self.vcaSlipMMA:get()
 	
-	self.speedLimit        = self.speedLimit * ( 1 + self.vehicle.vcaSlipS )
+	if self.vehicle.vcaAntiSlip and self.vcaSlipF > 0.1 then 
+		newAcc = math.min( newAcc, 1.1 - self.vcaSlipF ) 
+	end 
+	
+	self.speedLimit        = self.speedLimit * ( 1 + self.vcaSlipF )
 	self.vcaLastSpeedLimit = self.speedLimit
 	
 	if not self.vehicle:getIsMotorStarted() or dt < 0 or self.vehicle.vcaLastTransmission == nil then 

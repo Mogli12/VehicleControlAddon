@@ -11,6 +11,8 @@ VehicleControlAddonMenu.TAB_UV = {
 	PLAYER      = {454, 209, 65, 65},
 	FIELD       = {432, 96, 48, 48},
 	VEHICLES    = {130, 144, 65, 65},
+	USERS       = {910, 144, 65, 65},
+	GLOBAL      = {0, 144, 65, 65},
 }
 
 VehicleControlAddonMenu.CONTROLS = {
@@ -20,6 +22,7 @@ VehicleControlAddonMenu.CONTROLS = {
 	FRAME3 = "vcaFrame3",
 	FRAME4 = "vcaFrame4",
 	FRAME5 = "vcaFrame5",
+	FRAME6 = "vcaFrame6",
 }
 
 local alwaysVisiblePredicate = function() return true end
@@ -34,10 +37,11 @@ local frame4VisiblePredicate = function()
 end 
 
 VehicleControlAddonMenu.FRAMES = {
-	{ name = "vcaFrame1", iconUVs = VehicleControlAddonMenu.TAB_UV.SETTINGS,    predicate=alwaysVisiblePredicate },
-	{ name = "vcaFrame2", iconUVs = VehicleControlAddonMenu.TAB_UV.VEHICLES,    predicate=alwaysVisiblePredicate },
-	{ name = "vcaFrame3", iconUVs = VehicleControlAddonMenu.TAB_UV.GENERAL,     predicate=alwaysVisiblePredicate },
-	{ name = "vcaFrame4", iconUVs = VehicleControlAddonMenu.TAB_UV.ENVIRONMENT, predicate=frame4VisiblePredicate },
+	{ name = "vcaFrame1", iconUVs = {0,0,65,65},  predicate=alwaysVisiblePredicate, uiFilename=Utils.getFilename("gui/icons.dds",g_currentModDirectory) },
+	{ name = "vcaFrame2", iconUVs = {66,0,65,65}, predicate=alwaysVisiblePredicate, uiFilename=Utils.getFilename("gui/icons.dds",g_currentModDirectory) },
+	{ name = "vcaFrame3", iconUVs = {132,0,65,65},predicate=alwaysVisiblePredicate, uiFilename=Utils.getFilename("gui/icons.dds",g_currentModDirectory) },
+	{ name = "vcaFrame6", iconUVs = {200,0,65,65},predicate=alwaysVisiblePredicate, uiFilename=Utils.getFilename("gui/icons.dds",g_currentModDirectory) },
+	{ name = "vcaFrame4", iconUVs = VehicleControlAddonMenu.TAB_UV.GLOBAL,      predicate=frame4VisiblePredicate },
 	{ name = "vcaFrame5", iconUVs = VehicleControlAddonMenu.TAB_UV.PLAYER   },
 }
 

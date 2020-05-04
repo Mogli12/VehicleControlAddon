@@ -20,6 +20,7 @@
 			<GuiElement type="frameReference" ref="vcaFrame1" name="vcaFrame1" id="vcaFrame1" />
 			<GuiElement type="frameReference" ref="vcaFrame2" name="vcaFrame2" id="vcaFrame2" />
 			<GuiElement type="frameReference" ref="vcaFrame3" name="vcaFrame3" id="vcaFrame3" />
+			<GuiElement type="frameReference" ref="vcaFrame6" name="vcaFrame6" id="vcaFrame6" />
 			<GuiElement type="frameReference" ref="vcaFrame4" name="vcaFrame4" id="vcaFrame4" />
 			<GuiElement type="frameReference" ref="vcaFrame5" name="vcaFrame5" id="vcaFrame5" />
 		</GuiElement>
@@ -31,5 +32,6 @@
 		<GuiElement type="button" profile="buttonBack" onClick="onClickBack" id="menuButton[3]"/>
 		<GuiElement type="button" profile="buttonBack" onClick="onClickBack" id="menuButton[4]"/>
 		<GuiElement type="button" profile="buttonBack" onClick="onClickBack" id="menuButton[5]"/>
+		<GuiElement type="button" profile="buttonBack" onClick="onClickBack" id="menuButton[6]"/>
 	</GuiElement>
 </GUI>

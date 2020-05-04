@@ -310,3 +310,14 @@ function VehicleControlAddonFrame:onCreateSubElement( element, parameter )
 	end			
 end
 
+--- Get the frame's main content element's screen size.
+function VehicleControlAddonFrame:getMainElementSize()
+    return self.container.size
+end
+
+--- Get the frame's main content element's screen position.
+function VehicleControlAddonFrame:getMainElementPosition()
+    return self.container.absPosition
+end
+
+

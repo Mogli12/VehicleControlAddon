@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<GUI name="vcaFrame6">
+
+	<GuiElement type="empty" profile="uiInGameMenuFrame">
+		<GuiElement type="bitmap" profile="vcaSettingsBox" id="container">
+			<GuiElement id="boxLayout1" type="boxLayout" profile="vcaSettingsLayoutLeft">	
+
+				<GuiElement type="checkedOption" profile="vcaMTOSettings" id="vcaAntiSlip" 
+												toolTipElementId="mogliToolTipBoxText" toolTipText="Anti Slip" 
+												onCreate="onCreateSubElement">
+					<GuiElement type="button" profile="vcaMTOLeft" />
+					<GuiElement type="button" profile="vcaMTORight"/>
+					<GuiElement type="text" profile="vcaMTOText" />
+					<GuiElement type="text" profile="vcaMTOTitle" text="Anti Slip"/>
+					<GuiElement type="bitmap" profile="vcaMTOBg" />
+				</GuiElement>
+
+				<GuiElement type="checkedOption" profile="vcaMTOSettings" id="vcaDiffLockSwap" 
+												toolTipElementId="mogliToolTipBoxText" toolTipText="Swap Front/Back Diff" 
+												onCreate="onCreateSubElement">
+					<GuiElement type="button" profile="vcaMTOLeft" />
+					<GuiElement type="button" profile="vcaMTORight"/>
+					<GuiElement type="text" profile="vcaMTOText" />
+					<GuiElement type="text" profile="vcaMTOTitle" text="Swap Front/Back Diff"/>
+					<GuiElement type="bitmap" profile="vcaMTOBg" />
+				</GuiElement>
+
+			</GuiElement>			
+			<GuiElement id="boxLayout2" type="boxLayout" profile="vcaSettingsLayoutMid">
+
+
+			</GuiElement>
+		
+			<GuiElement id="vcaHelp" type="text" profile="vcaHelpText" text="$l10n_vca_Help_6" />				
+		</GuiElement>
+	
+	
+		<GuiElement type="bitmap" profile="ingameMenuHelpRowBg" position="210px 64px" size="1500px 48px" id="mogliToolTipBox" visible="true">
+			<GuiElement type="bitmap" profile="ingameMenuHelpRowIcon" id="mogliToolTipBoxIcon"/>
+			<GuiElement type="text" profile="ingameMenuHelpRowText" id="mogliToolTipBoxText" text=""/>
+		</GuiElement>
+	</GuiElement>
+</GUI>

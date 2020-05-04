@@ -140,6 +140,9 @@
 		<text name="input_vcaHandRpm_2" text="VCA: less hand throttle"/>
 		<text name="input_vcaHandMode"  text="VCA: hand throttle mode"/>
 		<text name="input_vcaAutoShift" text="VCA: automatic shifting on/off"/>
+		<text name="input_vcaDiffLockF" text="VCA: front differential (un)lock"/>
+		<text name="input_vcaDiffLockM" text="VCA: all/front wheel drive"/>
+		<text name="input_vcaDiffLockB" text="VCA: back differential (un)lock"/>
 		
 		<text name="vcaValueOn"         text="on"/>
 		<text name="vcaValueOff"        text="off"/>
