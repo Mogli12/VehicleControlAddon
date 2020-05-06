@@ -116,9 +116,11 @@ local listOfProperties =
 		{ func=listOfFunctions.float, xmlName="rotSpeedIn",    propName="vcaRotSpeedIn"    },
 		{ func=listOfFunctions.bool,  xmlName="antiSlip",      propName="vcaAntiSlip"      },
 		{ func=listOfFunctions.bool,  xmlName="diffLockFront", propName="vcaDiffLockFront" },
-		{ func=listOfFunctions.int16, xmlName="diffLockMid",   propName="vcaDiffLockMid"   },
+		{ func=listOfFunctions.bool,  xmlName="diffLockAWD",   propName="vcaDiffLockAWD"   },
 		{ func=listOfFunctions.bool,  xmlName="diffLockBack",  propName="vcaDiffLockBack"  },
 		{ func=listOfFunctions.bool,  xmlName="diffLockSwap",  propName="vcaDiffLockSwap"  },
+		{ func=listOfFunctions.bool,  xmlName="diffFrontAdv",  propName="vcaDiffFrontAdv"  },
+		{ func=listOfFunctions.bool,  xmlName="diffManual",    propName="vcaDiffManual"    },
 	}
 
 
@@ -277,6 +279,7 @@ function vehicleControlAddon:onLoad(savegame)
 	self.vcaGetIsReverse     = vehicleControlAddon.vcaGetIsReverse
 	self.vcaGetDiffState     = vehicleControlAddon.vcaGetDiffState
 	self.vcaHasDiffFront     = vehicleControlAddon.vcaHasDiffFront
+	self.vcaHasDiffAWD       = vehicleControlAddon.vcaHasDiffAWD 
 	self.vcaHasDiffBack      = vehicleControlAddon.vcaHasDiffBack 
 	self.vcaSetSnapFactor    = vehicleControlAddon.vcaSetSnapFactor
 	self.vcaGetCurrentSnapAngle = vehicleControlAddon.vcaGetCurrentSnapAngle
@@ -364,9 +367,11 @@ function vehicleControlAddon:onLoad(savegame)
 	vehicleControlAddon.registerState( self, "vcaRotSpeedIn",   VCAGlobals.rotSpeedIn )
 	vehicleControlAddon.registerState( self, "vcaAntiSlip",     true )
 	vehicleControlAddon.registerState( self, "vcaDiffLockFront",false )
-	vehicleControlAddon.registerState( self, "vcaDiffLockMid",  0 )
+	vehicleControlAddon.registerState( self, "vcaDiffLockAWD",  false )
 	vehicleControlAddon.registerState( self, "vcaDiffLockBack", false )
+	vehicleControlAddon.registerState( self, "vcaDiffManual",   false )
 	vehicleControlAddon.registerState( self, "vcaDiffLockSwap", false )
+	vehicleControlAddon.registerState( self, "vcaDiffFrontAdv", false )
 	
 	vehicleControlAddon.registerState( self, "vcaOwnGearFactor" , 0.4096, function( self, ... ) vehicleControlAddon.vcaOnSetOwn( self, "vcaOwnGearFactor" , ... ) end )
 	vehicleControlAddon.registerState( self, "vcaOwnRangeFactor", 0.4096, function( self, ... ) vehicleControlAddon.vcaOnSetOwn( self, "vcaOwnRangeFactor", ... ) end )
@@ -961,14 +966,8 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 			self:vcaSetState( "vcaDiffLockFront", not self.vcaDiffLockFront )
 		end 
 	elseif actionName == "vcaDiffLockM" then
-		if self:vcaIsVehicleControlledByPlayer() then 
-			local d = self.vcaDiffLockMid + 1
-			local m = 1
-			if self.vcaDiffIndexMid > 0 then 
-				m = 2 
-			end 
-			if d > m then d = 0 end
-			self:vcaSetState( "vcaDiffLockMid", d )
+		if self:vcaIsVehicleControlledByPlayer() and self:vcaHasDiffAWD() then  
+			self:vcaSetState( "vcaDiffLockAWD", not self.vcaDiffLockAWD )
 		end 
 	elseif actionName == "vcaDiffLockB" then
 		if self:vcaIsVehicleControlledByPlayer() and self:vcaHasDiffBack() then
@@ -1234,10 +1233,10 @@ function vehicleControlAddon:vcaGetAutoHold()
 end 
 
 function vehicleControlAddon:vcaHasDiffFront()
-	if self.vcaDiffIndexFront <= 0 then 
+	if not self.vcaDiffManual or self.vcaDiffIndexFront <= 0 then 
 		return false 
 	end 
-	if self.vcaDiffIndexMid > 0 and self.vcaDiffLockMid == 2 then 
+	if self.vcaDiffIndexMid > 0 and self.vcaDiffLockAWD then 
 		return true 
 	end 
 	if self.vcaDiffLockSwap then 
@@ -1246,11 +1245,18 @@ function vehicleControlAddon:vcaHasDiffFront()
 	return false 
 end 
 
-function vehicleControlAddon:vcaHasDiffBack()
-	if self.vcaDiffIndexBack <= 0 then 
+function vehicleControlAddon:vcaHasDiffAWD()
+	if not self.vcaDiffManual or self.vcaDiffIndexMid <= 0 then 
 		return false 
 	end 
-	if self.vcaDiffIndexMid > 0 and self.vcaDiffLockMid == 2 then 
+	return true 
+end 
+	
+function vehicleControlAddon:vcaHasDiffBack()
+	if not self.vcaDiffManual or self.vcaDiffIndexBack <= 0 then 
+		return false 
+	end 
+	if self.vcaDiffIndexMid > 0 and self.vcaDiffLockAWD then 
 		return true 
 	end 
 	if not self.vcaDiffLockSwap then 
@@ -1260,18 +1266,19 @@ function vehicleControlAddon:vcaHasDiffBack()
 end 
 		
 function vehicleControlAddon:vcaGetDiffState()
-	if not self:vcaIsVehicleControlledByPlayer() then 
-		return 0, 0, 0
-	end 
-	if self.vcaDiffLockMid <= 0 then 
+	if not ( self.vcaIsLoaded
+			 and self:vcaIsVehicleControlledByPlayer()
+			 and self:getIsMotorStarted()
+			 and self.vcaDiffManual ) then  
 		return 0, 0, 0
 	end 
 
 	local f, m, b = 0, 0, 0
 	if self.vcaDiffIndexMid > 0 then 
-		m = self.vcaDiffLockMid
+		m = 1 
 	end 
-	if self.vcaDiffIndexMid > 0 and self.vcaDiffLockMid >= 2 then 
+	if self.vcaDiffIndexMid > 0 and self.vcaDiffLockAWD then 
+		m = 2 
 		f = 1 
 		if self.vcaDiffLockFront then f = f + 1 end
 		b = 1
@@ -2336,10 +2343,102 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 	end 
 	
 --******************************************************************************************************************************************
-	if self.isServer then 
+	if self.isServer then  
 		local spec = self.spec_motorized 
+		local gearRatio = 0
+		if spec.motor ~= nil and spec.motor.gearRatio ~= nil then 
+			gearRatio = spec.motor.gearRatio
+		end 
+		
+		if self.lastSpeed * 3600 > 20 and self:vcaIsVehicleControlledByPlayer() then 
+			self:vcaSetState( "vcaDiffLockFront", false )
+			self:vcaSetState( "vcaDiffLockBack",  false )
+			if self.vcaDiffFrontAdv then 
+				self:vcaSetState( "vcaDiffLockAWD", false )
+			end 
+		end 
 		
 		local f, m, b = self:vcaGetDiffState()
+		
+		local vehicleSpeed = self.lastSpeedReal*1000*self.movingDirection
+		local avgWheelSpeed,n=0,0
+		local minWheelSpeed, maxWheelSpeed
+		self.vcaDebugS = string.format("%6.3f",vehicleSpeed)
+		for _,wheel in pairs(self.spec_wheels.wheels) do
+			wheel.vcaDiffBrake = nil 
+			wheel.vcaMaxSpeed  = nil
+			wheel.vcaSpeed = getWheelShapeAxleSpeed(wheel.node, wheel.wheelShape) * wheel.radius 
+			self.vcaDebugS = self.vcaDebugS..string.format(", %6.3f",wheel.vcaSpeed)
+			avgWheelSpeed = avgWheelSpeed + wheel.vcaSpeed
+			n = n + 1 
+			if minWheelSpeed == nil or minWheelSpeed > wheel.vcaSpeed then 
+				minWheelSpeed = wheel.vcaSpeed 
+			end 
+			if maxWheelSpeed == nil or maxWheelSpeed < wheel.vcaSpeed then 
+				maxWheelSpeed = wheel.vcaSpeed 
+			end 
+		end 
+		if n > 1 then avgWheelSpeed = avgWheelSpeed / n end 	
+		self.vcaDebugS = self.vcaDebugS..string.format("\n%6.3f .. %6.3f .. %6.3f",minWheelSpeed, avgWheelSpeed, maxWheelSpeed)
+
+		if minWheelSpeed == nil or minWheelSpeed < 1 then 
+			minWheelSpeed = 1 
+		end 
+		if maxWheelSpeed == nil or maxWheelSpeed > -1 then 
+			maxWheelSpeed = -1 
+		end 
+
+		if self.vcaAntiSlip and not ( f == 2 and m == 2 and b == 2 ) then  
+			if     gearRatio > 0 then
+				for _,wheel in pairs(self.spec_wheels.wheels) do
+					wheel.vcaMaxSpeed = 1.5 * minWheelSpeed 
+				end 
+			elseif gearRatio < 0 then 
+				for _,wheel in pairs(self.spec_wheels.wheels) do
+					wheel.vcaMaxSpeed = 1.5 * maxWheelSpeed 
+				end 
+			end 
+		end 
+
+		local function setMaxSpeed( index, isWheel, maxSpeed, allWheels )
+			local diff = spec.differentials[index]
+			if maxSpeed == nil then 
+				return 
+			end 
+			if isWheel then
+				local wheel = self:getWheelFromWheelIndex( index )
+				if wheel.vcaMaxSpeed == nil or wheel.vcaMaxSpeed > maxSpeed then 
+					wheel.vcaMaxSpeed = maxSpeed 
+				end 
+			else
+				local diff = spec.differentials[index+1]
+				diff.vcaMaxSpeed = maxSpeed 
+				if allWheels then 
+					setMaxSpeed( diff.diffIndex1, diff.diffIndex1IsWheel, maxSpeed, allWheels )
+					setMaxSpeed( diff.diffIndex2, diff.diffIndex2IsWheel, maxSpeed, allWheels )
+				end 
+			end
+		end			
+
+    local function getSpeedsOfDifferential(index)
+			local speed1, speed2
+			local diff = spec.differentials[index]
+			if diff.diffIndex1IsWheel then
+				local wheel = self:getWheelFromWheelIndex( diff.diffIndex1 )
+				speed1 = wheel.vcaSpeed
+			else
+				local s1,s2 = getSpeedsOfDifferential(diff.diffIndex1+1);
+				speed1 = (s1+s2)/2
+			end
+			if diff.diffIndex2IsWheel then
+				local wheel = self:getWheelFromWheelIndex( diff.diffIndex2 )
+				speed2 = wheel.vcaSpeed
+			else
+				local s1,s2 = getSpeedsOfDifferential(diff.diffIndex2+1);
+				speed2 = (s1+s2)/2
+			end
+			return speed1,speed2;
+    end
 		
 		local function setDiff( index, oldState, newState, torqueRatioOpen )
 			if index <= 0 then 
@@ -2348,32 +2447,82 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 			if not self:vcaIsVehicleControlledByPlayer() then 
 				newState = 0
 			end 
-			if oldState == newState then 
-				return oldState 
-			end 
 			
-			local diff = spec.differentials[index]		
-			local r, m = diff.torqueRatio, diff.maxSpeedRatio
+			local diff  = spec.differentials[index]		
+			local r, m  = diff.torqueRatio, diff.maxSpeedRatio
+			
 			if     newState == 1 then 
 				if torqueRatioOpen ~= nil then 
 					r = torqueRatioOpen
 				end 
-				m = 1e20
+				m = math.huge
+				
+				if     r < 0.01 then 
+					setMaxSpeed( diff.diffIndex1, diff.diffIndex1IsWheel, vehicleSpeed * 1.25, true )
+				elseif r > 0.99 then
+					setMaxSpeed( diff.diffIndex2, diff.diffIndex2IsWheel, vehicleSpeed * 1.25, true )
+				end 
 			elseif newState == 2 then 
 				m = 0
+ 
+				local s1,s2 = getSpeedsOfDifferential(index)
+				
+				if     torqueRatioOpen == nil
+						or not self.vcaDiffFrontAdv then 
+				elseif torqueRatioOpen < 0.01 then 
+					s1 = s1 / 1.035
+					s2 = s2 * 1.035
+				elseif torqueRatioOpen > 0.99 then 
+					s1 = s1 * 1.035
+					s2 = s2 / 1.035
+				end 
+				
+				if     ( gearRatio > 0 and s1 >= 0 and s2 >= 0 )
+						or ( gearRatio < 0 and s1 <= 0 and s2 <= 0 ) then 
+					if math.abs( s1 ) > math.abs( s2 ) then 
+						setMaxSpeed( diff.diffIndex1, diff.diffIndex1IsWheel, s2, true )
+					end 
+					if math.abs( s1 ) < math.abs( s2 ) then 
+						setMaxSpeed( diff.diffIndex2, diff.diffIndex2IsWheel, s1, true )
+					end 
+				end 
 			end 
 			
-			updateDifferential( spec.motorizedNode, index-1, r, m )
+			if diff.vcaSumDt == nil or ( diff.vcaSumDt > 100 and ( math.abs( diff.vcaTorqueRatio -r ) > 1e-3 or math.abs( diff.vcaSpeedRatio - m ) > 1e-3 ) ) then 
+				diff.vcaSumDt       = 0
+				diff.vcaTorqueRatio = r 
+				diff.vcaSpeedRatio  = m
+				updateDifferential( spec.motorizedNode, index-1, r, m )
+			else 
+				diff.vcaSumDt = diff.vcaSumDt + dt 
+			end 
 					
 			return newState 
 		end 
 
-		self.vcaDiffStateFront = setDiff( self.vcaDiffIndexFront, self.vcaDiffStateFront, f )
-		self.vcaDiffStateBack  = setDiff( self.vcaDiffIndexBack , self.vcaDiffStateBack , b  )
 		if self.vcaDiffLockSwap then
 			self.vcaDiffStateMid = setDiff( self.vcaDiffIndexMid  , self.vcaDiffStateMid  , m, 1 )
 		else 
 			self.vcaDiffStateMid = setDiff( self.vcaDiffIndexMid  , self.vcaDiffStateMid  , m, 0 )
+		end 
+		self.vcaDiffStateFront = setDiff( self.vcaDiffIndexFront, self.vcaDiffStateFront, f )
+		self.vcaDiffStateBack  = setDiff( self.vcaDiffIndexBack , self.vcaDiffStateBack , b  )
+		
+		self.vcaDebugB = ""
+		if not self:vcaGetNeutral() then 
+			for _,wheel in pairs(self.spec_wheels.wheels) do 
+				if     wheel.vcaMaxSpeed == nil then 
+				elseif gearRatio > 0 and wheel.vcaSpeed > wheel.vcaMaxSpeed then 
+					wheel.vcaDiffBrake = math.min( wheel.vcaSpeed - wheel.vcaMaxSpeed, 4 ) * 2.5
+				elseif gearRatio < 0 and wheel.vcaSpeed < wheel.vcaMaxSpeed then
+					wheel.vcaDiffBrake = math.min( wheel.vcaMaxSpeed - wheel.vcaSpeed, 4 ) * 2.5
+				end 
+				if wheel.vcaDiffBrake == nil then 
+					self.vcaDebugB = self.vcaDebugB.." nil   "
+				else
+					self.vcaDebugB = self.vcaDebugB..string.format("%6.3f ",wheel.vcaDiffBrake)
+				end 
+			end 
 		end 
 	end 
 	
@@ -2618,33 +2767,8 @@ function vehicleControlAddon:onDraw()
 				y = y + l * 1.2	
 			end
 			
-			if      ( self.vcaDiffIndexFront > 0 or self.vcaDiffIndexMid > 0 or self.vcaDiffIndexBack > 0 )
-					and self:vcaIsVehicleControlledByPlayer()
-					then 
-				local diffLock = ""
-				if self.vcaAntiSlip then 
-					diffLock = "a "
-				end 
-				
-			--local function renderDiff( state )
-			--	if     state == nil then 
-			--		diffLock = diffLock.."_ "
-			--	elseif state == 0 then 
-			--		diffLock = diffLock.."A "
-			--	elseif state == 1 then 
-			--		diffLock = diffLock.."O "
-			--	elseif state == 2 then 
-			--		diffLock = diffLock.."L "
-			--	else
-			--		diffLock = diffLock.."? "
-			--	end 
-			--end 
-			--
-			--renderDiff( self.vcaDiffLockFront )
-			--renderDiff( self.vcaDiffLockMid   )
-			--renderDiff( self.vcaDiffLockBack  )
-			--renderText(x, y, l, diffLock)
-			
+			local f, m, b = self:vcaGetDiffState()
+			if f > 0 or m > 0 or b > 0 then
 				local function getRenderColor( state )
 					if     state == nil then 
 						return 0,0,0,1
@@ -2658,7 +2782,6 @@ function vehicleControlAddon:onDraw()
 					return 0,0,0,1
 				end 
 				
-				local f, m, b = self:vcaGetDiffState()
 							
 				setOverlayColor( vehicleControlAddon.ovDiffLockFront, getRenderColor( f ) )
 				setOverlayColor( vehicleControlAddon.ovDiffLockMid  , getRenderColor( m ) )
@@ -3455,6 +3578,27 @@ end
 WheelsUtil.updateWheelsPhysics = Utils.overwrittenFunction( WheelsUtil.updateWheelsPhysics, vehicleControlAddon.vcaUpdateWheelsPhysics )
 --******************************************************************************************************************************************
 
+function vehicleControlAddon:vcaUpdateWheelPhysics( superFunc, wheel, brakePedal, dt )
+	if not (  self.vcaIsLoaded
+				and self:vcaIsVehicleControlledByPlayer() 
+				and self:getIsMotorStarted()
+				and ( self.vcaAntiSlip or self.vcaDiffManual ) ) then 
+		return superFunc( self, wheel, brakePedal, dt )
+	end 
+	
+	WheelsUtil.updateWheelSteeringAngle(self, wheel, dt)
+	if self.isServer and self.isAddedToPhysics then
+		local brakeForce = self:getBrakeForce() * brakePedal * wheel.brakeFactor
+		if wheel.vcaDiffBrake ~= nil then 
+			brakeForce = brakeForce + wheel.vcaDiffBrake
+			wheel.vcaDiffBrake = nil 
+		end 
+		setWheelShapeProps(wheel.node, wheel.wheelShape, wheel.torque, brakeForce, wheel.steeringAngle, wheel.rotationDamping)
+	end
+end
+WheelsUtil.updateWheelPhysics = Utils.overwrittenFunction( WheelsUtil.updateWheelPhysics, vehicleControlAddon.vcaUpdateWheelPhysics )
+--******************************************************************************************************************************************
+
 --******************************************************************************************************************************************
 -- getSmoothedAcceleratorAndBrakePedals
 function vehicleControlAddon:vcaGetSmoothedAcceleratorAndBrakePedals( superFunc, acceleratorPedal, brakePedal, dt )
@@ -3969,12 +4113,26 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	self.vcaSlipMMA:collect( dt, self.vcaSlip )
 	self.vcaSlipS = self.vcaSlipMMA:get()
 	
-	if self.vehicle.vcaAntiSlip and self.vcaSlipF > 0.1 then 
-		newAcc = math.min( newAcc, 1.1 - self.vcaSlipF ) 
-	end 
+--if self.vehicle.vcaAntiSlip then 
+--	if self.vcaMaxSlipAcc == nil then 
+--		self.vcaMaxSlipAcc = 1
+--	end 
+--	
+--	local f = 10 * ( 0.25 - self.vcaSlip )
+--	self.vcaMaxSlipAcc = math.max( 0, 1 - 0.1 * speed, self.vcaMaxSlipAcc + f * dt * 0.001 ) 
+--	
+--	if self.vcaMaxSlipAcc > 1 then 
+--		self.vcaMaxSlipAcc = 1 
+--	else 
+--		newAcc = math.min( newAcc, self.vcaMaxSlipAcc ) 
+--	end 
+--else 
+--	self.vcaMaxSlipAcc = nil
+--end 
 	
-	self.speedLimit        = self.speedLimit * ( 1 + self.vcaSlipF )
+	self.speedLimit        = self.speedLimit * ( 1 + self.vcaSlip )
 	self.vcaLastSpeedLimit = self.speedLimit
+	self.speedLimit        = self.speedLimit
 	
 	if not self.vehicle:getIsMotorStarted() or dt < 0 or self.vehicle.vcaLastTransmission == nil then 
 		self.vcaClutchTimer   = nil

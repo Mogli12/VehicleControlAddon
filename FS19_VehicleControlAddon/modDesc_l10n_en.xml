@@ -51,6 +51,11 @@
 		<text name="vcaOWNRANGETIME"    text="Time to shift ranges"/>
 		<text name="vcaOWNAUTOGEARS"    text="Automatic gears"/>
 		<text name="vcaOWNAUTORANGE"    text="Automatic ranges"/>
+
+		<text name="vcaAntiSlip"        text="Traction control"/>
+		<text name="vcaDiffManual"      text="Manual AWD and differentials"/>
+		<text name="vcaDiffFrontAdv"    text="Advance speed of front axle"/>
+		<text name="vcaDiffLockSwap"    text="Swap front and rear axle"/>
 		                                
 		<text name="vca_tip_CAMERAI"      text="The interior camera rotates automatically according to the steering angle"/>
 		<text name="vca_tip_CAMERAO"      text="The exterior camera rotates automatically according to the steering angle"/>
@@ -97,6 +102,11 @@
 		<text name="vca_tip_OWNRANGETIME" text="Time to shift ranges"/>
 		<text name="vca_tip_OWNAUTOGEARS" text="Automatic gears and speed matching"/>
 		<text name="vca_tip_OWNAUTORANGE" text="Automatic ranges and speed matching"/>
+		
+		<text name="vca_tip_AntiSlip"     text="Traction control brakes individual wheels in case of slip"/>
+		<text name="vca_tip_DiffManual"   text="Manual control of all wheel drive and front and back differentials"/>
+		<text name="vca_tip_DiffFrontAdv" text="Advance speed of front axle if all wheel drive is engaged"/>
+		<text name="vca_tip_DiffLockSwap" text="Swap front and rear axle"/>
 		                               
 		<text name="input_vcaSETTINGS"  text="VCA: settings"/>
 		<text name="input_vcaUP"        text="VCA: toggle view direction / lock forwards"/>
@@ -198,5 +208,8 @@ Here you can configure your own transmission. Gears may be switched automaticall
 The maximum speed in highest gear may be theoretical only. You can reach it only without speed limiter. The ratios between gears is calculated from the maximum speed of 1st gear. 
 The two maximum speeds of 2nd highest range are redundant. If you enter one value, the other one is changed accordingly.]]>
 		</longText>
+		<longText name="vca_Help_6">
+<![CDATA[Differentials and all wheel drive]]>
+		</longText>		
 	</longTexts>
 </l10n>

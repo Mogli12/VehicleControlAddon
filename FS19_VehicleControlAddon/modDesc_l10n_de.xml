@@ -51,7 +51,12 @@
 		<text name="vcaOWNRANGETIME"    text="Schaltgeschwindigkeit Gruppen"/>
 		<text name="vcaOWNAUTOGEARS"    text="Automatische Gänge"/>
 		<text name="vcaOWNAUTORANGE"    text="Automatische Gruppen"/>
-		                                
+	
+		<text name="vcaAntiSlip"        text="Traktionskontrolle"/>
+		<text name="vcaDiffManual"      text="Manueller Allradantrieb und Differentialsperren"/>
+		<text name="vcaDiffFrontAdv"    text="Voreilung der Vorderachse"/>
+		<text name="vcaDiffLockSwap"    text="Tausch der Differentiale"/>
+	
 		<text name="vca_tip_CAMERAI"      text="Die innere Kamera dreht sich passend zum Lenkeinschlag automatisch mit."/>
 		<text name="vca_tip_CAMERAO"      text="Die äußere Kamera dreht sich passend zum Lenkeinschlag automatisch mit."/>
 		<text name="vca_tip_EXPONENT"     text="Geschwindigkeitsabhängigkeit der adaptiven Lenkung"/>
@@ -97,6 +102,11 @@
 		<text name="vca_tip_OWNRANGETIME" text="Schaltgeschwindigkeit Gruppen"/>
 		<text name="vca_tip_OWNAUTOGEARS" text="Automatische Schaltung von Gängen und Speedmatching"/>
 		<text name="vca_tip_OWNAUTORANGE" text="Automatische Schaltung von Gruppen und Speedmatching"/>
+		
+		<text name="vca_tip_AntiSlip"     text="Traktionskontrolle bremst einzelne Räder, wenn sie durchdrehen"/>
+		<text name="vca_tip_DiffManual"   text="Manuelle Steuerung des Allradantriebs und der vorderen und hinteren Differentialsperre"/>
+		<text name="vca_tip_DiffFrontAdv" text="Voreilung der Vorderachse bei eingeschaltetem Allradantrieb"/>
+		<text name="vca_tip_DiffLockSwap" text="Tausch der vorderen und hinteren Differentialsperre"/>
 		
 		<text name="input_vcaSETTINGS"  text="VCA: Einstellungen"/>
 		<text name="input_vcaUP"        text="VCA: Blickrichtung wechseln oder nach vorne schauen"/>
@@ -198,5 +208,8 @@ Die Übersetzung des höchsten Gangs ist die theoretische Endgeschwindigkeit bei
 das Verhältnis der Gänge untereinander. 
 Die Höchstgeschwindigkeiten in der vorletzten Gruppe sind redundant. Man muss nur einen von beiden Werten eingeben. Der andere wird automatisch angepasst.]]>
 		</longText>
+		<longText name="vca_Help_6">
+<![CDATA[Differentiale und Allradantrieb]]>
+		</longText>		
 	</longTexts>
 </l10n>

@@ -6,22 +6,42 @@
 			<GuiElement id="boxLayout1" type="boxLayout" profile="vcaSettingsLayoutLeft">	
 
 				<GuiElement type="checkedOption" profile="vcaMTOSettings" id="vcaAntiSlip" 
-												toolTipElementId="mogliToolTipBoxText" toolTipText="Anti Slip" 
+												toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_AntiSlip"
 												onCreate="onCreateSubElement">
 					<GuiElement type="button" profile="vcaMTOLeft" />
 					<GuiElement type="button" profile="vcaMTORight"/>
 					<GuiElement type="text" profile="vcaMTOText" />
-					<GuiElement type="text" profile="vcaMTOTitle" text="Anti Slip"/>
+					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaAntiSlip"/>
+					<GuiElement type="bitmap" profile="vcaMTOBg" />
+				</GuiElement>
+
+				<GuiElement type="checkedOption" profile="vcaMTOSettings" id="vcaDiffManual" 
+												toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_DiffManual"
+												onCreate="onCreateSubElement">
+					<GuiElement type="button" profile="vcaMTOLeft" />
+					<GuiElement type="button" profile="vcaMTORight"/>
+					<GuiElement type="text" profile="vcaMTOText" />
+					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaDiffManual"/>
+					<GuiElement type="bitmap" profile="vcaMTOBg" />
+				</GuiElement>
+
+				<GuiElement type="checkedOption" profile="vcaMTOSettings" id="vcaDiffFrontAdv" 
+												toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_DiffFrontAdv" 
+												onCreate="onCreateSubElement">
+					<GuiElement type="button" profile="vcaMTOLeft" />
+					<GuiElement type="button" profile="vcaMTORight"/>
+					<GuiElement type="text" profile="vcaMTOText" />
+					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaDiffFrontAdv"/>
 					<GuiElement type="bitmap" profile="vcaMTOBg" />
 				</GuiElement>
 
 				<GuiElement type="checkedOption" profile="vcaMTOSettings" id="vcaDiffLockSwap" 
-												toolTipElementId="mogliToolTipBoxText" toolTipText="Swap Front/Back Diff" 
+												toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_DiffLockSwap"
 												onCreate="onCreateSubElement">
 					<GuiElement type="button" profile="vcaMTOLeft" />
 					<GuiElement type="button" profile="vcaMTORight"/>
 					<GuiElement type="text" profile="vcaMTOText" />
-					<GuiElement type="text" profile="vcaMTOTitle" text="Swap Front/Back Diff"/>
+					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaDiffLockSwap"/>
 					<GuiElement type="bitmap" profile="vcaMTOBg" />
 				</GuiElement>
 
