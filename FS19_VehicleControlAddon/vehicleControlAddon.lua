@@ -2367,7 +2367,12 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 		for _,wheel in pairs(self.spec_wheels.wheels) do
 			wheel.vcaDiffBrake = nil 
 			wheel.vcaMaxSpeed  = nil
-			wheel.vcaSpeed = getWheelShapeAxleSpeed(wheel.node, wheel.wheelShape) * wheel.radius 
+			local s = getWheelShapeAxleSpeed(wheel.node, wheel.wheelShape) * wheel.radius 
+			if wheel.vcaSpeed == nil then 
+				wheel.vcaSpeed = s 
+			else 
+				wheel.vcaSpeed = wheel.vcaSpeed + 0.1 * ( s - wheel.vcaSpeed )
+			end 
 			self.vcaDebugS = self.vcaDebugS..string.format(", %6.3f",wheel.vcaSpeed)
 			avgWheelSpeed = avgWheelSpeed + wheel.vcaSpeed
 			n = n + 1 
