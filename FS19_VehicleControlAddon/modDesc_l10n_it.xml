@@ -136,9 +136,13 @@
 		<text name="input_vcaShifter9"  text="VCA: G27/G29 9a marcia / retromarcia"/>
 		<text name="input_vcaShifterLH" text="VCA: G27/G29 splitter di marcia"/>
 		<text name="input_vcaHandRpm"   text="VCA: Acceleratore manuale"/>
-		<text name="input_vcaHandRpm_1" text="VCA: aumenta Acceleratore manuale"/>
-		<text name="input_vcaHandRpm_2" text="VCA: diminuisci Acceleratore manuale"/>
-		<text name="input_vcaHandMode"  text="VCA: modalità acceleratore manuale"/>
+		<text name="input_vcaHandRpm_1" text="VCA: Aumenta acceleratore manuale"/>
+		<text name="input_vcaHandRpm_2" text="VCA: Diminuisci acceleratore manuale"/>
+		<text name="input_vcaHandMode"  text="VCA: Modalità acceleratore manuale"/>
+		<text name="input_vcaAutoShift" text="VCA: Cambio automatico on/off"/>
+		<text name="input_vcaDiffLockF" text="VCA: Differenziale anteriore (s)blocca"/>
+		<text name="input_vcaDiffLockM" text="VCA: Integrale/trazione anterione"/>
+		<text name="input_vcaDiffLockB" text="VCA: Differenziale posteriore (s)blocca"/>
 
 		<text name="vcaValueOn"         text="on"/>
 		<text name="vcaValueOff"        text="off"/>
