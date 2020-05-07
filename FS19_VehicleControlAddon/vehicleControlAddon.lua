@@ -244,17 +244,20 @@ function vehicleControlAddon:vcaExternalGetHudPosition()
 
 	-- since we use align center it is hard to estimate the correct size
 	-- let's assume that it is 10 characters wide and 3.6 characters high	
-	if VCAGlobals.snapAngleHudX >= 0 then 
-		local x = VCAGlobals.snapAngleHudX
-		local y = VCAGlobals.snapAngleHudY
-		
-		return x, y, x+10*l, y+3.4*l 
+	
+	local x = VCAGlobals.snapAngleHudX
+	local y = VCAGlobals.snapAngleHudY
+	
+	if VCAGlobals.snapAngleHudX < 0 then 
+		x = g_currentMission.inGameMenu.hud.speedMeter.gaugeCenterX
+		x = x - 5*l 
+	end 
+	if VCAGlobals.snapAngleHudY < 0 then 
+		y = g_currentMission.inGameMenu.hud.speedMeter.gaugeCenterY + g_currentMission.inGameMenu.hud.speedMeter.fuelGaugeRadiusY * 1.6
+		y = y + 0.7*l
 	end 
 	
-	local x = g_currentMission.inGameMenu.hud.speedMeter.gaugeCenterX
-	local y = g_currentMission.inGameMenu.hud.speedMeter.gaugeCenterY + g_currentMission.inGameMenu.hud.speedMeter.fuelGaugeRadiusY * 1.6
-	
-	return x-5*l, y+0.7*l, x+5*l, y+4.1*l 
+	return x, y, x+10*l, y+3.4*l 
 end 
 -- functions for others mods 
 --********************************************************************************************
@@ -2676,10 +2679,12 @@ function vehicleControlAddon:onDraw()
 		local curSnapAngle, curSnapOffset = self:vcaGetCurrentSnapAngle( d )
 		
 		if self.vcaDrawHud then 
-			if VCAGlobals.snapAngleHudX >= 0 and self:getIsVehicleControlledByPlayer() then
+			if VCAGlobals.snapAngleHudX >= 0 then
 				x = VCAGlobals.snapAngleHudX
-				y = VCAGlobals.snapAngleHudY
 				setTextAlignment( RenderText.ALIGN_LEFT ) 
+			end 
+			if VCAGlobals.snapAngleHudY >= 0 then
+				y = VCAGlobals.snapAngleHudY
 				setTextVerticalAlignment( RenderText.VERTICAL_ALIGN_BASELINE )
 			else 
 				y = y + l * 1.2
@@ -3063,7 +3068,11 @@ function vehicleControlAddon:onReadStream(streamId, connection)
 	for _,prop in pairs( listOfProperties ) do 
 		self:vcaSetState( prop.propName, prop.func.streamRead( streamId ), true )
 	end 
-
+	
+	self.vcaDiffIndexFront = streamReadUInt8( streamId )
+	self.vcaDiffIndexMid   = streamReadUInt8( streamId )
+	self.vcaDiffIndexBack  = streamReadUInt8( streamId )
+	
 end
 
 function vehicleControlAddon:onWriteStream(streamId, connection)
@@ -3071,6 +3080,10 @@ function vehicleControlAddon:onWriteStream(streamId, connection)
 	for _,prop in pairs( listOfProperties ) do 
 		prop.func.streamWrite( streamId , self[prop.propName] )
 	end 
+
+	streamWriteUInt8( streamId, self.vcaDiffIndexFront )
+	streamWriteUInt8( streamId, self.vcaDiffIndexMid   )
+	streamWriteUInt8( streamId, self.vcaDiffIndexBack  )
 
 end 
 
@@ -3476,7 +3489,11 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 		end 
 	
 	
-		if ( self.vcaNeutral and not self.vcaShifterUsed ) or ( self.vcaShifterPark and self.vcaShifterUsed ) then 
+		if not self:getIsMotorStarted() then 
+			acceleration       = 0
+			doHandbrake        = true 
+			self.vcaBrakePedal = 1
+		elseif ( self.vcaNeutral and not self.vcaShifterUsed ) or ( self.vcaShifterPark and self.vcaShifterUsed ) then 
 			doHandbrake        = true 
 			self.vcaBrakePedal = 1
 		elseif self:vcaGetShuttleCtrl() then 
@@ -3486,10 +3503,7 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 				self.nextMovingDirection = -1 
 			end 
 			
-			if not self:getIsMotorStarted() then 
-				acceleration = 0
-				doHandbrake  = true 
-			elseif acceleration < -0.01 then  
+			if acceleration < -0.01 then  
 				local lowSpeedBrake = 1.389e-4 - acceleration * 6.944e-4 -- 0.5 .. 3			
 				if  math.abs( currentSpeed ) < lowSpeedBrake then 
 					-- braking at low speed

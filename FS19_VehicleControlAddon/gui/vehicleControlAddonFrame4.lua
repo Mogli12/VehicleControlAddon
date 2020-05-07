@@ -23,6 +23,26 @@ function VehicleControlAddonFrame4:vcaGetValues( force )
 		return 
 	end 
 	
+	if force then 
+		local x = g_currentMission.inGameMenu.hud.speedMeter.gaugeCenterX
+		local y = g_currentMission.inGameMenu.hud.speedMeter.gaugeCenterY + g_currentMission.inGameMenu.hud.speedMeter.fuelGaugeRadiusY * 1.6
+		local l = getCorrectTextSize(0.02)
+		y = y + l * 1.2
+		self.vcaSnapAngleHudX = x 
+		self.vcaSnapAngleHudY = y 
+		
+		self.vcaTexts = {}
+		
+		if VCAGlobals.snapAngleHudX >= 0 then 
+			x = VCAGlobals.snapAngleHudX
+		end 
+		if VCAGlobals.snapAngleHudY >= 0 then 
+			y = VCAGlobals.snapAngleHudY 
+		end 
+		self.vcaTexts.snapAngleHudX = string.format( "%d", math.floor( x * g_screenWidth  ) )
+		self.vcaTexts.snapAngleHudY = string.format( "%d", math.floor( y * g_screenHeight ) )
+	end 
+	
 	self.vcaState.vcaGetValues = true 
 	
 	local vehicle = g_currentMission.controlledVehicle
@@ -57,6 +77,8 @@ function VehicleControlAddonFrame4:vcaGetValues( force )
 					element:setState( v + 1 )
 				elseif n == "brakeForceFactor" then 
 					element:setState( math.floor( v * 20 + 0.5 ) + 1 )
+				elseif element.typeName == "textInput" and not ( element.isCapturingInput ) then 
+					element:setText( self.vcaTexts[n] )
 				elseif VCADefaults[n].tp == "bool" then 
 					element:setIsChecked( v )
 				end 
@@ -149,8 +171,45 @@ function VehicleControlAddonFrame4:vcaOnTextChanged( element, text )
 	
 	self.vcaState.vcaOnTextChanged = true  
 	
-	local name = element.id
+	if element.id:sub(1,4) ~= "VCA_" then 
+		print("Invalid element: '"..tostring(element.id).."'")
+		return
+	end 
+	local name = element.id:sub(5)
 	
+	local n = tonumber( text ) 
+	
+	if     name == "snapAngleHudX" then 
+		if n ~= nil and n >= 0 then 
+			x = n / g_screenWidth
+			if math.abs( self.vcaSnapAngleHudX - x ) * g_screenWidth < 1 then 
+				VCAGlobals.snapAngleHudX = -1 
+				x = self.vcaSnapAngleHudX
+			else 
+				VCAGlobals.snapAngleHudX = x 
+			end 
+		else 
+			VCAGlobals.snapAngleHudX = -1 
+			x = self.vcaSnapAngleHudX
+		end 
+		self.vcaTexts.snapAngleHudX = string.format( "%d", math.floor( x * g_screenWidth  ) )
+	elseif name == "snapAngleHudY" then 
+		if n ~= nil and n >= 0 then 
+			y = n / g_screenHeight
+			if math.abs( self.vcaSnapAngleHudY - y ) * g_screenHeight < 1 then 
+				VCAGlobals.snapAngleHudY = -1 
+				y = self.vcaSnapAngleHudY
+			else 
+				VCAGlobals.snapAngleHudY = y 
+			end 
+		else 
+			VCAGlobals.snapAngleHudY = -1 
+			y = self.vcaSnapAngleHudY
+		end 
+		self.vcaTexts.snapAngleHudY = string.format( "%d", math.floor( y * g_screenHeight ) )
+	end 
+	
+	element:setText( self.vcaTexts[name] )
 	
 	self.vcaIsDirty = true 
 	self.vcaState.vcaOnTextChanged = false 

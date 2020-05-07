@@ -56,6 +56,8 @@
 		<text name="vcaDiffManual"      text="Manueller Allradantrieb und Differentialsperren"/>
 		<text name="vcaDiffFrontAdv"    text="Voreilung der Vorderachse"/>
 		<text name="vcaDiffLockSwap"    text="Tausch der Differentiale"/>
+		<text name="vcaHudX"            text="Hud position x"/>
+		<text name="vcaHudY"            text="Hud position y"/>
 	
 		<text name="vca_tip_CAMERAI"      text="Die innere Kamera dreht sich passend zum Lenkeinschlag automatisch mit."/>
 		<text name="vca_tip_CAMERAO"      text="Die äußere Kamera dreht sich passend zum Lenkeinschlag automatisch mit."/>
@@ -107,6 +109,8 @@
 		<text name="vca_tip_DiffManual"   text="Manuelle Steuerung des Allradantriebs und der vorderen und hinteren Differentialsperre"/>
 		<text name="vca_tip_DiffFrontAdv" text="Voreilung der Vorderachse bei eingeschaltetem Allradantrieb"/>
 		<text name="vca_tip_DiffLockSwap" text="Tausch der vorderen und hinteren Differentialsperre"/>
+		<text name="vca_tip_HudX"         text="Hud Position X"/>
+		<text name="vca_tip_HudY"         text="Hud Position Y"/>
 		
 		<text name="input_vcaSETTINGS"  text="VCA: Einstellungen"/>
 		<text name="input_vcaUP"        text="VCA: Blickrichtung wechseln oder nach vorne schauen"/>

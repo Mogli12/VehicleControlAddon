@@ -65,6 +65,12 @@
 					<GuiElement type="bitmap" profile="vcaMTOBg" />
 				</GuiElement>			
 
+				<GuiElement type="textInput" profile="ingameMenuGameSettingsTextInput" id="VCA_snapAngleHudX" onCreate="onCreateSubElement" 
+										toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_HudX"
+										maxCharacters="5" imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed">
+					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaHudX"/>
+				</GuiElement>
+				
 			</GuiElement>			
 			<GuiElement id="boxLayout2" type="boxLayout" profile="vcaSettingsLayoutMid">
 
@@ -128,6 +134,12 @@
 					<GuiElement type="bitmap" profile="vcaMTOBg" />
 				</GuiElement>
 
+				<GuiElement type="textInput" profile="ingameMenuGameSettingsTextInput" id="VCA_snapAngleHudY" onCreate="onCreateSubElement" 
+										toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_HudY"
+										maxCharacters="5" imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed">
+					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaHudY"/>
+				</GuiElement>
+				
 			</GuiElement>
 		
 			<GuiElement id="vcaHelp" type="text" profile="vcaHelpText" text="$l10n_vca_Help_4" />				
