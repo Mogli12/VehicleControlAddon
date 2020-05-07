@@ -1027,15 +1027,21 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 		end 
 		
 		self:vcaSetState( "vcaHandthrottle", vehicleControlAddon.mbClamp( h, 0, 1 ) )
+
 		if h <= 0 then 
-			self:vcaSetState( "vcaWarningText", Utils.getNoNil( g_vehicleControlAddon.mogliTexts.vcaHANDTHROTTLE, "" )..": off" )
 			self.vcaHandthrottle2 = nil 
-		elseif  self.spec_motorized ~= nil 
-				and self.spec_motorized.motor ~= nil 
-				and self.spec_motorized.motor.maxRpm ~= nil 
-				and self.spec_motorized.motor.maxRpm > 0 then 
-			local r = self.spec_motorized.motor.minRpm + h * ( self.spec_motorized.motor.maxRpm - self.spec_motorized.motor.minRpm )
-			self:vcaSetState( "vcaWarningText", string.format("%s: %4.0f %s", vehicleControlAddon.getText( "vcaHANDTHROTTLE", "" ), r, vehicleControlAddon.getText( "vcaValueRPM", "RPM"  ) ) )
+		end 
+		
+		if not isAnalog then 
+			if h <= 0 then 
+				self:vcaSetState( "vcaWarningText", vehicleControlAddon.getText( "vcaHANDTHROTTLE", "" )..": off" )
+			elseif  self.spec_motorized ~= nil 
+					and self.spec_motorized.motor ~= nil 
+					and self.spec_motorized.motor.maxRpm ~= nil 
+					and self.spec_motorized.motor.maxRpm > 0 then 
+				local r = self.spec_motorized.motor.minRpm + h * ( self.spec_motorized.motor.maxRpm - self.spec_motorized.motor.minRpm )
+				self:vcaSetState( "vcaWarningText", string.format("%s: %4.0f %s", vehicleControlAddon.getText( "vcaHANDTHROTTLE", "" ), r, vehicleControlAddon.getText( "vcaValueRPM", "RPM"  ) ) )
+			end 
 		end 
 	end
 end
@@ -1273,26 +1279,37 @@ function vehicleControlAddon:vcaGetDiffState()
 			 and self:vcaIsVehicleControlledByPlayer()
 			 and self:getIsMotorStarted()
 			 and self.vcaDiffManual ) then  
+	-- hired worker or motor off 
 		return 0, 0, 0
+	elseif   self.vcaDiffIndexFront <= 0 
+			and self.vcaDiffIndexMid   <= 0
+			and self.vcaDiffIndexBack  <= 0 then 
+	-- no diffs or not the standard pattern
+		return 0, 0, 0 
+	elseif  self.vcaDiffIndexFront <= 0 
+			or  self.vcaDiffIndexMid   <= 0 then 
+	-- only one diff; vcaDiffLockSwap just changes the icon in onDraw 
+		local b = 1
+		if self.vcaDiffLockSwap then  
+			if self.vcaDiffLockFront then b = b + 1 end
+		else 
+			if self.vcaDiffLockBack  then b = b + 1 end
+		end 
+		
+		return 0, 0, b
 	end 
-
-	local f, m, b = 0, 0, 0
-	if self.vcaDiffIndexMid > 0 then 
-		m = 1 
-	end 
-	if self.vcaDiffIndexMid > 0 and self.vcaDiffLockAWD then 
+	
+	local f, m, b = 1, 1, 1
+	if self.vcaDiffLockAWD then 
 		m = 2 
-		f = 1 
 		if self.vcaDiffLockFront then f = f + 1 end
-		b = 1
 		if self.vcaDiffLockBack  then b = b + 1 end
-	elseif self.vcaDiffLockSwap then 
-		f = 1
+	elseif self.vcaDiffLockSwap then  
 		if self.vcaDiffLockFront then f = f + 1 end
 	else 
-		b = 1
 		if self.vcaDiffLockBack  then b = b + 1 end
 	end 
+	
 	return f, m, b 
 end 
 
@@ -2346,7 +2363,10 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 	end 
 	
 --******************************************************************************************************************************************
-	if self.isServer then  
+	if      self.isServer
+			and ( self.vcaDiffIndexFront > 0
+				 or self.vcaDiffIndexMid   > 0
+				 or self.vcaDiffIndexBack  > 0 ) then 
 		local spec = self.spec_motorized 
 		local gearRatio = 0
 		if spec.motor ~= nil and spec.motor.gearRatio ~= nil then 
@@ -2387,8 +2407,11 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 			end 
 		end 
 		if n > 1 then avgWheelSpeed = avgWheelSpeed / n end 	
-		self.vcaDebugS = self.vcaDebugS..string.format("\n%6.3f .. %6.3f .. %6.3f",minWheelSpeed, avgWheelSpeed, maxWheelSpeed)
-
+		
+		if minWheelSpeed ~= nil and avgWheelSpeed ~= nil and maxWheelSpeed ~= nil then 
+			self.vcaDebugS = self.vcaDebugS..string.format("\n%6.3f .. %6.3f .. %6.3f",minWheelSpeed, avgWheelSpeed, maxWheelSpeed)
+		end 
+		
 		if minWheelSpeed == nil or minWheelSpeed < 1 then 
 			minWheelSpeed = 1 
 		end 
