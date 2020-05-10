@@ -199,6 +199,7 @@ function vehicleControlAddonRegister:loadMap(name)
 										"mouseAutoRotateBack",
 										"rotInertiaFactor",
 										"modifyPitch",
+										"turnOffAWDSpeed",
 										"adaptiveSteering",
 										"camOutsideRotation",
 										"camInsideRotation",
