@@ -372,7 +372,7 @@ function vehicleControlAddon:onLoad(savegame)
 	vehicleControlAddon.registerState( self, "vcaDiffLockFront",false )
 	vehicleControlAddon.registerState( self, "vcaDiffLockAWD",  false )
 	vehicleControlAddon.registerState( self, "vcaDiffLockBack", false )
-	vehicleControlAddon.registerState( self, "vcaDiffManual",   false, vehicleControlAddon.vcaOnSetDiffManual )
+	vehicleControlAddon.registerState( self, "vcaDiffManual",   false )
 	vehicleControlAddon.registerState( self, "vcaDiffLockSwap", false )
 	vehicleControlAddon.registerState( self, "vcaDiffFrontAdv", false )
 	
@@ -549,9 +549,67 @@ function vehicleControlAddon:onPostLoad(savegame)
 	
 	if type( self.functionStatus ) == "function" and self:functionStatus("differential") then 
 	-- TSX diffs ...
+	elseif self.spec_articulatedAxis ~= nil and self.spec_articulatedAxis.componentJoint ~= nil then 
+	-- articulated axis 
+		local spec = self.spec_motorized
+		local componentJoint = self.spec_articulatedAxis.componentJoint
+		
+		local function checkWheelsOfDiff( rootNode1, rootNode2, index, isWheel )
+			if isWheel then 
+				local wheel    = self:getWheelFromWheelIndex( index )
+				local rootNode = self:getParentComponent(wheel.repr)
+				if     rootNode == rootNode1 then
+					return true, false, true  
+				elseif rootNode == rootNode2 then 
+					return false, true, true 
+				else 
+					return false, false, false 
+				end 
+			else 
+				local diff = spec.differentials[index+1] 				
+				local c11, c21, a1 = checkWheelsOfDiff( rootNode1, rootNode2, diff.diffIndex1, diff.diffIndex1IsWheel )
+				local c12, c22, a2 = checkWheelsOfDiff( rootNode1, rootNode2, diff.diffIndex2, diff.diffIndex2IsWheel )				
+				return c11 or c12, c21 or c22, a1 and a2 
+			end 
+		end 
+		
+		local noPattern  = false 
+		local specWheels = self.spec_wheels
+		local rootNode1  = self.components[componentJoint.componentIndices[1]].node
+		local rootNode2  = self.components[componentJoint.componentIndices[2]].node
+		for k,differential in pairs(spec.differentials) do
+			local c1, c2, all = checkWheelsOfDiff( rootNode1, rootNode2, k-1, false )
+			if all and ( c1 or c2 ) then  
+				if c1 and c2 then 
+					vehicleControlAddon.debugPrint("Diff. "..tostring(k-1).." is in the middle")
+					differential.vcaMode = 'M' 
+					self.vcaDiffHasM     = true 
+				elseif c1 then 
+					vehicleControlAddon.debugPrint("Diff. "..tostring(k-1).." is at the front")
+					differential.vcaMode = 'F' 
+					self.vcaDiffHasF     = true 
+				else --if c2 then; is always true 
+					vehicleControlAddon.debugPrint("Diff. "..tostring(k-1).." is at the back")
+					differential.vcaMode = 'B' 
+					self.vcaDiffHasB     = true 
+				end 
+			else 
+				vehicleControlAddon.debugPrint("Diff. "..tostring(k-1).." is mixed: "..tostring(c1)..", "..tostring(c2)..", "..tostring(all))
+				noPattern = true 
+			end 
+			differential.vcaTorqueRatio   = differential.torqueRatio
+			differential.vcaMaxSpeedRatio = differential.maxSpeedRatio
+		end 
+		
+		if noPattern then 
+			self.vcaDiffHasF = false 
+			self.vcaDiffHasM = false 
+			self.vcaDiffHasB = false 
+		end 
 	elseif self.spec_crawlers ~= nil and #self.spec_crawlers.crawlers > 0 then 
 	-- crawlers 
 	else 
+	-- hopefully, a normal vehicle 
 		local spec = self.spec_motorized
 		
 		local function getMinMaxRotSpeed( index, isWheel ) 
@@ -2400,7 +2458,13 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 	end 
 	
 --******************************************************************************************************************************************
-	if self.isServer and self.vcaIsLoaded and self.firstTimeRun then  
+	if self.isServer and self:getIsActive() and self.vcaIsLoaded and self.firstTimeRun then  
+		if      self.vcaDiffManual 
+				and not self.vcaDiffHasF
+				and not self.vcaDiffHasM
+				and not self.vcaDiffHasB then 
+			self:vcaSetState( "vcaDiffManual", false )
+		end 
 	
 		local spec = self.spec_motorized 
 		local gearRatio = 0
@@ -3278,25 +3342,25 @@ Drivable.getCruiseControlAxis      = Utils.overwrittenFunction( Drivable.getCrui
 
 function vehicleControlAddon:onReadStream(streamId, connection)
 
-	for _,prop in pairs( listOfProperties ) do 
-		self:vcaSetState( prop.propName, prop.func.streamRead( streamId ), true )
-	end 
-	
 	self.vcaDiffHasF = streamReadBool( streamId )
 	self.vcaDiffHasM = streamReadBool( streamId )
 	self.vcaDiffHasB = streamReadBool( streamId )
 		
+	for _,prop in pairs( listOfProperties ) do 
+		self:vcaSetState( prop.propName, prop.func.streamRead( streamId ), true )
+	end 
+	
 end
 
 function vehicleControlAddon:onWriteStream(streamId, connection)
 
-	for _,prop in pairs( listOfProperties ) do 
-		prop.func.streamWrite( streamId , self[prop.propName] )
-	end 
-
 	streamWriteBool( streamId, self.vcaDiffHasF )
 	streamWriteBool( streamId, self.vcaDiffHasM )
 	streamWriteBool( streamId, self.vcaDiffHasB )
+
+	for _,prop in pairs( listOfProperties ) do 
+		prop.func.streamWrite( streamId , self[prop.propName] )
+	end 
 
 end 
 
@@ -5542,14 +5606,6 @@ function vehicleControlAddon:vcaOnSetOwn( name, old, new, noEventSend )
 	self.vcaGearbox = nil 
 end
 
-function vehicleControlAddon:vcaOnSetDiffManual( old, new, noEventSend )
-	if self.vcaDiffHasF or self.vcaDiffHasM or self.vcaDiffHasB then 
-		self.vcaDiffManual = new 
-  else 
-		self.vcaDiffManual = false 
-	end 
-end
-
 function vehicleControlAddon:vcaGetAbsolutRotY( camIndex )
 	if     self.spec_enterable.cameras == nil
 			or self.spec_enterable.cameras[camIndex] == nil then
@@ -5743,6 +5799,26 @@ function vehicleControlAddon:vcaShowSettingsUI()
 		table.insert( self.vcaUI.vcaOwnRangeTime, string.format( "%4d ms", i ) )
 	end 
 	
+	if g_vehicleControlAddonTabbedFrame6.vcaElements.vcaDiffManual ~= nil then 
+		local disabled = false 
+		if not self.vcaDiffHasF and not self.vcaDiffHasM and not self.vcaDiffHasB then 
+			disabled = true 
+		end 
+		g_vehicleControlAddonTabbedFrame6.vcaElements.vcaDiffManual.element:setDisabled( disabled )
+	end 
+
+	if g_vehicleControlAddonTabbedFrame6.vcaElements.vcaDiffFrontAdv ~= nil then 
+		g_vehicleControlAddonTabbedFrame6.vcaElements.vcaDiffFrontAdv.element:setDisabled( not self.vcaDiffHasM )
+	end 
+	
+	if g_vehicleControlAddonTabbedFrame6.vcaElements.vcaDiffLockSwap ~= nil then 
+		local disabled = false 
+		if not self.vcaDiffHasF and not self.vcaDiffHasM and not self.vcaDiffHasB then 
+			disabled = true 
+		end 
+		g_vehicleControlAddonTabbedFrame6.vcaElements.vcaDiffLockSwap.element:setDisabled( disabled )
+	end 
+
 	g_vehicleControlAddonTabbedMenu:setShowOwnTransmission( self.vcaTransmission == vehicleControlAddonTransmissionBase.ownTransmission )
 	g_gui:showGui( "vehicleControlAddonMenu" )	
 end
