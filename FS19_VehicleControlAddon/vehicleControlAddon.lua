@@ -368,7 +368,7 @@ function vehicleControlAddon:onLoad(savegame)
 	vehicleControlAddon.registerState( self, "vcaBlowOffVolume",VCAGlobals.blowOffVolume )
 	vehicleControlAddon.registerState( self, "vcaRotSpeedOut",  VCAGlobals.rotSpeedOut )
 	vehicleControlAddon.registerState( self, "vcaRotSpeedIn",   VCAGlobals.rotSpeedIn )
-	vehicleControlAddon.registerState( self, "vcaAntiSlip",     true )
+	vehicleControlAddon.registerState( self, "vcaAntiSlip",     false )
 	vehicleControlAddon.registerState( self, "vcaDiffLockFront",false )
 	vehicleControlAddon.registerState( self, "vcaDiffLockAWD",  false )
 	vehicleControlAddon.registerState( self, "vcaDiffLockBack", false )
@@ -549,10 +549,24 @@ function vehicleControlAddon:onPostLoad(savegame)
 	
 	if type( self.functionStatus ) == "function" and self:functionStatus("differential") then 
 	-- TSX diffs ...
-	elseif self.spec_articulatedAxis ~= nil and self.spec_articulatedAxis.componentJoint ~= nil then 
+	elseif self.spec_crawlers ~= nil and #self.spec_crawlers.crawlers > 0 then 
+	-- crawlers => not support as visible wheel will not turn in most cases
+	elseif ( self.spec_articulatedAxis ~= nil and self.spec_articulatedAxis.componentJoint ~= nil )
+			or ( self.numComponents == 2 and self.spec_crawlers ~= nil and #self.spec_crawlers.crawlers > 0 ) then 
 	-- articulated axis 
 		local spec = self.spec_motorized
-		local componentJoint = self.spec_articulatedAxis.componentJoint
+		
+		local rootNode1, rootNode2 
+		
+		if self.spec_articulatedAxis ~= nil and self.spec_articulatedAxis.componentJoint ~= nil then 
+			local componentJoint = self.spec_articulatedAxis.componentJoint
+			rootNode1 = self.components[componentJoint.componentIndices[1]].node
+			rootNode2 = self.components[componentJoint.componentIndices[2]].node
+		else 
+		-- let's hope that the 2nd node is the front axle 
+			rootNode1 = self.components[2].node 
+			rootNode2 = self.components[1].node 
+		end 
 		
 		local function checkWheelsOfDiff( rootNode1, rootNode2, index, isWheel )
 			if isWheel then 
@@ -575,8 +589,6 @@ function vehicleControlAddon:onPostLoad(savegame)
 		
 		local noPattern  = false 
 		local specWheels = self.spec_wheels
-		local rootNode1  = self.components[componentJoint.componentIndices[1]].node
-		local rootNode2  = self.components[componentJoint.componentIndices[2]].node
 		for k,differential in pairs(spec.differentials) do
 			local c1, c2, all = checkWheelsOfDiff( rootNode1, rootNode2, k-1, false )
 			if all and ( c1 or c2 ) then  
@@ -606,8 +618,6 @@ function vehicleControlAddon:onPostLoad(savegame)
 			self.vcaDiffHasM = false 
 			self.vcaDiffHasB = false 
 		end 
-	elseif self.spec_crawlers ~= nil and #self.spec_crawlers.crawlers > 0 then 
-	-- crawlers 
 	else 
 	-- hopefully, a normal vehicle 
 		local spec = self.spec_motorized
@@ -615,7 +625,9 @@ function vehicleControlAddon:onPostLoad(savegame)
 		local function getMinMaxRotSpeed( index, isWheel ) 
 			if isWheel then 
 				local wheel = self:getWheelFromWheelIndex( index )
-				if wheel.rotSpeed == nil then 
+				if not wheel.showSteeringAngle then 
+					return 0, 0
+				elseif wheel.rotSpeed == nil then 
 					return 0, 0
 				else 
 					local r = math.abs( wheel.rotSpeed ) 
@@ -749,6 +761,10 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
 																"vcaDiffLockF",
 																"vcaDiffLockM",
 																"vcaDiffLockB",
+																"vcaLowerF",
+																"vcaLowerB",
+																"vcaActivateF",
+																"vcaActivateB",
 															}) do
 																
 			local addThis = true  
@@ -839,7 +855,6 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
 end
 
 function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState, isAnalog, isMouse, deviceCategory)
-
 
 	if     actionName == "vcaGearUp"
 			or actionName == "vcaGearDown"
@@ -1136,8 +1151,96 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 				self:vcaSetState( "vcaWarningText", string.format("%s: %4.0f %s", vehicleControlAddon.getText( "vcaHANDTHROTTLE", "" ), r, vehicleControlAddon.getText( "vcaValueRPM", "RPM"  ) ) )
 			end 
 		end 
+		
+  elseif actionName == "vcaLowerF" then 
+		vehicleControlAddon.setToolStateRec( self, true, false, true, false )
+  elseif actionName == "vcaLowerB" then 
+		vehicleControlAddon.setToolStateRec( self, true, false, false, true )
+  elseif actionName == "vcaActivateF" then 
+		vehicleControlAddon.setToolStateRec( self, false, true, true, false )
+  elseif actionName == "vcaActivateB" then 
+		vehicleControlAddon.setToolStateRec( self, false, true, false, true )
 	end
 end
+
+function vehicleControlAddon.setToolStateRec( self, lowered, active, front, back, forceState )
+
+-- AttacherJoints:handleLowerImplementByAttacherJointIndex(attacherJointIndex, direction)
+-- if direction == nil then direction = not attacherJoint.moveDown end
+
+
+--  if self:getCanToggleTurnedOn() and self:getCanBeTurnedOn() then self:setIsTurnedOn(not self:getIsTurnedOn()) ...
+
+	local newState  = forceState 
+	local recursive = true 
+
+	if self.spec_attacherJoints ~= nil then 
+		vehicleControlAddon.debugPrint(tostring(self.configFileName)..": "..tostring(lowered)..", "..tostring(active)..", "..tostring(front)..", "..tostring(back)..", "..tostring(forceState))
+	
+		local spec = self.spec_attacherJoints
+		for _,attachedImplement in pairs( spec.attachedImplements ) do 
+			local jointDesc = spec.attacherJoints[attachedImplement.jointDescIndex]
+			
+			local doit = false 
+			if front and back then 
+				doit = true 
+			else 
+				local wx, wy, wz = getWorldTranslation(jointDesc.jointTransform)
+				local lx, ly, lz = worldToLocal(self.steeringAxleNode, wx, wy, wz)
+				
+				if lz > 0 then 
+					doit = front 
+				else 
+					doit = back 
+				end 
+			end 
+			
+			if doit and attachedImplement.object ~= nil then 
+				local object = attachedImplement.object 
+				
+				if lowered then -- key V
+					-- lower implement
+					local allowsLowering, warning = object:getAllowsLowering()
+					if allowsLowering and jointDesc.allowsLowering then
+						if newState == nil then 
+							newState = not jointDesc.moveDown
+						end 
+						
+						AttacherJoints.handleLowerImplementByAttacherJointIndex( self, attachedImplement.jointDescIndex, newState )
+						recursive = false 
+					end 
+				end 
+				
+				if active then -- key B
+					if object.spec_plow ~= nil then 
+						-- rotate plow
+						local spec = object.spec_plow
+						if spec.rotationPart.turnAnimation ~= nil then
+							if object:getIsPlowRotationAllowed() then
+								object:setRotationMax(not spec.rotationMax)
+								recursive = false 
+							end
+						end
+					elseif object.getIsTurnedOn ~= nil then 
+						-- turn on 
+						if newState == nil then 
+							newState = not object:getIsTurnedOn() 
+						end 
+						
+						if object:getCanToggleTurnedOn() and object:getCanBeTurnedOn() then
+							object:setIsTurnedOn(newState)
+							recursive = false 
+						end 
+					end 
+				end 
+				
+				if recursive then
+					vehicleControlAddon.setToolStateRec( object, lowered, active, true, true, newState )
+				end 
+			end 
+		end 
+	end 
+end 
 
 function vehicleControlAddon:vcaSetSnapFactor()
 	if 			self.vcaSnapDistance >= 0.25 

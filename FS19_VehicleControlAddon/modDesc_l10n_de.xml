@@ -64,8 +64,8 @@
 		<text name="vca_tip_EXPONENT"     text="Geschwindigkeitsabhängigkeit der adaptiven Lenkung"/>
 		<text name="vca_tip_STEERING"     text="Die adaptive Lenkung verändert je nach Geschwindigkeit die Rückstellgeschwindigkeit und den maximalen Lenkwinkel"/>
 		<text name="vca_tip_SHUTTLE"      text="Fahrtrichtung mit &lt;Leertaste&gt; wechseln"/>
-		<text name="vca_tip_REVERSEI"     text="Beim Wechsel zwischen Vorwärts- und Rückwärtsfahrt wird automatisch die innere Kamera um 180° gedrecht"/>
-		<text name="vca_tip_REVERSEO"     text="Beim Wechsel zwischen Vorwärts- und Rückwärtsfahrt wird automatisch die äußere Kamera um 180° gedrecht"/>
+		<text name="vca_tip_REVERSEI"     text="Beim Wechsel zwischen Vorwärts- und Rückwärtsfahrt wird automatisch die innere Kamera um 180° gedreht"/>
+		<text name="vca_tip_REVERSEO"     text="Beim Wechsel zwischen Vorwärts- und Rückwärtsfahrt wird automatisch die äußere Kamera um 180° gedreht"/>
 		<text name="vca_tip_LIMIT"        text="Gasbegrenzer mit linker Umschalttaste"/>
 		<text name="vca_tip_PEEKLR"       text="Mit Umschalt-Rechts und Pfeiltasten nur einen kurzen Blick nach hinten/rechts/links werfen"/>
 		<text name="vca_tip_ANGLE"        text="Automatisch in Richtung des Einrastwinkels lenken"/>
@@ -132,7 +132,7 @@
 		<text name="input_vcaKEEPROT2"  text="VCA: Kamerarichtung permanent fixieren"/>
 		<text name="input_vcaKEEPSPEED" text="VCA: Geschwindigkeit halten"/>
 		<text name="input_vcaKEEPSPEED2" text="VCA: Geschwindigkeit permanent halten"/>
-		<text name="input_vcaSWAPSPEED" text="VCA: Tempomatgeschindigkeit wechseln"/>
+		<text name="input_vcaSWAPSPEED" text="VCA: Tempomatgeschwindigkeit wechseln"/>
 		<text name="input_vcaGearUp"    text="VCA: Gang hoch"/>
 		<text name="input_vcaGearDown"  text="VCA: Gang runter"/>
 		<text name="input_vcaRangeUp"   text="VCA: Gruppe hoch"/>
@@ -157,6 +157,10 @@
 		<text name="input_vcaDiffLockF" text="VCA: Differentialsperre vorne an/aus"/>
 		<text name="input_vcaDiffLockM" text="VCA: Allrad an/aus"/>
 		<text name="input_vcaDiffLockB" text="VCA: Differentialsperre hinten an/aus"/>
+		<text name="input_vcaLowerF"    text="VCA: vordere Geräte heben/senken"/>
+		<text name="input_vcaLowerB"    text="VCA: hintere Geräte heben/senken"/>
+		<text name="input_vcaActivateF" text="VCA: vordere Geräte (de-)aktivieren"/>
+		<text name="input_vcaActivateB" text="VCA: hintere Geräte (de-)aktivieren"/>
 		
 		<text name="vcaValueOn"         text="an"/>
 		<text name="vcaValueOff"        text="aus"/>

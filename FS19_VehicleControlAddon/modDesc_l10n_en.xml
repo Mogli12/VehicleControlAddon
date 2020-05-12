@@ -157,6 +157,10 @@
 		<text name="input_vcaDiffLockF" text="VCA: front differential (un)lock"/>
 		<text name="input_vcaDiffLockM" text="VCA: all/front wheel drive"/>
 		<text name="input_vcaDiffLockB" text="VCA: back differential (un)lock"/>
+		<text name="input_vcaLowerF"    text="VCA: lower/raise front tools "/>
+		<text name="input_vcaLowerB"    text="VCA: lower/raise back tools "/>
+		<text name="input_vcaActivateF" text="VCA: (de-)activate front tools "/>
+		<text name="input_vcaActivateB" text="VCA: (de-)activate back tools "/>
 		
 		<text name="vcaValueOn"         text="on"/>
 		<text name="vcaValueOff"        text="off"/>
