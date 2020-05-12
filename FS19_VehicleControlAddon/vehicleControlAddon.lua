@@ -1206,7 +1206,7 @@ function vehicleControlAddon.setToolStateRec( self, lowered, active, front, back
 							newState = not jointDesc.moveDown
 						end 
 						
-						AttacherJoints.handleLowerImplementByAttacherJointIndex( self, attachedImplement.jointDescIndex, newState )
+						object:setLoweredAll(newState, attachedImplement.jointDescIndex)
 						recursive = false 
 					end 
 				end 
