@@ -81,10 +81,10 @@
 		<text name="vca_tip_PITCH"          text="Высота звука при максимальных оборотах."/>
 		<text name="vca_tip_DRAWHUD"        text="Отобразить или скрыть HUD трансмиссии."/>
 
-		<text name="vca_tip_DISTANCE"       text="Расстояние между двумя рядами удержания направлений"/>
-		<text name="vca_tip_OFFSET1"        text="Смещение рядов удержания направлений"/>
+		<text name="vca_tip_DISTANCE"       text="Расстояние между двумя рядами удержания направлений."/>
+		<text name="vca_tip_OFFSET1"        text="Смещение рядов удержания направлений."/>
 		<text name="vca_tip_OFFSET2"        text="Инвертировать смещение рядов удержания направлений"/>
-		<text name="vca_tip_DRAWMARKER"     text="Отрисовка маркера рядов удержания направлений"/>
+		<text name="vca_tip_DRAWMARKER"     text="Отрисовка маркера рядов удержания направлений."/>
 		<text name="vca_tip_PITCH1"         text="Modification of sound pitch to make it linear"/>
 		<text name="vca_tip_PITCH2"         text="Sound pitch at medium RPM"/>
 		<text name="vca_tip_BLOWOFFVOL"     text="Volume of the turbo wastegate"/>
@@ -157,6 +157,10 @@
 		<text name="input_vcaDiffLockF"     text="VCA: передний дифф. блок/разблок"/>
 		<text name="input_vcaDiffLockM"     text="VCA: полный привод"/>
 		<text name="input_vcaDiffLockB"     text="VCA: задний дифф. блок/разблок"/>
+		<text name="input_vcaLowerF"        text="VCA: опустить/поднять переднее оборудование"/>
+		<text name="input_vcaLowerB"        text="VCA: опустить/поднять заднее оборудование"/>
+		<text name="input_vcaActivateF"     text="VCA: (де-)активировать переднее оборудование"/>
+		<text name="input_vcaActivateB"     text="VCA: (де-)активировать заднее оборудование"/>
 		
 		<text name="vcaValueOn"             text="ВКЛ"/>
 		<text name="vcaValueOff"            text="ВЫКЛ"/>
