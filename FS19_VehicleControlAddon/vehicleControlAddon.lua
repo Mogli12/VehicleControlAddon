@@ -1205,7 +1205,13 @@ function vehicleControlAddon.setToolStateRec( self, lowered, active, front, back
 						if newState == nil then 
 							newState = not jointDesc.moveDown
 						end 
-						
+						recursive = false 
+					end 
+					
+					if object.setLoweredAll ~= nil and object.getIsLowered ~= nil then 
+						if newState == nil then 
+							newState = not object:getIsLowered()
+						end 
 						object:setLoweredAll(newState, attachedImplement.jointDescIndex)
 						recursive = false 
 					end 
