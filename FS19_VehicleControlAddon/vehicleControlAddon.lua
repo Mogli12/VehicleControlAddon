@@ -1199,21 +1199,21 @@ function vehicleControlAddon.setToolStateRec( self, lowered, active, front, back
 				local object = attachedImplement.object 
 				
 				if lowered then -- key V
-					-- lower implement
-					local allowsLowering, warning = object:getAllowsLowering()
-					if allowsLowering and jointDesc.allowsLowering then
-						if newState == nil then 
-							newState = not jointDesc.moveDown
-						end 
-						recursive = false 
-					end 
-					
-					if object.setLoweredAll ~= nil and object.getIsLowered ~= nil then 
-						if newState == nil then 
+					if newState == nil then 
+						-- getIsLowered is overwritte by Pickup and Foldable 
+						-- but getAllowsLowering is not overwritten 
+						if     object:getAllowsLowering()
+								or object.spec_pickup     ~= nil
+								or ( object.spec_foldable ~= nil 
+								 and object.spec_foldable.foldMiddleAnimTime ~= nil
+								 and object:getIsFoldMiddleAllowed())
+								then 
 							newState = not object:getIsLowered()
 						end 
+					end 
+					
+					if newState ~= nil and object.setLoweredAll ~= nil then 
 						object:setLoweredAll(newState, attachedImplement.jointDescIndex)
-						recursive = false 
 					end 
 				end 
 				
@@ -1235,7 +1235,6 @@ function vehicleControlAddon.setToolStateRec( self, lowered, active, front, back
 						
 						if object:getCanToggleTurnedOn() and object:getCanBeTurnedOn() then
 							object:setIsTurnedOn(newState)
-							recursive = false 
 						end 
 					end 
 				end 
@@ -2754,11 +2753,13 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 				local s1,s2 = getDiffSpeed(index)
 				
 				-- advance speed by 7% (minus 2% error)
-				if     torqueRatioOpen == nil then 
+				if     torqueRatioOpen == nil or not self.vcaDiffFrontAdv then  
 				elseif torqueRatioOpen < 0.2 then 
+					m  = 0.05
 					s1 = s1 / 1.035
 					s2 = s2 * 1.035
 				elseif torqueRatioOpen > 0.8 then 
+					m  = 0.05
 					s1 = s1 * 1.035
 					s2 = s1 / 1.035
 				end 
@@ -4667,13 +4668,13 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			
 			local m1, m2 = newMinRpm, newMaxRpm 
 			
-			if     self.vcaUsedTorqueRatioS >= 0.97 then 
+			if     self.vcaUsedTorqueRatioF >= 0.99 then 
 				newMaxRpm = vehicleControlAddon.mbClamp( self.vcaMaxPowerRpmL, m1, m2 )
 				newMinRpm = vehicleControlAddon.mbClamp( self.vcaMaxPowerRpmL, m1, m2 )
 			elseif self.vcaUsedTorqueRatioS >= 0.8 then 
 				local v = 0
-				if self.vcaUsedTorqueRatioS > 0.9 then 
-					v = ( self.vcaUsedTorqueRatioS - 0.9 ) / ( 0.97 - 0.9 )
+				if self.vcaUsedTorqueRatioF > 0.9 then 
+					v = ( self.vcaUsedTorqueRatioF - 0.9 ) / ( 0.99 - 0.9 )
 				end 
 				local fl, fh = 1.00, peakPowerNRpmL
 				newMaxRpm = vehicleControlAddon.mbClamp( ( fl + v * ( fh - fl ) ) * self.maxRpm, m1, m2 )
