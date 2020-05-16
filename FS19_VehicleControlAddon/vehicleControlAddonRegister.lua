@@ -193,8 +193,6 @@ function vehicleControlAddonRegister:loadMap(name)
 										"drawHud",
 										"transmission",
 										"clutchTimer",
-										"clutchTimerAdd",
-										"clutchTimerIdle",
 										"debugPrint",
 										"mouseAutoRotateBack",
 										"rotInertiaFactor",
