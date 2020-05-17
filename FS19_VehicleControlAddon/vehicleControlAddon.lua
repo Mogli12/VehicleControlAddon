@@ -4225,6 +4225,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	local lastAutoStopTimer = self.vcaAutoStopTimer
 	local lastStallTimer    = self.vcaStallTimer
 	local lastUsedPowerRatio= self.vcaUsedPowerRatioS
+	local lastGearRatio     = self.vcaGearRatio
 	
 	self.vcaMinRpm        = nil 
 	self.vcaMaxRpm        = nil 
@@ -4449,8 +4450,12 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		self.vcaUsedTorqueRatio = self.motorExternalTorque / math.max(self.motorAvailableTorque, 0.0001)
 		self.vcaUsedPowerRatio  = self.motorExternalTorque * 1.07 * self.motorRotSpeed
 	else 
-		self.vcaUsedTorqueRatio = self.motorAppliedTorque / math.max(self.motorAvailableTorque, 0.0001)
-		self.vcaUsedPowerRatio  = self.motorAppliedTorque * 1.07 * self.motorRotSpeed
+		local t = self.motorAppliedTorque 
+		if self.vcaClutchMinusTorque ~= nli then 
+			t = math.max( t - self.vcaClutchMinusTorque )
+		end 
+		self.vcaUsedTorqueRatio = t / math.max(self.motorAvailableTorque, 0.0001)
+		self.vcaUsedPowerRatio  = t * 1.07 * self.motorRotSpeed
 	end 
 	self.vcaUsedClutchTorque  = math.max( 0, self.motorAppliedTorque - self.motorExternalTorque )
 	
@@ -4517,15 +4522,15 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	end 
 	--****************************************************************************
 	
-	
+	local r = Utils.getNoNil( lastGearRatio, curGearRatio )
 	local speedMS   = speed / 3.6
-	local wheelRpm  = speedMS * curGearRatio * vehicleControlAddon.factor30pi
-	if curGearRatio > 1000 then 
+	local wheelRpm  = speedMS * r * vehicleControlAddon.factor30pi
+	if r > 1000 then 
 		wheelRpm = 0
 	end 
 	local clutchRpm = wheelRpm
 	if self.gearChangeTimer <= 0 and not autoNeutral then 
-		clutchRpm = self.differentialRotSpeed * self.gearRatio * vehicleControlAddon.factor30pi
+		clutchRpm = self.differentialRotSpeed * r * vehicleControlAddon.factor30pi
 		if wheelRpm > clutchRpm then 
 			wheelRpm = clutchRpm 
 		end 
@@ -4873,9 +4878,9 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			self.gearChangeTimer = self.gearChangeTimer - dt 
 		end
 
-		local clutchRpmInc = 0.15
+		local clutchRpmInc = 0.25
 		if self.vehicle.vcaTurboClutch then 
-			clutchRpmInc = 0.3
+			clutchRpmInc = 0.4
 		end
 		local clutchCloseRpm = math.min( fakeRpm, math.max( self.minRpm + clutchRpmInc * rpmRange, 0.9 * motorPtoRpm, math.min( 1.1 * motorPtoRpm, fakeRpm ) ) )
 					
@@ -5310,40 +5315,38 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 
 			if      self.vcaClutchTimer   > 0
 					and self.vcaFakeRpm      == nil
-					and curGearRatio          < 1.2 * self.vcaGearRatio
+					and 0.9 * self.vcaGearRatio < curGearRatio and curGearRatio < 1.1 * self.vcaGearRatio
 					and wheelRpm             >= 0.8 * self.minRpm then 
 				self.vcaClutchTimer = 0
 			end 
 		
 			if     clutchFactor > 0 then 
-				local c = clutchFactor ^2 				
-				local r = ( 1 - c ) * wheelRpm + c * fakeRpm 
+				local c = clutchFactor ^2 
+				local m
 				
-				if not self.vehicle:vcaGetAutoClutch() then 
-					self.vcaMaxRpm = self.maxRpm
-				else
-					local m = clutchCloseRpm
-					if clutchFactor > 0.7 then 
-						m = m + 3.333 * ( clutchFactor - 0.7 ) * ( self.maxRpm - m )
-					end 
-					self.vcaMaxRpm = math.max( wheelRpm, math.min( m, lastFakeRpm + 0.001 * dt * rpmRange ), lastFakeRpm - 0.001 * dt * rpmRange )
+				m = c * fakeRpm + ( 1 - c ) * self.maxRpm
+				if self.vehicle:vcaGetAutoClutch() and m > clutchCloseRpm then
+					m = clutchCloseRpm
 				end 
-				
-				self.vcaMinRpm   = math.min( clutchFactor * self.maxRpm,
-																		 self.vcaMaxRpm, 
-																		 lastFakeRpm + 0.001 * dt * rpmRange, 
-																		 math.max( r , lastFakeRpm  - 0.001 * dt * rpmRange ) )
-				
-				r = c * fakeRpm * curGearRatio
-				if r > 1000 * wheelRpm then 
-					r = 1000 
-				elseif r <= 0 then 
-					r = ( 1 - c ) * curGearRatio 
-				else 
-					r =( 1 - c ) * curGearRatio + r / wheelRpm
+				if m < wheelRpm then 
+					m = wheelRpm 
 				end 
-				self.minGearRatio = vehicleControlAddon.mbClamp( r, 1, self.vcaGearRatio )
-				self.maxGearRatio = vehicleControlAddon.mbClamp( r, self.vcaGearRatio, 1000 )
+				if m > self.maxRpm then 
+					m = self.maxRpm 
+				end 
+				self.vcaMaxRpm = vehicleControlAddon.mbClamp( m, lastMaxRpm - 0.001 * dt * rpmRange, lastMaxRpm + 0.001 * dt * rpmRange )
+				
+				m = c * fakeRpm 
+				if m < self.minRpm then 
+					m = self.minRpm 
+				end 
+				if m > self.vcaMaxRpm then 
+					m = self.vcaMaxRpm 
+				end 
+				self.vcaMinRpm = vehicleControlAddon.mbClamp( m, lastMinRpm - 0.001 * dt * rpmRange, lastMinRpm + 0.001 * dt * rpmRange )
+				
+				self.maxGearRatio = math.min( self.vcaGearRatio / ( 1 - c ), 30 * self.vcaGearRatio, 300 )
+				self.minGearRatio = math.max( self.vcaGearRatio * ( 1 - c )^0.1, 0.1 * self.vcaGearRatio, 1 )
 				
 				if self.vcaFakeRpm == nil then 
 					self.vcaFakeRpm = self.vcaMotorRpmS 
@@ -5450,25 +5453,41 @@ function vehicleControlAddon:vcaGetMaxClutchTorque( superFunc, ... )
 	if not ( self.vehicle ~= nil and self.vehicle.vcaIsLoaded ) then 
 		return superFunc( self, ... )
 	end 
-	if not ( self.vehicle.vcaIsLoaded and self.vehicle:vcaGetTransmissionActive() ) then 
+	if not ( self.vehicle.vcaIsLoaded and self.vehicle:vcaGetTransmissionActive() and self.vcaClutchTimer ~= nil and self.vcaGearRatio ~= nil ) then 
 		return superFunc( self, ... )
 	end 
-	if self.vehicle:vcaGetNeutral() or self.gearChangeTimer > 0 or self.vehicle.vcaClutchDisp >= 1 then 
+	if self.vehicle:vcaGetNeutral() or self.gearChangeTimer > 0 or self.vcaClutchTimer >= VCAGlobals.clutchTimer then 
 		return 0
+	end 		
+	if self.vehicle:vcaGetNoIVT() and self.vcaClutchTimer > 0 then 
+		local f = math.abs( self.gearRatio ) / self.vcaGearRatio 	
+		if self.vehicle.vcaTurboClutch then 
+			f = f / 3 
+		end 
+		f = f / 1.1
+		if f > 1 then 
+			local t = self.motorAvailableTorque / f
+			self.vehicle.vcaDebugT1 = string.format( "%7.1f: (%5.3f, %7.1f, %7.1f, %7.1f)", t*1000, f, 
+																			self.motorAvailableTorque*1000, 
+																			self.motorAppliedTorque*1000, 
+																			self.motorExternalTorque*1000 )
+			return math.min( t, superFunc( self, ... ) )
+		end 
 	end 
-	
---local c = 1
---if self.vehicle:vcaGetNoIVT() then 
---	c = 1 - self.vehicle.vcaClutchDisp
---end 
---
---return math.min( self:getPeakTorque() * 0.75 * ( 1 - math.cos( math.pi * c ) ), superFunc( self, ... ) )
 	return superFunc( self, ... )
 end 
 
 VehicleMotor.getMaxClutchTorque = Utils.overwrittenFunction( VehicleMotor.getMaxClutchTorque, vehicleControlAddon.vcaGetMaxClutchTorque )
 
 function vehicleControlAddon:vcaGetTotalConsumedPtoTorque( superFunc, ... )
+
+	if      self.spec_motorized ~= nil
+			and self.spec_motorized.motor ~= nil
+			and self.spec_motorized.motor.vcaClutchMinusTorque ~= nil 
+			then 
+		self.spec_motorized.motor.vcaClutchMinusTorque = nil 
+	end 
+	
 	if not ( self.vcaIsLoaded 
 			 and self:vcaGetTransmissionActive()
 			 and self:vcaGetNoIVT() 
@@ -5483,6 +5502,7 @@ function vehicleControlAddon:vcaGetTotalConsumedPtoTorque( superFunc, ... )
 	end 
 	
 	local motor = self.spec_motorized.motor 
+	
 	if     self:vcaGetNeutral()
 			or motor.gearChangeTimer > 0
 			or self.vcaClutchDisp >= 1
@@ -5499,9 +5519,10 @@ function vehicleControlAddon:vcaGetTotalConsumedPtoTorque( superFunc, ... )
 	end 
 	
 	local d = motor.vcaUsedClutchTorqueS -- motor.motorAppliedTorque - motor.motorExternalTorque
-	local t = math.max( 0, math.min( motor.motorAvailableTorque, ( f - 1 ) * d ) )
+	local t = math.max( 0, math.min( motor.motorAvailableTorque * 0.6, motor.motorAvailableTorque * ( 1 - 1 / f ), ( f - 1 ) * d ) )
+	motor.vcaClutchMinusTorque = t 
 	
-	self.vcaDebugT = string.format( "%7.1f: (%5.3f, %5.3f, %7.1f, %7.1f, %7.1f)", t*1000, f, motor.ptoMotorRpmRatio, 
+	self.vcaDebugT2 = string.format( "%7.1f: (%5.3f, %5.3f, %7.1f, %7.1f, %7.1f)", t*1000, f, motor.ptoMotorRpmRatio, 
 																		motor.motorAvailableTorque*1000, 
 																		motor.motorAppliedTorque*1000, 
 																		motor.motorExternalTorque*1000 )
@@ -5630,7 +5651,11 @@ function vehicleControlAddon:vcaGetMotorAppliedTorque( superFunc )
 	if self.vehicle.vcaGearbox ~= nil and self.vehicle:vcaGetNoIVT() and self.gearChangeTimer > 0 then 
 		return 0
 	end 
-	return superFunc( self )
+	local t = superFunc( self )
+	if self.vcaClutchMinusTorque ~= nil then 
+		t = math.max( t - self.vcaClutchMinusTorque ) 
+	end 
+	return t
 end 
 
 VehicleMotor.getMotorAppliedTorque = Utils.overwrittenFunction( VehicleMotor.getMotorAppliedTorque, vehicleControlAddon.vcaGetMotorAppliedTorque )
