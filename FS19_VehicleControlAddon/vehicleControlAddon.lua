@@ -5267,10 +5267,12 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 				fakeRpm = 0.9 * self.minRpm 
 			end 
 			clutchFactor = math.max( self.vcaClutchTimer / VCAGlobals.clutchTimer, 0 )
-			if curGearRatio <= self.vcaGearRatio then 
-				self.vehicle.vcaClutchDisp = 0
-			else 
+			self.vehicle.vcaClutchDisp = clutchFactor 
+			if     self.vehicle.vcaClutchDisp <= 0 then 
+			elseif 0.99 * curGearRatio > self.vcaGearRatio then 
 				self.vehicle.vcaClutchDisp = math.min( 1 - self.vcaGearRatio / curGearRatio, self.vcaClutchTimer / VCAGlobals.clutchTimer )
+			elseif curGearRatio < 0.99 * self.vcaGearRatio then 
+				self.vehicle.vcaClutchDisp = math.min( 1 - curGearRatio / self.vcaGearRatio, self.vcaClutchTimer / VCAGlobals.clutchTimer )
 			end 
 		else 
 			self.vcaClutchTimer          = 0
@@ -5348,9 +5350,9 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 				self.maxGearRatio = math.min( self.vcaGearRatio / ( 1 - c ), 30 * self.vcaGearRatio, 300 )
 				self.minGearRatio = math.max( self.vcaGearRatio * ( 1 - c )^0.1, 0.1 * self.vcaGearRatio, 1 )
 				
-				if self.vcaFakeRpm == nil then 
-					self.vcaFakeRpm = self.vcaMotorRpmS 
-				end 
+			--if self.vcaFakeRpm == nil then 
+			--	self.vcaFakeRpm = self.vcaMotorRpmS 
+			--end 
  			else
 				self.vcaMinRpm      = 0
 				self.vcaMaxRpm      = self.maxRpm
@@ -5358,57 +5360,42 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			
 			-- *******************************************
 			-- idle acceleration
-			if clutchFactor > 0 then 
-				local fullRpm = idleRpm - 0.25 * self.minRpm
-				local zeroRpm = math.min( idleRpm + 0.05 * self.minRpm, self.maxRpm )
-				local idleAcc = 0
-				
-				local smoothF = 0.1414
-				local deltaR  = math.abs( motorRpm - idleRpm )
-				
-				if     3 * deltaR >= 0.4472 * self.minRpm then 
-					smoothF = 0.4472
-				elseif 3 * deltaR > smoothF * self.minRpm  then 
-					smoothF = 3 * deltaR / self.minRpm 
-				end 
-				smoothF = smoothF * smoothF 
-				
-				if     motorRpm >= zeroRpm then 
-					idleAcc = 0
-				elseif motorRpm <= fullRpm then 
-					idleAcc = 1
-				else 
-					idleAcc = ( zeroRpm - motorRpm ) / ( zeroRpm - fullRpm )
-				end 
-				
-				if lastIdleAcc == nil or smoothF >= 1 then 
-					self.vcaIdleAcc = idleAcc
-				else 
-					self.vcaIdleAcc = lastIdleAcc + smoothF * ( idleAcc - lastIdleAcc )
-				end 
-							
-				if curBrake <= 0 and self.vcaIdleAcc > curAcc then 
-					newAcc = self.vcaIdleAcc
-					if  not fwd then 
-						newAcc = -newAcc
-					end 
-				elseif motorRpm > fakeRpm + 0.05 * self.maxRpm then 
-					newAcc = 0
-				end 	
-			elseif motorRpm < idleRpm and newAcc < 1 then 
-				local fullRpm = idleRpm - 0.1 * self.minRpm
-				local idleAcc = 0
-				if motorRpm <= idleRpm - 0.1 * self.minRpm then 
-					idleAcc = 1
-				else 
-					idleAcc = ( idleRpm - motorRpm ) / ( 0.1 * self.minRpm )
-				end 
-				if idleAcc > newAcc then 
-					newAcc = idleAcc 
-					self.speedLimit = math.min( self.speedLimit, math.max( 3.6 * maxSpeed * idleRpm / self.maxRpm, speed ) )
-				end 
-				self.vcaIdleAcc = self.vcaUsedTorqueRatioS
+			local fullRpm = idleRpm - 0.25 * self.minRpm
+			local zeroRpm = math.min( idleRpm + 0.05 * self.minRpm, self.maxRpm )
+			local idleAcc = 0
+			
+			local smoothF = 0.1414
+			local deltaR  = math.abs( motorRpm - idleRpm )
+			
+			if     3 * deltaR >= 0.4472 * self.minRpm then 
+				smoothF = 0.4472
+			elseif 3 * deltaR > smoothF * self.minRpm  then 
+				smoothF = 3 * deltaR / self.minRpm 
 			end 
+			smoothF = smoothF * smoothF 
+			
+			if     motorRpm >= zeroRpm then 
+				idleAcc = 0
+			elseif motorRpm <= fullRpm then 
+				idleAcc = 1
+			else 
+				idleAcc = ( zeroRpm - motorRpm ) / ( zeroRpm - fullRpm )
+			end 
+			
+			if lastIdleAcc == nil or smoothF >= 1 then 
+				self.vcaIdleAcc = idleAcc
+			else 
+				self.vcaIdleAcc = lastIdleAcc + smoothF * ( idleAcc - lastIdleAcc )
+			end 
+						
+			if curBrake <= 0 and self.vcaIdleAcc > curAcc then 
+				newAcc = self.vcaIdleAcc
+				if  not fwd then 
+					newAcc = -newAcc
+				end 
+			elseif motorRpm > fakeRpm + 0.05 * self.maxRpm then 
+				newAcc = 0
+			end 	
 	
 			if self.vehicle.vcaHandthrottle == 0 and not self.vehicle:vcaGetAutoShift() and motorPtoRpm >= self.minRpm then 
 				self.vcaMaxRpm = math.min( motorPtoRpm * 1.11, self.vcaMaxRpm )
