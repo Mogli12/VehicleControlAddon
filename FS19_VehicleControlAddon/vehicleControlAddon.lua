@@ -5442,21 +5442,6 @@ function vehicleControlAddon:vcaGetMaxClutchTorque( superFunc, ... )
 	if self.vehicle:vcaGetNeutral() or self.gearChangeTimer > 0 or self.vcaClutchTimer >= VCAGlobals.clutchTimer then 
 		return 0
 	end 		
-	if self.vehicle:vcaGetNoIVT() and self.vcaClutchTimer > 0 then 
-		local f = math.abs( self.gearRatio ) / self.vcaGearRatio 	
-		if self.vehicle.vcaTurboClutch then 
-			f = f / 3 
-		end 
-		f = f / 1.1
-		if f > 1 then 
-			local t = self.motorAvailableTorque / f
-			self.vehicle.vcaDebugT1 = string.format( "%7.1f: (%5.3f, %7.1f, %7.1f, %7.1f)", t*1000, f, 
-																			self.motorAvailableTorque*1000, 
-																			self.motorAppliedTorque*1000, 
-																			self.motorExternalTorque*1000 )
-			return math.min( t, superFunc( self, ... ) )
-		end 
-	end 
 	return superFunc( self, ... )
 end 
 
@@ -5477,6 +5462,7 @@ function vehicleControlAddon:vcaGetTotalConsumedPtoTorque( superFunc, excludeVeh
 			and self.spec_motorized.motor.vcaClutchMinusTorque ~= nil 
 			then 
 		self.spec_motorized.motor.vcaClutchMinusTorque = nil 
+		self.vcaDebugT = ""
 	end 
 	
 	if not ( self.vcaIsLoaded 
@@ -5497,8 +5483,7 @@ function vehicleControlAddon:vcaGetTotalConsumedPtoTorque( superFunc, excludeVeh
 	if     self:vcaGetNeutral()
 			or motor.gearChangeTimer > 0
 			or motor.ptoMotorRpmRatio <= 0
-			or self.vcaClutchDisp >= 1
-			or motor.motorAppliedTorque <= motor.motorExternalTorque then 
+			or self.vcaClutchDisp >= 1 then 
 		return superFunc( self, excludeVehicle, ... )
 	end 
 	
@@ -5506,7 +5491,7 @@ function vehicleControlAddon:vcaGetTotalConsumedPtoTorque( superFunc, excludeVeh
 	if self.vcaTurboClutch then 
 		f = f / 3 
 	end 
-	if f <= 1.1 then 
+	if f <= 1.01 then 
 		return superFunc( self, excludeVehicle, ... )
 	end 
 	
@@ -5514,16 +5499,14 @@ function vehicleControlAddon:vcaGetTotalConsumedPtoTorque( superFunc, excludeVeh
 	if p > 0 then 
 		p = p / motor.ptoMotorRpmRatio 
 	end 
-	local d = motor.vcaUsedClutchTorqueS -- motor.motorAppliedTorque - motor.motorExternalTorque
-	local t = math.max( 0, math.min( motor.motorAvailableTorque * 0.6, motor.motorAvailableTorque * ( 1 - 1 / f ) - p, ( f - 1 ) * d ) )
-	motor.vcaClutchMinusTorque = t 
+	motor.vcaClutchMinusTorque = math.max( 0, ( motor.motorAvailableTorque - p ) ) * math.min( 0.99, 1 - 1 / f )
 	
-	self.vcaDebugT2 = string.format( "%7.1f: (%5.3f, %5.3f, %7.1f, %7.1f, %7.1f)", t*1000, f, motor.ptoMotorRpmRatio, 
+	self.vcaDebugT = string.format( "%7.1f: (%5.3f, %5.3f, %7.1f, %7.1f, %7.1f)", motor.vcaClutchMinusTorque*1000, f, motor.ptoMotorRpmRatio, 
 																		motor.motorAvailableTorque*1000, 
-																		motor.motorAppliedTorque*1000, 
-																		motor.motorExternalTorque*1000 )
+																		(motor.motorAppliedTorque-motor.motorExternalTorque)*1000,
+																		(motor.motorAvailableTorque-motor.vcaClutchMinusTorque-p)*1000)
 	
-	return motor.ptoMotorRpmRatio * ( t + p )
+	return motor.ptoMotorRpmRatio * math.min( 0.99 * motor.motorAvailableTorque, motor.vcaClutchMinusTorque + p )
 end 
 
 PowerConsumer.getTotalConsumedPtoTorque = Utils.overwrittenFunction( PowerConsumer.getTotalConsumedPtoTorque, vehicleControlAddon.vcaGetTotalConsumedPtoTorque )
