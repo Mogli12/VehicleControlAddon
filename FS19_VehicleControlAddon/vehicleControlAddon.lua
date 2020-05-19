@@ -2668,11 +2668,11 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 		if a then  
 			if     gearRatio > 0 then
 				for _,wheel in pairs(self.spec_wheels.wheels) do
-					wheel.vcaMaxSpeed = 1.5 * minWheelSpeed 
+					wheel.vcaMaxSpeed = 1.1 * minWheelSpeed 
 				end 
 			elseif gearRatio < 0 then 
 				for _,wheel in pairs(self.spec_wheels.wheels) do
-					wheel.vcaMaxSpeed = 1.5 * maxWheelSpeed 
+					wheel.vcaMaxSpeed = 1.1 * maxWheelSpeed 
 				end 
 			end 
 		end 
@@ -2774,27 +2774,44 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 					s2 = s1 / 1.035
 				end 
 				
-				-- brake one wheel if it is too fast; but allow 2% error 
-				if     ( gearRatio > 0 and s1 >= 0 and s2 >= 0 )
-						or ( gearRatio < 0 and s1 <= 0 and s2 <= 0 ) then 
-					if math.abs( s1 ) > math.abs( s2 ) then 
-						setMaxSpeed( diff.diffIndex1, diff.diffIndex1IsWheel, 1.02*s2, true )
+				if 0.2 < r and r < 0.8 then 
+					-- distribute torque to reach the correct speed ratio 
+					local d1 = 0.5 * r
+					local d2 = 0.5 * ( 1 - r )
+				
+					if gearRatio < 0 then 
+						s1 = -s1
+						s2 = -s2 
 					end 
-					if math.abs( s1 ) < math.abs( s2 ) then 
-						setMaxSpeed( diff.diffIndex2, diff.diffIndex2IsWheel, 1.02*s1, true )
+					
+					if s1 <= 0.1389 and s2 <= 0.1389 then 
+					elseif s2 <= 0 then 
+						r = r + d2
+					elseif s1 <= 0 then 
+						r = r - d1
+					elseif s1 > s2 then 
+						r = r + d2 * ( 1 - s2 / s1 )
+					elseif s2 > s1 then 
+						r = r - d1 * ( 1 - s1 / s2 )
 					end 
 				end 
 			end 
 			
-			if diff.vcaSumDt ~= nil and diff.vcaSumDt > 100 and ( math.abs( diff.torqueRatio - r ) > 1e-3 or math.abs( diff.maxSpeedRatio - m ) > 1e-3 ) then 
+			if diff.vcaSumDt ~= nil and diff.vcaSumDt > 100 and math.abs( diff.maxSpeedRatio - m ) > 1e-3 then 
 				diff.vcaSumDt      = 0
 				diff.torqueRatio   = r 
 				diff.maxSpeedRatio = m
 				updateDiffs        = true 
-			elseif diff.vcaSumDt == nil then 
-				diff.vcaSumDt = 0 
-			else 
-				diff.vcaSumDt = diff.vcaSumDt + dt 
+			else
+				if diff.vcaSumDt == nil then 
+					diff.vcaSumDt = 0 
+				else 
+					diff.vcaSumDt = diff.vcaSumDt + dt 
+				end 
+				if diff.vcaIndex ~= nil and math.abs( diff.torqueRatio - r ) > 1e-3 then 
+					diff.torqueRatio   = r 
+					updateDifferential( spec.motorizedNode, diff.vcaIndex, diff.torqueRatio, diff.maxSpeedRatio )
+				end 
 			end 
 					
 			return newState 
@@ -2851,6 +2868,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 				end 
 			end 
 			
+			j = 0
 			for i, differential in pairs(spec.differentials) do
 				vehicleControlAddon.debugPrint("Diff "..tostring(i-1).." s: "..tostring(differential.vcaEnabled)
 																														..", v: "..tostring(differential.vcaMode)
@@ -2884,6 +2902,8 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 																							.. ", "..tostring(differential.diffIndex2)
 																							.. ", "..tostring(differential.diffIndex2IsWheel))
 					else 
+						differential.vcaIndex = j
+						j = j + 1 
 						addDifferential( spec.motorizedNode,
 														 diffIndex1,
 														 differential.diffIndex1IsWheel,
