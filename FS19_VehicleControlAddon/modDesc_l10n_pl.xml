@@ -17,6 +17,7 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vcaEXPONENT"        text="Czułość"/>
 		<text name="vcaSTEERING"        text="Sterowanie adaptacyjne"/>
 		<text name="vcaSHUTTLE"         text="Rewers"/>
+		<text name="vcaREVERSE"         text="Widok do tyłu"/>
 		<text name="vcaREVERSEI"        text="Widok do tyłu (wewnątrz)"/>
 		<text name="vcaREVERSEO"        text="Widok do tyłu (na zewnątrz)"/>
 		<text name="vcaLIMIT"           text="Tempomat"/>
@@ -57,6 +58,13 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vcaOWNGEARTIME"     text="Czas zmiany biegów"/>
 		<text name="vcaOWNRANGETIME"    text="Czas zmiany zakresów"/>
 		<text name="vcaOWNAUTOGEARS"    text="Biegi automatyczne"/>
+		<text name="vcaOWNAUTORANGE"    text="Zakresy automatyczne"/>
+		<text name="vcaAntiSlip"        text="Kontrola trakcji"/>
+		<text name="vcaDiffManual"      text="Ręczne ustawianie napędów i blokad"/>
+		<text name="vcaDiffFrontAdv"    text="Zwiększanie prędkości przedniej osi"/>
+		<text name="vcaDiffLockSwap"    text="Zamiana blokady dyf. pomiędzy osiami"/>
+		<text name="vcaHudX"            text="Pozycja HUDa X"/>
+		<text name="vcaHudY"            text="Pozycja HUDa Y"/>
 
 		<text name="vca_tip_CAMERAI"    text="Kamera wewnętrzna obraca się automatycznie zgodnie z kątem skrętu"/>
 		<text name="vca_tip_CAMERAO"    text="Kamera zewnętrzna obraca się automatycznie zgodnie z kątem skrętu"/>
@@ -102,6 +110,13 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vca_tip_OWNGEARTIME"  text="Czas pomiędzy przełączeniem biegów"/>
 		<text name="vca_tip_OWNRANGETIME" text="Czas pomiędzy przełączeniem zakresów"/>
 		<text name="vca_tip_OWNAUTOGEARS" text="Automatyczna zmiana biegów i dopasowanie prędkości"/>
+		<text name="vca_tip_OWNAUTORANGE" text="Automatyczna zmiana zakresów i dopasowanie prędkości"/>
+		<text name="vca_tip_AntiSlip"     text="Kontrola trakcji automatycznie blokuje koła obracające się bez oporów"/>
+		<text name="vca_tip_DiffManual"   text="Ręczne przełączanie napędów i blokad dyfernecjałów"/>
+		<text name="vca_tip_DiffFrontAdv" text="Zwiększa prędkość przedniej osi, jeśli włączony jest napęd na wszystkie koła"/>
+		<text name="vca_tip_DiffLockSwap" text="Zamienia blokady dyferencjału pomiędzy przednią a tylną osią"/>
+		<text name="vca_tip_HudX"         text="Pozycja HUDa w osi poziomej"/>
+		<text name="vca_tip_HudY"         text="Pozycja HUDa w osi pionowej"/>
 		
 		<text name="input_vcaSETTINGS"  text="VCA: Ustawienia"/>
 		<text name="input_vcaUP"        text="VCA: Zmiana widok / Widok w przód"/>
@@ -144,6 +159,23 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="input_vcaHandRpm_1" text="VCA: Dodaj gazu ręcznie"/>
 		<text name="input_vcaHandRpm_2" text="VCA: Odejmij gazu ręcznie"/>
 		<text name="input_vcaHandMode"  text="VCA: Tryb gazu ręcznego"/>
+		<text name="input_vcaAutoShift" text="VCA: Wł./Wył. automatyczną zmianę biegów"/>
+		<text name="input_vcaDiffLockF" text="VCA: Ster. blokadą przedniego dyf."/>
+		<text name="input_vcaDiffLockM" text="VCA: Ster. napędem na wszystkie koła"/>
+		<text name="input_vcaDiffLockB" text="VCA: Ster. blokadą tylnego dyf."/>
+		<text name="input_vcaLowerF"    text="VCA: Opuść/Podnieś przednie narzędzie"/>
+		<text name="input_vcaLowerB"    text="VCA: Opuść/Podnieś tylne narzędzie"/>
+		<text name="input_vcaActivateF" text="VCA: Włącz/Wyłącz przednie narzędzie"/>
+		<text name="input_vcaActivateB" text="VCA: Włącz/Wyłącz tylne narzędzie"/>
+		
+		<text name="vcaValueOn"         text="włączone"/>
+		<text name="vcaValueOff"        text="wyłączone"/>
+		<text name="vcaValueNever"      text="nigdy"/>
+		<text name="vcaValueAlways"     text="zawsze"/>
+		<text name="vcaValueNormal"     text="normalny"/>
+		<text name="vcaValueEntered"    text="jeśli w śedoku"/>
+		<text name="vcaValueInactive"   text="jeśli nieaktywny"/>
+		<text name="vcaValueRPM"        text="RPM"/>
 	</texts>
 	
 	<longTexts>
@@ -188,6 +220,9 @@ Zmiany w ustawieniach globalnych nie mają wpływu na bieżący pojazd. Są zapi
 Tutaj możesz stworzyć własną skrzynię biegów. Przełożenia mogą być przełączane automatycznie.
 Maksymalna prędkość na najwyższym biegu może być tylko teoretyczna. Możesz ją osiągnąć tylko bez ogranicznika prędkości. Przełożenia między biegami są obliczane na podstawie maksymalnej prędkości 1. biegu.
 Dwie maksymalne prędkości drugiego najwyższego zakresu są zbędne. Jeśli wpiszesz jedną wartość, druga zostanie odpowiednio zmieniona.]]>
+		</longText>
+		<longText name="vca_Help_6">
+<![CDATA[Dyferencjały i napęd na wszytskie koła]]>
 		</longText>
 	</longTexts>
 </l10n>
