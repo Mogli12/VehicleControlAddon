@@ -38,9 +38,9 @@
 		<text name="vcaSINGLEREV"       text="Retromarcia Singola"/>
 		<text name="vcaAUTOCLUTCH"      text="Frizione Automatica"/>
 		<text name="vcaTURBOCLUTCH"     text="Turbo clutch"/>
-		<text name="vcaGEARRATIOF"      text="Min. gear speed limit"/>
-		<text name="vcaGEARRATIOT"      text="Max. gear speed limit"/>
-		<text name="vcaG27MODE"         text="G27/G29 shifter mode"/>
+		<text name="vcaGEARRATIOF"      text="Limite Min. velocità rapporto"/>
+		<text name="vcaGEARRATIOT"      text="Limite Max. velocità rapporto"/>
+		<text name="vcaG27MODE"         text="G27/G29 modalita' cambio"/>
 		<text name="vcaHIREDWORKER"     text="Trasmissione e operai"/>
 		<text name="vcaOWNMINSPEED"     text="Velocità 1a Marcia"/>
 		<text name="vcaOWNMINRANGE"     text="Velocità 1a Marcia e Range"/>
@@ -52,6 +52,13 @@
 		<text name="vcaOWNAUTOGEARS"    text="Cambio Automatico"/>
 		<text name="vcaOWNAUTORANGE"    text="Cambio Range Automatico"/>
 
+		<text name="vcaAntiSlip"        text="Controllo della trazione"/>
+		<text name="vcaDiffManual"      text="Trazione integrale e differenziali manuali"/>
+		<text name="vcaDiffFrontAdv"    text="Aumenta la velocità dell'asse anteriore"/>
+		<text name="vcaDiffLockSwap"    text="Alterna tra asse anteriore e posteriore"/>
+		<text name="vcaHudX"            text="Posizione Hud x"/>
+		<text name="vcaHudY"            text="Posizione Hud y"/>
+		                                
     	<text name="vca_tip_CAMERAI"      text="La telecamera interna ruota automaticamente in base all'angolo di sterzata"/>
     	<text name="vca_tip_CAMERAO"      text="La telecamera esterna ruota automaticamente in base all'angolo di sterzata"/>
 		<text name="vca_tip_EXPONENT"  	  text="Sensibilità dello sterzo adattivo in base alla velocità sul terreno"/>
@@ -98,6 +105,13 @@
 		<text name="vca_tip_OWNAUTOGEARS" text="Cambio automatico in base alla velocità"/>
 		<text name="vca_tip_OWNAUTORANGE" text="Cambio Range automatico in base alla velocità"/>
 
+		<text name="vca_tip_AntiSlip" text="Il controllo di trazione frena le singole route in caso di slittamento"/>
+		<text name="vca_tip_DiffManual" text="Controllo manuale della trazione integrale e dei differenziali anteriori e posteriori"/>
+		<text name="vca_tip_DiffFrontAdv" text="Aumenta la velocità dell'asse anteriore se è attivata la trazione integrale"/>
+		<text name="vca_tip_DiffLockSwap" text="ALterna tra asse anteriore e posteriore"/>
+		<text name="vca_tip_HudX" text="Posizione HUD x"/>
+		<text name="vca_tip_HudY" text="Posizione HUD y"/>
+		                               
 		<text name="input_vcaSETTINGS" 	text="VCA: impostazioni"/>
 		<text name="input_vcaUP"      	text="VCA: scambia direzione vista / guarda indietro " />
 		<text name="input_vcaDOWN"    	text="VCA: sbirciare nell'altra direzione / guarda indietro" />
@@ -143,6 +157,10 @@
 		<text name="input_vcaDiffLockF" text="VCA: Differenziale anteriore (s)blocca"/>
 		<text name="input_vcaDiffLockM" text="VCA: Integrale/trazione anterione"/>
 		<text name="input_vcaDiffLockB" text="VCA: Differenziale posteriore (s)blocca"/>
+		<text name="input_vcaLowerF"    text="VCA: Alza/Abbassa attrezzo anteriore "/>
+		<text name="input_vcaLowerB"    text="VCA: Alza/Abbassa attrezzo posteriore "/>
+		<text name="input_vcaActivateF" text="VCA: (dis-)attiva attrezzo anteriore "/>
+		<text name="input_vcaActivateB" text="VCA: (dis-)attiva attrezzo posteriore "/>
 
 		<text name="vcaValueOn"         text="on"/>
 		<text name="vcaValueOff"        text="off"/>
@@ -198,5 +216,8 @@ Qui puoi configurare la tua strasmissione personalizzata. Le marce possono esser
 La velocità massima nella marcia più alta può essere solo teorica. Puoi raggiungerla solo senza limitatore di velocità. I rapporti tra le marce sono calcolati dalla velocità massima della 1a marcia.
 Le due velocità massime del secondo range più alto sono ridondanti. Se inserisci un valore in una, l'altro viene cambiato di conseguenza.]]>
 		</longText>
+<longText name="vca_Help_6">
+	<![CDATA[Differenziale e trazione integrale]]>
+</longText>		
 	</longTexts>
 </l10n>
