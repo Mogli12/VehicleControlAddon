@@ -58,6 +58,7 @@
 		<text name="vcaDiffLockSwap"    text="Tausch der Differentiale"/>
 		<text name="vcaHudX"            text="Hud position x"/>
 		<text name="vcaHudY"            text="Hud position y"/>
+		<text name="vcaHIREDWORKER2"    text="Differentiale und Helfer"/>
 	
 		<text name="vca_tip_CAMERAI"      text="Die innere Kamera dreht sich passend zum Lenkeinschlag automatisch mit."/>
 		<text name="vca_tip_CAMERAO"      text="Die äußere Kamera dreht sich passend zum Lenkeinschlag automatisch mit."/>
@@ -111,6 +112,7 @@
 		<text name="vca_tip_DiffLockSwap" text="Tausch der vorderen und hinteren Differentialsperre"/>
 		<text name="vca_tip_HudX"         text="Hud Position X"/>
 		<text name="vca_tip_HudY"         text="Hud Position Y"/>
+		<text name="vca_tip_HIREDWORKER2" text="Steuert, ob die Differentiale modifiziert werden, wenn das Fahrzeug vom Helfer kontrolliert wird"/>
 		
 		<text name="input_vcaSETTINGS"  text="VCA: Einstellungen"/>
 		<text name="input_vcaUP"        text="VCA: Blickrichtung wechseln oder nach vorne schauen"/>

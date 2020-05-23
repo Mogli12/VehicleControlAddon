@@ -206,6 +206,7 @@ function vehicleControlAddonRegister:loadMap(name)
 										"shuttleControl",
 										"peekLeftRight",
 										"hiredWorker",
+										"hiredWorker2",
 										"g27Mode",
 										"blowOffVolume",
 										"rotSpeedOut",

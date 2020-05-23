@@ -58,6 +58,7 @@
 		<text name="vcaDiffLockSwap"    text="Swap front and rear axle"/>
 		<text name="vcaHudX"            text="Hud position x"/>
 		<text name="vcaHudY"            text="Hud position y"/>
+		<text name="vcaHIREDWORKER2"    text="Differentials and hired worker"/>
 		                                
 		<text name="vca_tip_CAMERAI"      text="The interior camera rotates automatically according to the steering angle"/>
 		<text name="vca_tip_CAMERAO"      text="The exterior camera rotates automatically according to the steering angle"/>
@@ -111,6 +112,7 @@
 		<text name="vca_tip_DiffLockSwap" text="Swap front and rear axle"/>
 		<text name="vca_tip_HudX"         text="Hud position x"/>
 		<text name="vca_tip_HudY"         text="Hud position y"/>
+		<text name="vca_tip_HIREDWORKER2" text="Controls if the hired worked operates the vehicle with vanilla or modified differentials"/>
 		                               
 		<text name="input_vcaSETTINGS"  text="VCA: settings"/>
 		<text name="input_vcaUP"        text="VCA: toggle view direction / lock forwards"/>

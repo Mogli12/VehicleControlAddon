@@ -44,6 +44,16 @@
 					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaDiffLockSwap"/>
 					<GuiElement type="bitmap" profile="vcaMTOBg" />
 				</GuiElement>
+				
+				<GuiElement type="checkedOption" profile="vcaMTOSettings" id="vcaHiredWorker2"
+												toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_HIREDWORKER2"
+												onCreate="onCreateSubElement">
+					<GuiElement type="button" profile="vcaMTOLeft" />
+					<GuiElement type="button" profile="vcaMTORight"/>
+					<GuiElement type="text" profile="vcaMTOText" />
+					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaHIREDWORKER2"/>
+					<GuiElement type="bitmap" profile="vcaMTOBg" />
+				</GuiElement>
 
 			</GuiElement>			
 			<GuiElement id="boxLayout2" type="boxLayout" profile="vcaSettingsLayoutMid">

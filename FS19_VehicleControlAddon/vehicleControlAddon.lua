@@ -102,6 +102,7 @@ local listOfProperties =
 		{ func=listOfFunctions.float, xmlName="maxGearRatio",  propName="vcaGearRatioT"    },
 		{ func=listOfFunctions.int16, xmlName="g27Mode",       propName="vcaG27Mode"       },
 		{ func=listOfFunctions.int16, xmlName="hiredWorker",   propName="vcaHiredWorker"   },
+		{ func=listOfFunctions.bool,  xmlName="hiredWorker2",  propName="vcaHiredWorker2"  },
 		{ func=listOfFunctions.bool , xmlName="modifyPitch",   propName="vcaModifyPitch"   },
 		{ func=listOfFunctions.float, xmlName="ownGearFactor", propName="vcaOwnGearFactor" },
 		{ func=listOfFunctions.float, xmlName="ownRangeFactor",propName="vcaOwnRangeFactor" },
@@ -367,6 +368,7 @@ function vehicleControlAddon:onLoad(savegame)
 	vehicleControlAddon.registerState( self, "vcaSnapFactor",   0 )
 	vehicleControlAddon.registerState( self, "vcaModifyPitch",  VCAGlobals.modifyPitch )
 	vehicleControlAddon.registerState( self, "vcaHiredWorker",  VCAGlobals.hiredWorker )
+	vehicleControlAddon.registerState( self, "vcaHiredWorker2", VCAGlobals.hiredWorker2 )
 	vehicleControlAddon.registerState( self, "vcaBlowOffVolume",VCAGlobals.blowOffVolume )
 	vehicleControlAddon.registerState( self, "vcaRotSpeedOut",  VCAGlobals.rotSpeedOut )
 	vehicleControlAddon.registerState( self, "vcaRotSpeedIn",   VCAGlobals.rotSpeedIn )
@@ -556,10 +558,11 @@ function vehicleControlAddon:onPostLoad(savegame)
 	elseif ( self.spec_articulatedAxis ~= nil and self.spec_articulatedAxis.componentJoint ~= nil )
 			or ( self.numComponents == 2 and self.spec_crawlers ~= nil and #self.spec_crawlers.crawlers > 0 ) then 
 	-- articulated axis 
-		local spec = self.spec_motorized
-		
+		local spec       = self.spec_motorized
+		local specWheels = self.spec_wheels
+		local noPattern  = false 
 		local rootNode1, rootNode2 
-		
+				
 		if self.spec_articulatedAxis ~= nil and self.spec_articulatedAxis.componentJoint ~= nil then 
 			local componentJoint = self.spec_articulatedAxis.componentJoint
 			rootNode1 = self.components[componentJoint.componentIndices[1]].node
@@ -570,7 +573,16 @@ function vehicleControlAddon:onPostLoad(savegame)
 			rootNode2 = self.components[1].node 
 		end 
 		
-		local function checkWheelsOfDiff( rootNode1, rootNode2, index, isWheel )
+		local function checkWheelsOfDiff( rootNode1, rootNode2, index, isWheel, depth )
+			local d2 = 2 
+			if type( depth ) == 'number' then 
+				if depth > #spec.differentials then 
+					print("VCA: found recursion in differential definition")
+					noPattern = true 
+					return false, false, false 
+				end 
+				d2 = depth + 1
+			end 
 			if isWheel then 
 				local wheel    = self:getWheelFromWheelIndex( index )
 				local rootNode = self:getParentComponent(wheel.repr)
@@ -581,16 +593,14 @@ function vehicleControlAddon:onPostLoad(savegame)
 				else 
 					return false, false, false 
 				end 
-			else 
+			else 				
 				local diff = spec.differentials[index+1] 				
-				local c11, c21, a1 = checkWheelsOfDiff( rootNode1, rootNode2, diff.diffIndex1, diff.diffIndex1IsWheel )
-				local c12, c22, a2 = checkWheelsOfDiff( rootNode1, rootNode2, diff.diffIndex2, diff.diffIndex2IsWheel )				
+				local c11, c21, a1 = checkWheelsOfDiff( rootNode1, rootNode2, diff.diffIndex1, diff.diffIndex1IsWheel, d2 )
+				local c12, c22, a2 = checkWheelsOfDiff( rootNode1, rootNode2, diff.diffIndex2, diff.diffIndex2IsWheel, d2 )				
 				return c11 or c12, c21 or c22, a1 and a2 
 			end 
 		end 
 		
-		local noPattern  = false 
-		local specWheels = self.spec_wheels
 		for k,differential in pairs(spec.differentials) do
 			local c1, c2, all = checkWheelsOfDiff( rootNode1, rootNode2, k-1, false )
 			if all and ( c1 or c2 ) then  
@@ -623,8 +633,18 @@ function vehicleControlAddon:onPostLoad(savegame)
 	else 
 	-- hopefully, a normal vehicle 
 		local spec = self.spec_motorized
-		
-		local function getMinMaxRotSpeed( index, isWheel ) 
+		local noPattern  = false 
+				
+		local function getMinMaxRotSpeed( index, isWheel, depth ) 
+			local d2 = 2 
+			if type( depth ) == 'number' then 
+				if depth > #spec.differentials then 
+					print("VCA: found recursion in differential definition")
+					noPattern = true 
+					return 0, 0
+				end 
+				d2 = depth + 1
+			end 
 			if isWheel then 
 				local wheel = self:getWheelFromWheelIndex( index )
 				if not wheel.showSteeringAngle then 
@@ -638,14 +658,12 @@ function vehicleControlAddon:onPostLoad(savegame)
 			else 
 				local diff = spec.differentials[index+1] 
 				
-				local rMin1, rMax1 = getMinMaxRotSpeed( diff.diffIndex1, diff.diffIndex1IsWheel )
-				local rMin2, rMax2 = getMinMaxRotSpeed( diff.diffIndex2, diff.diffIndex2IsWheel )
+				local rMin1, rMax1 = getMinMaxRotSpeed( diff.diffIndex1, diff.diffIndex1IsWheel, d2 )
+				local rMin2, rMax2 = getMinMaxRotSpeed( diff.diffIndex2, diff.diffIndex2IsWheel, d2 )
 				
 				return math.min( rMin1, rMin2 ), math.max( rMax1, rMax2 )
 			end 
 		end 
-		
-		local noPattern  = false 
 		
 		for k,differential in pairs(spec.differentials) do
 			local rMin1, rMax1 = getMinMaxRotSpeed( k-1, false )
@@ -1477,7 +1495,7 @@ end
 		
 function vehicleControlAddon:vcaGetDiffState()
 	if not ( self.vcaIsLoaded
-			 and self:vcaIsVehicleControlledByPlayer()
+			 and ( self:vcaIsVehicleControlledByPlayer() or ( self.vcaHiredWorker2 and self:getIsActive() ) )
 			 and self:getIsMotorStarted()
 			 and self.vcaDiffManual ) then  
 	-- hired worker or motor off 
@@ -4615,10 +4633,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	end 
 	local clutchRpm = wheelRpm
 	if self.gearChangeTimer <= 0 and not autoNeutral then 
-		clutchRpm = self.differentialRotSpeed * r * vehicleControlAddon.factor30pi
-		if wheelRpm > clutchRpm then 
-			wheelRpm = clutchRpm 
-		end 
+		clutchRpm = self.differentialRotSpeed * self.gearRatio * vehicleControlAddon.factor30pi
 	end 
 	
 	if self.vcaDirTimer ~= nil then 
@@ -5119,9 +5134,10 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 					end 
 				end 
 
-				self.vehicle.vcaDebugL = string.format( "%s, %s, %s, %d, %d",
+				self.vehicle.vcaDebugL = string.format( "%s, %s, %s, %s, %d, %d",
 																								vehicleControlAddon.vcaSpeedInt2Ext( self.vehicle.vcaMaxSpeed ),
 																								vehicleControlAddon.vcaSpeedInt2Ext( self.vehicle.vcaLaunchSpeed ),
+																								vehicleControlAddon.vcaSpeedInt2Ext( self.speedLimit ),
 																								vehicleControlAddon.vcaSpeedInt2Ext( launchSpeed ),
 																								gear,
 																								launchGear )
@@ -5737,12 +5753,12 @@ function vehicleControlAddon:vcaGetTorqueAndSpeedValues( superFunc )
 		end 
 		
 		for i=1,#rotationSpeeds do	
-			print(string.format("%5.0f, %5.0f",rotationSpeeds[i]*30/math.pi, torques[i]*1000))
+			vehicleControlAddon.debugPrint(string.format("%5.0f, %5.0f",rotationSpeeds[i]*30/math.pi, torques[i]*1000))
 		end 
 		
-		print(string.format("%5.0f .. %5.0f", self.vcaMaxPowerRpmL, self.vcaMaxPowerRpmH ))
-		print(string.format("%5.0f .. %5.0f", self.vcaMinRpm, self.vcaMaxRpm ))
-		print(string.format("%5.0f .. %5.0f", self.minRpm, self.maxRpm ))
+		vehicleControlAddon.debugPrint(string.format("%5.0f .. %5.0f", self.vcaMaxPowerRpmL, self.vcaMaxPowerRpmH ))
+		vehicleControlAddon.debugPrint(string.format("%5.0f .. %5.0f", self.vcaMinRpm, self.vcaMaxRpm ))
+		vehicleControlAddon.debugPrint(string.format("%5.0f .. %5.0f", self.minRpm, self.maxRpm ))
 		
 		return torques, rotationSpeeds
 	end 
@@ -5872,7 +5888,7 @@ function vehicleControlAddon:vcaOnSetLastSnapAngle( old, new, noEventSend )
 	self.vcaLastSnapAngle = new 
 	
 --if      ( old == nil or new ~= old ) then 
---	print("vcaOnSetLastSnapAngle: "..tostring(new))
+--	vehicleControlAddon.debugPrint("vcaOnSetLastSnapAngle: "..tostring(new))
 --	printCallstack()
 --end 
 end 
