@@ -44,10 +44,10 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>store.dds</iconFilename>
-	<version>9.1.6.3</version>
+	<version>9.1.6.4</version>
 	<l10n filenamePrefix="modDesc_l10n">
 		<text name="vcaVERSION">          
-			<en>Vehicle Control Addon beta build 163</en>
+			<en>Vehicle Control Addon beta build 164</en>
 		</text>
 	</l10n>
 	
@@ -78,6 +78,8 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 		<action name="vcaRangeUp"   category="VEHICLE" axisType="HALF"/>
 		<action name="vcaRangeDown" category="VEHICLE" axisType="HALF"/>
 		<action name="vcaNeutral"   category="VEHICLE" axisType="HALF"/>
+		<action name="vcaNeutral0"  category="VEHICLE" axisType="HALF"/>
+		<action name="vcaNeutral1"  category="VEHICLE" axisType="HALF"/>
 		<action name="vcaShifter1"  category="VEHICLE" axisType="HALF"/>
 		<action name="vcaShifter2"  category="VEHICLE" axisType="HALF"/>
 		<action name="vcaShifter3"  category="VEHICLE" axisType="HALF"/>
