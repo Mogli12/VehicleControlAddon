@@ -58,6 +58,7 @@
 		<text name="vcaDiffLockSwap"        text="Поменять перед и зад"/>
 		<text name="vcaHudX"                text="Координата 'х' HUD"/>
 		<text name="vcaHudY"                text="Координата 'y' HUD"/>
+		<text name="vcaHIREDWORKER2"        text="Дифференциалы и наёмный рабочий"/>
 
 		<text name="vca_tip_CAMERAI"        text="Внутренняя камера автоматически поворачивается в соответствии с углом поворота рулевого колеса."/>
 		<text name="vca_tip_CAMERAO"        text="Внешняя камера автоматически поворачивается в соответствии с углом поворота рулевого колеса."/>
@@ -82,9 +83,9 @@
 		<text name="vca_tip_DRAWHUD"        text="Отобразить или скрыть HUD трансмиссии."/>
 
 		<text name="vca_tip_DISTANCE"       text="Расстояние между двумя рядами удержания направлений."/>
-		<text name="vca_tip_OFFSET1"        text="Смещение рядов удержания направлений."/>
-		<text name="vca_tip_OFFSET2"        text="Инвертировать смещение рядов удержания направлений"/>
-		<text name="vca_tip_DRAWMARKER"     text="Отрисовка маркера рядов удержания направлений."/>
+		<text name="vca_tip_OFFSET1"        text="Смещение полос удержания направлений."/>
+		<text name="vca_tip_OFFSET2"        text="Инвертировать смещение полос удержания направлений."/>
+		<text name="vca_tip_DRAWMARKER"     text="Отрисовка маркера полос удержания направлений."/>
 		<text name="vca_tip_PITCH1"         text="Modification of sound pitch to make it linear"/>
 		<text name="vca_tip_PITCH2"         text="Sound pitch at medium RPM"/>
 		<text name="vca_tip_BLOWOFFVOL"     text="Volume of the turbo wastegate"/>
@@ -94,7 +95,7 @@
 		<text name="vca_tip_GEARRATIOF"     text="Min. gear speed limit"/>
 		<text name="vca_tip_GEARRATIOT"     text="Max. gear speed limit"/>
 		<text name="vca_tip_G27MODE"        text="Режим переключения G27/G29"/>
-		<text name="vca_tip_HIREDWORKER"    text="Controls if the hired worked operates the vehicle with vanilla or modified transmission"/>
+		<text name="vca_tip_HIREDWORKER"    text="Когда наёмный работник управляет техникой, какую трансмиссию он будет использовать: ванильную или модифицированную."/>
 		<text name="vca_tip_OWNMINSPEED"    text="Gear speed of 1st gear in highest range"/>
 		<text name="vca_tip_OWNMINRANGE"    text="Gear speed of 1st gear in 2nd highest range"/>
 		<text name="vca_tip_OWNMAXRANGE"    text="Gear speed of highest gear in 2nd highest range"/>
@@ -111,6 +112,7 @@
 		<text name="vca_tip_DiffLockSwap"   text="Поменять местами передний и задний дифференциал."/>
 		<text name="vca_tip_HudX"           text="Координата 'х' HUD"/>
 		<text name="vca_tip_HudY"           text="Координата 'y' HUD"/>
+		<text name="vca_tip_HIREDWORKER2"   text="Если техникой управляет наёмный работник, использовать ванильный или модифицированный дифференциал."/>
 		
 		<text name="input_vcaSETTINGS"      text="VCA: Настройки"/>
 		<text name="input_vcaUP"            text="VCA: Посмотреть вперед"/>
@@ -138,6 +140,8 @@
 		<text name="input_vcaRangeUp"       text="VCA: Диапазон вверх"/>
 		<text name="input_vcaRangeDown"     text="VCA: Диапазон вниз"/>
 		<text name="input_vcaNeutral"       text="VCA: Нейтральная вкл/выкл"/>
+		<text name="input_vcaNeutral0"      text="VCA: Нейтральная ВЫКЛ"/>
+		<text name="input_vcaNeutral1"      text="VCA: Нейтральная ВКЛ"/>
 		<text name="input_vcaClutch"        text="VCA: Одинарный выжим"/>
 		<text name="input_vcaShifter1"      text="VCA: G27/G29 Передача 1"/>
 		<text name="input_vcaShifter2"      text="VCA: G27/G29 Передача 2"/>
