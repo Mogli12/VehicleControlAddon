@@ -140,6 +140,8 @@
 		<text name="input_vcaRangeUp"   text="VCA: range up"/>
 		<text name="input_vcaRangeDown" text="VCA: range down"/>
 		<text name="input_vcaNeutral"   text="VCA: neutral on/off"/>
+		<text name="input_vcaNeutral0"  text="VCA: neutral off"/>
+		<text name="input_vcaNeutral1"  text="VCA: neutral on"/>
 		<text name="input_vcaClutch"    text="VCA: clutch axis"/> 
 		<text name="input_vcaShifter1"  text="VCA: G27/G29 gear 1"/>
 		<text name="input_vcaShifter2"  text="VCA: G27/G29 gear 2"/>

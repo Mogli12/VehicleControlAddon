@@ -140,6 +140,8 @@
 		<text name="input_vcaRangeUp"   text="VCA: Gruppe hoch"/>
 		<text name="input_vcaRangeDown" text="VCA: Gruppe runter"/>
 		<text name="input_vcaNeutral"   text="VCA: Leerlauf an/aus"/>
+		<text name="input_vcaNeutral0"  text="VCA: Leerlauf aus"/>
+		<text name="input_vcaNeutral1"  text="VCA: Leerlauf an"/>
 		<text name="input_vcaClutch"    text="VCA: Kupplungsachse"/>
 		<text name="input_vcaShifter1"  text="VCA: G27/G29 Gang 1"/>
 		<text name="input_vcaShifter2"  text="VCA: G27/G29 Gang 2"/>
