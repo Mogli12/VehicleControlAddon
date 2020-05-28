@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <l10n>
-	
-	
+	<description>
+<![CDATA[Skrypt ten zmienia prędkość skrętu, centrowania kół i maksymalny kąt skrętu w zależności od aktualnej prędkości pojazdu.
+Obraca również kamerę, aby dopasować ją do kierunku jazdy.
+Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
+
+[Lewy Ctrl + C]: Ustawienia
+[Lewy Shift]: Kotrola prędkości tempomatu
+[Prawy Shift + Strzałki]: Widok w przód, tył, prawo, lewo
+[Spacja]: Zmiana kierunku jazdy (rewers)]]>
+	</description>
 
 	<texts>
 		<text name="vcaCAMERAI"         text="Obrót kamery wewnętrznej"/>
