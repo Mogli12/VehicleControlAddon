@@ -59,12 +59,14 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vcaOWNRANGETIME"    text="Czas zmiany zakresów"/>
 		<text name="vcaOWNAUTOGEARS"    text="Biegi automatyczne"/>
 		<text name="vcaOWNAUTORANGE"    text="Zakresy automatyczne"/>
+		
 		<text name="vcaAntiSlip"        text="Kontrola trakcji"/>
 		<text name="vcaDiffManual"      text="Ręczne ustawianie napędów i blokad"/>
 		<text name="vcaDiffFrontAdv"    text="Zwiększanie prędkości przedniej osi"/>
 		<text name="vcaDiffLockSwap"    text="Zamiana blokady dyf. pomiędzy osiami"/>
 		<text name="vcaHudX"            text="Pozycja HUDa X"/>
 		<text name="vcaHudY"            text="Pozycja HUDa Y"/>
+		<text name="vcaHIREDWORKER2"    text="Pracownik i dyferencjały"/>
 
 		<text name="vca_tip_CAMERAI"    text="Kamera wewnętrzna obraca się automatycznie zgodnie z kątem skrętu"/>
 		<text name="vca_tip_CAMERAO"    text="Kamera zewnętrzna obraca się automatycznie zgodnie z kątem skrętu"/>
@@ -111,12 +113,14 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vca_tip_OWNRANGETIME" text="Czas pomiędzy przełączeniem zakresów"/>
 		<text name="vca_tip_OWNAUTOGEARS" text="Automatyczna zmiana biegów i dopasowanie prędkości"/>
 		<text name="vca_tip_OWNAUTORANGE" text="Automatyczna zmiana zakresów i dopasowanie prędkości"/>
+		
 		<text name="vca_tip_AntiSlip"     text="Kontrola trakcji automatycznie blokuje koła obracające się bez oporów"/>
 		<text name="vca_tip_DiffManual"   text="Ręczne przełączanie napędów i blokad dyfernecjałów"/>
 		<text name="vca_tip_DiffFrontAdv" text="Zwiększa prędkość przedniej osi, jeśli włączony jest napęd na wszystkie koła"/>
 		<text name="vca_tip_DiffLockSwap" text="Zamienia blokady dyferencjału pomiędzy przednią a tylną osią"/>
 		<text name="vca_tip_HudX"         text="Pozycja HUDa w osi poziomej"/>
 		<text name="vca_tip_HudY"         text="Pozycja HUDa w osi pionowej"/>
+		<text name="vca_tip_HIREDWORKER2" text="Ustala, czy wynajęty pracownik używa domyślnych czy zmodyfikowanych dyferencjałów"/>
 		
 		<text name="input_vcaSETTINGS"  text="VCA: Ustawienia"/>
 		<text name="input_vcaUP"        text="VCA: Zmiana widok / Widok w przód"/>
@@ -144,6 +148,8 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="input_vcaRangeUp"   text="VCA: Zakres w górę"/>
 		<text name="input_vcaRangeDown" text="VCA: Zakres w dół"/>
 		<text name="input_vcaNeutral"   text="VCA: Luz"/>
+		<text name="input_vcaNeutral0"  text="VCA: Wyłącz luz"/>
+		<text name="input_vcaNeutral1"  text="VCA: Włącz luz"/>
 		<text name="input_vcaClutch"    text="VCA: Sprzęgło"/>
 		<text name="input_vcaShifter1"  text="VCA: G27/G29 bieg 1"/>
 		<text name="input_vcaShifter2"  text="VCA: G27/G29 bieg 2"/>
@@ -173,7 +179,7 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vcaValueNever"      text="nigdy"/>
 		<text name="vcaValueAlways"     text="zawsze"/>
 		<text name="vcaValueNormal"     text="normalny"/>
-		<text name="vcaValueEntered"    text="jeśli w śedoku"/>
+		<text name="vcaValueEntered"    text="jeśli w środku"/>
 		<text name="vcaValueInactive"   text="jeśli nieaktywny"/>
 		<text name="vcaValueRPM"        text="RPM"/>
 	</texts>
