@@ -409,6 +409,8 @@ function vehicleControlAddon:onLoad(savegame)
 	self.vcaAutoStopS     = false 
 	self.vcaRpmFactor     = 1
 	self.vcaRpmFactorS    = 1
+	self.vcaWheelSlip     = 0
+	self.vcaWheelSlipS    = 0
 	self.vcaLastRpmFactor = 1
 
 	if self.isClient then 
@@ -2225,7 +2227,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 			if self:vcaGetTransmissionActive() and self:vcaGetNoIVT() then  
 				local motor = self:getMotor() 
 				if motor ~= nil and motor.vcaGearRatio ~= nil then  
-					s = math.max( s, motor.minRpm / ( motor.vcaGearRatio * vehicleControlAddon.factor30pi ) - 0.4 )
+					s = math.max( s, ( 0.9 * motor.minRpm + 0.1 * motor.maxRpm ) / ( motor.vcaGearRatio * vehicleControlAddon.factor30pi ) )
 				end 
 			end 
 			
@@ -3199,6 +3201,11 @@ function vehicleControlAddon:onDraw()
 				renderText(x, y, l2, text)
 				y = y + l * 1.2	
 			end 
+				
+			if self.vcaDiffManual or self.vcaAntiSlip then 
+				renderText(x, y, l, string.format( "Wheel slip: %3.0f%%", self.vcaWheelSlip*100))
+				y = y + l * 1.2	
+			end 
 			
 			local showCompass = ( self.spec_globalPositioningSystem == nil )
 
@@ -3549,6 +3556,7 @@ function vehicleControlAddon:onReadUpdateStream(streamId, timestamp, connection)
 		-- receive vcaClutchDisp from server 
 			self.vcaClutchDisp = streamReadUIntN(streamId, 10) / 1023
 			self.vcaRpmFactor  = streamReadUIntN(streamId, 6 ) / 43
+			self.vcaWheelSlip  = streamReadUIntN(streamId, 6 ) / 63
 			local autoStop = streamReadBool(streamId)
 			local motor = self:getMotor()
 			if     motor == nil then
@@ -3577,6 +3585,7 @@ function vehicleControlAddon:onWriteUpdateStream(streamId, connection, dirtyMask
 		local autoStop  = self:vcaGetAutoHold()
 		if     math.abs( self.vcaClutchDisp - self.vcaClutchDispS ) > 0.001
 				or math.abs( self.vcaRpmFactor  - self.vcaRpmFactorS  ) > 0.02 
+				or math.abs( self.vcaWheelSlip  - self.vcaWheelSlipS  ) > 0.02 
 				or autoStop ~= self.vcaAutoStopS
 				then
 			hasUpdate = true 
@@ -3586,9 +3595,11 @@ function vehicleControlAddon:onWriteUpdateStream(streamId, connection, dirtyMask
 			streamWriteUIntN(streamId, vehicleControlAddon.mbClamp( math.floor( 0.5 + self.vcaClutchDisp * 1023 ), 0, 1023 ), 10)			
 			-- 0 to 1.1 * maxRpm; 3723 * 1.1 = 4095.3
 			streamWriteUIntN(streamId, vehicleControlAddon.mbClamp( math.floor( 0.5 + self.vcaRpmFactor * 43 ), 0, 63 ), 6)
+			streamWriteUIntN(streamId, vehicleControlAddon.mbClamp( math.floor( 0.5 + self.vcaWheelSlip * 63 ), 0, 63 ), 6)
 			streamWriteBool(streamId, autoStop )
 			self.vcaClutchDispS = self.vcaClutchDisp  
 			self.vcaRpmFactorS  = self.vcaRpmFactor 
+			self.vcaWheelSlipS  = self.vcaWheelSlip
 			self.vcaAutoStopS   = autoStop
 		end
 	end
@@ -4285,7 +4296,7 @@ function maxAcceleration:new( defaults, aggrFunc, arraySize, deltaT )
 	if arraySize ~= nil then 
 		self.size   = arraySize 
 	end 
-	self.deltaT   = 500
+	self.deltaT   = 1000
 	if deltaT ~= nil then 
 		self.deltaT = deltaT 
 	end 
@@ -4444,13 +4455,16 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	
 	local expectedWheelSpeed, expectedMotorSpeed
 	
-	if self.vcaLastSpeed ~= nil and dt > 0 then
+	if self.vcaLastSpeed ~= nil and dt > 0 and self.vcaMaxWheelAcc ~= nil then 
 		self.vcaWheelAcc   = ( wheelSpeed - self.vcaLastSpeed ) / ( dt * 0.001 )
-		expectedWheelSpeed = math.min( wheelSpeed, self.vcaLastSpeed + 0.001 * dt * self.vcaMaxWheelAcc, self.vcaLastSpeedLimit )
+		expectedWheelSpeed = math.min( wheelSpeed, self.vcaLastSpeed + 0.001 * dt * self.vcaMaxWheelAcc )
+		if self.vcaLastSpeedLimit ~= nil and expectedWheelSpeed > self.vcaLastSpeedLimit then 
+			expectedWheelSpeed = self.vcaLastSpeedLimit
+		end 
 	else 
 		expectedWheelSpeed = wheelSpeed
 	end 
-	if self.vcaLastRot   ~= nil and dt > 0 then 
+	if self.vcaLastRot   ~= nil and dt > 0 and self.vcaMaxMotorAcc ~= nil then  
 		self.vcaMotorAcc   = ( self.motorRotSpeed - self.vcaLastRot ) / ( dt * 0.001 )
 		expectedMotorSpeed = math.max( lastMinRpm, math.min( self.motorRotSpeed, self.vcaLastRot + 0.001 * dt * self.vcaMaxMotorAcc, lastMaxRpm ) )
 	else 
@@ -4464,17 +4478,6 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		self.vcaWheelAccS = self.vcaWheelAccS + 0.02 * ( self.vcaWheelAcc - self.vcaWheelAccS )
 	end 
 	
-	if not self.vehicle:vcaGetNoIVT() and self.vcaMaxAcc ~= nil then 
-		self.vehicle.vcaDebug1 = string.format( "%7.2f, %7.2f | %7.4f, %7.4f | %7.3f, %7.3f", 
-																						self.differentialRotSpeed*3.6,
-																						self.vcaMaxWheelSpeed*3.6,
-																						self.vcaWheelAccS,
-																						self.vcaWheelAcc,
-																						self.vcaMaxMotorAcc,
-																						self.vcaMotorAcc )
-	end 
-	
-
 	local idleRpm      = self.minRpm  
 	if     self.vehicle.vcaHandthrottle == nil 
 			or self.vehicle.vcaHandthrottle == 0 then 
@@ -4525,8 +4528,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		return superFunc( self, acceleratorPedal, dt )
 	end 
 	
-	local fwd, curBrake
-	local lastFwd
+	local fwd, curBrake, lastFwd
 	if self.vcaLastFwd ~= nil then 
 		lastFwd  = self.vcaLastFwd
 	elseif self.vehicle.movingDirection < 0 then 
@@ -4676,6 +4678,15 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		end 			
 		
 		self.vcaUsedTorqueRatio = t / math.max(self.motorAvailableTorque, 0.0001)
+		
+		if      self.vcaMaxWheelSpeed  ~= nil 
+				and self.vcaLastSpeedLimit ~= nil
+				and wheelSpeed >= self.vcaMaxWheelSpeed 
+				and wheelSpeed * 3.6 < self.vcaLastSpeedLimit - 1 
+				then 
+			self.vcaUsedTorqueRatio = 1
+		end 
+		
 		self.vcaUsedPowerRatio  = t * 1.07 * self.motorRotSpeed
 	end 
 	self.vcaUsedClutchTorque  = math.max( 0, self.motorAppliedTorque - self.motorExternalTorque )
@@ -4797,27 +4808,19 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		self.vcaLastRpmW = lastRpmW + 0.05 * ( wheelRpm  - lastRpmW )
 	end 
 	
-	self.vcaSlip = 0
---if self.vcaLastSpeedLimit ~= nil and wheelSpeed * 3.6 > self.vcaLastSpeedLimit then 
---	wheelSpeed = self.vcaLastSpeedLimit / 3.6
---end 
-	if speedMS > 0.5 and wheelSpeed > speedMS then 
-		self.vcaSlip = wheelSpeed / speedMS - 1
+	self.vcaWheelSlip = 0
+	if speedMS > 0.5 and wheelSpeed > speedMS and not autoNeutral then 
+		self.vcaWheelSlip = wheelSpeed / speedMS - 1
 	end 
 
-	if self.vcaSlipF == nil then 
-		self.vcaSlipF = 0 
-	end 
-	self.vcaSlipF   = self.vcaSlipF + 0.07 * ( self.vcaSlip - self.vcaSlipF )
-	
-	if self.vcaSlipMMA == nil then 	
-		self.vcaSlipMMA = maxMovingAverage:new( 5000, 50, 0 )
+	if self.vcaSlipMMA == nil then 
+		self.vcaSlipMMA = maxMovingAverage:new( 1000, 250, 0 )
 	end 	
-	self.vcaSlipMMA:collect( dt, self.vcaSlip )
-	self.vcaSlipS = self.vcaSlipMMA:get()
+	self.vcaSlipMMA:collect( dt, self.vcaWheelSlip )	
+	self.vehicle.vcaWheelSlip = self.vcaSlipMMA:get()
 	
 	local realSpeedLimit   = self.speedLimit 
-	self.speedLimit        = self.speedLimit * ( 1 + self.vcaSlip )
+	self.speedLimit        = self.speedLimit * ( 1 + self.vehicle.vcaWheelSlip )
 	self.vcaLastSpeedLimit = self.speedLimit
 	
 	if not self.vehicle:getIsMotorStarted() or dt < 0 or self.vehicle.vcaLastTransmission == nil or transmission == nil then 
@@ -5684,7 +5687,13 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		self.vcaLastAcc = 0 
 		return 0
 	end 
-	self.speedLimit = math.min( self.speedLimit, self.vcaMaxWheelSpeed * 3.6 )
+	
+	local sl = self.vcaMaxWheelSpeed * 3.6 
+	if not autoNeutral and self.vcaFakeTimer == nil then 
+		sl = math.min( sl, 3.6 * self.vcaMaxMotorSpeed / math.abs( self.minGearRatio ) )
+	end 
+	
+	self.speedLimit = math.min( self.speedLimit, sl )
 	self.vcaLastAcc = newAcc 
 	return newAcc
 	
