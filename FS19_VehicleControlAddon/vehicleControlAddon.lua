@@ -1400,18 +1400,29 @@ function vehicleControlAddon:vcaGetAutoShift()
 	if self.vcaIsLoaded and self:vcaIsVehicleControlledByPlayer() then 
 		if      self.vcaAutoShift 
 				and self:vcaGetNoIVT()
-				and self.vcaGearbox ~= nil 
+				and self.vcaGearbox ~= nil
 				and ( self.vcaGearbox.autoShiftGears or self.vcaGearbox.autoShiftRange ) then 
-			if self.vcaSingleReverse == 0 then 
-				return true 
-			elseif not self:vcaGetIsReverse() then
-				return true 
-			elseif self.vcaSingleReverse > 0 and self.vcaGearbox.autoShiftRange then
-				return true 
-			elseif self.vcaSingleReverse < 0 and self.vcaGearbox.autoShiftGears then
-				return true 
+			
+			local autoGears = self.vcaGearbox.autoShiftGears 
+			local autoRange = self.vcaGearbox.autoShiftRange 
+			
+			if not autoGears then 
+			elseif self:vcaGetIsReverse() and self.vcaSingleReverse > 0 then 
+				autoGears = false 
+			elseif self.vcaShifterUsed then 
+				autoGears = false 
 			end 
+
+			if not autoRange then 
+			elseif self:vcaGetIsReverse() and self.vcaSingleReverse < 0 then 
+				autoRange = false 
+			elseif self.vcaShifterUsed then 
+				autoRange = self.vcaGearbox:getG27ShifterOnGears()
+			end 
+			 			
+			return autoGears or autoRange
 		end 
+		
 		return false 
 	end 
 	return true 
@@ -5259,8 +5270,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 				end 
 			end 	
 			self.vcaSetLaunchGear = true  
-		elseif not self.vehicle:vcaGetAutoShift() or self.vehicle.vcaShifterUsed then 
-		else
+		elseif self.vehicle:vcaGetAutoShift() then
 		
 			local setLaunchGear  = ( lastFwd ~= fwd or self.vcaDirTimer ~= nil or self.vcaAutoStop )
 			local setLaunchGear2 = ( self.vcaAutoStop and self.vcaGearIndex ~= nil and ( fwd or self.vehicle.vcaSingleReverse == 0 ) )

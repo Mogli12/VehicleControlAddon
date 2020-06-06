@@ -398,6 +398,11 @@ function vehicleControlAddonTransmissionBase:getAutoShiftIndeces( curIndex, minI
 	local ar = self.autoShiftRange
 	local cg = self.vehicle.vcaGear
 	local cr = self.vehicle.vcaRange
+	
+	if self.vehicle.vcaShifterUsed then 
+		ag = false 
+		ar = ar and self:getG27ShifterOnGears()
+	end 
 
 	if self.vehicle.vcaSingleReverse ~= 0 and self.vehicle:vcaGetIsReverse() then 
 		if self.vehicle.vcaSingleReverse > 0 then 
@@ -436,6 +441,7 @@ function vehicleControlAddonTransmissionBase:getAutoShiftIndeces( curIndex, minI
 				table.insert( gearList, i )
 			end 
 		end 
+	elseif not ag and not ar then 
 	else
 		local tmpList = nil
 		if     ag then 
@@ -669,6 +675,18 @@ function vehicleControlAddonTransmissionBase:actionCallback( actionName, keyStat
 	end 
 end 
 
+function vehicleControlAddonTransmissionBase:getG27ShifterOnGears()
+	if     self.vehicle.vcaG27Mode == vehicleControlAddon.g27Mode4RR
+			or self.vehicle.vcaG27Mode == vehicleControlAddon.g27Mode4RS
+			or self.vehicle.vcaG27Mode == vehicleControlAddon.g27Mode4RD then 
+		return true 
+	elseif self.vehicle.vcaG27Mode == vehicleControlAddon.g27Mode6RR
+			or self.vehicle.vcaG27Mode == vehicleControlAddon.g27Mode6RS then 
+		return true 
+	end 
+	return false 
+end 
+
 function vehicleControlAddonTransmissionBase:gearShifter( number, isPressed )
 	if not isPressed then 
 		self.vehicle:vcaSetState( "vcaNeutral", true )
@@ -676,11 +694,10 @@ function vehicleControlAddonTransmissionBase:gearShifter( number, isPressed )
 			self.vehicle:vcaSetState("vcaBOVVolume",self.vehicle.spec_motorized.motor.vcaLoad)
 		end 
 	else 
-		local goFwd = nil 
-		local num2  = 0
-		local list  
-		local maxNum = 6 
-		local noSplit = false
+		local goFwd   = nil 
+		local num2    = 0
+		local maxNum  = 6 
+		local noSplit = self:getG27ShifterOnGears()
 		
 		if     self.vehicle.vcaG27Mode == vehicleControlAddon.g27Mode8R  
 				or self.vehicle.vcaG27Mode == vehicleControlAddon.g27Mode8S  then 
@@ -689,13 +706,12 @@ function vehicleControlAddonTransmissionBase:gearShifter( number, isPressed )
 				or self.vehicle.vcaG27Mode == vehicleControlAddon.g27Mode4RS
 				or self.vehicle.vcaG27Mode == vehicleControlAddon.g27Mode4RD then 
 			maxNum  = 4
-			noSplit = true
 		elseif self.vehicle.vcaG27Mode == vehicleControlAddon.g27Mode6RR
 				or self.vehicle.vcaG27Mode == vehicleControlAddon.g27Mode6RS then 
 			maxNum  = 6
-			noSplit = true
 		end 
 		
+		local list  
 		if self.shifterIndexList == nil then 
 			list  = self:getGearShifterIndeces( maxNum, noSplit )
 		else 

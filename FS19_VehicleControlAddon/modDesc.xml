@@ -44,10 +44,10 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>store.dds</iconFilename>
-	<version>9.1.6.5</version>
+	<version>9.1.6.6</version>
 	<l10n filenamePrefix="modDesc_l10n">
 		<text name="vcaVERSION">          
-			<en>Vehicle Control Addon beta build 165</en>
+			<en>Vehicle Control Addon beta build 166</en>
 		</text>
 	</l10n>
 	
