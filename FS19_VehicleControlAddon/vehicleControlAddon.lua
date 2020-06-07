@@ -129,6 +129,9 @@ vehicleControlAddon.snapAngles = { 1, 5, 15, 22.5, 45, 90 }
 vehicleControlAddon.factor30pi = 9.5492965855137201461330258023509
 vehicleControlAddon.maxRpmF0   = 2250/2200
 vehicleControlAddon.maxRpmF1   = 1.2
+vehicleControlAddon.speedRatioOpen  = 2000
+vehicleControlAddon.speedRatioClosed1= 1.01
+vehicleControlAddon.speedRatioClosed2= 1.1
 vehicleControlAddon.g27Mode6R  = 0 -- 6 Gears, 1 Reverse, Range Splitter
 vehicleControlAddon.g27Mode6S  = 1 -- 6 Gears, Shuttle, Range Splitter
 vehicleControlAddon.g27Mode6D  = 2 -- 6 Gears, Fwd/back, Range Splitter
@@ -2803,20 +2806,20 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 					end 
 				end 
 				
-				m = 2000
+				m = vehicleControlAddon.speedRatioOpen
 			elseif newState == 2 then 
-				m = 0
+				m = vehicleControlAddon.speedRatioClosed1
  
 				local s1,s2 = getDiffSpeed(index)
 				
 				-- advance speed by 7% (minus 2% error)
 				if     torqueRatioOpen == nil or not self.vcaDiffFrontAdv then  
 				elseif torqueRatioOpen < 0.2 then 
-					m  = 0.05
+					m  = vehicleControlAddon.speedRatioClosed2
 					s1 = s1 / 1.035
 					s2 = s2 * 1.035
 				elseif torqueRatioOpen > 0.8 then 
-					m  = 0.05
+					m  = vehicleControlAddon.speedRatioClosed2
 					s1 = s1 * 1.035
 					s2 = s1 / 1.035
 				end 
