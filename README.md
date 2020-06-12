@@ -14,7 +14,9 @@ Be as specific as possible:
 * which vehicles are involved, what is the intended action?
 * Post! The! Log! to [Gist](https://gist.github.com/) or [PasteBin](http://pastebin.com/)
 
-From today on I will close all new issues without the above information!## How to download?
+From today on I will close all new issues without the above information!
+
+## How to download?
 
 Just click here: [Latest version](https://github.com/Mogli12/VehicleControlAddon/blob/master/FS19_VehicleControlAddon.zip?raw=true)
 
