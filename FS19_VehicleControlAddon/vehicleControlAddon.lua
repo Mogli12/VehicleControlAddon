@@ -1306,7 +1306,7 @@ function vehicleControlAddon:vcaSetSnapFactor()
 		if lx*lx+lz*lz > 1e-6 then 
 			d = math.atan2( lx, lz )
 		end 
-		local curSnapAngle = self:vcaGetCurrentSnapAngle( d )
+		local curSnapAngle, _, curSnapOffset = self:vcaGetCurrentSnapAngle( d )
 		local dx    = math.sin( curSnapAngle )
 		local dz    = math.cos( curSnapAngle )			
 		local distX = wx - self.vcaLastSnapPosX
@@ -1315,11 +1315,11 @@ function vehicleControlAddon:vcaSetSnapFactor()
 
 		while dist+dist > self.vcaSnapDistance do 
 			self:vcaSetState( "vcaSnapFactor", self.vcaSnapFactor - 1 )
-			dist  = distX * dz - distZ * dx + self.vcaSnapFactor * self.vcaSnapDistance
+			dist  = distX * dz - distZ * dx + self.vcaSnapFactor * self.vcaSnapDistance + curSnapOffset
 		end 
 		while dist+dist <-self.vcaSnapDistance do 
 			self:vcaSetState( "vcaSnapFactor", self.vcaSnapFactor + 1 )
-			dist  = distX * dz - distZ * dx + self.vcaSnapFactor * self.vcaSnapDistance
+			dist  = distX * dz - distZ * dx + self.vcaSnapFactor * self.vcaSnapDistance + curSnapOffset
 		end 			
 	end 
 end
@@ -3207,7 +3207,7 @@ function vehicleControlAddon:onDraw()
 		if lx*lx+lz*lz > 1e-6 then 
 			d = math.atan2( lx, lz )
 		end 
-		local curSnapAngle, curSnapOffset = self:vcaGetCurrentSnapAngle( d )
+		local curSnapAngle, curSnapOffset1, curSnapOffset2 = self:vcaGetCurrentSnapAngle( d )
 		
 		if self.vcaDrawHud then 
 			if VCAGlobals.snapAngleHudX >= 0 then
@@ -3398,7 +3398,7 @@ function vehicleControlAddon:onDraw()
 		elseif self.vcaSnapDraw <= 0 then 
 			self.vcaSnapDrawTimer = nil
 			self.vcaSnapPosTimer  = nil 
-		elseif self.vcaSnapDraw >= 2 then 
+		elseif self.vcaSnapDraw == 2 or self.vcaSnapDraw >= 4 then 
 			snapDraw = true 
 		elseif self.vcaSnapDrawTimer ~= nil then 
 			if math.abs( self.lastSpeedReal ) * 3600 > 1 or self.vcaSnapDrawTimer > 3000 then 
@@ -3419,7 +3419,7 @@ function vehicleControlAddon:onDraw()
 			local distX = wx - self.vcaLastSnapPosX
 			local distZ = wz - self.vcaLastSnapPosZ 	
 			
-			local dist  = distX * dz - distZ * dx
+			local dist  = distX * dz - distZ * dx + curSnapOffset2
 
 			if self.vcaSnapIsOn then 
 				dist = dist + self.vcaSnapFactor * self.vcaSnapDistance
@@ -3443,7 +3443,7 @@ function vehicleControlAddon:onDraw()
 			setTextVerticalAlignment( RenderText.VERTICAL_ALIGN_BASELINE )
 				
 			local xMax = 1 
-			if self.vcaSnapIsOn and self.vcaSnapPosTimer == nil then 
+			if ( self.vcaSnapDraw == 1 or self.vcaSnapDraw == 3 ) and self.vcaSnapIsOn and self.vcaSnapPosTimer == nil then 
 				xMax = 0 
 			end 
 			local a = 0
@@ -3451,19 +3451,32 @@ function vehicleControlAddon:onDraw()
 			for x=-xMax,xMax do 
 				for zi=-2,3,0.1 do
 					local z = 10 
-					if zi < 0 then 
-						z = z + 10 * zi 
+					if self.spec_reverseDriving  ~= nil and self.spec_reverseDriving.isReverseDriving then			
+						if zi > 0 then 
+							z = z - 10 * zi 
+						else 
+							z = z - 10 * zi * zi 
+						end 
 					else 
-						z = z + 10 * zi * zi 
+						if zi < 0 then 
+							z = z + 10 * zi 
+						else 
+							z = z + 10 * zi * zi 
+						end 
 					end 
 					local fx = 0
 					if x ~= 0 then 
-						fx = x * 0.5 * self.vcaSnapDistance + curSnapOffset
+						fx = x * 0.5 * self.vcaSnapDistance + curSnapOffset1
 					end
 					local px = wx - dist * dz - fx * dz + z * dx 
 					local pz = wz + dist * dx + fx * dx + z * dz 
-					local py = getTerrainHeightAtWorldPos( g_currentMission.terrainRootNode, px, 0, pz )
+					local py = getTerrainHeightAtWorldPos( g_currentMission.terrainRootNode, px, 0, pz ) 
 					renderText3D( px,py,pz, 0,curSnapAngle-a,0, 0.5, t )
+					if self.vcaSnapDraw > 2 then 
+						renderText3D( px,py+0.48,pz, 0,curSnapAngle-a,0, 0.5, t )
+						renderText3D( px,py+0.96,pz, 0,curSnapAngle-a,0, 0.5, t )
+						renderText3D( px,py+1.44,pz, 0,curSnapAngle-a,0, 0.5, t )
+					end 
 				end 
 			end 
 			dx, dz = -dz, dx
@@ -3709,9 +3722,9 @@ function vehicleControlAddon:onStartReverseDirectionChange()
 end 
 
 function vehicleControlAddon:vcaGetSteeringNode()
-	if self.spec_aiVehicle ~= nil and self.spec_aiVehicle.steeringNode ~= nil then 
-		return self.spec_aiVehicle.steeringNode
-	end 
+--if type( self.getAIVehicleSteeringNode ) == "function" then 
+--	return self:getAIVehicleSteeringNode()
+--end 
 	return self.components[1].node  
 end 
 
@@ -3724,19 +3737,23 @@ function vehicleControlAddon:vcaGetCurrentSnapAngle(curRot)
 	local a = self.vcaLastSnapAngle
 	local o = self.vcaSnapOffset1
 	local p = self.vcaSnapOffset2
+	local d = 0
+	local e = o + p 
 	local c = curRot 
 	local f = math.pi * 0.5 -- 0.5 for 180° and 0.25 for 90°
 
 	while a - c <= -f do 
 		a = a + f+f
 		o,p = p,o
+		d,e = e,d
 	end 
 	while a - c > f do 
 		a = a - f-f
 		o,p = p,o
+		d,e = e,d
 	end
 
-	return a, o
+	return a, o, d
 end 
 
 function vehicleControlAddon.getRelativeTranslation( refNode, node )
@@ -3922,10 +3939,7 @@ function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, ax
 				self:vcaSetState( "vcaSnapFactor", 0 )
 			end 
 			
-			local curSnapAngle = self:vcaGetCurrentSnapAngle( rot )
-			if self.spec_reverseDriving  ~= nil and self.spec_reverseDriving.isReverseDriving then
-				curSnapAngle = -curSnapAngle 
-			end 
+			local curSnapAngle, _, curSnapOffset = self:vcaGetCurrentSnapAngle( rot )
 			
 			local dist    = 0
 			local diffR   = vehicleControlAddon.normalizeAngle( rot - curSnapAngle )
@@ -3947,7 +3961,7 @@ function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, ax
 				local dz    = math.cos( curSnapAngle )			
 				local distX = wx - self.vcaLastSnapPosX
 				local distZ = wz - self.vcaLastSnapPosZ 			
-				local dist  = dist + distX * dz - distZ * dx + f * self.vcaSnapDistance				
+				local dist  = dist + distX * dz - distZ * dx + f * self.vcaSnapDistance	+ curSnapOffset
 				local alpha = math.asin( vehicleControlAddon.mbClamp( 0.1 * dist, -0.851, 0.851 ) )			
 				diffR = diffR + alpha
 			end 
@@ -6346,6 +6360,8 @@ function vehicleControlAddon:vcaShowSettingsUI()
 	self.vcaUI.vcaSnapDraw = { vehicleControlAddon.getText("vcaValueNever", "NEVER"), 
 														 vehicleControlAddon.getText("vcaValueInactive", "INACTIVE"), 
 														 vehicleControlAddon.getText("vcaValueAlways", "ALWAYS"), 
+														 vehicleControlAddon.getText("vcaValueInactiveH", "INACTIVE HIGH"), 
+														 vehicleControlAddon.getText("vcaValueAlwaysH", "ALWAYS HIGH"), 
 													 }
 	
 	self.vcaUI.vcaHandthrottle = { vehicleControlAddon.getText("vcaValueOff", "OFF"), "PTO ECO", "90% PTO", "100% PTO" } 

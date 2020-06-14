@@ -170,9 +170,11 @@
 		<text name="vcaValueOff"        text="off"/>
 		<text name="vcaValueNever"      text="never"/>
 		<text name="vcaValueAlways"     text="always"/>
+		<text name="vcaValueAlwaysH"    text="always (high)"/>
 		<text name="vcaValueNormal"     text="normal"/>
 		<text name="vcaValueEntered"    text="if entered"/>
 		<text name="vcaValueInactive"   text="if inactive"/>
+		<text name="vcaValueInactiveH"  text="if inactive (high)"/>
 		<text name="vcaValueRPM"        text="RPM"/>
 	</texts>
 
