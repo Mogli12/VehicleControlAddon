@@ -4504,7 +4504,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	if self.gearRatio < 0 then 
 		wheelSpeed       = -wheelSpeed 
 	end 
-	
+
 	local hasActiveWorkArea = false 
 	if vehicleControlAddon.hasActiveWorkArea( self.vehicle ) then 
 		hasActiveWorkArea     = true 
@@ -5117,10 +5117,10 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		deltaS = rpmRange * 0.0001 * dt
 		deltaF = rpmRange * 0.0002 * dt
 		
-		local lm = expectedMotorSpeed * vehicleControlAddon.factor30pi
-		
+		local lm = self.motorRotSpeed * vehicleControlAddon.factor30pi
+		local le = expectedMotorSpeed * vehicleControlAddon.factor30pi
 		self.vcaMinRpm = vehicleControlAddon.mbClamp( newMinRpm, lastMinRpm - deltaS, math.max( lastMinRpm, lm + deltaF ) )
-		self.vcaMaxRpm = vehicleControlAddon.mbClamp( newMaxRpm, math.max( lastMaxRpm, lm ) - deltaS, math.max( lastMaxRpm, lm ) + deltaS )
+		self.vcaMaxRpm = vehicleControlAddon.mbClamp( newMaxRpm, math.max( lastMaxRpm, lm ) - deltaS, math.max( lastMaxRpm + deltaS, le ) )
 		if self.vcaMinRpm > self.vcaMaxRpm then 
 			self.vcaMinRpm = self.vcaMaxRpm 
 		end 
@@ -5279,6 +5279,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			ratio = 0.3
 		end 
 		local maxSpeed  = ratio * self.vehicle.vcaMaxSpeed 
+		wheelRpm = self.vehicle.lastSpeedReal * 1000 * self.maxRpm / maxSpeed 
 		
 		self.vehicle.vcaDebugR = debugFormat("g: %2d, r: %5.3f, s: %5.1f, m: %4.0f, w: %4.0f, c: %4.0f",
 																	gear, ratio, maxSpeed*3.6,
@@ -5472,21 +5473,24 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 					end 
 				end 
 				
-				if     wheelRpm > 0.99 * self.maxRpm then 
+				local rpmHi = math.max( wheelRpm, clutchRpm )
+				local rpmLo = math.min( wheelRpm, clutchRpm )
+				
+				if     rpmHi > 0.99 * self.maxRpm then 
 					self.vcaAutoUpTimer = 0
-				elseif wheelRpm > m4 and self.vcaAutoUpTimer > 250 then 
+				elseif rpmHi > m4 and self.vcaAutoUpTimer > 250 then 
 					self.vcaAutoUpTimer = 250
-				elseif wheelRpm < autoMinRpm and self.vcaAutoUpTimer < 1000 then 
+				elseif rpmLo < autoMinRpm and self.vcaAutoUpTimer < 1000 then 
 					self.vcaAutoUpTimer = 1000
-				elseif wheelRpm < autoMaxRpm and self.vcaAutoUpTimer < 250 then 
+				elseif rpmLo < autoMaxRpm and self.vcaAutoUpTimer < 250 then 
 					self.vcaAutoUpTimer = 250
 				end 
 				if self.vcaClutchTimer <= 0 and wheelRpm < m1 and gear > launchGear and self.vcaAutoDownTimer > 2000 then 
 					self.vcaAutoDownTimer = 2000
 				end 
 				
-				local searchUp   = ( clutchRpm > autoMaxRpm and self.vcaAutoUpTimer   <= 0 and self.vcaNoShiftTimer <= 0 )
-				local searchDown = ( wheelRpm  < autoMinRpm and self.vcaAutoDownTimer <= 0 and self.vcaNoShiftTimer <= 0 )
+				local searchUp   = ( rpmHi > autoMaxRpm and self.vcaAutoUpTimer   <= 0 and self.vcaNoShiftTimer <= 0 )
+				local searchDown = ( rpmLo < autoMinRpm and self.vcaAutoDownTimer <= 0 and self.vcaNoShiftTimer <= 0 )
 
 				lowGear    = launchGear
 				if self.vcaAutoStop or curBrake > 0.1 then
@@ -5515,20 +5519,20 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 					if wheelRpm < autoMinRpm then 
 						d = autoMinRpm - wheelRpm
 					end 
-					if clutchRpm > autoMaxRpm then 
-						d = math.max( d, clutchRpm - autoMaxRpm )
+					if wheelRpm > autoMaxRpm then 
+						d = math.max( d, wheelRpm - autoMaxRpm )
 					end 
 					d = d - 1
 					local d1 = d
 					local rr = wheelRpm
 					for _,i in pairs( gearlist ) do 
 						local nr = transmission:getGearRatio( i )
-						local rpm = wheelRpm * ratio / nr
+						local rpm = rpmLo * ratio / nr
 						local d2 = 0
 						if rpm < autoMinRpm then 
 							d2 = autoMinRpm - rpm
 						end 
-						rpm = clutchRpm * ratio / nr
+						rpm = rpmHi * ratio / nr
 						if rpm > autoMaxRpm then 
 							d2 = math.max( d2, rpm - autoMaxRpm )
 						end 
@@ -5561,8 +5565,8 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			ratio    = transmission:getGearRatio( gear )
 			local m  = maxSpeed 
 			maxSpeed = ratio * self.vehicle.vcaMaxSpeed 
-			wheelRpm = self.vehicle.lastSpeedReal * 1000 * self.maxRpm / maxSpeed 
 		end 
+		wheelRpm = self.vehicle.lastSpeedReal * 1000 * self.maxRpm / maxSpeed 
 		
 		self.vehicle:vcaSetState("vcaBOVVolume",0)
 		if not autoNeutral then 
@@ -5642,36 +5646,37 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		
 		self.vehicle.vcaDebugM = debugFormat("%5.0f, %5.0f, %5.0f, %3.0f%%, %s, %5.0f", motorRpm, wheelRpm, minRequiredRpm, newAcc*100, tostring(self.vcaAutoStop), self.vcaClutchTimer )
 		
-		self.vcaGearIndex = gear
-		self.vcaLastGear  = self.vehicle.vcaGear
-		self.vcaLastRange = self.vehicle.vcaRange
+		self.vcaGearIndex  = gear
+		self.vcaLastGear   = self.vehicle.vcaGear
+		self.vcaLastRange  = self.vehicle.vcaRange
 		
-		self.minGearRatio = self.maxRpm / ( maxSpeed * vehicleControlAddon.factor30pi )
-		self.maxGearRatio = self.minGearRatio
+		local curGearRatio = self.maxRpm / ( maxSpeed * vehicleControlAddon.factor30pi ) 
+		self.minGearRatio  = curGearRatio
+		self.maxGearRatio  = curGearRatio
 		
-		if lastGearRatio ~= nil and self.gearChangeTimer <= 0 and self.vcaGearChangeTime ~= nil then 
+		if lastGearRatio ~= nil and self.gearChangeTimer <= 0 and self.vcaClutchTimer <= 0 and self.vcaGearChangeTime ~= nil then 
 			local t = 100
-			if lastGearRatio < self.minGearRatio then 
+			if lastGearRatio < curGearRatio then 
 				t = 500
 			elseif maxSpeed < 3 then 
 				t = t + ( 3 - maxSpeed ) * 100 
 			end 
 			if g_currentMission.time - self.vcaGearChangeTime < t then 
 				local f = ( g_currentMission.time - self.vcaGearChangeTime ) / t
-				self.minGearRatio      = f * self.minGearRatio + ( 1 - f ) * lastGearRatio
-				self.maxGearRatio      = self.minGearRatio
+				self.minGearRatio      = f * curGearRatio + ( 1 - f ) * lastGearRatio
+				self.maxGearRatio      = curGearRatio
 				self.vcaGearRatio      = lastGearRatio
-				if lastGearRatio > self.minGearRatio then
+				if lastGearRatio > curGearRatio then
 					newAcc               = 0
 				end 
 			else
-				self.vcaGearRatio      = self.minGearRatio
+				self.vcaGearRatio      = curGearRatio
 				self.vcaGearChangeTime = nil 
 			end 
 		else 
-			self.vcaGearRatio = self.minGearRatio
+			self.vcaGearRatio = curGearRatio
 		end 
-		
+				
 		-- *******************************************
 		-- clutch
 		local clutchFactor = 0 
@@ -5686,10 +5691,10 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			clutchFactor = math.max( self.vcaClutchTimer / VCAGlobals.clutchTimer, 0 )
 			self.vehicle.vcaClutchDisp = clutchFactor 
 			if     self.vehicle.vcaClutchDisp <= 0 then 
-			elseif 0.99 * self.vcaCurGearRatio > self.vcaGearRatio then 
-				self.vehicle.vcaClutchDisp = math.min( 1 - self.vcaGearRatio / self.vcaCurGearRatio, self.vcaClutchTimer / VCAGlobals.clutchTimer )
-			elseif self.vcaCurGearRatio < 0.99 * self.vcaGearRatio then 
-				self.vehicle.vcaClutchDisp = math.min( 1 - self.vcaCurGearRatio / self.vcaGearRatio, self.vcaClutchTimer / VCAGlobals.clutchTimer )
+			elseif 0.99 * self.vcaCurGearRatio > curGearRatio then 
+				self.vehicle.vcaClutchDisp = math.min( 1 - curGearRatio / self.vcaCurGearRatio, self.vcaClutchTimer / VCAGlobals.clutchTimer )
+			elseif self.vcaCurGearRatio < 0.99 * curGearRatio then 
+				self.vehicle.vcaClutchDisp = math.min( 1 - self.vcaCurGearRatio / curGearRatio, self.vcaClutchTimer / VCAGlobals.clutchTimer )
 			end 
 		else 
 			self.vcaClutchTimer          = 0
@@ -5703,8 +5708,8 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 																						self.minRpm,
 																						self.gearChangeTimer,
 																						self.vcaCurGearRatio,
-																						1.1 * self.vcaGearRatio,
-																						tostring( self.vcaClutchTimer > 0 and wheelRpm > self.minRpm and self.gearChangeTimer <= 0 and self.vcaCurGearRatio < 1.1 * self.vcaGearRatio ) )
+																						1.1 * curGearRatio,
+																						tostring( self.vcaClutchTimer > 0 and wheelRpm > self.minRpm and self.gearChangeTimer <= 0 and self.vcaCurGearRatio < 1.1 * curGearRatio ) )
 
 		if self.vehicle:vcaGetNeutral() then 
 			self.vcaClutchTimer = VCAGlobals.clutchTimer 
@@ -5734,7 +5739,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 
 			if      self.vcaClutchTimer   > 0
 					and self.vcaFakeRpm      == nil
-					and 0.9 * self.vcaGearRatio < self.vcaCurGearRatio and self.vcaCurGearRatio < 1.1 * self.vcaGearRatio
+					and 0.9 * curGearRatio < self.vcaCurGearRatio and self.vcaCurGearRatio < 1.1 * curGearRatio
 					and wheelRpm             >= 0.8 * self.minRpm then 
 				self.vcaClutchTimer = 0
 			end 
@@ -5767,8 +5772,8 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 				end 
 				self.vcaMinRpm = m
 				
-				self.maxGearRatio = math.min( self.vcaGearRatio / ( 1 - c ), 30 * self.vcaGearRatio, 300 )
-				self.minGearRatio = math.max( self.vcaGearRatio * ( 1 - c )^0.1, 0.1 * self.vcaGearRatio, 1 )
+				self.maxGearRatio = math.min( curGearRatio / ( 1 - c ), 30 * curGearRatio, 300 )
+				self.minGearRatio = math.max( curGearRatio * ( 1 - c )^0.1, 0.1 * curGearRatio, 1 )
  			else
 				self.vcaMinRpm      = 0
 				self.vcaMaxRpm      = vehicleControlAddon.maxRpmF1 * self.maxRpm
@@ -5835,7 +5840,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	
 	if newAcc > 0 then
 		local sl = self.vcaMaxWheelSpeed * 3.6 
-		if autoNeutral or self.vcaFakeTimer ~= nil or self.gearChangeTimer > 0 or self.vehicle.vcaClutchDisp > 0.03 then  
+		if autoNeutral or self.vcaFakeTimer ~= nil or self.gearChangeTimer > 0 or self.vcaClutchTimer > 0 then  
 			self.vcaNoRpmLimitTimer = g_currentMission.time 
 		end 
 		if self.vcaNoRpmLimitTimer == nil or g_currentMission.time - self.vcaNoRpmLimitTimer > 100 then 
@@ -5849,6 +5854,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			if self.vehicle.vcaLimitSpeed then 
 				ma = math.min( ma, self.maxRpm )
 			end 
+			ma = math.max( self.minRpm, ma )
 			self.vcaMinRpm = math.min( self.vcaMinRpm, ma )
 			self.vcaMaxRpm = math.min( self.vcaMaxRpm, ma )
 		end 
