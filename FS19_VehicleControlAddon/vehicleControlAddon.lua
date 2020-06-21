@@ -130,9 +130,6 @@ vehicleControlAddon.factor30pi = 30/math.pi  -- RPM = rotSpeed * vehicleControlA
 vehicleControlAddon.factorpi30 = math.pi/30  -- rotSpeed = RPM * vehicleControlAddon.factorpi30
 vehicleControlAddon.maxRpmF0   = 2250/2200
 vehicleControlAddon.maxRpmF1   = 1.2
-vehicleControlAddon.speedRatioOpen   = 10
-vehicleControlAddon.speedRatioClosed1= -1  -- take maxSpeedRatio of vehicle 
-vehicleControlAddon.speedRatioClosed2= 1.2 -- at least 20% difference 
 vehicleControlAddon.g27Mode6R  = 0 -- 6 Gears, 1 Reverse, Range Splitter
 vehicleControlAddon.g27Mode6S  = 1 -- 6 Gears, Shuttle, Range Splitter
 vehicleControlAddon.g27Mode6D  = 2 -- 6 Gears, Fwd/back, Range Splitter
@@ -144,6 +141,11 @@ vehicleControlAddon.g27Mode4RR = 7 -- 4 Gears, Range up/down, 1 Reverse
 vehicleControlAddon.g27Mode4RS = 8 -- 4 Gears, Range up/down, Shuttle
 vehicleControlAddon.g27Mode4RD = 9 -- 4 Gears, Range up/down, Fwd/back
 vehicleControlAddon.g27ModeSGR =10 -- Fwd/back , Gear up/down, Range up/down
+vehicleControlAddon.speedRatioOpen       = 100
+vehicleControlAddon.speedRatioClosed1    = -1  -- take maxSpeedRatio of vehicle 
+vehicleControlAddon.speedRatioClosed2    = 1.2 -- at least 20% difference 
+vehicleControlAddon.distributeTorqueOpen = true
+vehicleControlAddon.minTorqueRatio       = 0.2
 
 function vehicleControlAddon.debugPrint( ... )
 	if VCAGlobals.debugPrint then
@@ -2855,7 +2857,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
     local function getClosedTorqueRatio(r0, s1, s2)
 			local r = r0 
 			
-			local r1, r2 = 0.25, 0.75
+			local r1, r2 = vehicleControlAddon.minTorqueRatio, 1-vehicleControlAddon.minTorqueRatio
 
 			if r1 < r and r < r2 then 
 				-- distribute torque to reach the correct speed ratio 
@@ -2864,8 +2866,8 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 					s2 = -s2 
 				end 
 				
-				if     s1 <= 0.1389 and s2 <= 0.1389 then 
-				elseif math.abs( s1 - s2 ) < 1e-2 then 
+				if     s1 < 0.1389 and s2 < 0.1389 then 
+				elseif math.abs( s1 - s2 ) < 0.1389 then 
 				elseif s1 <= 0 then 
 					r = r2
 				elseif s2 <= 0 then 
@@ -2905,7 +2907,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 					end 
 				end 
 
-				if diff.vcaEnabled == 3 then 
+				if diff.vcaEnabled == 3 and vehicleControlAddon.distributeTorqueOpen then  
 					-- inverse torque ratio => put more torque on turning wheel
 					local s1,s2 = getDiffSpeed(index)
 					r = getClosedTorqueRatio( r, s2, s1 )		
