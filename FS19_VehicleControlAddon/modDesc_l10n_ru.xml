@@ -31,10 +31,10 @@
 		<text name="vcaDISTANCE"            text="Рабочая ширина"/>
 		<text name="vcaOFFSET1"             text="Смещение оборудования"/>
 		<text name="vcaOFFSET2"             text="Инвертировать смещение"/>
-		<text name="vcaDRAWMARKER"          text="Отрисовывать маркеры удержания направления"/>
-		<text name="vcaPITCH1"              text="Linear sound pitch"/>
-		<text name="vcaPITCH2"              text="Sound pitch at medium RPM"/>
-		<text name="vcaBLOWOFFVOL"          text="Turbo wastegate volume"/>
+		<text name="vcaDRAWMARKER"          text="Маркеры удержания направления"/>
+		<text name="vcaPITCH1"              text="Линейная высота звука"/>
+		<text name="vcaPITCH2"              text="Звук на средних оборотах"/>
+		<text name="vcaBLOWOFFVOL"          text="Звук турбины"/> <!-- Turbo wastegate volume -->
 		<text name="vcaSINGLEREV"           text="Одиночная передача ЗХ"/>
 		<text name="vcaAUTOCLUTCH"          text="Автосцепление"/>
 		<text name="vcaTURBOCLUTCH"         text="Турбосцепление"/>
@@ -85,10 +85,10 @@
 		<text name="vca_tip_DISTANCE"       text="Расстояние между двумя рядами удержания направлений."/>
 		<text name="vca_tip_OFFSET1"        text="Смещение полос удержания направлений."/>
 		<text name="vca_tip_OFFSET2"        text="Инвертировать смещение полос удержания направлений."/>
-		<text name="vca_tip_DRAWMARKER"     text="Отрисовка маркера полос удержания направлений."/>
-		<text name="vca_tip_PITCH1"         text="Modification of sound pitch to make it linear"/>
-		<text name="vca_tip_PITCH2"         text="Sound pitch at medium RPM"/>
-		<text name="vca_tip_BLOWOFFVOL"     text="Volume of the turbo wastegate"/>
+		<text name="vca_tip_DRAWMARKER"     text="Отрисовка маркеров полос удержания направлений."/>
+		<text name="vca_tip_PITCH1"         text="Изменение высоты звука, чтобы сделать его линейным."/>
+		<text name="vca_tip_PITCH2"         text="Высота звука на средних оборотах."/>
+		<text name="vca_tip_BLOWOFFVOL"     text="Высота звука турбины."/>
 		<text name="vca_tip_SINGLEREV"      text="С одним реверсом, коробка передач использует одну передачу ЗХ или диапазон ЗХ вместо управления челноком."/>
 		<text name="vca_tip_AUTOCLUTCH"     text="Автосцепление"/>
 		<text name="vca_tip_TURBOCLUTCH"    text="Дополнительное турбосцепление"/>
@@ -170,9 +170,11 @@
 		<text name="vcaValueOff"            text="ВЫКЛ"/>
 		<text name="vcaValueNever"          text="никогда"/>
 		<text name="vcaValueAlways"         text="всегда"/>
+		<text name="vcaValueAlwaysH"        text="всегда (вверху)"/>
 		<text name="vcaValueNormal"         text="обычный"/>
 		<text name="vcaValueEntered"        text="если внутри"/>
 		<text name="vcaValueInactive"       text="если неактивен"/>
+		<text name="vcaValueInactiveH"      text="если неактивен (вверху)"/>
 		<text name="vcaValueRPM"            text="RPM"/>
 	</texts>
 	
