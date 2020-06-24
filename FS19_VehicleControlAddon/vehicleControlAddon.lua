@@ -141,11 +141,11 @@ vehicleControlAddon.g27Mode4RR = 7 -- 4 Gears, Range up/down, 1 Reverse
 vehicleControlAddon.g27Mode4RS = 8 -- 4 Gears, Range up/down, Shuttle
 vehicleControlAddon.g27Mode4RD = 9 -- 4 Gears, Range up/down, Fwd/back
 vehicleControlAddon.g27ModeSGR =10 -- Fwd/back , Gear up/down, Range up/down
-vehicleControlAddon.speedRatioOpen       = 100
-vehicleControlAddon.speedRatioClosed1    = -1  -- take maxSpeedRatio of vehicle 
-vehicleControlAddon.speedRatioClosed2    = 1.2 -- at least 20% difference 
+vehicleControlAddon.speedRatioOpen       = 10
+vehicleControlAddon.speedRatioClosed1    = 1.8 -- take maxSpeedRatio of vehicle 
+vehicleControlAddon.speedRatioClosed2    = 1.8 -- at least 20% difference 
 vehicleControlAddon.distributeTorqueOpen = true
-vehicleControlAddon.minTorqueRatio       = 0.2
+vehicleControlAddon.minTorqueRatio       = 0.25
 
 function vehicleControlAddon.debugPrint( ... )
 	if VCAGlobals.debugPrint then
@@ -303,6 +303,7 @@ function vehicleControlAddon:onLoad(savegame)
 	self.vcaSetSnapFactor    = vehicleControlAddon.vcaSetSnapFactor
 	self.vcaGetCurrentSnapAngle = vehicleControlAddon.vcaGetCurrentSnapAngle
 	self.vcaGetSnapDistance     = vehicleControlAddon.vcaGetSnapDistance
+	self.vcaSetCruiseSpeed      = vehicleControlAddon.vcaSetCruiseSpeed
 	
 	--********************************************************************************************
 	-- functions for others mods 
@@ -1044,7 +1045,7 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 		end
 	elseif actionName == "vcaSWAPSPEED" then 
 		local temp = self:getCruiseControlSpeed()
-		self:setCruiseControlMaxSpeed( self.vcaCCSpeed2 )
+    self:vcaSetCruiseSpeed( self.vcaCCSpeed2 )
 		self:vcaSetState( "vcaCCSpeed2", self.vcaCCSpeed3 )
 		self:vcaSetState( "vcaCCSpeed3", temp )
 	elseif actionName == "vcaNO_ARB" then 
@@ -2218,11 +2219,9 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 		if self.vcaSpeedLimit == nil then 
 			self.vcaSpeedLimit = self:getCruiseControlSpeed()
 		end 
-		self:setCruiseControlMaxSpeed( self.vcaSpeedLimit * limitThrottleRatio )
+		self:vcaSetCruiseSpeed( self.vcaSpeedLimit * limitThrottleRatio )
 	elseif self.vcaSpeedLimit ~= nil then 
-		if self.vcaIsEntered and self.spec_drivable.cruiseControl.state == Drivable.CRUISECONTROL_STATE_ACTIVE then
-			self:setCruiseControlMaxSpeed( self.vcaSpeedLimit )
-		end 
+		self:vcaSetCruiseSpeed( self.vcaSpeedLimit )
 		self.vcaSpeedLimit = nil
 	end 	
 	-- overwrite or reset some values 
@@ -3833,6 +3832,20 @@ function vehicleControlAddon:vcaGetSnapDistance()
 	
 	return 0, 0, 0
 end
+
+function vehicleControlAddon:vcaSetCruiseSpeed( speed )
+	local spec = self.spec_drivable 
+	spec.cruiseControl.speed = speed
+	spec.lastInputValues.cruiseControlValue = 0
+	if spec.cruiseControl.speed ~= spec.cruiseControl.speedSent then
+		if g_server ~= nil then
+			g_server:broadcastEvent(SetCruiseControlSpeedEvent:new(self, spec.cruiseControl.speed), nil, nil, self)
+		else
+			g_client:getServerConnection():sendEvent(SetCruiseControlSpeedEvent:new(self, spec.cruiseControl.speed))
+		end
+		spec.cruiseControl.speedSent = spec.cruiseControl.speed
+	end
+end 
 
 function vehicleControlAddon:getDefaultTransmission()
 	if VCAGlobals.transmission <= 0 then 
