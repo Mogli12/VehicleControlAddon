@@ -141,11 +141,12 @@ vehicleControlAddon.g27Mode4RR = 7 -- 4 Gears, Range up/down, 1 Reverse
 vehicleControlAddon.g27Mode4RS = 8 -- 4 Gears, Range up/down, Shuttle
 vehicleControlAddon.g27Mode4RD = 9 -- 4 Gears, Range up/down, Fwd/back
 vehicleControlAddon.g27ModeSGR =10 -- Fwd/back , Gear up/down, Range up/down
-vehicleControlAddon.speedRatioOpen       = 10
-vehicleControlAddon.speedRatioClosed1    = 1.8 -- take maxSpeedRatio of vehicle 
-vehicleControlAddon.speedRatioClosed2    = 1.8 -- at least 20% difference 
-vehicleControlAddon.distributeTorqueOpen = true
-vehicleControlAddon.minTorqueRatio       = 0.25
+vehicleControlAddon.speedRatioOpen       = 1000
+vehicleControlAddon.speedRatioClosed0    = -1   -- maxSpeedRatio of diff of diffs
+vehicleControlAddon.speedRatioClosed1    = 3    -- maxSpeedRatio of diff of wheels
+vehicleControlAddon.speedRatioClosed2    = 1.2  -- at least 20% difference 
+vehicleControlAddon.distributeTorqueOpen = false  
+vehicleControlAddon.minTorqueRatio       = 0.2
 
 function vehicleControlAddon.debugPrint( ... )
 	if VCAGlobals.debugPrint then
@@ -570,6 +571,7 @@ function vehicleControlAddon:onPostLoad(savegame)
 
 	self.vcaDiffHasF = false 
 	self.vcaDiffHasM = false 
+	self.vcaDiffHas2 = false 
 	self.vcaDiffHasB = false 
 	
 	if type( self.functionStatus ) == "function" and self:functionStatus("differential") then 
@@ -712,9 +714,11 @@ function vehicleControlAddon:onPostLoad(savegame)
 				local rMin1, rMax1 = getMinMaxRotSpeed( differential.diffIndex1, differential.diffIndex1IsWheel )
 				local rMin2, rMax2 = getMinMaxRotSpeed( differential.diffIndex2, differential.diffIndex2IsWheel )
 				if     rMin1 > 0.1 and rMax2 < 0.1 then 
-					differential.vcaTorqueRatioOpen = 0 
+					differential.vcaTorqueRatioOpen = 0
+					self.vcaDiffHas2 = true 
 				elseif rMin2 > 0.1 and rMax1 < 0.1 then 
 					differential.vcaTorqueRatioOpen = 1 
+					self.vcaDiffHas2 = true 
 				end 
 			else 
 				differential.vcaMode = '-' -- bad 
@@ -729,6 +733,7 @@ function vehicleControlAddon:onPostLoad(savegame)
 			self.vcaDiffHasF = false 
 			self.vcaDiffHasM = false 
 			self.vcaDiffHasB = false 
+			self.vcaDiffHas2 = false 
 		end 
 	end
 	
@@ -1518,7 +1523,9 @@ function vehicleControlAddon:vcaHasDiffFront()
 	if not ( self.vcaDiffManual and self.vcaDiffHasF ) then 
 		return false 
 	end 
-	if     self.vcaDiffLockSwap then 
+	if not self.vcaDiffHas2     then 
+		return true 
+	elseif self.vcaDiffLockSwap then 
 		return true 
 	elseif self.vcaDiffLockAWD  then 
 		return true 
@@ -1537,7 +1544,9 @@ function vehicleControlAddon:vcaHasDiffBack()
 	if not ( self.vcaDiffManual and self.vcaDiffHasB ) then 
 		return false 
 	end 
-	if not self.vcaDiffLockSwap then 
+	if not self.vcaDiffHas2     then 
+		return true 
+	elseif not self.vcaDiffLockSwap then 
 		return true 
 	elseif self.vcaDiffLockAWD  then 
 		return true 
@@ -2767,7 +2776,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 		end 
 		
 		for d,diff in pairs(spec.differentials) do 
-			diff.vcaEnabled = 3   
+			diff.vcaEnabled = 3 
 			if diff.diffIndex1IsWheel then
 				local wheel = self:getWheelFromWheelIndex( diff.diffIndex1 )
 				updateWheelSpeed( wheel )
@@ -2854,101 +2863,131 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 			end 
 		end 
 
-    local function getClosedTorqueRatio(r0, s1, s2)
+    local function getClosedTorqueRatio(r0, s1, s2, m0)
 			local r = r0 
+			local m = Utils.getNoNil( m0, vehicleControlAddon.speedRatioClosed1 )
 			
-			local r1, r2 = vehicleControlAddon.minTorqueRatio, 1-vehicleControlAddon.minTorqueRatio
-
-			if r1 < r and r < r2 then 
-				-- distribute torque to reach the correct speed ratio 
-				if gearRatio < 0 then 
-					s1 = -s1
-					s2 = -s2 
-				end 
+			if gearRatio < 0 then 
+				s1 = -s1
+				s2 = -s2 
+			end 
 				
-				if     s1 < 0.1389 and s2 < 0.1389 then 
-				elseif math.abs( s1 - s2 ) < 0.1389 then 
-				elseif s1 <= 0 then 
-					r = r2
-				elseif s2 <= 0 then 
-					r = r1
-				elseif s1 < s2 then  
-					r = r + ( r2 - r ) * ( 1 - ( s1 / s2 )^2 )
-				elseif s2 < s1 then 
-					r = r - ( r - r1 ) * ( 1 - ( s2 / s1 )^2 )
-				end 
+			if     s1 < 0.1389 and s2 < 0.1389 then 
+			elseif not ( -0.2778 < s1 and s1 < 90 
+			         and -0.2778 < s2 and s2 < 90 ) then 
+				m = math.max( m, vehicleControlAddon.speedRatioClosed1 )
+			elseif s1 < s2 then  
+				q = ( math.max( s1, 0 ) / s2 ) 
+				r =  1 - q * ( 1 - r )
+				m = math.max( m, 1 + ( vehicleControlAddon.speedRatioClosed1 - 1 ) * ( 1 - q ) )
+			elseif s2 < s1 then 
+				q = ( math.max( s2, 0 ) / s1 ) 
+				r = r * q
+				m = math.max( m, 1 + ( vehicleControlAddon.speedRatioClosed1 - 1 ) * ( 1 - q ) )
 			end 
 			
-			return r
+			if math.abs( r - r0 ) < 0.05 then 
+				r = r0 
+			end 
+							
+			return r, m
 		end
 		
 		local function setDiff( index, newState, torqueRatioOpen, advanceSpeed )
+		
+			-- torqueRatio = 1 => all power goes to 1st part 
+			-- torqueRatio = 0 => all power goes to 2nd part 
+		
 			if index <= 0 then 
 				return 0
 			end 
-			if newState == nil or not self:vcaIsVehicleControlledByPlayer() then 
-				newState = 0
-			end 
 			
 			local diff  = spec.differentials[index]		
-			local r, m  = diff.vcaTorqueRatio, diff.vcaMaxSpeedRatio
+			
+			if newState == nil or diff.vcaEnabled <= 0 then 
+				newState = 0 
+			end 
+			
+			local r, m   = diff.vcaTorqueRatio, diff.vcaMaxSpeedRatio
+			local r1, r2 = vehicleControlAddon.minTorqueRatio, 1-vehicleControlAddon.minTorqueRatio
 			
 			if     newState == 1 then 
 				if torqueRatioOpen ~= nil then 
 					r = torqueRatioOpen
-					if     r > 0.9 then 
-					--vehicleControlAddon.debugPrint( "Disabling diff(1) "..tostring(index-1) )
-						diff.vcaEnabled = 1  						
-						disableDiff( diff.diffIndex2, diff.diffIndex2IsWheel ) 
-					elseif r < 0.1 then                                  
-					--vehicleControlAddon.debugPrint( "Disabling diff(2) "..tostring(index-1) )
-						diff.vcaEnabled = 2                            
-						disableDiff( diff.diffIndex1, diff.diffIndex1IsWheel )
-					end 
 				end 
 
-				if diff.vcaEnabled == 3 and vehicleControlAddon.distributeTorqueOpen then  
+				if r1 <= r and r <= r2 and vehicleControlAddon.distributeTorqueOpen then  
 					-- inverse torque ratio => put more torque on turning wheel
 					local s1,s2 = getDiffSpeed(index)
-					r = getClosedTorqueRatio( r, s2, s1 )		
+					r = vehicleControlAddon.mbClamp( getClosedTorqueRatio( r, s2, s1 ), r1, r2 )		
 				end 				
 				m = vehicleControlAddon.speedRatioOpen
-			elseif newState == 2 then 
-				if vehicleControlAddon.speedRatioClosed1 >= 0 then 
-					m = math.min( m, vehicleControlAddon.speedRatioClosed1 )
+			elseif newState == 2 then 			
+				if vehicleControlAddon.speedRatioClosed0 >= 0 then 
+					m = vehicleControlAddon.speedRatioClosed0 
 				end 
-				
+
 				local s1,s2 = getDiffSpeed(index)
 				
 				-- advance speed by 7% (minus 2% error)
 				if     torqueRatioOpen == nil or not self.vcaDiffFrontAdv then  
-				elseif torqueRatioOpen < 0.1 then 
-					m  = math.max( m, vehicleControlAddon.speedRatioClosed2 )
-					s1 = s1 / 1.035
-					s2 = s2 * 1.035
-				elseif torqueRatioOpen > 0.9 then 
+				elseif torqueRatioOpen > r2 then 
 					m  = math.max( m, vehicleControlAddon.speedRatioClosed2 )
 					s1 = s1 * 1.035
 					s2 = s1 / 1.035
+				elseif torqueRatioOpen < r1 then 
+					m  = math.max( m, vehicleControlAddon.speedRatioClosed2 )
+					s1 = s1 / 1.035
+					s2 = s2 * 1.035
 				end 
 				
-				r = getClosedTorqueRatio( r, s1, s2 )
+				r, m = getClosedTorqueRatio( r, s1, s2, m )
+				r = vehicleControlAddon.mbClamp( r, r1, r2 )
 			end 
 			
-			if diff.vcaSumDt ~= nil and diff.vcaSumDt > 100 and math.abs( diff.maxSpeedRatio - m ) > 1e-3 then 
-				diff.vcaSumDt      = 0
+			local ovr = "vcaOvrDT"..tostring(index) 
+			if self[ovr] ~= nil and self[ovr] >= 0 then 
+				r = self[ovr]
+			end 
+			local ovr = "vcaOvrDM"..tostring(index) 
+			if self[ovr] ~= nil and self[ovr] >= 0 then 
+				m = self[ovr] 
+			end 
+			
+			if newState > 0 then 
+				if     r > r2 then 
+					if diff.diffIndex2IsWheel then
+						r = r2
+					else 
+						r = 1
+						diff.vcaEnabled = 1  						
+						disableDiff( diff.diffIndex2, diff.diffIndex2IsWheel ) 
+					end 
+				elseif r < r1 then 
+					if diff.diffIndex1IsWheel then                              
+						r = r1
+					else 
+						r = 0
+						diff.vcaEnabled = 2                            
+						disableDiff( diff.diffIndex1, diff.diffIndex1IsWheel )
+					end 			
+				end 
+				if m < 1 then 
+					m = 1 
+				end 
+			end 			
+			
+			local eOld = ( r1 <= diff.torqueRatio and diff.torqueRatio <= r2 ) 
+			local eNew = ( r1 <= r and r <= r2 )
+			
+			if     eOld ~= eNew then 
+				diff.torqueRatio    = r 
+				diff.maxSpeedRatio  = m
+				updateDiffs        = true 
+			elseif math.abs( diff.torqueRatio - r ) > 1e-3 or math.abs( diff.maxSpeedRatio - m ) > 1e-3 then 
 				diff.torqueRatio   = r 
 				diff.maxSpeedRatio = m
-				updateDiffs        = true 
-			elseif diff.vcaEnabled == 3 then 
-				if diff.vcaSumDt == nil then 
-					diff.vcaSumDt = 0 
-				else 
-					diff.vcaSumDt = diff.vcaSumDt + dt 
-				end 
-				r = 1e-3 * math.floor( 1e+3 * r + 0.5 )
-				if diff.vcaIndex ~= nil and diff.torqueRatio ~= r then 
-					diff.torqueRatio   = r 
+				if diff.vcaIndex ~= nil and diff.vcaIndex >= 0 then 
 					updateDifferential( spec.motorizedNode, diff.vcaIndex, diff.torqueRatio, diff.maxSpeedRatio )
 				end 
 			end 
@@ -3051,6 +3090,8 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 														 differential.torqueRatio,
 														 differential.maxSpeedRatio )
 					end 
+				else 
+					differential.vcaIndex = -1
 				end 
 			end
 			self:updateMotorProperties()
@@ -3083,8 +3124,11 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 
 				local s1,s2 = getDiffSpeed(i)
 				
-				self.vcaDebugD = self.vcaDebugD .. string.format( "%d: speed: %6.3f, %6.3f => tr: %6.3f sr: %6.3f",
-																													i,
+				self.vcaDebugD = self.vcaDebugD .. string.format( "%d: (%d, %d, %s), speed: %6.3f, %6.3f => tr: %6.3f sr: %6.1f",
+																													i, 
+																													Utils.getNoNil( differential.vcaEnabled, -1 ),
+																													Utils.getNoNil( differential.vcaIndex, -1 ),
+																													Utils.getNoNil( differential.vcaMode, '?' ),
 																													s1, s2,
 																													differential.torqueRatio,
 																													differential.maxSpeedRatio )
