@@ -96,6 +96,7 @@ local listOfProperties =
 		{ func=listOfFunctions.float, xmlName="snapPosX",      propName="vcaLastSnapPosX"  },
 		{ func=listOfFunctions.float, xmlName="snapPosZ",      propName="vcaLastSnapPosZ"  },
 		{ func=listOfFunctions.float, xmlName="handthrottle",  propName="vcaHandthrottle"  },
+		{ func=listOfFunctions.bool,  xmlName="handRpmFull",   propName="vcaHandRpmFullAxis"},
 		{ func=listOfFunctions.float, xmlName="pitchFactor",   propName="vcaPitchFactor"   },
 		{ func=listOfFunctions.float, xmlName="pitchExponent", propName="vcaPitchExponent" },
 		{ func=listOfFunctions.float, xmlName="minGearRatio",  propName="vcaGearRatioF"    },
@@ -375,6 +376,7 @@ function vehicleControlAddon:onLoad(savegame)
 	vehicleControlAddon.registerState( self, "vcaIsBlocked",    false )
 	vehicleControlAddon.registerState( self, "vcaSnapDraw",     1 )
 	vehicleControlAddon.registerState( self, "vcaHandthrottle", 0 )
+	vehicleControlAddon.registerState( self, "vcaHandRpmFullAxis", false )
 	vehicleControlAddon.registerState( self, "vcaPitchFactor",  1 )
 	vehicleControlAddon.registerState( self, "vcaPitchExponent",1 )
 	vehicleControlAddon.registerState( self, "vcaGearRatioF",   0 )
@@ -1194,7 +1196,14 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 		end 
 		
 		if     isAnalog then 
-			h = 1 + keyStatus 
+			if keyStatus > 0.5 then 
+				self:vcaSetState( "vcaHandRpmFullAxis", true )
+			end 
+			if self.vcaHandRpmFullAxis then 
+				h = 0.5 * ( 1 + keyStatus ) 
+			else 
+				h = 1 + keyStatus
+			end 
 		elseif keyStatus > 0.5 then 
 			h = math.min( 1, h + 0.0005 * self.vcaTickDt )
 		elseif keyStatus < 0.5 then 
