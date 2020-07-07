@@ -1906,12 +1906,10 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 	if self.isClient and self.getIsEntered ~= nil and self:getIsControlled() and self:getIsEntered() then 
 		self.vcaIsEntered = true
 		self:vcaSetState( "vcaIsEnteredMP", true )
-		if not g_gui:getIsGuiVisible() then 
-			self:vcaSetState( "vcaIsBlocked", false )
-		elseif g_gui.currentGui ~= nil and g_gui.guis.ChatDialog ~= nil and g_gui.currentGui == g_gui.guis.ChatDialog then 
-			self:vcaSetState( "vcaIsBlocked", false )
-		else
+		if g_gui:getIsGuiVisible() and g_gui.currentGuiName ~= nil and g_gui.currentGuiName ~= "ChatDialog" then
 			self:vcaSetState( "vcaIsBlocked", true )
+		else 
+			self:vcaSetState( "vcaIsBlocked", false )
 		end 
 	else 
 		self.vcaIsEntered = false 

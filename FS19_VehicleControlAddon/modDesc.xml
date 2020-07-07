@@ -22,6 +22,10 @@ All functions are switchable with the following default key combinations:
 []]: Range up 
 [#]: Range down 
 [;]: Neutral and handbrake 
+
+Changelog version 1.1.0.0
+- Differentials, all wheel drive and real two wheel drive
+- Raise, lower and turn on/off tools in the front or back
 ]]></en>
 		<de><![CDATA[
 Dieses Script variiert abhängig von der gefahrenen Geschwindigkeit die Lenkgeschwindigkeit und dreht die Kamera passend zum Lenkeinschlag und zur Fahrtrichtung. 
@@ -44,10 +48,10 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>store.dds</iconFilename>
-	<version>9.1.8.1</version>
+	<version>9.1.8.2</version>
 	<l10n filenamePrefix="modDesc_l10n">
 		<text name="vcaVERSION">          
-			<en>Vehicle Control Addon beta build 181</en>
+			<en>Vehicle Control Addon beta build 182</en>
 		</text>
 	</l10n>
 	
