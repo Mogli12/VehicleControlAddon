@@ -1906,10 +1906,12 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 	if self.isClient and self.getIsEntered ~= nil and self:getIsControlled() and self:getIsEntered() then 
 		self.vcaIsEntered = true
 		self:vcaSetState( "vcaIsEnteredMP", true )
-		if g_gui:getIsGuiVisible() and g_gui.currentGuiName ~= nil and g_gui.currentGuiName ~= "ChatDialog" then
-			self:vcaSetState( "vcaIsBlocked", true )
-		else 
+		if not g_gui:getIsGuiVisible() then 
 			self:vcaSetState( "vcaIsBlocked", false )
+		elseif g_gui.currentGuiName ~= nil and g_gui.currentGuiName == "ChatDialog" then 
+			self:vcaSetState( "vcaIsBlocked", false )
+		else 
+			self:vcaSetState( "vcaIsBlocked", true )
 		end 
 	else 
 		self.vcaIsEntered = false 
@@ -3518,7 +3520,7 @@ function vehicleControlAddon:onDraw()
 
 			if self.vcaSnapIsOn then 
 				dist = dist + self.vcaSnapFactor * self.vcaSnapDistance
-				setTextColor(0, 1, 0, 0.5) 
+				setTextColor(0, 1, 1, 0.5) 
 				if math.abs( dist ) > 1 then 
 					if self.vcaSnapPosTimer == nil or self.vcaSnapPosTimer < 1000 then 
 						self.vcaSnapPosTimer = 1000
@@ -5171,10 +5173,11 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		end 
 
 		self.minGearRatio = self.maxRpm / ( maxSpeed * vehicleControlAddon.factor30pi )
-		self.maxGearRatio = 1000
+		self.maxGearRatio = math.min( 10000, math.max( 100, self.vcaMaxRpm / math.max( 1e-3, speedMS * vehicleControlAddon.factor30pi ) ) )
 		
 		if self.vehicle.vcaGearRatioF > 0 then 
-			self.maxGearRatio = self.maxRpm / ( self.vehicle.vcaMaxSpeed * math.max( self.vehicle.vcaGearRatioT, self.vehicle.vcaGearRatioF ) * vehicleControlAddon.factor30pi )
+			self.maxGearRatio = math.max( self.maxRpm / ( self.vehicle.vcaMaxSpeed * math.max( self.vehicle.vcaGearRatioT, self.vehicle.vcaGearRatioF ) * vehicleControlAddon.factor30pi ),
+																		self.minRpm  / math.max( 1e-3, speedMS * vehicleControlAddon.factor30pi ) )
 		end 
 		
 		if not fwd then 
