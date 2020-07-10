@@ -1908,11 +1908,11 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 		self:vcaSetState( "vcaIsEnteredMP", true )
 		if not g_gui:getIsGuiVisible() then 
 			self:vcaSetState( "vcaIsBlocked", false )
-		elseif g_gui.currentGuiName ~= nil and g_gui.currentGuiName == "ChatDialog" then 
+		elseif g_gui.currentGui ~= nil and g_gui.guis.ChatDialog ~= nil and g_gui.currentGui == g_gui.guis.ChatDialog then 
 			self:vcaSetState( "vcaIsBlocked", false )
-		else 
+		else
 			self:vcaSetState( "vcaIsBlocked", true )
-		end 
+		end
 	else 
 		self.vcaIsEntered = false 
 	end 	
@@ -4144,7 +4144,7 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 		elseif ( self.vcaNeutral and not self.vcaShifterUsed ) or ( self.vcaShifterPark and self.vcaShifterUsed ) then 
 			acceleration = 0
 			doHandbrake  = true 
-		elseif self.spec_drivable.cruiseControl.state > 0 then 
+		--elseif self.spec_drivable.cruiseControl.state > 0 then 
 		elseif self.vcaKSIsOn then 
 			if math.abs( self.vcaKeepSpeed ) < 0.5 then 
 				acceleration = 0
@@ -4165,7 +4165,7 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 				end 
 			end 
 			self.vcaOldAcc = acceleration
-		elseif self.vcaHandthrottle > 0 and self:vcaGetShuttleCtrl() and self:vcaGetNoIVT() and not self:vcaGetNeutral() then 
+		--elseif self.vcaHandthrottle > 0 and self:vcaGetShuttleCtrl() and self:vcaGetNoIVT() and not self:vcaGetNeutral() then 
 		-- fixed gear transmission and hand throttle => treat like cruise control
 		elseif self.vcaIsBlocked and self.vcaIsEnteredMP then
 			acceleration = 0
