@@ -4165,7 +4165,7 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 				end 
 			end 
 			self.vcaOldAcc = acceleration
-		elseif self.vcaHandthrottle > 0 and self:vcaGetShuttleCtrl() and self:vcaGetNoIVT() and not self:vcaGetNeutral() then 
+		--elseif self.vcaHandthrottle > 0 and self:vcaGetShuttleCtrl() and self:vcaGetNoIVT() and not self:vcaGetNeutral() then 
 		-- fixed gear transmission and hand throttle => treat like cruise control
 		elseif self.vcaIsBlocked and self.vcaIsEnteredMP then
 			acceleration = 0
