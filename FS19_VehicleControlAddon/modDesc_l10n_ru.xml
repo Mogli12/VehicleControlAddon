@@ -42,9 +42,9 @@
 		<text name="vcaGEARRATIOT"          text="Max. gear speed limit"/>
 		<text name="vcaG27MODE"             text="Режим переключения G27/G29"/>
 		<text name="vcaHIREDWORKER"         text="Трансмиссия и наёмный работник"/>
-		<text name="vcaOWNMINSPEED"         text="Gear speed of 1st gear"/>
-		<text name="vcaOWNMINRANGE"         text="Gear speed of 1st gear and range -"/>
-		<text name="vcaOWNMAXRANGE"         text="Max. gear speed of range -"/>
+		<text name="vcaOWNMINSPEED"         text="Скорость на 1-й передаче"/>
+		<text name="vcaOWNMINRANGE"         text="Скорость на 1-й передаче на диапазоне -"/>
+		<text name="vcaOWNMAXRANGE"         text="Max. скорость передачи на диапазоне -"/>
 		<text name="vcaOWNGEARS"            text="К-во передач"/>
 		<text name="vcaOWNRANGES"           text="К-во диапазонов"/>
 		<text name="vcaOWNGEARTIME"         text="Время переключения передач"/>
@@ -90,8 +90,8 @@
 		<text name="vca_tip_PITCH2"         text="Высота звука на средних оборотах."/>
 		<text name="vca_tip_BLOWOFFVOL"     text="Высота звука турбины."/>
 		<text name="vca_tip_SINGLEREV"      text="С одним реверсом, коробка передач использует одну передачу ЗХ или диапазон ЗХ вместо управления челноком."/>
-		<text name="vca_tip_AUTOCLUTCH"     text="Автосцепление"/>
-		<text name="vca_tip_TURBOCLUTCH"    text="Дополнительное турбосцепление"/>
+		<text name="vca_tip_AUTOCLUTCH"     text="Автоматическое сцепление."/>
+		<text name="vca_tip_TURBOCLUTCH"    text="Дополнительное турбосцепление."/>
 		<text name="vca_tip_GEARRATIOF"     text="Min. gear speed limit"/>
 		<text name="vca_tip_GEARRATIOT"     text="Max. gear speed limit"/>
 		<text name="vca_tip_G27MODE"        text="Режим переключения G27/G29"/>
@@ -124,16 +124,16 @@
 		<text name="input_vcaREVERSE"       text="VCA: Направление движения назад"/>
 		<text name="input_vcaSNAP"          text="VCA: Выровнять направление по сетке"/>
 		<text name="input_vcaSNAPRESET"     text="VCA: Отменить выравнивание направления по сетке"/>
-		<text name="input_vcaSnapUP"        text="VCA: повернуть фиксированное направление левее"/> <!-- snap direction: направления привязки, фиксированное направлени-->
-		<text name="input_vcaSnapDOWN"      text="VCA: повернуть фиксированное направление правее"/>
-		<text name="input_vcaSnapLEFT"      text="VCA: переключить налево"/>
-		<text name="input_vcaSnapRIGHT"     text="VCA: переключить направо"/>
+		<text name="input_vcaSnapUP"        text="VCA: Повернуть фиксированное направление левее"/> <!-- snap direction: направления привязки, фиксированное направление-->
+		<text name="input_vcaSnapDOWN"      text="VCA: Повернуть фиксированное направление правее"/>
+		<text name="input_vcaSnapLEFT"      text="VCA: Сместить фиксированное направление левее"/>
+		<text name="input_vcaSnapRIGHT"     text="VCA: Сместить фиксированное направление правее"/>
 		<text name="input_vcaNO_ARB"        text="VCA: Без автоповорота камеры назад"/>
 		<text name="input_vcaINCHING"       text="VCA: Сцепление"/>
 		<text name="input_vcaKEEPROT"       text="VCA: Сохранить глобальное напр. камеры"/>
-		<text name="input_vcaKEEPROT2"      text="VCA: постоянно держать направление камеры"/>
+		<text name="input_vcaKEEPROT2"      text="VCA: Постоянно держать направление камеры"/>
 		<text name="input_vcaKEEPSPEED"     text="VCA: Удерживать скорость"/>
-		<text name="input_vcaKEEPSPEED2"    text="VCA: удерживать постоянную скорость"/>
+		<text name="input_vcaKEEPSPEED2"    text="VCA: Удерживать постоянную скорость"/>
 		<text name="input_vcaSWAPSPEED"     text="VCA: Изменить скорость круиз-контроля"/>
 		<text name="input_vcaGearUp"        text="VCA: Передача вверх"/>
 		<text name="input_vcaGearDown"      text="VCA: Передача вниз"/>
@@ -153,18 +153,18 @@
 		<text name="input_vcaShifter8"      text="VCA: G27/G29 Передача 8"/>
 		<text name="input_vcaShifter9"      text="VCA: G27/G29 Передача 9 / ЗХ"/>
 		<text name="input_vcaShifterLH"     text="VCA: G27/G29 делитель"/>
-		<text name="input_vcaHandRpm"       text="VCA: обороты ручного дросселя"/>
-		<text name="input_vcaHandRpm_1"     text="VCA: увеличить ручной дроссель"/>
-		<text name="input_vcaHandRpm_2"     text="VCA: уменьшить ручной дроссель"/>
-		<text name="input_vcaHandMode"      text="VCA: режим ручного дросселя"/>
-		<text name="input_vcaAutoShift"     text="VCA: автоматическое переключение Вкл/Выкл"/>
-		<text name="input_vcaDiffLockF"     text="VCA: передний дифф. блок/разблок"/>
-		<text name="input_vcaDiffLockM"     text="VCA: полный привод"/>
-		<text name="input_vcaDiffLockB"     text="VCA: задний дифф. блок/разблок"/>
-		<text name="input_vcaLowerF"        text="VCA: опустить/поднять переднее оборудование"/>
-		<text name="input_vcaLowerB"        text="VCA: опустить/поднять заднее оборудование"/>
-		<text name="input_vcaActivateF"     text="VCA: (де-)активировать переднее оборудование"/>
-		<text name="input_vcaActivateB"     text="VCA: (де-)активировать заднее оборудование"/>
+		<text name="input_vcaHandRpm"       text="VCA: Обороты ручного дросселя"/>
+		<text name="input_vcaHandRpm_1"     text="VCA: Увеличить ручной дроссель"/>
+		<text name="input_vcaHandRpm_2"     text="VCA: Уменьшить ручной дроссель"/>
+		<text name="input_vcaHandMode"      text="VCA: Режим ручного дросселя"/>
+		<text name="input_vcaAutoShift"     text="VCA: Автоматическое переключение Вкл/Выкл"/>
+		<text name="input_vcaDiffLockF"     text="VCA: Передний дифф. блок/разблок"/>
+		<text name="input_vcaDiffLockM"     text="VCA: Полный привод"/>
+		<text name="input_vcaDiffLockB"     text="VCA: Задний дифф. блок/разблок"/>
+		<text name="input_vcaLowerF"        text="VCA: Опустить/поднять переднее оборудование"/>
+		<text name="input_vcaLowerB"        text="VCA: Опустить/поднять заднее оборудование"/>
+		<text name="input_vcaActivateF"     text="VCA: (Де-)активировать переднее оборудование"/>
+		<text name="input_vcaActivateB"     text="VCA: (Де-)активировать заднее оборудование"/>
 		
 		<text name="vcaValueOn"             text="ВКЛ"/>
 		<text name="vcaValueOff"            text="ВЫКЛ"/>
