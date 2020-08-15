@@ -148,7 +148,24 @@ Si presiona la tecla Eliminar, el vehículo mantiene la velocidad actual. Al igu
 Los cambios en el tono hacen que sea más fácil escuchar la velocidad actual.]]>
 		</longText>
 		<longText name="vca_Help_3">
-<![CDATA[Transmisión]]>
+<![CDATA[Transmisión
+
+OFF: la caja de cambios estándar, sin personalización.
+IVT: Sigue siendo la caja de cambios estándar, pero con pequeños ajustes en el rango de RPM permitido. Más proximamente...
+4X4: Un transmisión anticuada con 4 marchas en 4 grupos y control de acelerador. Cambiar de marcha lleva tiempo y es posible que pierda impulso.
+4PS: La misma transmisión que la anterior pero con cambio de potencia para los engranajes.
+2X6: Dos grupos con 6 marchas. Esta transmisión es útil para las palancas de cambio G27 / G29. Hay un rango bajo y alto. Las 6 marchas de cada rango no se superponen con las 6 marchas de la otra gama
+FPS: Full Power Shift: la transmisión tiene 12 marchas y cambia sin interrupción.
+6PS: Un AutoQuad de John Deere. Esta transmisión tiene 6 marchas. Cada marcha se puede reducir en aproximadamente un 80%
+PKW: Una transmisión de 6 velocidades para automóviles con rango bajo
+VARIO: Una transmisión Fendt Vario. Es muy similar a IVT pero tiene un rango bajo y alto.
+46A: Transmisión de clase A HexaShift. Tiene 4 rangos manuales y 6 marchas de cambio automático.
+PROPIO: Construye tu propia transmisión]]>
+		</longText>
+		<longText name="vca_Help_4">
+<![CDATA[Ajustes Globales
+
+Los cambios en la configuración global no tienen ningún efecto en el vehículo actual. Se guardan en el archivo modsSettings/FS19_VehicleControlAddon/config.xml.]]>
 		</longText>
 		<longText name="vca_Help_5">
 <![CDATA[Construye tu propio equipo
@@ -161,5 +178,7 @@ La relación de los engranajes entre sí.
 Las velocidades máximas en el penúltimo grupo son redundantes. Solo tiene que ingresar uno de los dos valores. El otro se ajusta automáticamente.
 ]]>
 		</longText>
-	</longTexts>
+		<longText name="vca_Help_6">
+<![CDATA[Diferenciales y tracción total]]>
+		</longText>		
 </l10n>
