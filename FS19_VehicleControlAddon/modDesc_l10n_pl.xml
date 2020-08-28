@@ -178,9 +178,11 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vcaValueOff"        text="wyłączone"/>
 		<text name="vcaValueNever"      text="nigdy"/>
 		<text name="vcaValueAlways"     text="zawsze"/>
+		<text name="vcaValueAlwaysH"    text="zawsze (wysoko)"/>
 		<text name="vcaValueNormal"     text="normalny"/>
 		<text name="vcaValueEntered"    text="jeśli w środku"/>
 		<text name="vcaValueInactive"   text="jeśli nieaktywny"/>
+		<text name="vcaValueInactiveH"  text="jeśli nieaktywny (wysoko)"/>
 		<text name="vcaValueRPM"        text="RPM"/>
 	</texts>
 	
