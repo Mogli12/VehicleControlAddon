@@ -5714,9 +5714,10 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		curGearRatio       = self.maxRpm / ( maxSpeed * vehicleControlAddon.factor30pi ) 
 		self.minGearRatio  = curGearRatio
 		self.maxGearRatio  = curGearRatio
+		self.vcaGearRatio  = curGearRatio
 		
 		if lastGearRatio ~= nil and self.gearChangeTimer <= 0 and self.vcaClutchTimer <= 0 and self.vcaGearChangeTime ~= nil then 
-			local t = 100
+			local t = 200
 			if lastGearRatio < curGearRatio then 
 				t = 500
 			elseif maxSpeed < 3 then 
@@ -5727,15 +5728,12 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 				self.minGearRatio      = f * curGearRatio + ( 1 - f ) * lastGearRatio
 				self.maxGearRatio      = curGearRatio
 				self.vcaGearRatio      = lastGearRatio
-				if lastGearRatio > curGearRatio then
-					newAcc               = 0
-				end 
+			--if lastGearRatio > curGearRatio then
+			--	newAcc               = 0
+			--end 
 			else
-				self.vcaGearRatio      = curGearRatio
 				self.vcaGearChangeTime = nil 
 			end 
-		else 
-			self.vcaGearRatio = curGearRatio
 		end 
 				
 		-- *******************************************
