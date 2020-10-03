@@ -12,10 +12,13 @@
 	<drawHud             type="bool"  value="true"/>
 	<transmission        type="int"   value="1"/>  <!-- 0 = Giants, 1 = IVT, 2 = 4x4, 3 = 4x4 PowerShift, 4 = 2x6, 5 = FullPowerShift -->
 	<clutchTimer         type="int"   value="5000"/> <!-- ms -->
-	<rotInertiaFactor    type="float" value="5"/>  <!-- rot. interatia is more than just the flywheel, it includes the transmission and the wheels as well -->
+	<rotInertiaFactor    type="float" value="2"/>  <!-- rot. interatia is more than just the flywheel, it includes the transmission and the wheels as well -->
+	<rotInertiaFactorLow type="float" value="0.5"/>  <!-- rot. interatia is more than just the flywheel, it includes the transmission and the wheels as well -->
+	<rotInertiaFactorPS  type="float" value="0.25"/>  <!-- rot. interatia is more than just the flywheel, it includes the transmission and the wheels as well -->
 	<modifyPitch         type="bool"  value="true"/>
 	<mouseAutoRotateBack type="bool"  value="false"/>
 	<turnOffAWDSpeed     type="float" value="30"/><!-- km/h -->
+	<minAuthShiftWait    type="int"   value="333"/> <!-- ms minimum time between automatic shifting -->
 	
 	<!-- defaults -->
 	<adaptiveSteering    type="bool"  value="true"/>
