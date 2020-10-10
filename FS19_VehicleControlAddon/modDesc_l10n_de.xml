@@ -157,6 +157,9 @@
 		<text name="input_vcaHandRpm_1" text="VCA: mehr Handgas"/>
 		<text name="input_vcaHandRpm_2" text="VCA: weniger Handgas"/>
 		<text name="input_vcaHandMode"  text="VCA: Handgas Modus"/>
+		<text name="input_vcaManRatio"   text="VCA: manuelles Vario"/>
+		<text name="input_vcaManRatio_1" text="VCA: Vario schneller"/>
+		<text name="input_vcaManRatio_2" text="VCA: Vario langsamer"/>
 		<text name="input_vcaAutoShift" text="VCA: Automatische Schaltung an/aus"/>
 		<text name="input_vcaDiffLockF" text="VCA: Differentialsperre vorne an/aus"/>
 		<text name="input_vcaDiffLockM" text="VCA: Allrad an/aus"/>
