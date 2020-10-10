@@ -214,6 +214,8 @@ function vehicleControlAddonRegister:loadMap(name)
 										"blowOffVolume",
 										"rotSpeedOut",
 										"rotSpeedIn",
+										"torqueCheatFactor1",
+										"torqueCheatFactor2",
 									}
 
 	print('VCAregister; isMP: '..tostring(self.isMP)..', isDedi: '..tostring(self.isDedi)..', local config: "'..tostring(configFile)..'", local directory: "'..tostring(configDir)..'"')
