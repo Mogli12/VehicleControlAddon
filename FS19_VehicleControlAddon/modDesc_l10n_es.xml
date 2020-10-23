@@ -29,13 +29,13 @@
 		<text name="vcaDRAWHUD"         	text="HUD Transmisión"/>
 		                                
 		<text name="vcaDISTANCE"        	text="Ancho de trabajo"/>
-		<text name="vcaOFFSET1" 			text="Desplazamiento de herramienta"/>
-		<text name="vcaOFFSET2" 			text="Desplazamiento inverso"/>
+		<text name="vcaOFFSET1" 		text="Desplazamiento de herramienta"/>
+		<text name="vcaOFFSET2" 		text="Desplazamiento inverso"/>
 		<text name="vcaDRAWMARKER"      	text="Dibujar marcador rápido conducción"/>
 		<text name="vcaPITCH1"          	text="Tono de sonido lineal"/>
 		<text name="vcaPITCH2"          	text="Sonido A Medias RPM"/>
-		<text name="vcaBLOWOFFVOL" 			text="Volumen turbo de la válvula de descarga" />
-		<text name="vcaSINGLEREV" 			text="Marcha atrás simple" />
+		<text name="vcaBLOWOFFVOL" 		text="Volumen turbo de la válvula de descarga" />
+		<text name="vcaSINGLEREV" 		text="Marcha atrás simple" />
 		<text name="vcaAUTOCLUTCH"      	text="Embrague Automático"/>
 		<text name="vcaTURBOCLUTCH"     	text="Embrague Turbo"/>
 		<text name="vcaGEARRATIOF"      	text="Limite Velocidad Min."/>
@@ -52,12 +52,12 @@
 		<text name="vcaOWNAUTOGEARS"  	  	text="Marchas automáticas"/>
 		<text name="vcaOWNAUTORANGE"  	  	text="Rangos automaticos"/>
 		
-		<text name="vcaAntiSlip" 			text="Control de tracción"/>
-		<text name="vcaDiffManual" 			text="AWD manual y diferenciales"/>
+		<text name="vcaAntiSlip" 		text="Control de tracción"/>
+		<text name="vcaDiffManual" 		text="AWD manual y diferenciales"/>
 		<text name="vcaDiffFrontAdv" 		text="Velocidad de avance del eje delantero"/>
 		<text name="vcaDiffLockSwap" 		text="Cambiar eje delantero y trasero"/>
-		<text name="vcaHudX" 				text="Posición del Hud x"/>
-		<text name="vcaHudY" 				text="Posición del Hud y"/>
+		<text name="vcaHudX" 			text="Posición del Hud x"/>
+		<text name="vcaHudY" 			text="Posición del Hud y"/>
 		<text name="vcaHIREDWORKER2" 		text="Diferenciales y trabajador contratado"/>
 
 		<text name="vca_tip_CAMERAI"    	text="La cámara interior gira automáticamente acorde al ángulo de giro."/>
