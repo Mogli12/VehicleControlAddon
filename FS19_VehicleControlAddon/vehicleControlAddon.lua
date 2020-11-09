@@ -1199,16 +1199,19 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 		self:vcaSetState( "vcaWarningText", vehicleControlAddon.getText( "vcaHANDTHROTTLE", "" )..": ".. t )
 
 	elseif actionName == "vcaManRatio" then 
+
+		--vehicleControlAddon.debugPrint( string.format( "vcaManRatio: %4.1f, %s", keyStatus, tostring( isAnalog ) ) )
+		
 		local h, f = self.vcaGearRatioH, 0
 		if     isAnalog then 
-			f = 4 * keyStatus
+			f = 2 * keyStatus
 		elseif keyStatus > 0.5 then 
 			f = 1
 		elseif keyStatus < 0.5 then 
 			f = -1 
 		end 
 		
-		h = math.max( 0.001, math.min( 1, h + f * 0.00025 * self.vcaTickDt ) )
+		h = math.max( 0.001, math.min( 1, h + f * 0.0002 * self.vcaTickDt ) )
 		self:vcaSetState( "vcaGearRatioH", h )
 	elseif actionName == "vcaHandRpm" then 
 		local h = 0
@@ -2407,8 +2410,8 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 			if t > sl then	
 				t = sl 
 			end 
-						
-			self:vcaSetState( "vcaKeepSpeed", vehicleControlAddon.mbClamp( self.vcaKeepSpeed + a * 0.0067 * dt, f, t )  )
+			
+			self:vcaSetState( "vcaKeepSpeed", vehicleControlAddon.mbClamp( self.vcaKeepSpeed + a * 0.005 * dt, f, t )  )
 		elseif math.abs( self.vcaKeepSpeed ) > sl then 
 			self:vcaSetState( "vcaKeepSpeed", vehicleControlAddon.mbClamp( self.vcaKeepSpeed, -sl, sl )  )
 		end 
@@ -4190,8 +4193,31 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 	self.vcaOldAcc       = acceleration
 	self.vcaOldHandbrake = doHandbrake
 	self.vcaBrakePedal   = nil
+	
+	local lastKSBrakeTime = self.vcaKsBrakeTime
+	self.vcaKsBrakeTime   = nil 
 
 	if self:vcaIsVehicleControlledByPlayer() then
+		if self.vcaKSIsOn then 
+			if self:vcaGetShuttleCtrl() or self.vcaKeepSpeed > 0 then 
+				if acceleration < -0.1 then 
+					if lastKSBrakeTime == nil then 
+						self.vcaKsBrakeTime = g_currentMission.time 
+					else 
+						self.vcaKsBrakeTime = lastKSBrakeTime
+					end 
+				end 
+			elseif self.vcaKeepSpeed < 0 then 
+				if acceleration > 0.1 then 
+					if lastKSBrakeTime == nil then 
+						self.vcaKsBrakeTime = g_currentMission.time 
+					else 
+						self.vcaKsBrakeTime = lastKSBrakeTime
+					end 
+				end 
+			end 
+		end 
+	
 		if     self.vcaAIEndTime ~= nil and g_currentMission.time < self.vcaAIEndTime + 500 then 
 			acceleration = 0
 			doHandbrake  = true 
@@ -4201,7 +4227,7 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 			acceleration = 0
 			doHandbrake  = true 
 		elseif self.spec_drivable.cruiseControl.state > 0 then 
-		elseif self.vcaKSIsOn then 
+		elseif self.vcaKSIsOn and ( self.vcaKsBrakeTime == nil or g_currentMission.time < self.vcaKsBrakeTime + 1000 ) then 
 			if math.abs( self.vcaKeepSpeed ) < 0.5 then 
 				acceleration = 0
 				doHandbrake  = true 
