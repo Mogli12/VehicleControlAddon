@@ -294,6 +294,7 @@ function vehicleControlAddon:onLoad(savegame)
 	self.vcaIsVehicleControlledByPlayer = vehicleControlAddon.vcaIsVehicleControlledByPlayer
 	self.vcaGetAutoShift        = vehicleControlAddon.vcaGetAutoShift
 	self.vcaGetIVTManual        = vehicleControlAddon.vcaGetIVTManual
+	self.vcaGetIVTManualRatio   = vehicleControlAddon.vcaGetIVTManualRatio
 	self.vcaGetAutoClutch       = vehicleControlAddon.vcaGetAutoClutch
 	self.vcaGetShuttleCtrl      = vehicleControlAddon.vcaGetShuttleCtrl
 	self.vcaGetNeutral          = vehicleControlAddon.vcaGetNeutral
@@ -1466,6 +1467,15 @@ function vehicleControlAddon:vcaGetIVTManual()
 		return true 
 	end 
 	return false 
+end 
+
+function vehicleControlAddon:vcaGetIVTManualRatio()
+	local t = math.min( self.vcaGearRatioT, 1 )
+	if t <= 0 then 
+		t = 1
+	end 
+	local f = math.min( math.max( self.vcaGearRatioF, 0 ), t )
+	return f + ( t - f ) * self.vcaGearRatioH
 end 
 
 function vehicleControlAddon:vcaGetAutoShift()
@@ -3412,8 +3422,8 @@ function vehicleControlAddon:onDraw()
 							and self.spec_motorized.motor        ~= nil 
 							and self.spec_motorized.motor.maxRpm ~= nil 
 							and self.spec_motorized.motor.maxRpm > 0 then 
-						local s  = maxSpeed * self.vcaGearRatioH * self.spec_motorized.motor.minRpm / self.spec_motorized.motor.maxRpm
-						maxSpeed = maxSpeed * self.vcaGearRatioH 
+						maxSpeed = maxSpeed * self:vcaGetIVTManualRatio()
+						local s  = maxSpeed * self.spec_motorized.motor.minRpm / self.spec_motorized.motor.maxRpm
 						text     = text.." "..self:vcaSpeedToString( s ).." .."
 					end 
 				else 
@@ -5093,22 +5103,6 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 -- IVT with manual gear ratio 
 --****************************************************************************************	
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 		local initGear = transmission:initGears() 
 				
 		if     self.vcaClutchTimer == nil 
@@ -5169,7 +5163,41 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			gear  = 1	
 			ratio = 0.3
 		end 
-		local maxSpeed  = ratio * self.vehicle.vcaMaxSpeed * self.vehicle.vcaGearRatioH
+		
+		local lastSetLaunchGear = self.vcaSetLaunchGear
+		self.vcaSetLaunchGear   = false 
+		
+		if autoNeutral or curBrake > 0.1 then  
+			local t = self.vehicle.vcaGearRatioT
+			if t <= 0 then 
+				t = 1
+			end 
+			local f = math.min( math.max( self.vehicle.vcaGearRatioF, 0 ), t )
+			local h = nil 
+
+			if     f >= t then 
+			elseif autoNeutral then 
+				if not( lastSetLaunchGear ) then 
+					h = self.vehicle.vcaLaunchSpeed / self.vehicle.vcaMaxSpeed 
+				end 
+				self.vcaSetLaunchGear = true 
+			-- lower ratio automatically when braking 
+			elseif curBrake > 0.1 then 
+				h = self.vehicle.lastSpeedReal * 1000 * self.maxRpm / ( self.vehicle.vcaMaxSpeed * self.vcaMaxPowerRpmL )
+				if h * self.vehicle.vcaMaxSpeed < self.vehicle.vcaLaunchSpeed then 
+					h = self.vehicle.vcaLaunchSpeed / self.vehicle.vcaMaxSpeed 
+				end 
+			end 
+			
+			if h ~= nil then 
+				h = math.min( math.max( h, f ), t )
+				if h < self.vehicle:vcaGetIVTManualRatio() then 
+					self.vehicle:vcaSetState( "vcaGearRatioH", ( h - f ) / ( t - f ) )
+				end 
+			end 
+		end 
+		
+		local maxSpeed  = ratio * self.vehicle.vcaMaxSpeed * self.vehicle:vcaGetIVTManualRatio()
 		wheelRpm = self.vehicle.lastSpeedReal * 1000 * self.maxRpm / maxSpeed 
 		
 		self.vehicle.vcaDebugR = debugFormat("g: %2d, r: %5.3f, s: %5.1f, m: %4.0f, w: %4.0f, c: %4.0f",
@@ -5394,32 +5422,6 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			self.minGearRatio = -self.minGearRatio
 			self.maxGearRatio = -self.maxGearRatio
 		end 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	elseif self.vehicle.vcaGearbox ~= nil and self.vehicle.vcaGearbox.isIVT then 
 --****************************************************************************************	
