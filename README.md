@@ -16,6 +16,11 @@ Be as specific as possible:
 
 From today on I will close all new issues without the above information!
 
+## Known errors, warnings and problems
+
+* Error: mogliBase30Request received invalid NodeObject  
+This error happens in MultiPlayer only. It happens if there is another mod with incorrect client-server communication. If the number of information processesd on client and server does not match, then all subsequent mods get shifted and incorrected data. You might ignore this error message if there are no other problems.
+
 ## How to download?
 
 Just click here: [Latest version](https://github.com/Mogli12/VehicleControlAddon/blob/master/FS19_VehicleControlAddon.zip?raw=true)
