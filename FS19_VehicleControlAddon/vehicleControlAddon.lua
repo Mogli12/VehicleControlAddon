@@ -4308,6 +4308,9 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 			else 
 				self.vcaBrakePedal = math.max( 0, -acceleration )
 			end 
+		elseif doHandbrake then 
+			acceleration       = 0
+			self.vcaBrakePedal = 1
 		end 			
 			
 		if self.spec_drivable.cruiseControl.state == 0 and self.vcaLimitThrottle ~= nil and self.vcaInchingIsOn ~= nil and math.abs( acceleration ) > 0.01 then 
