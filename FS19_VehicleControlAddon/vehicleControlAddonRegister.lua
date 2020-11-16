@@ -216,6 +216,8 @@ function vehicleControlAddonRegister:loadMap(name)
 										"rotSpeedIn",
 										"torqueCheatFactor1",
 										"torqueCheatFactor2",
+										"gearShiftSampleVol",
+										"grindingSampleVol",
 									}
 
 	print('VCAregister; isMP: '..tostring(self.isMP)..', isDedi: '..tostring(self.isDedi)..', local config: "'..tostring(configFile)..'", local directory: "'..tostring(configDir)..'"')

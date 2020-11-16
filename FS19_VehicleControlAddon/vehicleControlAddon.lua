@@ -5472,8 +5472,14 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			newMaxRpm = self.maxRpm
 		end 
 							
-		if speed > 2 then 
+	--if speed > 2 then 
+	--	self.vcaIncreaseRpm = g_currentMission.time + 2000 
+	--end 
+		if self.vcaAutoStop or self.vehicle:vcaGetNeutral() then 
+		elseif speed > 2 then 
 			self.vcaIncreaseRpm = g_currentMission.time + 2000 
+		elseif self.vcaIncreaseRpm ~= nil and g_currentMission.time < self.vcaIncreaseRpm then 
+			self.vcaIncreaseRpm = g_currentMission.time + 200 
 		end 
 		
 		local minReducedRpm = math.min( math.max( newMinRpm, 0.45*math.min( 2200, self.maxRpm ) ), newMaxRpm )
@@ -5498,11 +5504,11 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		end 
 		
 		if self.vcaIncreaseRpm ~= nil and g_currentMission.time < self.vcaIncreaseRpm then 
-			if speed > 0.5 then 
+		--if speed > 0.5 then 
 				newMinRpm = vehicleControlAddon.mbClamp( minReducedRpm, newMinRpm, newMaxRpm )
-			end 
+		--end 
 			if self.vcaFakeRpm ~= nil then 
-				self.vcaFakeRpm = math.max( self.vcaFakeRpm, minReducedRpm )
+				self.vcaFakeRpm = math.min( math.max( self.vcaFakeRpm, minReducedRpm ), lastFakeRpm + 0.001 * dt * rpmRange )
 			end 
 		end		
 		
@@ -5539,7 +5545,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 				newMinRpm = vehicleControlAddon.mbClamp( speedFactor * math.min( speed, 3.6 * maxSpeed ), newMinRpm, newMaxRpm )
 			end 
 			if curBrake >= 0.1 and speed > 1 then 
-				newMinRpm = vehicleControlAddon.mbClamp( 0.5 * ( self.vcaMaxPowerRpmL + self.vcaMaxPowerRpmH ), newMinRpm, newMaxRpm )
+				newMinRpm = vehicleControlAddon.mbClamp( self.vcaMaxPowerRpmL + 0.8 * math.max( self.vcaMaxPowerRpmH - self.vcaMaxPowerRpmL, 0 ), newMinRpm, newMaxRpm )
 			end
 			
 			local m1, m2 = newMinRpm, newMaxRpm 

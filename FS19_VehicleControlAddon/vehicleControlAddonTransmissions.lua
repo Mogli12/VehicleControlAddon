@@ -199,14 +199,14 @@ function vehicleControlAddonTransmissionBase:getChangeTimeRanges()
 end 
 
 function vehicleControlAddonTransmissionBase:grindingGears()
-	if vehicleControlAddon.grindingSample ~= nil then 
-		playSample( vehicleControlAddon.grindingSample, 1, 1, 0, 0, 0)
+	if vehicleControlAddon.grindingSample ~= nil and VCAGlobals.grindingSampleVol > 0 then 
+		playSample( vehicleControlAddon.grindingSample, 1, VCAGlobals.grindingSampleVol, 0, 0, 0)
 	end
 end
 
 function vehicleControlAddonTransmissionBase:gearShiftSound()
-	if vehicleControlAddon.gearShiftSample ~= nil then 
-		playSample( vehicleControlAddon.gearShiftSample, 1, 1, 0, 0, 0)
+	if vehicleControlAddon.gearShiftSample ~= nil and VCAGlobals.gearShiftSampleVol > 0 then 
+		playSample( vehicleControlAddon.gearShiftSample, 1, VCAGlobals.gearShiftSampleVol, 0, 0, 0)
 	end
 end
 
