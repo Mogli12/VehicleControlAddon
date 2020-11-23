@@ -1,5 +1,11 @@
 # VehicleControlAddon for Farming Simulator 2019
 
+## Currently On Hold
+It seems that many players have problems with thier inpubBindings. Just look at issues #470, #468, # 464, ...
+And I tried to post a version 1.1 on Modhub. But the update was refused because some DDS files have mipmaps. The last time there was a complaint that some DDS files have no mipmaps. 
+
+Overall, I am tired of this. This does not make fun anymore. My consequence is to stop this project as it is right now.
+
 ## Developer version
 Please be aware you're using a developer version, which may and will contain errors, bugs, mistakes and unfinished code. 
 
