@@ -179,27 +179,29 @@
 		<text name="vcaValueInactive"   text="if inactive"/>
 		<text name="vcaValueInactiveH"  text="if inactive (high)"/>
 		<text name="vcaValueRPM"        text="RPM"/>
+
+		<text name="vcaClutchMode_0"    text="automatic"/>
+		<text name="vcaClutchMode_1"    text="auto (fast)"/>
+		<text name="vcaClutchMode_2"    text="manual"/>
+		<text name="vcaClutchMode_3"    text="turbo (fast)"/>
+		<text name="vcaClutchMode_4"    text="turbo (slow)"/>
+		<text name="vcaClutchMode_5"    text="turbo (open)"/>
 	</texts>
 
 	<longTexts>
-		<longText name="vca_Help_1">
-<![CDATA[Steering and Camera
+		<longText name="vca_Help_1"><![CDATA[Steering and Camera
 
 This script varies the steering speed depending on the speed you are driving, and it rotates the camera to match the steering angle and direction.
 With Shift-right and the cursor keys you can peek in the corresponding direction.
 If you press Ctrl left together with W then the driving direction snaps to fixed directions.
 If you press Ctrl left together with W then the driving direction snaps to fixed directions.
-All functions can be switched off.]]>
-		</longText>
-		<longText name="vca_Help_2">
-<![CDATA[Throttle and Snap Driving Direction
+All functions can be switched off.]]></longText>
+		<longText name="vca_Help_2"><![CDATA[Throttle and Snap Driving Direction
 
 Shift-Left limits throttle, cruise control and maximum rounds per minute to 75%. 
 If you press delete then the vehicle will keep its speed. Acceleration and brake pedal increase and descrease the speed. The vehicle drives like a modern tractor with joystick.
-The linear pitch modification makes it easier to hear the RPM.]]>
-		</longText>
-		<longText name="vca_Help_3">
-<![CDATA[Transmission
+The linear pitch modification makes it easier to hear the RPM.]]></longText>
+		<longText name="vca_Help_3"><![CDATA[Transmission
 
 off: the standard gearbox without customization
 IVT: Still the standard gearbox but with little adjustments to the allowed RPM range. More to come...
@@ -211,22 +213,15 @@ FPS: Full Power Shift: The transmission has 12 gears and shifts without interupt
 PKW: A 6 speed transmission for cars with low range 
 VARIO: A Fendt Vario transmission. It is very similar to IVT but it has a low an a high range
 46A: A Class HexaShift transmission. It has 4 manual ranges and 6 automatic power shift gears
-OWN: Build your own transmission]]>
-		</longText>
-		<longText name="vca_Help_4">
-<![CDATA[Global Settings
+OWN: Build your own transmission]]></longText>
+		<longText name="vca_Help_4"><![CDATA[Global Settings
 
-Changes to the global settings have no effect on the current vehicle. They are saved to file modsSettings/FS19_VehicleControlAddon/config.xml.]]>
-		</longText>
-		<longText name="vca_Help_5">
-<![CDATA[Build your own transmission
+Changes to the global settings have no effect on the current vehicle. They are saved to file modsSettings/FS19_VehicleControlAddon/config.xml.]]></longText>
+		<longText name="vca_Help_5"><![CDATA[Build your own transmission
 
 Here you can configure your own transmission. Gears may be switched automatically.. 
 The maximum speed in highest gear may be theoretical only. You can reach it only without speed limiter. The ratios between gears is calculated from the maximum speed of 1st gear. 
-The two maximum speeds of 2nd highest range are redundant. If you enter one value, the other one is changed accordingly.]]>
-		</longText>
-		<longText name="vca_Help_6">
-<![CDATA[Differentials and all wheel drive]]>
-		</longText>		
+The two maximum speeds of 2nd highest range are redundant. If you enter one value, the other one is changed accordingly.]]></longText>
+		<longText name="vca_Help_6"><![CDATA[Differentials and all wheel drive]]></longText>		
 	</longTexts>
 </l10n>

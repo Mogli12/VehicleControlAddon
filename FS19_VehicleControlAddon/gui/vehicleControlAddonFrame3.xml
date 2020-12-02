@@ -71,23 +71,13 @@
 			</GuiElement>			
 			<GuiElement id="boxLayout2" type="boxLayout" profile="vcaSettingsLayoutMid">
 
-				<GuiElement type="checkedOption" profile="vcaMTOSettings" id="vcaAutoClutch"
+				<GuiElement type="multiTextOption" profile="vcaMTOSettings" id="vcaClutchMode"
 												toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_AUTOCLUTCH"
-												onCreate="onCreateSubElement">
+												onCreate="onCreateSubElement" onCreateArgs="list0">
 					<GuiElement type="button" profile="vcaMTOLeft" />
 					<GuiElement type="button" profile="vcaMTORight"/>
 					<GuiElement type="text" profile="vcaMTOText" />
 					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaAUTOCLUTCH"/>
-					<GuiElement type="bitmap" profile="vcaMTOBg" />
-				</GuiElement>
-
-				<GuiElement type="checkedOption" profile="vcaMTOSettings" id="vcaTurboClutch"
-												toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_TURBOCLUTCH"
-												onCreate="onCreateSubElement">
-					<GuiElement type="button" profile="vcaMTOLeft" />
-					<GuiElement type="button" profile="vcaMTORight"/>
-					<GuiElement type="text" profile="vcaMTOText" />
-					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaTURBOCLUTCH"/>
 					<GuiElement type="bitmap" profile="vcaMTOBg" />
 				</GuiElement>
 

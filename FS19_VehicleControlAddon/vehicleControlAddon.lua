@@ -34,8 +34,8 @@ function vehicleControlAddon.registerEventListeners(vehicleType)
 	end 
 end 
 
-local function getTransmission( xmlFile, xmlProp )
-	local text = getXMLString( xmlFile, xmlProp )
+local function getTransmission( xmlFile, xmlProp, xmlAttr )
+	local text = getXMLString( xmlFile, xmlProp..'#'..xmlAttr )
 	if text == nil then	
 		return 
 	end 
@@ -49,19 +49,64 @@ local function getTransmission( xmlFile, xmlProp )
 	return tonumber( text ) 
 end 
 
-local function setTransmission( xmlFile, xmlProp, value )
+local function setTransmission( xmlFile, xmlProp, xmlAttr, value )
 	if value ~= nil and vehicleControlAddonTransmissionBase.transmissionList[value] ~= nil then 
-		setXMLString( xmlFile, xmlProp, vehicleControlAddonTransmissionBase.transmissionList[value].params.name )
+		setXMLString( xmlFile, xmlProp..'#'..xmlAttr, vehicleControlAddonTransmissionBase.transmissionList[value].params.name )
 	end 
 end 
 
-local listOfFunctions = {}
-listOfFunctions.bool   = { getXML=getXMLBool     , setXML=setXMLBool     , streamRead=streamReadBool   , streamWrite=streamWriteBool    }
-listOfFunctions.int16  = { getXML=getXMLInt      , setXML=setXMLInt      , streamRead=streamReadInt16  , streamWrite=streamWriteInt16   }
-listOfFunctions.float  = { getXML=getXMLFloat    , setXML=setXMLFloat    , streamRead=streamReadFloat32, streamWrite=streamWriteFloat32 }
-listOfFunctions.trans  = { getXML=getTransmission, setXML=setTransmission, streamRead=streamReadInt16  , streamWrite=streamWriteInt16   }
-listOfFunctions.string = { getXML=getXMLString   , setXML=setXMLString   , streamRead=streamReadString , streamWrite=streamWriteString  }
+local listOfClutchModes = { "autoSlow",  -- 0
+                            "autoFast",  -- 1
+                            "manual",    -- 2
+                            "turboSlow", -- 3
+                            "turboFast", -- 4
+														"turboOpen", -- 5
+													}
+            
+-- replace #autoClutch and #turboClutch with #clutchMode
+local function getClutch( xmlFile, xmlProp, xmlAttr )
+	local text = getXMLString( xmlFile, xmlProp..'#'..xmlAttr )
+	local value = 0
 
+	if     text == nil then 
+		for i,t in pairs( listOfClutchModes ) do	 
+			if t == text then
+				return i-1 
+			end 
+		end 
+	else
+		local a = getXMLBool( xmlFile, xmlProp..'#autoClutch' )
+		local t = getXMLBool( xmlFile, xmlProp..'#turboClutch' )
+		if t then 
+			return 3 
+		elseif a ~= nil and not a then 
+			return 2 
+		end 
+	end 
+	return 0
+end 
+
+local function setClutch( xmlFile, xmlProp, xmlAttr, value )
+	if value ~= nil and listOfClutchModes[value+1] ~= nil then 
+		setXMLString( xmlFile, xmlProp..'#'..xmlAttr, listOfClutchModes[value+1] )
+	end 
+end
+
+local listOfFunctions = {}
+listOfFunctions.bool   = { getXML=function( xmlFile, xmlProp, xmlAttr ) getXMLBool( xmlFile, xmlProp..'#'..xmlAttr ) end, 
+													 setXML=function( xmlFile, xmlProp, xmlAttr, value ) setXMLBool( xmlFile, xmlProp..'#'..xmlAttr, value ) end, 
+													 streamRead=streamReadBool   , streamWrite=streamWriteBool    }
+listOfFunctions.int16  = { getXML=function( xmlFile, xmlProp, xmlAttr ) getXMLInt( xmlFile, xmlProp..'#'..xmlAttr ) end, 
+													 setXML=function( xmlFile, xmlProp, xmlAttr, value ) setXMLInt( xmlFile, xmlProp..'#'..xmlAttr, value ) end, 
+													 streamRead=streamReadInt16  , streamWrite=streamWriteInt16   }
+listOfFunctions.float  = { getXML=function( xmlFile, xmlProp, xmlAttr ) getXMLFloat( xmlFile, xmlProp..'#'..xmlAttr ) end, 
+													 setXML=function( xmlFile, xmlProp, xmlAttr, value ) setXMLFloat( xmlFile, xmlProp..'#'..xmlAttr, value ) end, 
+													 streamRead=streamReadFloat32, streamWrite=streamWriteFloat32 }
+listOfFunctions.string = { getXML=function( xmlFile, xmlProp, xmlAttr ) getXMLString( xmlFile, xmlProp..'#'..xmlAttr ) end, 
+													 setXML=function( xmlFile, xmlProp, xmlAttr, value ) setXMLString( xmlFile, xmlProp..'#'..xmlAttr, value ) end, 
+													 streamRead=streamReadString , streamWrite=streamWriteString  }
+listOfFunctions.trans  = { getXML=getTransmission, setXML=setTransmission, streamRead=streamReadInt16  , streamWrite=streamWriteInt16   }
+listOfFunctions.clutch = { getXML=getClutch      , setXML=setClutch      , streamRead=streamReadInt16  , streamWrite=streamWriteInt16   }
 local listOfProperties = 
 	{ { func=listOfFunctions.bool , xmlName="steering",      propName="vcaSteeringIsOn"  },
 		{ func=listOfFunctions.bool , xmlName="shuttle",       propName="vcaShuttleCtrl"   },
@@ -87,8 +132,8 @@ local listOfProperties =
 		{ func=listOfFunctions.int16, xmlName="currentGear",   propName="vcaGear",         },
 		{ func=listOfFunctions.int16, xmlName="currentRange",  propName="vcaRange",        },
 		{ func=listOfFunctions.bool , xmlName="autoShift",     propName="vcaAutoShift"     },
-		{ func=listOfFunctions.bool , xmlName="autoClutch",    propName="vcaAutoClutch"    },
 		{ func=listOfFunctions.bool , xmlName="turboClutch",   propName="vcaTurboClutch"   },
+		{ func=listOfFunctions.clutch,xmlName="clutchMode",    propName="vcaClutchMode"    },
 		{ func=listOfFunctions.float, xmlName="maxSpeed",      propName="vcaMaxSpeed"      },
 		{ func=listOfFunctions.float, xmlName="ccSpeed2",      propName="vcaCCSpeed2"      },
 		{ func=listOfFunctions.float, xmlName="ccSpeed3",      propName="vcaCCSpeed3"      },
@@ -296,6 +341,7 @@ function vehicleControlAddon:onLoad(savegame)
 	self.vcaGetIVTManual        = vehicleControlAddon.vcaGetIVTManual
 	self.vcaGetIVTManualRatio   = vehicleControlAddon.vcaGetIVTManualRatio
 	self.vcaGetAutoClutch       = vehicleControlAddon.vcaGetAutoClutch
+	self.vcaGetTurboClutch      = vehicleControlAddon.vcaGetTurboClutch
 	self.vcaGetShuttleCtrl      = vehicleControlAddon.vcaGetShuttleCtrl
 	self.vcaGetNeutral          = vehicleControlAddon.vcaGetNeutral
 	self.vcaGetAutoHold         = vehicleControlAddon.vcaGetAutoHold
@@ -371,8 +417,7 @@ function vehicleControlAddon:onLoad(savegame)
 	vehicleControlAddon.registerState( self, "vcaKSToggle",     false )
 	vehicleControlAddon.registerState( self, "vcaCCSpeed2",     10 )
 	vehicleControlAddon.registerState( self, "vcaCCSpeed3",     15 )
-	vehicleControlAddon.registerState( self, "vcaAutoClutch",   true )
-	vehicleControlAddon.registerState( self, "vcaTurboClutch",  false )
+	vehicleControlAddon.registerState( self, "vcaClutchMode",   0 )
 	vehicleControlAddon.registerState( self, "vcaLastSnapAngle",10 ) --, vehicleControlAddon.vcaOnSetLastSnapAngle ) -- value should be between -pi and pi !!!
 	vehicleControlAddon.registerState( self, "vcaLastSnapPosX", 0 )
 	vehicleControlAddon.registerState( self, "vcaLastSnapPosZ", 0 )
@@ -511,7 +556,7 @@ function vehicleControlAddon:onPostLoad(savegame)
 		
 		local nonDefaultTransmission = false   
 		for _,prop in pairs( listOfProperties ) do 
-			local v = prop.func.getXML( savegame.xmlFile, savegame.key.."."..g_vehicleControlAddon.vcaSpecName.."#"..prop.xmlName )
+			local v = prop.func.getXML( savegame.xmlFile, savegame.key.."."..g_vehicleControlAddon.vcaSpecName, prop.xmlName )
 			vehicleControlAddon.debugPrint(tostring(prop.xmlName)..": "..tostring(v))
 			if v ~= nil then 
 				if prop.propName ~= "vcaGear" or prop.propName ~= "vcaRange" or nonDefaultTransmission then 
@@ -538,7 +583,7 @@ function vehicleControlAddon:onPostLoad(savegame)
 			
 			nonDefaultTransmission = false  
 			for _,prop in pairs( listOfProperties ) do 
-				local v = prop.func.getXML( savegame.xmlFile, key.."#"..prop.xmlName )
+				local v = prop.func.getXML( savegame.xmlFile, key, prop.xmlName )
 				vehicleControlAddon.debugPrint("User: "..tostring(name).."; "..tostring(prop.xmlName)..": "..tostring(v))
 				if v == nil then 
 					self.vcaUserSettings[name][prop.propName] = self[prop.propName] 
@@ -751,7 +796,7 @@ function vehicleControlAddon:saveToXMLFile(xmlFile, xmlKey)
 
 	for _,prop in pairs( listOfProperties ) do 
 		if self:vcaIsNonDefaultProp( prop.propName ) then 
-			prop.func.setXML( xmlFile, xmlKey.."#"..prop.xmlName, self[prop.propName] )
+			prop.func.setXML( xmlFile, xmlKey, prop.xmlName, self[prop.propName] )
 		end 
 	end 
 	
@@ -769,7 +814,7 @@ function vehicleControlAddon:saveToXMLFile(xmlFile, xmlKey)
 						u   = u + 1 
 						setXMLString( xmlFile, key.."#user", name )
 					end 
-					prop.func.setXML( xmlFile, key.."#"..prop.xmlName, setting[prop.propName] )
+					prop.func.setXML( xmlFile, key, prop.xmlName, setting[prop.propName] )
 				end 
 			end 
 		end 
@@ -953,7 +998,7 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 		self.vcaCloseClutchNonAnalog = nil 
 		if     isAnalog then 
 			self.vcaClutchPercent = math.min( 1, 1.2*math.max( keyStatus-0.1, 0 ) )
-		elseif self.vcaAutoClutch then 
+		elseif self:vcaGetAutoClutch() then 
 			self.vcaClutchPercent = keyStatus
 		elseif keyStatus > 0.5 then 
 			self.vcaClutchPercent = math.min( 1, self.vcaClutchPercent + 0.004 * self.vcaTickDt )
@@ -1515,9 +1560,26 @@ end
 
 function vehicleControlAddon:vcaGetAutoClutch()
 	if self.vcaIsLoaded and self:vcaIsVehicleControlledByPlayer() then 
-		return self.vcaAutoClutch 
+		if self.vcaGearbox ~= nil and self.vcaGearbox.isIVT and not self:vcaGetIVTManual() then	
+		-- autmoatic IVT (aka TMS) => always auto clutch 
+			return true 
+		elseif self.vcaClutchMode == 2 then 
+			return false 
+		end 
 	end 
 	return true 
+end 
+
+function vehicleControlAddon:vcaGetTurboClutch()
+	if self.vcaIsLoaded and self:vcaIsVehicleControlledByPlayer() then 
+		if self.vcaGearbox ~= nil and self.vcaGearbox.isIVT and not self:vcaGetIVTManual() then	
+			-- autmoatic IVT (aka TMS) => no turbo clutch 
+			return false
+		elseif 3 <= self.vcaClutchMode and self.vcaClutchMode <= 5 then 
+			return true 
+		end 
+	end 
+	return false  
 end 
 
 function vehicleControlAddon:vcaGetShuttleCtrl()
@@ -5101,332 +5163,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		end 
 		return newAcc		
 		
-	elseif self.vehicle.vcaGearbox ~= nil and self.vehicle.vcaGearbox.isIVT and self.vehicle:vcaGetIVTManual() then
---****************************************************************************************	
--- IVT with manual gear ratio 
---****************************************************************************************	
-
-		local initGear = transmission:initGears() 
-				
-		if     self.vcaClutchTimer == nil 
-				or self.vcaAutoStop    == nil then 
-			autoNeutral      = true 
-			self.vcaAutoStop = true			
-		elseif curAcc > 0.1 and not self.vehicle:vcaGetNeutral() then  
-			autoNeutral = false 
-			self.vcaAutoStop = false 
-		elseif self.vehicle.vcaClutchPercent >= 1 and not self.vehicle.vcaNeutral then 
-			self.vcaAutoStop = false 
-		elseif self.vehicle:vcaGetNeutral() and speed < 1 then 
-			self.vcaAutoStop = true
-		elseif lastFwd ~= fwd or self.vcaDirTimer ~= nil then 
-		-- no change 
-		elseif  curBrake > 0.1
-				and not self.vcaAutoStop
-				and ( wheelRpm < 0.9 * self.minRpm or speed < 2 )
-				and ( self.vehicle:vcaGetAutoClutch() or self.vehicle:vcaGetAutoShift() or self.vehicle.vcaClutchPercent > 0.8 ) 
-				then 
-			autoNeutral = true 
-			if lastAutoStopTimer == nil then 
-				self.vcaAutoStopTimer = 1000
-			elseif lastAutoStopTimer > 0 then 
-				self.vcaAutoStopTimer = lastAutoStopTimer - dt 
-			else 
-				self.vcaAutoStop = true 
-			end 
-		end 
-		
-		if self.vehicle.vcaShifterUsed or not self.vehicle:vcaIsVehicleControlledByPlayer() then 
-			self.vcaAutoStop = false 
-		end 
-		
-		if self.gearChangeTimer == nil then 
-			self.gearChangeTimer = 200
-		elseif self.gearChangeTimer > 0 then 
-			self.gearChangeTimer = self.gearChangeTimer - dt 
-		end
-
-	--local clutchRpmInc = 0.25
-	--if self.vehicle.vcaTurboClutch then 
-	--	clutchRpmInc = 0.4
-	--end
-		local clutchRpmInc = 1
-		local clutchCloseRpm = math.min( fakeRpm, math.max( self.minRpm + clutchRpmInc * rpmRange, 0.9 * motorPtoRpm, math.min( 1.1 * motorPtoRpm, fakeRpm ) ) )
-					
-		if self.vcaClutchTimer == nil then
-			self.vcaClutchTimer = VCAGlobals.clutchTimer
-		elseif self.vcaClutchTimer > 0 then 
-			self.vcaClutchTimer = math.max( 0, math.min( self.vcaClutchTimer - dt, VCAGlobals.clutchTimer - 1 ) )
-		end 
-								
-		local gear  = transmission:getRatioIndex( self.vehicle.vcaGear, self.vehicle.vcaRange )		
-		local ratio = transmission:getGearRatio( gear )
-		if ratio == nil then 
-			print("Error in vehicleControlAddonTransmission: ratio is nil")
-			gear  = 1	
-			ratio = 0.3
-		end 
-		
-		local lastSetLaunchGear = self.vcaSetLaunchGear
-		self.vcaSetLaunchGear   = false 
-		
-		if autoNeutral or curBrake > 0.1 then  
-			local t = self.vehicle.vcaGearRatioT
-			if t <= 0 then 
-				t = 1
-			end 
-			local f = math.min( math.max( self.vehicle.vcaGearRatioF, 0 ), t )
-			local h = nil 
-
-			if     f >= t then 
-			elseif autoNeutral then 
-				if not( lastSetLaunchGear ) then 
-					h = self.vehicle.vcaLaunchSpeed / self.vehicle.vcaMaxSpeed 
-				end 
-				self.vcaSetLaunchGear = true 
-			-- lower ratio automatically when braking 
-			elseif curBrake > 0.1 then 
-				h = self.vehicle.lastSpeedReal * 1000 * self.maxRpm / ( self.vehicle.vcaMaxSpeed * self.vcaMaxPowerRpmL )
-				if h * self.vehicle.vcaMaxSpeed < self.vehicle.vcaLaunchSpeed then 
-					h = self.vehicle.vcaLaunchSpeed / self.vehicle.vcaMaxSpeed 
-				end 
-			end 
-			
-			if h ~= nil then 
-				h = math.min( math.max( h, f ), t )
-				if h < self.vehicle:vcaGetIVTManualRatio() then 
-					self.vehicle:vcaSetState( "vcaGearRatioH", ( h - f ) / ( t - f ) )
-				end 
-			end 
-		end 
-		
-		local maxSpeed  = ratio * self.vehicle.vcaMaxSpeed * self.vehicle:vcaGetIVTManualRatio()
-		wheelRpm = self.vehicle.lastSpeedReal * 1000 * self.maxRpm / maxSpeed 
-		
-		self.vehicle.vcaDebugR = debugFormat("g: %2d, r: %5.3f, s: %5.1f, m: %4.0f, w: %4.0f, c: %4.0f",
-																	gear, ratio, maxSpeed*3.6,
-																	self.lastRealMotorRpm, wheelRpm, clutchRpm )
-		
-		self.vehicle:vcaSetState("vcaBOVVolume",0)
-		if not autoNeutral then 
-			local gearTime  = transmission:getChangeTimeGears()
-			local rangeTime = transmission:getChangeTimeRanges()
-			if not self.vehicle:vcaIsVehicleControlledByPlayer() then 
-				gearTime, rangeTime = -1, -1  
-			end 
-			if lastStallTimer ~= nil and self.vehicle:vcaGetAutoClutch() then 
-				gearTime  = math.max( 250, gearTime  )
-				rangeTime = math.max( 250, rangeTime )
-			end 
-			if gearTime < 1 then	
-				gearTime = -1 
-			end 
-			if rangeTime < 1 then 
-				rangeTime = -1
-			end 
-			
-			if self.vcaLastRange ~= nil and self.vehicle.vcaRange ~= self.vcaLastRange then 
-				if self.gearChangeTimer < rangeTime then 
-					self.gearChangeTimer = rangeTime
-					if self.vcaGearIndex ~= nil and self.vcaGearIndex < gear and rangeTime > 2 then 
-						self.vehicle:vcaSetState("vcaBOVVolume",self.vcaUsedTorqueRatioF)
-					end 
-				end 
-				lastGearChangeTime  = g_currentMission.time 
-				lastGearChangeSpeed = wheelSpeed
-			end 
-			if self.vcaLastGear ~= nil and self.vehicle.vcaGear ~= self.vcaLastGear then 
-				if self.gearChangeTimer < gearTime then 
-					self.gearChangeTimer = gearTime
-					if self.vcaGearIndex ~= nil and self.vcaGearIndex < gear and gearTime > 2 then 
-						self.vehicle:vcaSetState("vcaBOVVolume",self.vcaUsedTorqueRatioF)
-					end 
-				end 
-				lastGearChangeTime  = g_currentMission.time 
-				lastGearChangeSpeed = wheelSpeed
-			end 
-		end 
-		
-		local minRequiredRpm = math.max( self.minRpm, motorPtoRpm )
-						
-		if autoNeutral then 
-		elseif motorRpm < 0.7 * self.minRpm and not self.vcaAutoStop and self.vcaFakeRpm == nil then 
-			if     curBrake > 0.1 then   
-				self.vcaClutchTimer = math.max( self.vcaClutchTimer, VCAGlobals.clutchTimer - 1 )
-			else
-				self.vcaClutchTimer = math.max( self.vcaClutchTimer, 0.9 * VCAGlobals.clutchTimer )
-			end 
-		elseif wheelRpm < 0.74 * minRequiredRpm and curBrake > 0.1 then 
-			self.vcaClutchTimer = VCAGlobals.clutchTimer - 1
-		elseif wheelRpm < minRequiredRpm and curBrake > 0.1 then 
-			self.vcaClutchTimer = math.max( self.vcaClutchTimer, math.min( self.vcaClutchTimer + dt + dt, VCAGlobals.clutchTimer - 1 ) )
-		elseif wheelRpm < minRequiredRpm and self.vehicle.vcaTurboClutch then 
-			self.vcaClutchTimer = math.max( self.vcaClutchTimer, math.min( self.vcaClutchTimer + dt + dt, 0.9 * VCAGlobals.clutchTimer ) )
-		end 
-		
-		self.vehicle.vcaDebugM = debugFormat("%5.0f, %5.0f, %5.0f, %3.0f%%, %s, %5.0f", motorRpm, wheelRpm, minRequiredRpm, newAcc*100, tostring(self.vcaAutoStop), self.vcaClutchTimer )
-		
-		self.vcaGearIndex  = gear
-		self.vcaLastGear   = self.vehicle.vcaGear
-		self.vcaLastRange  = self.vehicle.vcaRange
-		
-		curGearRatio       = math.min( 500, self.maxRpm / ( maxSpeed * vehicleControlAddon.factor30pi ) )
-		self.minGearRatio  = curGearRatio
-		self.maxGearRatio  = curGearRatio
-		self.vcaGearRatio  = curGearRatio
-		
-		-- *******************************************
-		-- clutch
-		local clutchFactor = 0 
-		if self.vehicle:vcaGetAutoClutch() then 
-			if self.vehicle.vcaClutchPercent > 0 then 
-				self.vcaClutchTimer = math.max( self.vcaClutchTimer, self.vehicle.vcaClutchPercent * VCAGlobals.clutchTimer )
-			end 
-			if self.maxRpm * self.speedLimit < 3 * self.minRpm * maxSpeed then 
-				self.vcaClutchTimer = vehicleControlAddon.mbClamp( ( 1 - self.maxRpm * self.speedLimit  / ( 3 * self.minRpm * maxSpeed ) ) * VCAGlobals.clutchTimer, self.vcaClutchTimer, VCAGlobals.clutchTimer - 1 )
-				fakeRpm = 0.9 * self.minRpm 
-			end 
-			clutchFactor = math.max( self.vcaClutchTimer / VCAGlobals.clutchTimer, 0 )
-			self.vehicle.vcaClutchDisp = clutchFactor 
-			if     self.vehicle.vcaClutchDisp <= 0 then 
-			elseif 0.99 * self.vcaCurGearRatio > curGearRatio then 
-				self.vehicle.vcaClutchDisp = math.min( 1 - curGearRatio / self.vcaCurGearRatio, self.vcaClutchTimer / VCAGlobals.clutchTimer )
-			elseif self.vcaCurGearRatio < 0.99 * curGearRatio then 
-				self.vehicle.vcaClutchDisp = math.min( 1 - self.vcaCurGearRatio / curGearRatio, self.vcaClutchTimer / VCAGlobals.clutchTimer )
-			end 
-		else 
-			self.vcaClutchTimer          = 0
-			clutchFactor                 = self.vehicle.vcaClutchPercent
-			self.vehicle.vcaClutchDisp   = self.vehicle.vcaClutchPercent
-		end 
-		
-		self.vehicle.vcaDebugK = debugFormat( "%5.0f > 0 and %5.0f > %5.0f and %5.0f <= 0 and %4.0f < %4.0f = %s",
-																						self.vcaClutchTimer,
-																						wheelRpm,
-																						self.minRpm,
-																						self.gearChangeTimer,
-																						self.vcaCurGearRatio,
-																						1.1 * curGearRatio,
-																						tostring( self.vcaClutchTimer > 0 and wheelRpm > self.minRpm and self.gearChangeTimer <= 0 and self.vcaCurGearRatio < 1.1 * curGearRatio ) )
-
-		if self.vehicle:vcaGetNeutral() then 
-			self.vcaClutchTimer = VCAGlobals.clutchTimer 
-		end 
-
-		if autoNeutral or self.gearChangeTimer > 0 or clutchFactor >= 1 then 
-		  -- neutral or no gear
-			if self.gearChangeTimer > 0 and not autoNeutral then 
-				self.vcaFakeRpm   = vehicleControlAddon.mbClamp( math.max( self.minRpm, 0.9 * motorPtoRpm ), 
-																												lastFakeRpm - 0.0004 * dt * rpmRange,
-													 															lastFakeRpm + 0.001  * dt * rpmRange )		
-				self.vcaFakeTimer = 100 
-			elseif self.vcaFakeRpm == nil then 
-				self.vcaFakeRpm   = vehicleControlAddon.mbClamp( fakeRpm, lastFakeRpm - 0.0005 * dt * rpmRange, lastFakeRpm + 0.001 * dt * rpmRange )			
-				self.vcaFakeTimer = 100 
-			end
-
-			newAcc = 0
-			
-			self.vcaClutchTimer        = VCAGlobals.clutchTimer
-			self.vcaMinRpm             = vehicleControlAddon.mbClamp( wheelRpm, self.minRpm, self.maxRpm ) --self.vcaFakeRpm
-			self.vcaMaxRpm             = vehicleControlAddon.mbClamp( wheelRpm, self.minRpm, self.maxRpm ) --self.vcaFakeRpm
-			self.minGearRatio          = 1
-			self.maxGearRatio          = 1000000
-			self.vehicle.vcaClutchDisp = 1
-		else
-
-			if      self.vcaClutchTimer   > 0
-					and self.vcaFakeRpm      == nil
-					and 0.9 * curGearRatio < self.vcaCurGearRatio and self.vcaCurGearRatio < 1.1 * curGearRatio
-					and wheelRpm             >= 0.8 * self.minRpm then 
-				self.vcaClutchTimer = 0
-			end 
-		
-			if     clutchFactor > 0 then 
-				local c = clutchFactor ^2 
-				local m
-				
-				m = c * fakeRpm + ( 1 - c ) * vehicleControlAddon.maxRpmF1 * self.maxRpm
-				if self.vehicle:vcaGetAutoClutch() and m > clutchCloseRpm then
-					m = clutchCloseRpm
-				end 
-				if m < wheelRpm then 
-					m = wheelRpm 
-				end 
-				if m > vehicleControlAddon.maxRpmF1 * self.maxRpm then 
-					m = vehicleControlAddon.maxRpmF1 * self.maxRpm 
-				end 
-				if lastMaxRpm <= self.maxRpm then 
-					m = math.max( m, lastMaxRpm - 0.0005 * dt * rpmRange )
-				end 
-				self.vcaMaxRpm = m
-				
-				m = c * fakeRpm 
-				if m > self.vcaMaxRpm then 
-					m = self.vcaMaxRpm 
-				end 
-				if lastMinRpm >= self.minRpm then 
-					m = math.min( m, lastMinRpm + 0.002 * dt * rpmRange )
-				end 
-				self.vcaMinRpm = m
-				
-				self.maxGearRatio = math.min( curGearRatio / ( 1 - c ), 30 * curGearRatio, 300 )
-				self.minGearRatio = math.max( curGearRatio * ( 1 - c )^0.1, 0.1 * curGearRatio, 1 )
- 			else
-				self.vcaMinRpm      = 0
-				self.vcaMaxRpm      = vehicleControlAddon.maxRpmF1 * self.maxRpm
-			end  
-			
-			-- *******************************************
-			-- idle acceleration
-			local fullRpm = idleRpm - 0.25 * self.minRpm
-			local zeroRpm = math.min( idleRpm + 0.05 * self.minRpm, self.maxRpm )
-			local idleAcc = 0
-			
-			local smoothF = 0.1414
-			local deltaR  = math.abs( motorRpm - idleRpm )
-			
-			if     3 * deltaR >= 0.4472 * self.minRpm then 
-				smoothF = 0.4472
-			elseif 3 * deltaR > smoothF * self.minRpm  then 
-				smoothF = 3 * deltaR / self.minRpm 
-			end 
-			smoothF = smoothF * smoothF 
-			
-			if     motorRpm >= zeroRpm then 
-				idleAcc = 0
-			elseif motorRpm <= fullRpm then 
-				idleAcc = 1
-			else 
-				idleAcc = ( zeroRpm - motorRpm ) / ( zeroRpm - fullRpm )
-			end 
-			
-			if lastIdleAcc == nil or smoothF >= 1 then 
-				self.vcaIdleAcc = idleAcc
-			else 
-				self.vcaIdleAcc = lastIdleAcc + smoothF * ( idleAcc - lastIdleAcc )
-			end 
-						
-			if curBrake <= 0 and self.vcaIdleAcc > curAcc then 
-				newAcc = self.vcaIdleAcc
-				if  not fwd then 
-					newAcc = -newAcc
-				end 
-			elseif motorRpm > fakeRpm + 0.05 * self.maxRpm then 
-				newAcc = 0
-			end 	
-	
-			if self.vehicle.vcaHandthrottle == 0 and not self.vehicle:vcaGetAutoShift() and motorPtoRpm >= self.minRpm then 
-				self.vcaMaxRpm = math.min( motorPtoRpm * 1.11, self.vcaMaxRpm )
-			end 		
-		end 		
-		
-		if not fwd then 
-			self.minGearRatio = -self.minGearRatio
-			self.maxGearRatio = -self.maxGearRatio
-		end 
-
-	elseif self.vehicle.vcaGearbox ~= nil and self.vehicle.vcaGearbox.isIVT then 
+	elseif self.vehicle.vcaGearbox ~= nil and self.vehicle.vcaGearbox.isIVT and not self.vehicle:vcaGetIVTManual() then
 --****************************************************************************************	
 -- IVT
 --****************************************************************************************	
@@ -5648,7 +5385,6 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			self.vcaAutoStop = false 
 		end 
 		
-		self.vehicle:vcaSetState("vcaAutoClutch",true)
 		self.vehicle:vcaSetState("vcaBOVVolume",0)
 		if not autoNeutral then 
 			local gearTime  = transmission:getChangeTimeGears()
@@ -5739,17 +5475,28 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			self.gearChangeTimer = self.gearChangeTimer - dt 
 		end
 
-	--local clutchRpmInc = 0.25
-	--if self.vehicle.vcaTurboClutch then 
-	--	clutchRpmInc = 0.4
-	--end
-		local clutchRpmInc = 1
+		local clutchRpmInc = 0.25
+		if     self.vehicle.vcaClutchMode == 0 then 
+			clutchRpmInc = 1 
+		elseif self.vehicle.vcaClutchMode == 1 then 
+			clutchRpmInc = 0.25
+		elseif self.vehicle.vcaClutchMode == 3 then 
+			clutchRpmInc = 0.4
+		elseif self.vehicle.vcaClutchMode == 4 then 
+			clutchRpmInc = 0.6
+		elseif self.vehicle.vcaClutchMode == 5 then 
+			clutchRpmInc = 1
+		end
 		local clutchCloseRpm = math.min( fakeRpm, math.max( self.minRpm + clutchRpmInc * rpmRange, 0.9 * motorPtoRpm, math.min( 1.1 * motorPtoRpm, fakeRpm ) ) )
+		local clutchDt       = dt
+		if self.vehicle.vcaClutchMode == 1 or self.vehicle.vcaClutchMode == 4 then 
+			clutchDt = dt + dt 
+		end 
 					
 		if self.vcaClutchTimer == nil then
 			self.vcaClutchTimer = VCAGlobals.clutchTimer
 		elseif self.vcaClutchTimer > 0 then 
-			self.vcaClutchTimer = math.max( 0, math.min( self.vcaClutchTimer - dt, VCAGlobals.clutchTimer - 1 ) )
+			self.vcaClutchTimer = math.max( 0, math.min( self.vcaClutchTimer - clutchDt, VCAGlobals.clutchTimer - 1 ) )
 		end 
 		
 		if autoNeutral then 
@@ -5758,7 +5505,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			self.vcaAutoDownTimer = VCAGlobals.clutchTimer
 			self.vcaAutoUpTimer   = 0
 		end 
-						
+	
 		local gear  = transmission:getRatioIndex( self.vehicle.vcaGear, self.vehicle.vcaRange )		
 		local ratio = transmission:getGearRatio( gear )
 		if ratio == nil then 
@@ -5766,13 +5513,19 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			gear  = 1	
 			ratio = 0.3
 		end 
+		local prevRatio = ratio 
 		local maxSpeed  = ratio * self.vehicle.vcaMaxSpeed 
 		wheelRpm = self.vehicle.lastSpeedReal * 1000 * self.maxRpm / maxSpeed 
 		
 		self.vehicle.vcaDebugR = debugFormat("g: %2d, r: %5.3f, s: %5.1f, m: %4.0f, w: %4.0f, c: %4.0f",
 																	gear, ratio, maxSpeed*3.6,
 																	self.lastRealMotorRpm, wheelRpm, clutchRpm )
-		
+
+		local lastSetLaunchGear = self.vcaSetLaunchGear
+		self.vcaSetLaunchGear   = false 
+		local newGear           = gear 
+		local launchGear, launchSpeed
+
 		
 		--****************************************		
 		-- no automatic shifting during gear shift or if clutch is open
@@ -5851,218 +5604,270 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	--	self.vcaAutoDownTimer = 1000
 	--end 
 		
-		local lastSetLaunchGear = self.vcaSetLaunchGear
-		self.vcaSetLaunchGear   = false 
-		local newGear           = gear 
-		
-		local launchGear, launchSpeed
-		
-		if initGear then 
-			local delta    = math.huge
-			for i,r in pairs(transmission.gearRatios) do 
-				local d = math.abs( r * self.vehicle.vcaMaxSpeed - self.vehicle.vcaLaunchSpeed  )
-				if d < delta then 
-					newGear = i 
-					delta   = d
+
+
+		if self.vehicle.vcaGearbox ~= nil and self.vehicle.vcaGearbox.isIVT then
+--****************************************************************************************	
+-- IVT with manual gear ratio 
+--****************************************************************************************	
+
+			if autoNeutral or curBrake > 0.1 then  
+				local t = self.vehicle.vcaGearRatioT
+				if t <= 0 then 
+					t = 1
 				end 
-			end 	
-			self.vcaSetLaunchGear = true  
-		elseif self.vehicle:vcaGetAutoShift() then
+				local f = math.min( math.max( self.vehicle.vcaGearRatioF, 0 ), t )
+				local h = nil 
+
+				if     f >= t then 
+				elseif autoNeutral then 
+					if not( lastSetLaunchGear ) then 
+						h = self.vehicle.vcaLaunchSpeed / self.vehicle.vcaMaxSpeed 
+					end 
+					self.vcaSetLaunchGear = true 
+				-- lower ratio automatically when braking 
+				elseif curBrake > 0.1 then 
+					h = self.vehicle.lastSpeedReal * 1000 * self.maxRpm / ( self.vehicle.vcaMaxSpeed * self.vcaMaxPowerRpmL )
+					if h * self.vehicle.vcaMaxSpeed < self.vehicle.vcaLaunchSpeed then 
+						h = self.vehicle.vcaLaunchSpeed / self.vehicle.vcaMaxSpeed 
+					end 
+				end 
+				
+				if h ~= nil then 
+					h = math.min( math.max( h, f ), t )
+					if h < self.vehicle:vcaGetIVTManualRatio() then 
+						self.vehicle:vcaSetState( "vcaGearRatioH", ( h - f ) / ( t - f ) )
+					end 
+				end 
+			end 
+			
+			-- apply ratio factor of manual IVT 
+			ratio     = ratio     * self.vehicle:vcaGetIVTManualRatio()
+			prevRatio = prevRatio * self.vehicle:vcaGetIVTManualRatio()
+			maxSpeed  = ratio * self.vehicle.vcaMaxSpeed 
+			wheelRpm  = self.vehicle.lastSpeedReal * 1000 * self.maxRpm / maxSpeed 
+			
+			self.vehicle.vcaDebugR = debugFormat("g: %2d, r: %5.3f, s: %5.1f, m: %4.0f, w: %4.0f, c: %4.0f",
+																		gear, ratio, maxSpeed*3.6,
+																		self.lastRealMotorRpm, wheelRpm, clutchRpm )
+			
+		else 
+
+--****************************************************************************************	
+-- automatic shifting 
+--****************************************************************************************	
 		
-			local setLaunchGear  = ( lastFwd ~= fwd or self.vcaDirTimer ~= nil or self.vcaAutoStop )
-			local setLaunchGear2 = ( self.vcaAutoStop and self.vcaGearIndex ~= nil and ( fwd or self.vehicle.vcaSingleReverse == 0 ) )
-			launchGear  = gear 
-			launchSpeed = self.vehicle.vcaLaunchSpeed 
-			if      not self.vehicle:vcaIsVehicleControlledByPlayer()
-			-- AutoDrive
-					 or ( self.vehicle.ad ~= nil and self.vehicle.ad.isActive  ) 
-			-- Courseplay
-					 or ( self.vehicle.cp ~= nil and self.vehicle.cp.isDriving ) then 
-				launchSpeed    = math.min( launchSpeed, 10 / 3.6 )
-				setLaunchGear2 = false 
-			end 
+			if initGear then 
+				local delta    = math.huge
+				for i,r in pairs(transmission.gearRatios) do 
+					local d = math.abs( r * self.vehicle.vcaMaxSpeed - self.vehicle.vcaLaunchSpeed  )
+					if d < delta then 
+						newGear = i 
+						delta   = d
+					end 
+				end 	
+				self.vcaSetLaunchGear = true  
+			elseif self.vehicle:vcaGetAutoShift() then
 			
-			if      self.speedLimit > 2
-					and not setLaunchGear
-					and self.gearChangeTimer <= 0
-					and not self.vehicle:vcaGetNeutral()
-					and launchSpeed * 3.6 * self.minRpm > self.speedLimit * self.maxRpm
-					then 
-				launchSpeed = self.speedLimit * self.maxRpm / ( 3.6 * self.minRpm ) 
-			end 
-			
-			local gearlist = transmission:getAutoShiftIndeces( 0, 1, true, true )
-			if gearlist ~= nil and #gearlist > 0 then 
-				local target = launchSpeed
-				launchSpeed  = ratio * self.vehicle.vcaMaxSpeed
-				local delta  = math.abs( launchSpeed - target ) 
-				for _,i in pairs(gearlist) do 
-					local r = transmission:getGearRatio(i)
-					if r ~= nil then 
-						local s = r * self.vehicle.vcaMaxSpeed
-						local d = math.abs( s - target )
-						if d < delta then
-							launchGear  = i 
-							launchSpeed = s
-							delta       = d
+				local setLaunchGear  = ( lastFwd ~= fwd or self.vcaDirTimer ~= nil or self.vcaAutoStop )
+				local setLaunchGear2 = ( self.vcaAutoStop and self.vcaGearIndex ~= nil and ( fwd or self.vehicle.vcaSingleReverse == 0 ) )
+				launchGear  = gear 
+				launchSpeed = self.vehicle.vcaLaunchSpeed 
+				if      not self.vehicle:vcaIsVehicleControlledByPlayer()
+				-- AutoDrive
+						 or ( self.vehicle.ad ~= nil and self.vehicle.ad.isActive  ) 
+				-- Courseplay
+						 or ( self.vehicle.cp ~= nil and self.vehicle.cp.isDriving ) then 
+					launchSpeed    = math.min( launchSpeed, 10 / 3.6 )
+					setLaunchGear2 = false 
+				end 
+				
+				if      self.speedLimit > 2
+						and not setLaunchGear
+						and self.gearChangeTimer <= 0
+						and not self.vehicle:vcaGetNeutral()
+						and launchSpeed * 3.6 * self.minRpm > self.speedLimit * self.maxRpm
+						then 
+					launchSpeed = self.speedLimit * self.maxRpm / ( 3.6 * self.minRpm ) 
+				end 
+				
+				local gearlist = transmission:getAutoShiftIndeces( 0, 1, true, true )
+				if gearlist ~= nil and #gearlist > 0 then 
+					local target = launchSpeed
+					launchSpeed  = ratio * self.vehicle.vcaMaxSpeed
+					local delta  = math.abs( launchSpeed - target ) 
+					for _,i in pairs(gearlist) do 
+						local r = transmission:getGearRatio(i)
+						if r ~= nil then 
+							local s = r * self.vehicle.vcaMaxSpeed
+							local d = math.abs( s - target )
+							if d < delta then
+								launchGear  = i 
+								launchSpeed = s
+								delta       = d
+							end 
+						end 
+					end
+					
+					if setLaunchGear2 then
+						if gear == gearlist[1]         and ratio * self.vehicle.vcaMaxSpeed > self.vehicle.vcaLaunchSpeed then 
+						-- no inscrease of launch speed by 1st gear 
+							setLaunchGear2 = false 
+						end 
+						if gear == gearlist[#gearlist] and ratio * self.vehicle.vcaMaxSpeed < self.vehicle.vcaLaunchSpeed then 
+						-- no decrease of launch speed by last gear 
+							setLaunchGear2 = false 
 						end 
 					end 
-				end
-				
-				if setLaunchGear2 then
-					if gear == gearlist[1]         and ratio * self.vehicle.vcaMaxSpeed > self.vehicle.vcaLaunchSpeed then 
-					-- no inscrease of launch speed by 1st gear 
-						setLaunchGear2 = false 
-					end 
-					if gear == gearlist[#gearlist] and ratio * self.vehicle.vcaMaxSpeed < self.vehicle.vcaLaunchSpeed then 
-					-- no decrease of launch speed by last gear 
-						setLaunchGear2 = false 
-					end 
-				end 
 
-				self.vehicle.vcaDebugL = debugFormat( "%s, %s, %s, %s, %d, %d",
-																								vehicleControlAddon.vcaSpeedInt2Ext( self.vehicle.vcaMaxSpeed ),
-																								vehicleControlAddon.vcaSpeedInt2Ext( self.vehicle.vcaLaunchSpeed ),
-																								vehicleControlAddon.vcaSpeedInt2Ext( self.speedLimit / 3.6 ),
-																								vehicleControlAddon.vcaSpeedInt2Ext( launchSpeed ),
-																								gear,
-																								launchGear )
-			end 		
-			
-			if setLaunchGear then
-				if not ( lastSetLaunchGear ) then 
-					if ratio * self.vehicle.vcaMaxSpeed > launchSpeed then 
-						newGear = launchGear
+					self.vehicle.vcaDebugL = debugFormat( "%s, %s, %s, %s, %d, %d",
+																									vehicleControlAddon.vcaSpeedInt2Ext( self.vehicle.vcaMaxSpeed ),
+																									vehicleControlAddon.vcaSpeedInt2Ext( self.vehicle.vcaLaunchSpeed ),
+																									vehicleControlAddon.vcaSpeedInt2Ext( self.speedLimit / 3.6 ),
+																									vehicleControlAddon.vcaSpeedInt2Ext( launchSpeed ),
+																									gear,
+																									launchGear )
+				end 		
+				
+				if setLaunchGear then
+					if not ( lastSetLaunchGear ) then 
+						if ratio * self.vehicle.vcaMaxSpeed > launchSpeed then 
+							newGear = launchGear
+						end 
+					elseif setLaunchGear2 and self.vcaGearIndex ~= gear then 
+						self.vehicle:vcaSetState("vcaLaunchSpeed", ratio * self.vehicle.vcaMaxSpeed)
 					end 
-				elseif setLaunchGear2 and self.vcaGearIndex ~= gear then 
-					self.vehicle:vcaSetState("vcaLaunchSpeed", ratio * self.vehicle.vcaMaxSpeed)
-				end 
-				self.vcaSetLaunchGear = true 
-			elseif self.gearChangeTimer <= 0 and not self.vehicle:vcaGetNeutral() then
-				local m1 = self.minRpm + 0.1 * rpmRange
-				local m4 = math.min( math.max( self.vehicle.vcaRatedRpm, motorPtoRpm * 1.025 ), 
-														 math.max( self.vcaMaxPowerRpmL, self.vcaMaxPowerRpmH - rpmRange * 0.2 * math.max( 0, self.vcaWheelAccS ) ),
-														 self.minRpm + rpmRange * 0.975 )
-				if hasActiveWorkArea then  
-					m1 = math.min( math.max( m1, 0.7*math.min( 2200, self.maxRpm ) ), m4 )
-				end 
-				if motorPtoRpm <= 0 and curBrake < 0.1 and curAcc > 0.1 and curAcc < 0.8 and self.gearChangeTimer <= 0 then 
-					m4 = math.max( m1, math.min( m4, self.minRpm + curAcc * rpmRange * 0.975 ) )
-				end 
-				local m2 = vehicleControlAddon.mbClamp( self.vcaMaxPowerRpmL, m1, m4 )
-				local m3 = math.max( m1, m4 * 0.72 )
-				local autoMinRpm = m1 + autoShiftLoad * ( m2 - m1 )
-				local autoMaxRpm = m3 + autoShiftLoad * ( m4 - m3 )
-				if self.vehicle.vcaHandthrottle > 0 then 
-					autoMaxRom = math.min( m4, idleRpm * 1.025 )
-					autoMinRpm = math.min( m4, idleRpm * 0.975 )
-				elseif motorPtoRpm > 0 then 
-					if -1 < self.vehicle.vcaHandthrottle and self.vehicle.vcaHandthrottle < -0.8 then 
-					-- 90% PTO 
-						autoMaxRom = math.min( m4, motorPtoRpm * 1.025 )
-						autoMinRpm = math.min( m4, idleRpm * 0.975 )
-					elseif self.vehicle.vcaHandthrottle < 0 then 
-					-- PTO ECO
+					self.vcaSetLaunchGear = true 
+				elseif self.gearChangeTimer <= 0 and not self.vehicle:vcaGetNeutral() then
+					local m1 = self.minRpm + 0.1 * rpmRange
+					local m4 = math.min( math.max( self.vehicle.vcaRatedRpm, motorPtoRpm * 1.025 ), 
+															 math.max( self.vcaMaxPowerRpmL, self.vcaMaxPowerRpmH - rpmRange * 0.2 * math.max( 0, self.vcaWheelAccS ) ),
+															 self.minRpm + rpmRange * 0.975 )
+					if hasActiveWorkArea then  
+						m1 = math.min( math.max( m1, 0.7*math.min( 2200, self.maxRpm ) ), m4 )
+					end 
+					if motorPtoRpm <= 0 and curBrake < 0.1 and curAcc > 0.1 and curAcc < 0.8 and self.gearChangeTimer <= 0 then 
+						m4 = math.max( m1, math.min( m4, self.minRpm + curAcc * rpmRange * 0.975 ) )
+					end 
+					local m2 = vehicleControlAddon.mbClamp( self.vcaMaxPowerRpmL, m1, m4 )
+					local m3 = math.max( m1, m4 * 0.72 )
+					local autoMinRpm = m1 + autoShiftLoad * ( m2 - m1 )
+					local autoMaxRpm = m3 + autoShiftLoad * ( m4 - m3 )
+					if self.vehicle.vcaHandthrottle > 0 then 
 						autoMaxRom = math.min( m4, idleRpm * 1.025 )
 						autoMinRpm = math.min( m4, idleRpm * 0.975 )
 					elseif motorPtoRpm > 0 then 
-						autoMaxRom = math.min( m4, motorPtoRpm * 1.025 )
-						autoMinRpm = math.min( m4, motorPtoRpm * 0.975 )
-					end 
-				end 
-				
-				local rpmHi = math.max( wheelRpm, clutchRpm )
-				local rpmLo = math.min( wheelRpm, clutchRpm )
-				
-				if     rpmHi > 0.99 * self.maxRpm then 
-					self.vcaAutoUpTimer = 0
-				elseif rpmHi > m4 and self.vcaAutoUpTimer > 250 then 
-					self.vcaAutoUpTimer = 250
-				elseif rpmLo < autoMinRpm and self.vcaAutoUpTimer < 1000 then 
-					self.vcaAutoUpTimer = 1000
-				elseif rpmLo < autoMaxRpm and self.vcaAutoUpTimer < 250 then 
-					self.vcaAutoUpTimer = 250
-				end 
-
-				local searchUp   = ( rpmHi > autoMaxRpm and self.vcaAutoUpTimer   <= 0 and self.vcaNoShiftTimer <= 0 )
-				local searchDown = ( rpmLo < autoMinRpm and self.vcaAutoDownTimer <= 0 and self.vcaNoShiftTimer <= 0 )
-
-				lowGear    = launchGear
-				if self.vcaAutoStop or curBrake > 0.1 then
-					searchUp = false 
-				elseif self.vcaAutoLowTimer <= 0 then 
-					if lastStallTimer == nil or lastStallTimer < 1000 then 
-						lowGear = math.max( launchGear, gear - 1 )
-					else 
-						lowGear  = 1
-					end 
-				end 
-				
-				local gearlist = transmission:getAutoShiftIndeces( gear, lowGear, searchDown, searchUp )
-				
-				if #gearlist <= 0 then
-					self.vehicle.vcaDebugA = debugFormat( "%3.0f%%; %3.0f%%; %4.0f..%4.0f; %4.0f no gear\n%4d; %2d; %s; %s",
-																									curAcc*100,autoShiftLoad*100,autoMinRpm,autoMaxRpm,wheelRpm,
-																									self.vcaAutoLowTimer, lowGear, tostring( searchDown ), tostring( searchUp ))
-				elseif wheelRpm <= 1 then 
-					self.vehicle.vcaDebugA = debugFormat( "%3.0f%%; %3.0f%%; %4.0f..%4.0f; %4.0f stoppedn%4d; %2d; %s; %s",
-																									curAcc*100,autoShiftLoad*100,autoMinRpm,autoMaxRpm,wheelRpm,
-																									self.vcaAutoLowTimer, lowGear, tostring( searchDown ), tostring( searchUp ))
-					newGear = gearlist[1]
-				else 
-					local d = 0
-					if wheelRpm < autoMinRpm then 
-						d = autoMinRpm - wheelRpm
-					end 
-					if wheelRpm > autoMaxRpm then 
-						d = math.max( d, wheelRpm - autoMaxRpm )
-					end 
-					d = d - 1
-					local d1 = d
-					local rr = wheelRpm
-					for _,i in pairs( gearlist ) do 
-						local nr = transmission:getGearRatio( i )
-						local rpm = rpmLo * ratio / nr
-						local d2 = 0
-						if rpm < autoMinRpm then 
-							d2 = autoMinRpm - rpm
-						end 
-						rpm = rpmHi * ratio / nr
-						if rpm > autoMaxRpm then 
-							d2 = math.max( d2, rpm - autoMaxRpm )
-						end 
-						if 			( d2 < d or ( d2 == d and searchUp ) )
-								and ( self.vehicle.vcaGearRatioF <= 0 or nr >= self.vehicle.vcaGearRatioF )
-								and ( self.vehicle.vcaGearRatioT <= 0 or nr <= self.vehicle.vcaGearRatioT ) then 
-							newGear = i 
-							d = d2
-							rr = rpm
+						if -1 < self.vehicle.vcaHandthrottle and self.vehicle.vcaHandthrottle < -0.8 then 
+						-- 90% PTO 
+							autoMaxRom = math.min( m4, motorPtoRpm * 1.025 )
+							autoMinRpm = math.min( m4, idleRpm * 0.975 )
+						elseif self.vehicle.vcaHandthrottle < 0 then 
+						-- PTO ECO
+							autoMaxRom = math.min( m4, idleRpm * 1.025 )
+							autoMinRpm = math.min( m4, idleRpm * 0.975 )
+						elseif motorPtoRpm > 0 then 
+							autoMaxRom = math.min( m4, motorPtoRpm * 1.025 )
+							autoMinRpm = math.min( m4, motorPtoRpm * 0.975 )
 						end 
 					end 
 					
-					self.vehicle.vcaDebugA = debugFormat( "%3.0f%%; %3.0f%%; %4.0f..%4.0f; %4.0f -> %4.0f; %d -> %d; %5.0f -> %5.0f\n%4d; %2d; %s; %s",
-																									curAcc*100,autoShiftLoad*100,autoMinRpm,autoMaxRpm,wheelRpm, rr,gear,newGear,d1,d,
-																									self.vcaAutoLowTimer, lowGear, tostring( searchDown ), tostring( searchUp ))
-				end 
+					local rpmHi = math.max( wheelRpm, clutchRpm )
+					local rpmLo = math.min( wheelRpm, clutchRpm )
+					
+					if     rpmHi > 0.99 * self.maxRpm then 
+						self.vcaAutoUpTimer = 0
+					elseif rpmHi > m4 and self.vcaAutoUpTimer > 250 then 
+						self.vcaAutoUpTimer = 250
+					elseif rpmLo < autoMinRpm and self.vcaAutoUpTimer < 1000 then 
+						self.vcaAutoUpTimer = 1000
+					elseif rpmLo < autoMaxRpm and self.vcaAutoUpTimer < 250 then 
+						self.vcaAutoUpTimer = 250
+					end 
+
+					local searchUp   = ( rpmHi > autoMaxRpm and self.vcaAutoUpTimer   <= 0 and self.vcaNoShiftTimer <= 0 )
+					local searchDown = ( rpmLo < autoMinRpm and self.vcaAutoDownTimer <= 0 and self.vcaNoShiftTimer <= 0 )
+
+					lowGear    = launchGear
+					if self.vcaAutoStop or curBrake > 0.1 then
+						searchUp = false 
+					elseif self.vcaAutoLowTimer <= 0 then 
+						if lastStallTimer == nil or lastStallTimer < 1000 then 
+							lowGear = math.max( launchGear, gear - 1 )
+						else 
+							lowGear  = 1
+						end 
+					end 
+					
+					local gearlist = transmission:getAutoShiftIndeces( gear, lowGear, searchDown, searchUp )
+					
+					if #gearlist <= 0 then
+						self.vehicle.vcaDebugA = debugFormat( "%3.0f%%; %3.0f%%; %4.0f..%4.0f; %4.0f no gear\n%4d; %2d; %s; %s",
+																										curAcc*100,autoShiftLoad*100,autoMinRpm,autoMaxRpm,wheelRpm,
+																										self.vcaAutoLowTimer, lowGear, tostring( searchDown ), tostring( searchUp ))
+					elseif wheelRpm <= 1 then 
+						self.vehicle.vcaDebugA = debugFormat( "%3.0f%%; %3.0f%%; %4.0f..%4.0f; %4.0f stoppedn%4d; %2d; %s; %s",
+																										curAcc*100,autoShiftLoad*100,autoMinRpm,autoMaxRpm,wheelRpm,
+																										self.vcaAutoLowTimer, lowGear, tostring( searchDown ), tostring( searchUp ))
+						newGear = gearlist[1]
+					else 
+						local d = 0
+						if wheelRpm < autoMinRpm then 
+							d = autoMinRpm - wheelRpm
+						end 
+						if wheelRpm > autoMaxRpm then 
+							d = math.max( d, wheelRpm - autoMaxRpm )
+						end 
+						d = d - 1
+						local d1 = d
+						local rr = wheelRpm
+						for _,i in pairs( gearlist ) do 
+							local nr = transmission:getGearRatio( i )
+							local rpm = rpmLo * ratio / nr
+							local d2 = 0
+							if rpm < autoMinRpm then 
+								d2 = autoMinRpm - rpm
+							end 
+							rpm = rpmHi * ratio / nr
+							if rpm > autoMaxRpm then 
+								d2 = math.max( d2, rpm - autoMaxRpm )
+							end 
+							if 			( d2 < d or ( d2 == d and searchUp ) )
+									and ( self.vehicle.vcaGearRatioF <= 0 or nr >= self.vehicle.vcaGearRatioF )
+									and ( self.vehicle.vcaGearRatioT <= 0 or nr <= self.vehicle.vcaGearRatioT ) then 
+								newGear = i 
+								d = d2
+								rr = rpm
+							end 
+						end 
+						
+						self.vehicle.vcaDebugA = debugFormat( "%3.0f%%; %3.0f%%; %4.0f..%4.0f; %4.0f -> %4.0f; %d -> %d; %5.0f -> %5.0f\n%4d; %2d; %s; %s",
+																										curAcc*100,autoShiftLoad*100,autoMinRpm,autoMaxRpm,wheelRpm, rr,gear,newGear,d1,d,
+																										self.vcaAutoLowTimer, lowGear, tostring( searchDown ), tostring( searchUp ))
+					end 
+				end
 			end
-		end
-		
-		local prevRatio = ratio 
-		if gear ~= newGear then 
-			if self.vehicle.vcaDebugA ~= nil then 
-				vehicleControlAddon.debugPrint( g_currentMission.time.."; "..self.vehicle.vcaDebugA )
+			
+			if gear ~= newGear then 
+				if self.vehicle.vcaDebugA ~= nil then 
+					vehicleControlAddon.debugPrint( g_currentMission.time.."; "..self.vehicle.vcaDebugA )
+				end 
+				
+				local g, r = transmission:getBestGearRangeFromIndex( self.vehicle.vcaGear, self.vehicle.vcaRange, newGear )
+				self.vehicle:vcaSetState( "vcaGear",  g )
+				self.vehicle:vcaSetState( "vcaRange", r )
+				
+				gear     = transmission:getRatioIndex( g, r ) 
+				ratio    = transmission:getGearRatio( gear )
+				local m  = maxSpeed 
+				maxSpeed = ratio * self.vehicle.vcaMaxSpeed 
 			end 
-			
-			local g, r = transmission:getBestGearRangeFromIndex( self.vehicle.vcaGear, self.vehicle.vcaRange, newGear )
-			self.vehicle:vcaSetState( "vcaGear",  g )
-			self.vehicle:vcaSetState( "vcaRange", r )
-			
-			gear     = transmission:getRatioIndex( g, r ) 
-			ratio    = transmission:getGearRatio( gear )
-			local m  = maxSpeed 
-			maxSpeed = ratio * self.vehicle.vcaMaxSpeed 
-		end 
-		wheelRpm = self.vehicle.lastSpeedReal * 1000 * self.maxRpm / maxSpeed 
+			wheelRpm = self.vehicle.lastSpeedReal * 1000 * self.maxRpm / maxSpeed 
+		end		
+		
+--****************************************************************************************	
+-- end of manual IVT or automatic shifting
+--****************************************************************************************	
+		
 		
 		self.vehicle:vcaSetState("vcaBOVVolume",0)
 		if not autoNeutral then 
@@ -6105,6 +5910,9 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		end 
 		
 		local minRequiredRpm = math.max( self.minRpm, motorPtoRpm )
+		if self.vehicle.vcaClutchMode == 5 then 
+			minRequiredRpm = math.max( minRequiredRpm, 0.8 * self.maxRpm )
+		end 
 						
 		if autoNeutral then 
 			self.vcaAutoUpTimer	  = math.max( self.vcaAutoUpTimer	 , self.gearChangeTimer * 4 )
@@ -6122,7 +5930,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		elseif motorRpm < 0.7 * self.minRpm and not self.vcaAutoStop and self.vcaFakeRpm == nil then 
 			if     curBrake > 0.1 then   
 				self.vcaClutchTimer = math.max( self.vcaClutchTimer, VCAGlobals.clutchTimer - 1 )
-			elseif self.vehicle.vcaTurboClutch then   
+			elseif self.vehicle:vcaGetTurboClutch() then   
 				self.vcaClutchTimer = math.max( self.vcaClutchTimer, 0.9 * VCAGlobals.clutchTimer )
 			elseif launchGear ~= nil and gear <= launchGear then -- automatic shifting 
 				self.vcaClutchTimer = math.max( self.vcaClutchTimer, 0.9 * VCAGlobals.clutchTimer )
@@ -6142,9 +5950,9 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		elseif wheelRpm < 0.74 * minRequiredRpm and curBrake > 0.1 then 
 			self.vcaClutchTimer = VCAGlobals.clutchTimer - 1
 		elseif wheelRpm < minRequiredRpm and curBrake > 0.1 then 
-			self.vcaClutchTimer = math.max( self.vcaClutchTimer, math.min( self.vcaClutchTimer + dt + dt, VCAGlobals.clutchTimer - 1 ) )
-		elseif wheelRpm < minRequiredRpm and self.vehicle.vcaTurboClutch then 
-			self.vcaClutchTimer = math.max( self.vcaClutchTimer, math.min( self.vcaClutchTimer + dt + dt, 0.9 * VCAGlobals.clutchTimer ) )
+			self.vcaClutchTimer = math.max( self.vcaClutchTimer, math.min( self.vcaClutchTimer + clutchDt + clutchDt, VCAGlobals.clutchTimer - 1 ) )
+		elseif wheelRpm < minRequiredRpm and self.vehicle:vcaGetTurboClutch() then 
+			self.vcaClutchTimer = math.max( self.vcaClutchTimer, math.min( self.vcaClutchTimer + clutchDt + clutchDt, 0.9 * VCAGlobals.clutchTimer ) )
 		end 
 		
 		self.vehicle.vcaDebugM = debugFormat("%5.0f, %5.0f, %5.0f, %3.0f%%, %s, %5.0f", motorRpm, wheelRpm, minRequiredRpm, newAcc*100, tostring(self.vcaAutoStop), self.vcaClutchTimer )
@@ -6153,7 +5961,12 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		self.vcaLastGear   = self.vehicle.vcaGear
 		self.vcaLastRange  = self.vehicle.vcaRange
 		
-		curGearRatio       = self.maxRpm / ( maxSpeed * vehicleControlAddon.factor30pi ) 
+		if maxSpeed <= 0 or self.maxRpm > 500 * maxSpeed * vehicleControlAddon.factor30pi then 
+			curGearRatio     = 500 
+		else 
+			curGearRatio     = self.maxRpm / ( maxSpeed * vehicleControlAddon.factor30pi ) 
+		end 
+		
 		self.minGearRatio  = curGearRatio
 		self.maxGearRatio  = curGearRatio
 		self.vcaGearRatio  = curGearRatio
@@ -6476,7 +6289,7 @@ function vehicleControlAddon:vcaGetTotalConsumedPtoTorque( superFunc, excludeVeh
 	end 
 	
 	local f = math.abs( motor.gearRatio ) / motor.vcaGearRatio 	
-	if self.vcaTurboClutch then 
+	if self:vcaGetTurboClutch() then 
 		f = f / 3 
 	end 
 	if f <= 1.01 then 
@@ -6980,6 +6793,11 @@ function vehicleControlAddon:vcaShowSettingsUI()
 	end 
 	
 	self.vcaUI.oldTransmission = self.vcaTransmission
+	
+	self.vcaUI.vcaClutchMode = {}
+	for i,t in pairs( listOfClutchModes ) do 
+		table.insert( self.vcaUI.vcaClutchMode, vehicleControlAddon.getText( string.format( "vcaClutchMode_%d", i-1 ) ) )
+	end 
 	
 	self.vcaUI.vcaSnapDraw = { vehicleControlAddon.getText("vcaValueNever", "NEVER"), 
 														 vehicleControlAddon.getText("vcaValueInactive", "INACTIVE"), 

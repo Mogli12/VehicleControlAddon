@@ -225,7 +225,7 @@ function vehicleControlAddonTransmissionBase:gearUp()
 	
 	if self.vehicle.vcaGear < self.numberOfGears then 
 		if self:getChangeTimeGears() > 100 then 
-			if not ( self.vehicle.vcaAutoClutch or self.vehicle.vcaNeutral ) and self.vehicle.vcaClutchPercent < 1 then 
+			if not ( self.vehicle:vcaGetAutoClutch() or self.vehicle.vcaNeutral ) and self.vehicle.vcaClutchPercent < 1 then 
 				self:grindingGears()
 				return 
 			end 
@@ -246,7 +246,7 @@ function vehicleControlAddonTransmissionBase:gearDown()
 	
 	if self.vehicle.vcaGear > 1 then 
 		if self:getChangeTimeGears() > 100 then 
-			if not ( self.vehicle.vcaAutoClutch or self.vehicle.vcaNeutral ) and self.vehicle.vcaClutchPercent < 1 then 
+			if not ( self.vehicle:vcaGetAutoClutch() or self.vehicle.vcaNeutral ) and self.vehicle.vcaClutchPercent < 1 then 
 				self:grindingGears()
 				return 
 			end 
@@ -281,7 +281,7 @@ function vehicleControlAddonTransmissionBase:rangeUp( noSpeedMatching )
 	
 	if self.vehicle.vcaRange < self.numberOfRanges then 
 		if self:getChangeTimeRanges() > 100 then
-			if not ( self.vehicle.vcaAutoClutch or self.vehicle.vcaNeutral ) and self.vehicle.vcaClutchPercent < 1 then 
+			if not ( self.vehicle:vcaGetAutoClutch() or self.vehicle.vcaNeutral ) and self.vehicle.vcaClutchPercent < 1 then 
 				self:grindingGears()
 				return 
 			end 
@@ -318,7 +318,7 @@ function vehicleControlAddonTransmissionBase:rangeDown( noSpeedMatching )
 	
 	if self.vehicle.vcaRange > 1 then 
 		if self:getChangeTimeRanges() > 100 then
-			if not ( self.vehicle.vcaAutoClutch or self.vehicle.vcaNeutral ) and self.vehicle.vcaClutchPercent < 1 then 
+			if not ( self.vehicle:vcaGetAutoClutch() or self.vehicle.vcaNeutral ) and self.vehicle.vcaClutchPercent < 1 then 
 				self:grindingGears()
 				return 
 			end 
@@ -794,7 +794,7 @@ function vehicleControlAddonTransmissionBase:gearShifter( number, isPressed )
 			g, r = self:getBestGearRangeFromIndex( self.vehicle.vcaGear, self.vehicle.vcaRange, index )
 		end 
 		
-		if not ( self.vehicle.vcaAutoClutch ) and self.vehicle.vcaClutchPercent < 1
+		if not ( self.vehicle:vcaGetAutoClutch() ) and self.vehicle.vcaClutchPercent < 1
 				and ( ( g ~= self.vehicle.vcaGear  and self:getChangeTimeGears()  > 100 )
 					 or ( r ~= self.vehicle.vcaRange and self:getChangeTimeRanges() > 100 ) ) then 
 			self:grindingGears()

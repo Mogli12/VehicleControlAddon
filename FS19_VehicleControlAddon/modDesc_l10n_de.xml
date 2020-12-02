@@ -179,26 +179,28 @@
 		<text name="vcaValueInactive"   text="falls inaktiv"/>
 		<text name="vcaValueInactiveH"  text="falls inaktiv (hoch)"/>
 		<text name="vcaValueRPM"        text="U/min"/>
+		
+		<text name="vcaClutchMode_0"    text="automatisch"/>
+		<text name="vcaClutchMode_1"    text="auto (schnell)"/>
+		<text name="vcaClutchMode_2"    text="manuell"/>
+		<text name="vcaClutchMode_3"    text="Turbo (schnell)"/>
+		<text name="vcaClutchMode_4"    text="Turbo (langsam)"/>
+		<text name="vcaClutchMode_5"    text="Turbo (offen)"/>
 	</texts>   
 
 	<longTexts>
-		<longText name="vca_Help_1">
-<![CDATA[Lenkung und Kamera
+		<longText name="vca_Help_1"><![CDATA[Lenkung und Kamera
 
 Dieses Script variiert abhängig von der gefahrenen Geschwindigkeit die Lenkgeschwindigkeit und dreht die Kamera passend zum Lenkeinschlag und zur Fahrtrichtung. 
 Mit Umschalt-Rechts und den Pfeiltasten kann man in die entsprechende Richtung blicken.
 Drückt man Strg Links zusammen mit W, dann richtet sich die Fahrtrichtung an festen Richtungen aus.
-Alle Funktionen lassen sich auch wieder ausschalten.]]>
-		</longText>
-		<longText name="vca_Help_2">
-<![CDATA[Gaspedal und Rastersteuerung
+Alle Funktionen lassen sich auch wieder ausschalten.]]></longText>
+		<longText name="vca_Help_2"><![CDATA[Gaspedal und Rastersteuerung
 
 Mit Umschalt-Llinks wird das Gaspedal, der Tempomat und die maximale Drehzahl auf 75% begrenzt.
 Drückt man die Taste entf, dann hält das Fahrzeug die aktuelle Geschwindigkeit. Wie bei modernen Traktoren auch, kann man diese Funktion auch permanent einschalten und per entf dann zeitweise ausschalten.
-Durch die Änderungen an der Tonhöhe kann man die aktuelle Drehzahl besser hören.]]>
-		</longText>
-		<longText name="vca_Help_3">
-<![CDATA[Getriebe
+Durch die Änderungen an der Tonhöhe kann man die aktuelle Drehzahl besser hören.]]></longText>
+		<longText name="vca_Help_3"><![CDATA[Getriebe
 
 off: Das Standardgetriebe 
 IVT: Das Standardgetriebe  mit kleinen Anpassungen der Drehzahl
@@ -210,23 +212,17 @@ FPS: Full Power Shift: Dieses Getriebe hat 12 Gänge und schaltet ohne Zugkraftu
 PKW: 6 Gänge abgestuft für PKW mit Untersetzung fürs Gelände
 VARIO: Fendt Vario: Stufenloses Getriebe mit 2 Bereichen "low" und "high"
 46A: Claas HexaShift: 4 manuell zu schaltende Bereiche mit jeweils 6 automatischen Lastschaltstufen
-OWN: Bau Dir Dein eigenes Getriebe]]>
-		</longText>
-		<longText name="vca_Help_4">
-<![CDATA[Globale Einstellungen
+OWN: Bau Dir Dein eigenes Getriebe]]></longText>
+		<longText name="vca_Help_4"><![CDATA[Globale Einstellungen
 
-Änderungen an den globale Einstellungen haben keinen Einfluss auf das aktuelle Fahrzeug. Sie werden in der Datei modsSettings/FS19_VehicleControlAddon/config.xml gespeichert]]>
-		</longText>
-		<longText name="vca_Help_5">
-<![CDATA[Bau Dir Dein eigenes Getriebe
+Änderungen an den globale Einstellungen haben keinen Einfluss auf das aktuelle Fahrzeug.
+Sie werden in der Datei modsSettings/FS19_VehicleControlAddon/config.xml gespeichert]]></longText>
+		<longText name="vca_Help_5"><![CDATA[Bau Dir Dein eigenes Getriebe
 
 Hier kann man sich sein eigenes Getriebe konfigurieren. Gänge können automatisch geschaltet werden. Daher sind Lastschaltstufen am besten immer Gänge. 
 Die Übersetzung des höchsten Gangs ist die theoretische Endgeschwindigkeit bei ausgeschaltetem Begrenzer. Die Höchstgeschwindigkeit im 1. Gang der höchsten Gruppe bestimmt
 das Verhältnis der Gänge untereinander. 
-Die Höchstgeschwindigkeiten in der vorletzten Gruppe sind redundant. Man muss nur einen von beiden Werten eingeben. Der andere wird automatisch angepasst.]]>
-		</longText>
-		<longText name="vca_Help_6">
-<![CDATA[Differentiale und Allradantrieb]]>
-		</longText>		
+Die Höchstgeschwindigkeiten in der vorletzten Gruppe sind redundant. Man muss nur einen von beiden Werten eingeben. Der andere wird automatisch angepasst.]]></longText>
+		<longText name="vca_Help_6"><![CDATA[Differentiale und Allradantrieb]]></longText>
 	</longTexts>
 </l10n>
