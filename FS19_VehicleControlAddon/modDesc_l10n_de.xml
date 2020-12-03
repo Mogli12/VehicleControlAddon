@@ -43,7 +43,7 @@
 		<text name="vcaG27MODE"         text="G27/G29 Schaltschema"/>
 		<text name="vcaHIREDWORKER"     text="Getriebe und Helfer"/>
 		<text name="vcaOWNMINSPEED"     text="Übersetzung 1. Gang"/>
-		<text name="vcaOWNMINRANGE"     text="Übersetzung 1. Gang in vorletzer Gruppe"/>
+		<text name="vcaOWNMINRANGE"     text="Übersetzung 1. Gang in 1. Gruppe"/>
 		<text name="vcaOWNMAXRANGE"     text="Übersetzung vorletzer Gruppe"/>
 		<text name="vcaOWNGEARS"        text="Anzahl Gänge"/>
 		<text name="vcaOWNRANGES"       text="Anzahl Gruppen"/>
@@ -97,7 +97,7 @@
 		<text name="vca_tip_G27MODE"      text="G27/G29 Schaltschema"/>
 		<text name="vca_tip_HIREDWORKER"  text="Steuert, ob das Getriebe ein- oder ausgeschaltet wird, wenn das Fahrzeug vom Helfer kontrolliert wird"/>
 		<text name="vca_tip_OWNMINSPEED"  text="Maximale Geschwindigkeit, die im ersten Gang erreicht werdern kann"/>
-		<text name="vca_tip_OWNMINRANGE"  text="Maximale Geschwindigkeit, die in der zweithöchsten Gruppe im ersten Gang erreicht werdern kann"/>
+		<text name="vca_tip_OWNMINRANGE"  text="Maximale Geschwindigkeit, die in der ersten Gruppe im ersten Gang erreicht werdern kann"/>
 		<text name="vca_tip_OWNMAXRANGE"  text="Maximale Geschwindigkeit, die in der zweithöchsten Gruppe im höchsten Gang erreicht werdern kann"/>
 		<text name="vca_tip_OWNGEARS"     text="Anzahl Gänge"/>
 		<text name="vca_tip_OWNRANGES"    text="Anzahl Gruppen"/>

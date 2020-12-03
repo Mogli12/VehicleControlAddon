@@ -132,7 +132,6 @@ local listOfProperties =
 		{ func=listOfFunctions.int16, xmlName="currentGear",   propName="vcaGear",         },
 		{ func=listOfFunctions.int16, xmlName="currentRange",  propName="vcaRange",        },
 		{ func=listOfFunctions.bool , xmlName="autoShift",     propName="vcaAutoShift"     },
-		{ func=listOfFunctions.bool , xmlName="turboClutch",   propName="vcaTurboClutch"   },
 		{ func=listOfFunctions.clutch,xmlName="clutchMode",    propName="vcaClutchMode"    },
 		{ func=listOfFunctions.float, xmlName="maxSpeed",      propName="vcaMaxSpeed"      },
 		{ func=listOfFunctions.float, xmlName="ccSpeed2",      propName="vcaCCSpeed2"      },
@@ -6875,9 +6874,6 @@ function vehicleControlAddon:vcaShowSettingsUI()
 	
 	self.vcaUI.vcaOwnGears   = {}
 	self.vcaUI.vcaOwnRanges  = {}
-	self.vcaUI.vcaOwnGearFactor   = tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed * self.vcaOwnGearFactor ) )
-	self.vcaUI.vcaOwnRangeFactor  = tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed * self.vcaOwnGearFactor * self.vcaOwnRangeFactor ) )
-	self.vcaUI.vcaOwnRangeFactor2 = tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed * self.vcaOwnRangeFactor ) )
 	
 	for i=1,30 do 
 		table.insert( self.vcaUI.vcaOwnGears  , string.format("%d", i ) )
@@ -6970,47 +6966,38 @@ function vehicleControlAddon:vcaUISetvcaMaxSpeed( value )
 		self:vcaSetState( "vcaMaxSpeed", v )
 		self:vcaSetState( "vcaOwnGearFactor",  math.min( g / v, 0.99 ) )
 		self:vcaSetState( "vcaOwnRangeFactor", math.min( r / v, 0.99 ) )
-		self.vcaUI.vcaOwnGearFactor   = tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed * self.vcaOwnGearFactor ) )
-		self.vcaUI.vcaOwnRangeFactor2 = tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed * self.vcaOwnRangeFactor ) )
-		self.vcaUI.vcaOwnRangeFactor  = tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed * self.vcaOwnGearFactor * self.vcaOwnRangeFactor ) )
 	end 
 	self.vcaUI.vcaMaxSpeed = tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed ) )
 end
 
 function vehicleControlAddon:vcaUIGetvcaOwnGearFactor( isCapturingInput )
-	return self.vcaUI.vcaOwnGearFactor
+	return tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed * self.vcaOwnGearFactor ) )
 end 
 function vehicleControlAddon:vcaUISetvcaOwnGearFactor( value )
 	local g = vehicleControlAddon.vcaSpeedExt2Int( tonumber( value  ) )
 	if type( g ) == "number" and g > 0 then
 		self:vcaSetState( "vcaOwnGearFactor",  math.min( g / self.vcaMaxSpeed, 0.99 ) )
-		self.vcaUI.vcaOwnRangeFactor  = tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed * self.vcaOwnGearFactor * self.vcaOwnRangeFactor ) )
 	end 
-	self.vcaUI.vcaOwnGearFactor = tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed * self.vcaOwnGearFactor ) )
 end 
 
 function vehicleControlAddon:vcaUIGetvcaOwnRangeFactor()
-	return self.vcaUI.vcaOwnRangeFactor
+	return tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed * self.vcaOwnGearFactor * ( self.vcaOwnRangeFactor^math.max(1,self.vcaOwnRanges-1) ) ) )
 end 
 function vehicleControlAddon:vcaUISetvcaOwnRangeFactor( value )
 	local r = vehicleControlAddon.vcaSpeedExt2Int( tonumber( value ) )
 	if type( r ) == "number" and r > 0 then
-		self:vcaSetState( "vcaOwnRangeFactor", math.min( r / ( self.vcaMaxSpeed * self.vcaOwnGearFactor ), 0.99 ) )
-		self.vcaUI.vcaOwnRangeFactor2 = tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed * self.vcaOwnRangeFactor ) )
+		self:vcaSetState( "vcaOwnRangeFactor", math.min( ( r / ( self.vcaMaxSpeed * self.vcaOwnGearFactor ) ) ^ ( 1 / math.max(1,self.vcaOwnRanges-1) ), 0.99 ) )
 	end 
-	self.vcaUI.vcaOwnRangeFactor = tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed * self.vcaOwnGearFactor * self.vcaOwnRangeFactor ) )
 end 
 
 function vehicleControlAddon:vcaUIGetvcaOwnRangeFactor2()
-	return self.vcaUI.vcaOwnRangeFactor2
+	return tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed * self.vcaOwnRangeFactor ) )
 end 
 function vehicleControlAddon:vcaUISetvcaOwnRangeFactor2( value )
 	local r = vehicleControlAddon.vcaSpeedExt2Int( tonumber( value ) )
 	if type( r ) == "number" and r > 0 then
 		self:vcaSetState( "vcaOwnRangeFactor", math.min( r / self.vcaMaxSpeed, 0.99 ) )
-		self.vcaUI.vcaOwnRangeFactor  = tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed * self.vcaOwnGearFactor * self.vcaOwnRangeFactor ) )
 	end 
-	self.vcaUI.vcaOwnRangeFactor2 = tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed * self.vcaOwnRangeFactor ) )
 end 
 
 

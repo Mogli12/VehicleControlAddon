@@ -43,8 +43,8 @@
 		<text name="vcaG27MODE"         text="G27/G29 shifter mode"/>
 		<text name="vcaHIREDWORKER"     text="Transmission and hired worker"/>
 		<text name="vcaOWNMINSPEED"     text="Gear speed of 1st gear"/>
-		<text name="vcaOWNMINRANGE"     text="Gear speed of 1st gear and range -"/>
-		<text name="vcaOWNMAXRANGE"     text="Max. gear speed of range -"/>
+		<text name="vcaOWNMINRANGE"     text="Gear speed of 1st gear and 1st range -"/>
+		<text name="vcaOWNMAXRANGE"     text="Gear speed of 2nd highest range -"/>
 		<text name="vcaOWNGEARS"        text="Number of gears"/>
 		<text name="vcaOWNRANGES"       text="Number of ranges"/>
 		<text name="vcaOWNGEARTIME"     text="Time to shift gears"/>
@@ -97,7 +97,7 @@
 		<text name="vca_tip_G27MODE"      text="G27/G29 shifter mode"/>
 		<text name="vca_tip_HIREDWORKER"  text="Controls if the hired worked operates the vehicle with vanilla or modified transmission"/>
 		<text name="vca_tip_OWNMINSPEED"  text="Gear speed of 1st gear in highest range"/>
-		<text name="vca_tip_OWNMINRANGE"  text="Gear speed of 1st gear in 2nd highest range"/>
+		<text name="vca_tip_OWNMINRANGE"  text="Gear speed of 1st gear in 1st range"/>
 		<text name="vca_tip_OWNMAXRANGE"  text="Gear speed of highest gear in 2nd highest range"/>
 		<text name="vca_tip_OWNGEARS"     text="Number of gears"/>
 		<text name="vca_tip_OWNRANGES"    text="Number of ranges"/>

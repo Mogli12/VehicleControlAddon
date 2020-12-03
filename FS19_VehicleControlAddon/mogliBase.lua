@@ -29,11 +29,12 @@
 -- 4.02 globalsLoad with typeList
 -- 4.03 globalsLoadNew
 -- 4.04 globalsLoadNew with createFolder
+-- 4.05 delete file before create 
 
 -- Usage:  source(Utils.getFilename("mogliBase.lua", g_currentModDirectory));
 --         _G[g_currentModDirectory.."mogliBase"].newClass( "AutoCombine", "acParameters" )
 
-local mogliBaseVersion   = 4.04
+local mogliBaseVersion   = 4.05
 local mogliBaseClass     = g_currentModName..".mogliBase"
 local mogliEventClass    = g_currentModName..".mogliEvent"
 local mogliSyncRequest   = g_currentModName..".mogliSyncRequest"
@@ -162,6 +163,9 @@ else
 			if writeLog then 
 				print('Creating file "'..file..'"...')
 			end
+			if fileExists(file) then
+				getfenv(0).deleteFile(file)
+			end 
 			local xmlFile = createXMLFile( "mogliBasics", file, rootTag )
 			_newClass_.globalsCreate2( xmlFile , rootTag, globals, writeLog )	
 			saveXMLFile(xmlFile)
@@ -343,6 +347,9 @@ else
 			if g_server ~= nil then 
 				if _newClass_._globals_.dirUsr ~= nil then 
 					createFolder(_newClass_._globals_.dirUsr)
+				end 
+				if fileExists(file) then
+					getfenv(0).deleteFile(file)
 				end 
 				local xmlFile = createXMLFile( "mogliBasics", file, rootTag )
 				if xmlFile ~= nil and xmlFile ~= 0 then 
