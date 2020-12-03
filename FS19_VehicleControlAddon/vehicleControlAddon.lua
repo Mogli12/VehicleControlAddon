@@ -93,16 +93,16 @@ local function setClutch( xmlFile, xmlProp, xmlAttr, value )
 end
 
 local listOfFunctions = {}
-listOfFunctions.bool   = { getXML=function( xmlFile, xmlProp, xmlAttr ) getXMLBool( xmlFile, xmlProp..'#'..xmlAttr ) end, 
+listOfFunctions.bool   = { getXML=function( xmlFile, xmlProp, xmlAttr ) return getXMLBool( xmlFile, xmlProp..'#'..xmlAttr ) end, 
 													 setXML=function( xmlFile, xmlProp, xmlAttr, value ) setXMLBool( xmlFile, xmlProp..'#'..xmlAttr, value ) end, 
 													 streamRead=streamReadBool   , streamWrite=streamWriteBool    }
-listOfFunctions.int16  = { getXML=function( xmlFile, xmlProp, xmlAttr ) getXMLInt( xmlFile, xmlProp..'#'..xmlAttr ) end, 
+listOfFunctions.int16  = { getXML=function( xmlFile, xmlProp, xmlAttr ) return getXMLInt( xmlFile, xmlProp..'#'..xmlAttr ) end, 
 													 setXML=function( xmlFile, xmlProp, xmlAttr, value ) setXMLInt( xmlFile, xmlProp..'#'..xmlAttr, value ) end, 
 													 streamRead=streamReadInt16  , streamWrite=streamWriteInt16   }
-listOfFunctions.float  = { getXML=function( xmlFile, xmlProp, xmlAttr ) getXMLFloat( xmlFile, xmlProp..'#'..xmlAttr ) end, 
+listOfFunctions.float  = { getXML=function( xmlFile, xmlProp, xmlAttr ) return getXMLFloat( xmlFile, xmlProp..'#'..xmlAttr ) end, 
 													 setXML=function( xmlFile, xmlProp, xmlAttr, value ) setXMLFloat( xmlFile, xmlProp..'#'..xmlAttr, value ) end, 
 													 streamRead=streamReadFloat32, streamWrite=streamWriteFloat32 }
-listOfFunctions.string = { getXML=function( xmlFile, xmlProp, xmlAttr ) getXMLString( xmlFile, xmlProp..'#'..xmlAttr ) end, 
+listOfFunctions.string = { getXML=function( xmlFile, xmlProp, xmlAttr ) return getXMLString( xmlFile, xmlProp..'#'..xmlAttr ) end, 
 													 setXML=function( xmlFile, xmlProp, xmlAttr, value ) setXMLString( xmlFile, xmlProp..'#'..xmlAttr, value ) end, 
 													 streamRead=streamReadString , streamWrite=streamWriteString  }
 listOfFunctions.trans  = { getXML=getTransmission, setXML=setTransmission, streamRead=streamReadInt16  , streamWrite=streamWriteInt16   }
@@ -127,7 +127,7 @@ local listOfProperties =
 		{ func=listOfFunctions.bool , xmlName="drawHud",       propName="vcaDrawHud"       }, 
 		{ func=listOfFunctions.float, xmlName="brakeForce",    propName="vcaBrakeForce"    },
 		{ func=listOfFunctions.trans, xmlName="transmission",  propName="vcaTransmission"  },
-		{ func=listOfFunctions.int16, xmlName="launchSpeed",   propName="vcaLaunchSpeed"   },
+		{ func=listOfFunctions.float, xmlName="launchSpeed",   propName="vcaLaunchSpeed"   },
 		{ func=listOfFunctions.int16, xmlName="singleReverse", propName="vcaSingleReverse" },
 		{ func=listOfFunctions.int16, xmlName="currentGear",   propName="vcaGear",         },
 		{ func=listOfFunctions.int16, xmlName="currentRange",  propName="vcaRange",        },
@@ -425,7 +425,7 @@ function vehicleControlAddon:onLoad(savegame)
 	vehicleControlAddon.registerState( self, "vcaSnapDraw",     1 )
 	vehicleControlAddon.registerState( self, "vcaHandthrottle", 0 )
 	vehicleControlAddon.registerState( self, "vcaHandRpmFullAxis", false )
-	vehicleControlAddon.registerState( self, "vcaPitchFactor",  1 )
+	vehicleControlAddon.registerState( self, "vcaPitchFactor",  VCAGlobals.pitchFactor )
 	vehicleControlAddon.registerState( self, "vcaPitchExponent",1 )
 	vehicleControlAddon.registerState( self, "vcaGearRatioH",   0 )
 	vehicleControlAddon.registerState( self, "vcaGearRatioF",   0 )
@@ -2137,7 +2137,9 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 	--*******************************************************************
 	-- user settings
 	lastControllerName = self.vcaControllerName
-	if self:getIsControlled() then 
+	if not g_vehicleControlAddon.isMP then 
+		self.vcaControllerName = "" 
+	elseif self:getIsControlled() then 
 		self.vcaControllerName = self:getControllerName()
 		if lastControllerName == nil or lastControllerName ~= self.vcaControllerName then 
 			vehicleControlAddon.mpDebugPrint( self,"New controller of vehicle is: "..self.vcaControllerName)
@@ -3988,30 +3990,42 @@ function vehicleControlAddon.getRelativeTranslation( refNode, node )
 	return worldToLocal( refNode, wx, wy, wz )
 end
 
-function vehicleControlAddon.getDistance( refNode, leftMarker, rightMarker )
+function vehicleControlAddon.getDistance( refNode, leftMarker, rightMarker, iMinX, iMaxX )
 	local lx, ly, lz = vehicleControlAddon.getRelativeTranslation( refNode, leftMarker )
 	local rx, ry, rz = vehicleControlAddon.getRelativeTranslation( refNode, rightMarker )
 	vehicleControlAddon.debugPrint(string.format( "(%5.2f, %5.2f, %5.2f) / (%5.2f, %5.2f, %5.2f)", lx, ly, lz, rx, ry, rz ))
 	
-	local d = 0.1 * math.floor( 10 * math.abs( lx - rx ) + 0.5 )
-	local o = 0.1 * math.floor( 5 * ( lx + rx ) + 0.5 )
-	return d, -o, o
+	if iMinX ~= nil and iMaxX ~= nil then 
+		return math.min( lx, rx, iMinX ), math.max( lx, rx, iMaxX )
+	end 
+	
+	return math.min( lx, rx ), math.max( lx, rx )
 end
 
 function vehicleControlAddon:vcaGetSnapDistance()
+	local minX, maxX
+
 	if     SpecializationUtil.hasSpecialization(AIVehicle, self.specializations) then
 		for _, implement in ipairs(self:getAttachedAIImplements()) do
 			local leftMarker, rightMarker, backMarker, _ = implement.object:getAIMarkers()
 			if implement.object.steeringAxleNode ~= nil and leftMarker ~= nil and rightMarker  ~= nil then 
-				return vehicleControlAddon.getDistance( implement.object.steeringAxleNode, leftMarker, rightMarker )
+				minX, maxX = vehicleControlAddon.getDistance( implement.object.steeringAxleNode, leftMarker, rightMarker, minX, maxX )
 			end
 		end
-	elseif SpecializationUtil.hasSpecialization(AIImplement, self.specializations) then
+	end 
+	
+	if SpecializationUtil.hasSpecialization(AIImplement, self.specializations) then
 		local leftMarker, rightMarker, backMarker, _ = self:getAIMarkers()
 		if self.steeringAxleNode ~= nil and leftMarker ~= nil and rightMarker  ~= nil then 
-			return vehicleControlAddon.getDistance( self.steeringAxleNode, leftMarker, rightMarker )
+			minX, maxX = vehicleControlAddon.getDistance( self.steeringAxleNode, leftMarker, rightMarker, minX, maxX )
 		end
 	end
+	
+	if minX ~= nil and maxX ~= nil then 
+		local d = 0.1 * math.floor( 10 * ( maxX - minX ) + 0.5 )
+		local o = 0.1 * math.floor(  5 * ( maxX + minX ) + 0.5 )
+		return d, -o, o
+	end 
 	
 	return 0, 0, 0
 end

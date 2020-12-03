@@ -18,7 +18,7 @@
 	<modifyPitch         type="bool"  value="true"/>
 	<mouseAutoRotateBack type="bool"  value="false"/>
 	<turnOffAWDSpeed     type="float" value="30"/><!-- km/h -->
-	<minAuthShiftWait    type="int"   value="333"/> <!-- ms minimum time between automatic shifting -->
+	<minAuthShiftWait    type="int"   value="750"/> <!-- ms minimum time between automatic shifting -->
 	<torqueCheatFactor1  type="float" value="1.035"/> <!-- torque factor IVT -->
 	<torqueCheatFactor2  type="float" value="1.035"/> <!-- torque factor fixed gear ratios -->
 	<gearShiftSampleVol  type="float" value="1.0"/>
@@ -38,6 +38,7 @@
 	<blowOffVolume       type="float" value="0.5"/> 
 	<rotSpeedOut         type="float" value="0.5"/> 
 	<rotSpeedIn          type="float" value="0.5"/> 
+	<pitchFactor         type="float" value="1.1"/> 
 </VCAGlobals>
 
 
