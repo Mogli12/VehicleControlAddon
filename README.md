@@ -1,10 +1,8 @@
 # VehicleControlAddon for Farming Simulator 2019
 
-## Currently On Hold
-It seems that many players have problems with thier inpubBindings. Just look at issues #470, #468, # 464, ...
-And I tried to post a version 1.1 on Modhub. But the update was refused because some DDS files have mipmaps. The last time there was a complaint that some DDS files have no mipmaps. 
+## Preparing version 1.1
 
-Overall, I am tired of this. This does not make fun anymore. My consequence is to stop this project as it is right now.
+I am preparing verison 1.1 for release on ModHub. I closed all issues that I will not fix.
 
 ## Developer version
 Please be aware you're using a developer version, which may and will contain errors, bugs, mistakes and unfinished code. 
@@ -26,6 +24,8 @@ From today on I will close all new issues without the above information!
 
 * Error: mogliBase30Request received invalid NodeObject  
 This error happens in MultiPlayer only. It happens if there is another mod with incorrect client-server communication. If the number of information processesd on client and server does not match, then all subsequent mods get shifted and incorrected data. You might ignore this error message if there are no other problems.
+
+It seems that many players have problems with thier inpubBindings. Just look at issues #470, #468, # 464, ... I think this is a general problem in the handling of input bindings in FS19. Please try to delete your inputBinding.xml.
 
 ## How to download?
 
