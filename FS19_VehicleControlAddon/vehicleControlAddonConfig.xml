@@ -11,7 +11,8 @@
 	<snapAngleHudY       type="float" value="-1"/> <!-- any value >= 0 => position of bottom left corner / -1 above HUD -->
 	<drawHud             type="bool"  value="true"/>
 	<transmission        type="int"   value="1"/>  <!-- 0 = Giants, 1 = IVT, 2 = 4x4, 3 = 4x4 PowerShift, 4 = 2x6, 5 = FullPowerShift -->
-	<clutchTimer         type="int"   value="5000"/> <!-- ms -->
+	<clutchTimer         type="int"   value="6000"/> <!-- ms -->
+	<autoHoldTimer       type="int"   value="1000"/> <!-- ms; 0 = no auto hold -->
 	<rotInertiaFactor    type="float" value="1.5"/>  <!-- rot. interatia is more than just the flywheel, it includes the transmission and the wheels as well -->
 	<rotInertiaFactorLow type="float" value="0.5"/>  <!-- rot. interatia is more than just the flywheel, it includes the transmission and the wheels as well -->
 	<rotInertiaFactorPS  type="float" value="1.5"/>  <!-- rot. interatia is more than just the flywheel, it includes the transmission and the wheels as well -->

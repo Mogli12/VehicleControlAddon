@@ -11,10 +11,17 @@
 	<snapAngleHudY       type="float" value="-1"/> <!-- any value >= 0 => position of bottom left corner / -1 above HUD -->
 	<drawHud             type="bool"  value="true"/>
 	<transmission        type="int"   value="1"/>  <!-- 0 = Giants, 1 = IVT, 2 = 4x4, 3 = 4x4 PowerShift, 4 = 2x6, 5 = FullPowerShift -->
-	<clutchTimer         type="int"   value="1500"/> <!-- ms -->
-	<clutchTimerIdle     type="int"   value="5000"/> <!-- ms -->
-	<rotInertiaFactor    type="float" value="5"/>  <!-- rot. interatia is more than just the flywheel, it includes the transmission and the wheels as well -->
+	<clutchTimer         type="int"   value="6000"/> <!-- ms -->
+	<autoHoldTimer       type="int"   value="1000"/> <!-- ms; 0 = no auto hold -->
+	<rotInertiaFactor    type="float" value="1.5"/>  <!-- rot. interatia is more than just the flywheel, it includes the transmission and the wheels as well -->
+	<rotInertiaFactorLow type="float" value="0.5"/>  <!-- rot. interatia is more than just the flywheel, it includes the transmission and the wheels as well -->
+	<rotInertiaFactorPS  type="float" value="1.5"/>  <!-- rot. interatia is more than just the flywheel, it includes the transmission and the wheels as well -->
 	<modifyPitch         type="bool"  value="true"/>
+	<mouseAutoRotateBack type="bool"  value="false"/>
+	<turnOffAWDSpeed     type="float" value="30"/><!-- km/h -->
+	<minAuthShiftWait    type="int"   value="750"/> <!-- ms minimum time between automatic shifting -->
+	<torqueCheatFactor1  type="float" value="1.035"/> <!-- torque factor IVT -->
+	<torqueCheatFactor2  type="float" value="1.035"/> <!-- torque factor fixed gear ratios -->
 	<gearShiftSampleVol  type="float" value="1.0"/>
 	<grindingSampleVol   type="float" value="1.0"/>
 
@@ -26,4 +33,5 @@
 	<shuttleControl      type="bool"  value="true"/>
 	<peekLeftRight       type="bool"  value="true"/>
 	<hiredWorker         type="int"   value="2"/> <!-- transmission for hired worker: 0 off, 1 only if entered, 2 always on -->
+	<pitchFactor         type="float" value="1.1"/> 
 </VCAGlobals>

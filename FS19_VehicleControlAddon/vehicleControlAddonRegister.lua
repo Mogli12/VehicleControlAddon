@@ -219,6 +219,7 @@ function vehicleControlAddonRegister:loadMap(name)
 										"gearShiftSampleVol",
 										"grindingSampleVol",
 										"pitchFactor",
+										"autoHoldTimer",
 									}
 
 	print('VCAregister; isMP: '..tostring(self.isMP)..', isDedi: '..tostring(self.isDedi)..', local config: "'..tostring(configFile)..'", local directory: "'..tostring(configDir)..'"')

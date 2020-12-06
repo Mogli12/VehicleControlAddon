@@ -151,6 +151,7 @@ local listOfProperties =
 		{ func=listOfFunctions.bool , xmlName="modifyPitch",   propName="vcaModifyPitch"   },
 		{ func=listOfFunctions.float, xmlName="ownGearFactor", propName="vcaOwnGearFactor" },
 		{ func=listOfFunctions.float, xmlName="ownRangeFactor",propName="vcaOwnRangeFactor" },
+		{ func=listOfFunctions.float, xmlName="ownRange1st1st",propName="vcaOwnRange1st1st" },
 		{ func=listOfFunctions.int16, xmlName="ownGears",      propName="vcaOwnGears"      },
 		{ func=listOfFunctions.int16, xmlName="ownRanges",     propName="vcaOwnRanges"     },
 		{ func=listOfFunctions.int16, xmlName="ownGearTime",   propName="vcaOwnGearTime"   },
@@ -448,6 +449,7 @@ function vehicleControlAddon:onLoad(savegame)
 	
 	vehicleControlAddon.registerState( self, "vcaOwnGearFactor" , 0.4096, function( self, ... ) vehicleControlAddon.vcaOnSetOwn( self, "vcaOwnGearFactor" , ... ) end )
 	vehicleControlAddon.registerState( self, "vcaOwnRangeFactor", 0.4096, function( self, ... ) vehicleControlAddon.vcaOnSetOwn( self, "vcaOwnRangeFactor", ... ) end )
+	vehicleControlAddon.registerState( self, "vcaOwnRange1st1st", -0.1,   function( self, ... ) vehicleControlAddon.vcaOnSetOwn( self, "vcaOwnRange1st1st", ... ) end )
 	vehicleControlAddon.registerState( self, "vcaOwnGears"      , 5     , function( self, ... ) vehicleControlAddon.vcaOnSetOwn( self, "vcaOwnGears"      , ... ) end )
 	vehicleControlAddon.registerState( self, "vcaOwnRanges"     , 3     , function( self, ... ) vehicleControlAddon.vcaOnSetOwn( self, "vcaOwnRanges"     , ... ) end )
 	vehicleControlAddon.registerState( self, "vcaOwnGearTime"   , 0     , function( self, ... ) vehicleControlAddon.vcaOnSetOwn( self, "vcaOwnGearTime"   , ... ) end )
@@ -1725,8 +1727,13 @@ function vehicleControlAddon:vcaGetTransmissionDef()
 		end 
 		
 		if self.vcaOwnGears > 1 and self.vcaOwnRanges >= 1 then 
-			local g = vehicleControlAddon.mbClamp( self.vcaOwnGearFactor,  0.01, 0.99 ) ^ ( 1 / math.max( 1, self.vcaOwnGears  - 1 ) ) 
-			local r = vehicleControlAddon.mbClamp( self.vcaOwnRangeFactor, 0.01, 0.99 )
+			local g = vehicleControlAddon.mbClamp( self.vcaOwnGearFactor,  0.001, 0.99 ) ^ ( 1 / math.max( 1, self.vcaOwnGears  - 1 ) ) 
+			local r = vehicleControlAddon.mbClamp( self.vcaOwnRangeFactor, 0.001, 0.99 )
+			if self.vcaOwnRange1st1st <= 0 or self.vcaOwnRanges <= 2 then 
+				r2 = r 
+			else 
+				r2 = ( math.min( self.vcaOwnRange1st1st, 0.99 ) / math.max( self.vcaOwnGearFactor * self.vcaOwnRangeFactor, 0.001 ) ) ^ ( 1 / math.max( 1, self.vcaOwnRanges - 2 ) ) 
+			end 
 			local j = self.vcaOwnRanges * self.vcaOwnGears
 			local k = self.vcaOwnGears
 			params.gearRatios    = {}
@@ -1741,6 +1748,7 @@ function vehicleControlAddon:vcaGetTransmissionDef()
 				if k < 1 then 
 					k = self.vcaOwnGears
 					params.gearRatios[j] = params.gearRatios[j + self.vcaOwnGears] * r 
+					r = r2 
 				else 
 					params.gearRatios[j] = params.gearRatios[j + 1] * g
 				end 
@@ -5385,8 +5393,9 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		elseif lastFwd ~= fwd or self.vcaDirTimer ~= nil then 
 		-- no change 
 		elseif speed < 3.6 and curBrake > 0.1 and not self.vcaAutoStop then 
-			if lastAutoStopTimer == nil then 
-				self.vcaAutoStopTimer = 1000
+			if     VCAGlobals.autoHoldTimer <= 0 then 
+			elseif lastAutoStopTimer == nil then 
+				self.vcaAutoStopTimer = VCAGlobals.autoHoldTimer
 			elseif lastAutoStopTimer > 0 then 
 				self.vcaAutoStopTimer = lastAutoStopTimer - dt 
 			else 
@@ -5469,8 +5478,9 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 				and ( self.vehicle:vcaGetAutoClutch() or self.vehicle:vcaGetAutoShift() or self.vehicle.vcaClutchPercent > 0.8 ) 
 				then 
 			autoNeutral = true 
-			if lastAutoStopTimer == nil then 
-				self.vcaAutoStopTimer = 1000
+			if     VCAGlobals.autoHoldTimer <= 0 then 
+			elseif lastAutoStopTimer == nil then 
+				self.vcaAutoStopTimer = VCAGlobals.autoHoldTimer
 			elseif lastAutoStopTimer > 0 then 
 				self.vcaAutoStopTimer = lastAutoStopTimer - dt 
 			else 
@@ -6977,9 +6987,13 @@ function vehicleControlAddon:vcaUISetvcaMaxSpeed( value )
 	if type( v ) == "number" and v > 0 and math.abs( v - self.vcaMaxSpeed ) > 0.01 then
 		local g = self.vcaMaxSpeed * self.vcaOwnGearFactor
 		local r = self.vcaMaxSpeed * self.vcaOwnRangeFactor
+		local q = self.vcaMaxSpeed * self.vcaOwnRange1st1st
 		self:vcaSetState( "vcaMaxSpeed", v )
 		self:vcaSetState( "vcaOwnGearFactor",  math.min( g / v, 0.99 ) )
 		self:vcaSetState( "vcaOwnRangeFactor", math.min( r / v, 0.99 ) )
+		if self.vcaOwnRange1st1st > 0 then 
+			self:vcaSetState( "vcaOwnRange1st1st", math.min( q / v, 0.99 ) )
+		end 
 	end 
 	self.vcaUI.vcaMaxSpeed = tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed ) )
 end
@@ -6991,16 +7005,26 @@ function vehicleControlAddon:vcaUISetvcaOwnGearFactor( value )
 	local g = vehicleControlAddon.vcaSpeedExt2Int( tonumber( value  ) )
 	if type( g ) == "number" and g > 0 then
 		self:vcaSetState( "vcaOwnGearFactor",  math.min( g / self.vcaMaxSpeed, 0.99 ) )
+		if self.vcaOwnRange1st1st >= self.vcaOwnGearFactor * self.vcaOwnRangeFactor * 0.99 then 
+			self:vcaSetState( "vcaOwnRange1st1st", self.vcaOwnGearFactor * self.vcaOwnRangeFactor * 0.99 )
+		end 
 	end 
 end 
 
 function vehicleControlAddon:vcaUIGetvcaOwnRangeFactor()
-	return tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed * self.vcaOwnGearFactor * ( self.vcaOwnRangeFactor^math.max(1,self.vcaOwnRanges-1) ) ) )
+	if     self.vcaOwnRanges <= 1 then 
+		return tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed * self.vcaOwnGearFactor ) )
+	elseif self.vcaOwnRanges <= 2 then 
+		return tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed * self.vcaOwnGearFactor * self.vcaOwnRangeFactor ) )
+	elseif self.vcaOwnRange1st1st <= 0 then 
+		return tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed * self.vcaOwnGearFactor * self.vcaOwnRangeFactor ^ ( self.vcaOwnRanges - 1 ) ) )
+	end 
+	return tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed * self.vcaOwnRange1st1st ) )
 end 
 function vehicleControlAddon:vcaUISetvcaOwnRangeFactor( value )
 	local r = vehicleControlAddon.vcaSpeedExt2Int( tonumber( value ) )
-	if type( r ) == "number" and r > 0 then
-		self:vcaSetState( "vcaOwnRangeFactor", math.min( ( r / ( self.vcaMaxSpeed * self.vcaOwnGearFactor ) ) ^ ( 1 / math.max(1,self.vcaOwnRanges-1) ), 0.99 ) )
+	if type( r ) == "number" and r > 0 and self.vcaOwnRanges > 2 then
+		self:vcaSetState( "vcaOwnRange1st1st", math.min( r / self.vcaMaxSpeed, self.vcaOwnGearFactor * self.vcaOwnRangeFactor * 0.99 ) )
 	end 
 end 
 
@@ -7011,6 +7035,9 @@ function vehicleControlAddon:vcaUISetvcaOwnRangeFactor2( value )
 	local r = vehicleControlAddon.vcaSpeedExt2Int( tonumber( value ) )
 	if type( r ) == "number" and r > 0 then
 		self:vcaSetState( "vcaOwnRangeFactor", math.min( r / self.vcaMaxSpeed, 0.99 ) )
+		if self.vcaOwnRange1st1st >= self.vcaOwnGearFactor * self.vcaOwnRangeFactor * 0.99 then 
+			self:vcaSetState( "vcaOwnRange1st1st", self.vcaOwnGearFactor * self.vcaOwnRangeFactor * 0.99 )
+		end 
 	end 
 end 
 
