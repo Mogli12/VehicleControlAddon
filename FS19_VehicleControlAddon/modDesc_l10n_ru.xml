@@ -43,8 +43,8 @@
 		<text name="vcaG27MODE"             text="Режим переключения G27/G29"/>
 		<text name="vcaHIREDWORKER"         text="Трансмиссия и наёмный работник"/>
 		<text name="vcaOWNMINSPEED"         text="Скорость на 1-й передаче"/>
-		<text name="vcaOWNMINRANGE"         text="Скорость на 1-й передаче на диапазоне -"/>
-		<text name="vcaOWNMAXRANGE"         text="Max. скорость передачи на диапазоне -"/>
+		<text name="vcaOWNMINRANGE"         text="Скорость на 1-й передаче на 1 диапазоне -"/>
+		<text name="vcaOWNMAXRANGE"         text="Max. скорость на 2 высшем диапазоне -"/>
 		<text name="vcaOWNGEARS"            text="К-во передач"/>
 		<text name="vcaOWNRANGES"           text="К-во диапазонов"/>
 		<text name="vcaOWNGEARTIME"         text="Время переключения передач"/>
@@ -89,16 +89,16 @@
 		<text name="vca_tip_PITCH1"         text="Изменение высоты звука, чтобы сделать его линейным."/>
 		<text name="vca_tip_PITCH2"         text="Высота звука на средних оборотах."/>
 		<text name="vca_tip_BLOWOFFVOL"     text="Высота звука турбины."/>
-		<text name="vca_tip_SINGLEREV"      text="С одним реверсом, коробка передач использует одну передачу ЗХ или диапазон ЗХ вместо управления челноком."/>
-		<text name="vca_tip_AUTOCLUTCH"     text="Автоматическое сцепление."/>
+		<text name="vca_tip_SINGLEREV"      text="При движении задним ходом вместо челнока используется одна передача или группа."/>
+		<text name="vca_tip_AUTOCLUTCH"     text="Автоматическое срабатывание сцепления."/>
 		<text name="vca_tip_TURBOCLUTCH"    text="Дополнительное турбосцепление."/>
-		<text name="vca_tip_GEARRATIOF"     text="Min. gear speed limit"/>
-		<text name="vca_tip_GEARRATIOT"     text="Max. gear speed limit"/>
-		<text name="vca_tip_G27MODE"        text="Режим переключения G27/G29"/>
+		<text name="vca_tip_GEARRATIOF"     text="Min. ограничение скорости передачи. Автоматически не переключается на более низшую передачу."/>
+		<text name="vca_tip_GEARRATIOT"     text="Max. ограничение скорости передачи. Автоматически не переключается на более высшую передачу."/>
+		<text name="vca_tip_G27MODE"        text="Режим переключения G27/G29."/>
 		<text name="vca_tip_HIREDWORKER"    text="Когда наёмный работник управляет техникой, какую трансмиссию он будет использовать: ванильную или модифицированную."/>
-		<text name="vca_tip_OWNMINSPEED"    text="Gear speed of 1st gear in highest range"/>
-		<text name="vca_tip_OWNMINRANGE"    text="Gear speed of 1st gear in 2nd highest range"/>
-		<text name="vca_tip_OWNMAXRANGE"    text="Gear speed of highest gear in 2nd highest range"/>
+		<text name="vca_tip_OWNMINSPEED"    text="Макс. скорость которая может быть достигнута на 1й передаче высшего диапазона"/>
+		<text name="vca_tip_OWNMINRANGE"    text="Макс. скорость которая может быть достигнута на 1й передаче 1го диапазона"/>
+		<text name="vca_tip_OWNMAXRANGE"    text="Макс. скорость которая может быть достигнута на высшей передаче во 2м высшем диапазоне"/>
 		<text name="vca_tip_OWNGEARS"       text="Число передач"/>
 		<text name="vca_tip_OWNRANGES"      text="Число диапазонов"/>
 		<text name="vca_tip_OWNGEARTIME"    text="Время переключения передач"/>
@@ -157,6 +157,9 @@
 		<text name="input_vcaHandRpm_1"     text="VCA: Увеличить ручной дроссель"/>
 		<text name="input_vcaHandRpm_2"     text="VCA: Уменьшить ручной дроссель"/>
 		<text name="input_vcaHandMode"      text="VCA: Режим ручного дросселя"/>
+		<text name="input_vcaManRatio"      text="VCA: ручной Vario"/>
+		<text name="input_vcaManRatio_1"    text="VCA: Vario быстрее"/>
+		<text name="input_vcaManRatio_2"    text="VCA: Vario медленнее"/>
 		<text name="input_vcaAutoShift"     text="VCA: Автоматическое переключение Вкл/Выкл"/>
 		<text name="input_vcaDiffLockF"     text="VCA: Передний дифф. блок/разблок"/>
 		<text name="input_vcaDiffLockM"     text="VCA: Полный привод"/>
@@ -176,26 +179,30 @@
 		<text name="vcaValueInactive"       text="если неактивен"/>
 		<text name="vcaValueInactiveH"      text="если неактивен (вверху)"/>
 		<text name="vcaValueRPM"            text="RPM"/>
+		
+		<text name="vcaClutchMode_0"    	text="автоматически"/>
+		<text name="vcaClutchMode_1"    	text="авто (быстро)"/>
+		<text name="vcaClutchMode_2"    	text="вручную"/>
+		<text name="vcaClutchMode_3"    	text="Turbo (быстро)"/>
+		<text name="vcaClutchMode_4"    	text="Turbo (медленно)"/>
+		<text name="vcaClutchMode_5"    	text="Turbo (открыто)"/>
 	</texts>
 	
 	<longTexts>
-		<longText name="vca_Help_1">
-<![CDATA[Руление и камера
+		<longText name="vca_Help_1"><![CDATA[Руление и камера
 
 Этот скрипт изменяет скорость поворота колёс в зависимости от скорости движения, и поворачивает камеру в соответствии с углом и направлением рулевого колеса.
 С Right Shift и клавишами курсора, вы можете посмотреть в соответствующем направлении.
 Если вы нажмете Left Ctrl + W, будет зафиксировано направление движения.
 Все функции могут быть отключены.]]>
 		</longText>
-		<longText name="vca_Help_2">
-<![CDATA[Дросельная заслонка и смена направления движения
+		<longText name="vca_Help_2"><![CDATA[Дросельная заслонка и смена направления движения
 
 Left Shift ограничивает газ, круиз-контроль и максимальное количество оборотов в минуту до уровня 75%.
 Если вы нажмете Delete, тогда автомобиль сохранит свою скорость. Педали акселератора и тормоза увеличиваются и уменьшаются скорость. Техника едет как современный трактор с джойстиком.
 Модификация линейного шага облегчает восприятие частоты вращения.]]>
 		</longText>
-		<longText name="vca_Help_3">
-<![CDATA[Трансмиссия
+		<longText name="vca_Help_3"><![CDATA[Трансмиссия
 
 off: Стандартная коробка передач без настройки
 IVT: Всё ещё та же стандартная коробка передач, но с небольшими изменениями допустимого диапазона оборотов. Ещё не все...
@@ -209,13 +216,11 @@ VARIO: Коробка передач Fendt Vario. Это очень похоже
 46A: Коробка передач Claas HexaShift. Имеет 4 ручных диапазона и 6 автоматических передач
 OWN: Созданная вами собственная трансмиссия]]>
 		</longText>
-		<longText name="vca_Help_4">
-<![CDATA[Глобальные настройки
+		<longText name="vca_Help_4"><![CDATA[Глобальные настройки
 
 Изменения глобальных настроек не влияют на текущий автомобиль. Они сохраняются в файл modsSettings/FS19_VehicleControlAddon/config.xml.]]>
 		</longText>
-		<longText name="vca_Help_5">
-<![CDATA[Создайте свою собственную трансмиссию
+		<longText name="vca_Help_5"><![CDATA[Создайте свою собственную трансмиссию
 
 Здесь вы можете настроить свою собственную трансмиссию. Передачи могут переключаться автоматически ...
 Максимальная скорость на высшей передаче может быть только теоретической. Вы можете достичь этого только без ограничителя скорости. Соотношения между передачами рассчитываются исходя из максимальной скорости 1-й передаче.
