@@ -1243,7 +1243,7 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 		end 
 		
 		self:vcaSetState( "vcaHandthrottle", h )
-		self:vcaSetState( "vcaWarningText", vehicleControlAddon.getText( "vcaHANDTHROTTLE", "" )..": ".. t )
+	--self:vcaSetState( "vcaWarningText", vehicleControlAddon.getText( "vcaHANDTHROTTLE", "" )..": ".. t )
 
 	elseif actionName == "vcaManRatio" then 
 
@@ -1287,17 +1287,17 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 			self.vcaHandthrottle2 = nil 
 		end 
 		
-		if not isAnalog then 
-			if h <= 0 then 
-				self:vcaSetState( "vcaWarningText", vehicleControlAddon.getText( "vcaHANDTHROTTLE", "" )..": off" )
-			elseif  self.spec_motorized ~= nil 
-					and self.spec_motorized.motor ~= nil 
-					and self.spec_motorized.motor.maxRpm ~= nil 
-					and self.spec_motorized.motor.maxRpm > 0 then 
-				local r = self.spec_motorized.motor.minRpm + h * ( self.spec_motorized.motor.maxRpm - self.spec_motorized.motor.minRpm )
-				self:vcaSetState( "vcaWarningText", string.format("%s: %4.0f %s", vehicleControlAddon.getText( "vcaHANDTHROTTLE", "" ), r, vehicleControlAddon.getText( "vcaValueRPM", "RPM"  ) ) )
-			end 
-		end 
+	--if not isAnalog then 
+	--	if h <= 0 then 
+	--		self:vcaSetState( "vcaWarningText", vehicleControlAddon.getText( "vcaHANDTHROTTLE", "" )..": off" )
+	--	elseif  self.spec_motorized ~= nil 
+	--			and self.spec_motorized.motor ~= nil 
+	--			and self.spec_motorized.motor.maxRpm ~= nil 
+	--			and self.spec_motorized.motor.maxRpm > 0 then 
+	--		local r = self.spec_motorized.motor.minRpm + h * ( self.spec_motorized.motor.maxRpm - self.spec_motorized.motor.minRpm )
+	--		self:vcaSetState( "vcaWarningText", string.format("%s: %4.0f %s", vehicleControlAddon.getText( "vcaHANDTHROTTLE", "" ), r, vehicleControlAddon.getText( "vcaValueRPM", "RPM"  ) ) )
+	--	end 
+	--end 
   elseif actionName == "vcaLowerF" then 
 		vehicleControlAddon.setToolStateRec( self, true, false, true, false )
   elseif actionName == "vcaLowerB" then 
@@ -3763,6 +3763,13 @@ end
 --******************************************************************************************************************************************
 -- Some UI specific functions 
 --******************************************************************************************************************************************
+function vehicleControlAddon:afterSpeedMeterDisplayCreate( hudAtlasPath )
+	self.vcaHandthrottleIndicator = self:createIndicator( hudAtlasPath,
+																							 SpeedMeterDisplay.SIZE.GAUGE_INDICATOR_LARGE,
+																							 SpeedMeterDisplay.UV.GAUGE_INDICATOR_LARGE,
+																							 SpeedMeterDisplay.COLOR.DAMAGE_GAUGE_INDICATOR,
+																							 SpeedMeterDisplay.PIVOT.GAUGE_INDICATOR_LARGE )
+end 
 function vehicleControlAddon:newUpdateSpeedGauge( superFunc, dt ) 
 	if not ( self.vehicle ~= nil
 			 and self.vehicle.vcaIsLoaded
@@ -3808,8 +3815,7 @@ function vehicleControlAddon:newUpdateSpeedGauge( superFunc, dt )
 	end 
 	
 	local indicatorRotation = MathUtil.lerp(SpeedMeterDisplay.ANGLE.SPEED_GAUGE_MIN, SpeedMeterDisplay.ANGLE.SPEED_GAUGE_MAX, gaugeValue)
-	self:updateGaugeIndicator(self.speedIndicatorElement, self.speedIndicatorRadiusX, self.speedIndicatorRadiusY,
-		indicatorRotation)
+	self:updateGaugeIndicator(self.speedIndicatorElement, self.speedIndicatorRadiusX, self.speedIndicatorRadiusY, indicatorRotation)
 	self:updateGaugeFillSegments(self.speedGaugeSegmentElements, gaugeValue)
 	self:updateGaugePartialSegments(
 		self.speedGaugeSegmentPartElements,
@@ -3818,6 +3824,30 @@ function vehicleControlAddon:newUpdateSpeedGauge( superFunc, dt )
 		SpeedMeterDisplay.ANGLE.SPEED_GAUGE_MIN,
 		SpeedMeterDisplay.ANGLE.SPEED_GAUGE_SEGMENT_FULL,
 		SpeedMeterDisplay.ANGLE.SPEED_GAUGE_SEGMENT_SMALLEST)	
+	
+	if self.vcaHandthrottleIndicator ~= nil then 
+		local gaugeValue = 0
+		if self.vehicle.isServer then 
+			if      self.vehicle.vcaIdleRpmRatio ~= nil then 
+				gaugeValue = MathUtil.clamp( 0.1 + 0.8 * self.vehicle.vcaIdleRpmRatio, 0, 1)
+			end 
+		elseif  self.vehicle.vcaHandthrottle ~= nil and self.vehicle.vcaHandthrottle > 0 then 
+			gaugeValue = MathUtil.clamp( 0.1 + 0.8 * self.vehicle.vcaHandthrottle, 0, 1)
+		end 
+		local indicatorRotation = MathUtil.lerp(SpeedMeterDisplay.ANGLE.SPEED_GAUGE_MIN, SpeedMeterDisplay.ANGLE.SPEED_GAUGE_MAX, gaugeValue)
+		self:updateGaugeIndicator(self.vcaHandthrottleIndicator, self.speedIndicatorRadiusX, self.speedIndicatorRadiusY, indicatorRotation)
+		
+		if     self.vcaHandthrottleIndicator.setVisible == nil then 
+		elseif self.vehicle.vcaHandthrottle == nil or self.vehicle.vcaHandthrottle == 0 then 
+			self.vcaHandthrottleIndicator:setVisible( false )
+		else 
+			self.vcaHandthrottleIndicator:setVisible( true )
+		end 
+	end 
+end 
+function vehicleControlAddon:afterSpeedMeterDisplayDraw()
+	if self.isVehicleDrawSafe and self:getVisible() and self.vehicle ~= nil and self.vehicle.vcaIsLoaded then 
+	end 
 end 
 function vehicleControlAddon:newDrivableGetDrivingDirection( superFunc )
 	if self ~= nil and self.vcaIsLoaded then 
@@ -3859,6 +3889,7 @@ function vehicleControlAddon:newDrivableGetCruiseControlAxis( superFunc )
 end 
 
 SpeedMeterDisplay.updateSpeedGauge = Utils.overwrittenFunction( SpeedMeterDisplay.updateSpeedGauge, vehicleControlAddon.newUpdateSpeedGauge )
+SpeedMeterDisplay.createComponents = Utils.appendedFunction( SpeedMeterDisplay.createComponents,    vehicleControlAddon.afterSpeedMeterDisplayCreate )
 Drivable.getDrivingDirection       = Utils.overwrittenFunction( Drivable.getDrivingDirection,       vehicleControlAddon.newDrivableGetDrivingDirection )
 Drivable.getAccelerationAxis       = Utils.overwrittenFunction( Drivable.getAccelerationAxis,       vehicleControlAddon.newDrivableGetAccelerationAxis )
 Drivable.getDecelerationAxis       = Utils.overwrittenFunction( Drivable.getDecelerationAxis,       vehicleControlAddon.newDrivableGetDecelerationAxis )
@@ -4854,13 +4885,22 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		self.vcaMotorAccF = self.vcaMotorAccF + 0.10 * ( self.vcaMotorAcc - self.vcaMotorAccF )
 	end 
 	
+	self.vehicle.vcaIdleRpmRatio = nil
+	if motorPtoRpm > 0 and rpmRange > 0 then 
+		self.vehicle.vcaIdleRpmRatio = ( motorPtoRpm - self.minRpm ) / rpmRange 
+	end 
+	
 	local idleRpm      = self.minRpm  
 	if     self.vehicle.vcaHandthrottle == nil 
 			or self.vehicle.vcaHandthrottle == 0 then 
 	elseif self.vehicle.vcaHandthrottle < 0 then 
 		idleRpm          = math.max( idleRpm, -self.vehicle.vcaHandthrottle * motorPtoRpm )
+		if rpmRange > 0 then 
+			self.vehicle.vcaIdleRpmRatio = ( idleRpm - self.minRpm ) / rpmRange 
+		end 
 	elseif self.vehicle.vcaHandthrottle > 0 then 
 		idleRpm          = self.minRpm + self.vehicle.vcaHandthrottle * rpmRange
+		self.vehicle.vcaIdleRpmRatio = self.vehicle.vcaHandthrottle
 		if self.vehicle:vcaGetNoIVT() and self.vehicle:vcaGetAutoShift() then 
 			idleRpm        = math.min( idleRpm, 0.95 * self.maxRpm )
 		end 
@@ -5019,7 +5059,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		fakeAcc         = 0
 	end 
 	local fakeRpm     = math.max( self.minRpm + fakeAcc * rpmRange, idleRpm )
-	if self.vehicle.vcaHandthrottle == 0 or self.vehicle.vcaHandthrottle < -0.8 then 
+	if self.vehicle.vcaHandthrottle == 0 then 
 		fakeRpm         = math.max( fakeRpm, motorPtoRpm )
 	end 
 	
