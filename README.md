@@ -1,8 +1,8 @@
 # VehicleControlAddon for Farming Simulator 2019
 
-## Preparing version 1.1
+## Version 1.1
 
-I am preparing verison 1.1 for release on ModHub. I closed all issues that I will not fix.
+Version 1.1 on ModHub is the most recent version. Currently, the mod appears on page 63 of the most downloaded mods with less than 4 stars. (https://www.farming-simulator.com/mods.php?title=fs2019&filter=most&page=63).
 
 ## Developer version
 Please be aware you're using a developer version, which may and will contain errors, bugs, mistakes and unfinished code. 
@@ -26,10 +26,6 @@ From today on I will close all new issues without the above information!
 This error happens in MultiPlayer only. It happens if there is another mod with incorrect client-server communication. If the number of information processesd on client and server does not match, then all subsequent mods get shifted and incorrected data. You might ignore this error message if there are no other problems.
 
 It seems that many players have problems with thier inpubBindings. Just look at issues #470, #468, # 464, ... I think this is a general problem in the handling of input bindings in FS19. Please try to delete your inputBinding.xml.
-
-## How to download?
-
-Just click here: [Latest version](https://github.com/Mogli12/VehicleControlAddon/blob/master/FS19_VehicleControlAddon.zip?raw=true)
 
 ## Status
 I rearranged the settings menu. If you choose transmission "own transmission", then a 4th tab strip appears.
