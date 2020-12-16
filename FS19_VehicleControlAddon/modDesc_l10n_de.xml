@@ -186,6 +186,7 @@
 		<text name="vcaClutchMode_3"    text="Turbo (schnell)"/>
 		<text name="vcaClutchMode_4"    text="Turbo (langsam)"/>
 		<text name="vcaClutchMode_5"    text="Turbo (offen)"/>
+		<text name="vcaClutchMode_6"    text="Turbo (manuell)"/>
 	</texts>   
 
 	<longTexts>

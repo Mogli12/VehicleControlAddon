@@ -55,40 +55,43 @@ local function setTransmission( xmlFile, xmlProp, xmlAttr, value )
 	end 
 end 
 
-local listOfClutchModes = { "autoSlow",  -- 0
-                            "autoFast",  -- 1
-                            "manual",    -- 2
-                            "turboSlow", -- 3
-                            "turboFast", -- 4
-														"turboOpen", -- 5
-													}
+listOfClutchModes = {}
+listOfClutchModes.autoSlow  = 0
+listOfClutchModes.autoFast  = 1
+listOfClutchModes.manual    = 2
+listOfClutchModes.turboSlow = 3
+listOfClutchModes.turboFast = 4
+listOfClutchModes.turboOpen = 5
+listOfClutchModes.turboManu = 6
             
 -- replace #autoClutch and #turboClutch with #clutchMode
 local function getClutch( xmlFile, xmlProp, xmlAttr )
 	local text = getXMLString( xmlFile, xmlProp..'#'..xmlAttr )
-	local value = 0
 
-	if     text == nil then 
-		for i,t in pairs( listOfClutchModes ) do	 
+	if text ~= nil then 
+		for t,i in pairs( listOfClutchModes ) do	 
 			if t == text then
-				return i-1 
+				return i
 			end 
 		end 
 	else
 		local a = getXMLBool( xmlFile, xmlProp..'#autoClutch' )
 		local t = getXMLBool( xmlFile, xmlProp..'#turboClutch' )
 		if t then 
-			return 3 
+			return listOfClutchModes.turboSlow
 		elseif a ~= nil and not a then 
-			return 2 
+			return listOfClutchModes.manual 
 		end 
 	end 
 	return 0
 end 
 
 local function setClutch( xmlFile, xmlProp, xmlAttr, value )
-	if value ~= nil and listOfClutchModes[value+1] ~= nil then 
-		setXMLString( xmlFile, xmlProp..'#'..xmlAttr, listOfClutchModes[value+1] )
+	if value == nil then return end 
+	for t,i in pairs( listOfClutchModes ) do
+		if value == i then 
+			setXMLString( xmlFile, xmlProp..'#'..xmlAttr, t )
+		end 
 	end 
 end
 
@@ -1564,7 +1567,7 @@ function vehicleControlAddon:vcaGetAutoClutch()
 		if self.vcaGearbox ~= nil and self.vcaGearbox.isIVT and not self:vcaGetIVTManual() then	
 		-- autmoatic IVT (aka TMS) => always auto clutch 
 			return true 
-		elseif self.vcaClutchMode == 2 then 
+		elseif self.vcaClutchMode == listOfClutchModes.manual or self.vcaClutchMode == listOfClutchModes.turboManu then
 			return false 
 		end 
 	end 
@@ -1576,7 +1579,7 @@ function vehicleControlAddon:vcaGetTurboClutch()
 		if self.vcaGearbox ~= nil and self.vcaGearbox.isIVT and not self:vcaGetIVTManual() then	
 			-- autmoatic IVT (aka TMS) => no turbo clutch 
 			return false
-		elseif 3 <= self.vcaClutchMode and self.vcaClutchMode <= 5 then 
+		elseif listOfClutchModes.turboFast <= self.vcaClutchMode and self.vcaClutchMode <= listOfClutchModes.turboManu then 
 			return true 
 		end 
 	end 
@@ -3504,7 +3507,7 @@ function vehicleControlAddon:onDraw()
 				text = text.." "..self:vcaSpeedToString( maxSpeed )
 				
 				local c
-				if self:vcaGetAutoClutch() then 
+				if self:vcaGetAutoClutch() or self:vcaGetTurboClutch() then 
 					c = self.vcaClutchDisp
 				else 
 					c = self.vcaClutchPercent 
@@ -5515,7 +5518,10 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		elseif  curBrake > 0.1
 				and not self.vcaAutoStop
 				and ( wheelRpm < 0.9 * self.minRpm or speed < 2 )
-				and ( self.vehicle:vcaGetAutoClutch() or self.vehicle:vcaGetAutoShift() or self.vehicle.vcaClutchPercent > 0.8 ) 
+				and ( self.vehicle:vcaGetAutoClutch() 
+					 or self.vehicle:vcaGetTurboClutch()
+					 or self.vehicle:vcaGetAutoShift()
+					 or self.vehicle.vcaClutchPercent > 0.8 ) 
 				then 
 			autoNeutral = true 
 			if     VCAGlobals.autoHoldTimer <= 0 then 
@@ -5538,21 +5544,32 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			self.gearChangeTimer = self.gearChangeTimer - dt 
 		end
 
+		-- listOfClutchModes.autoSlow 
+    -- listOfClutchModes.autoFast 
+    -- listOfClutchModes.manual   
+    -- listOfClutchModes.turboSlow
+    -- listOfClutchModes.turboFast
+    -- listOfClutchModes.turboOpen
+    -- listOfClutchModes.turboManu
+		
 		local clutchRpmInc = 0.25
-		if     self.vehicle.vcaClutchMode == 0 then 
+		if     self.vehicle.vcaClutchMode == listOfClutchModes.autoSlow then 
 			clutchRpmInc = 1 
-		elseif self.vehicle.vcaClutchMode == 1 then 
+		elseif self.vehicle.vcaClutchMode == listOfClutchModes.autoFast then 
 			clutchRpmInc = 0.25
-		elseif self.vehicle.vcaClutchMode == 3 then 
+		elseif self.vehicle.vcaClutchMode == listOfClutchModes.turboSlow then 
 			clutchRpmInc = 0.4
-		elseif self.vehicle.vcaClutchMode == 4 then 
+		elseif self.vehicle.vcaClutchMode == listOfClutchModes.turboFast then 
 			clutchRpmInc = 0.6
-		elseif self.vehicle.vcaClutchMode == 5 then 
+		elseif self.vehicle.vcaClutchMode == listOfClutchModes.turboOpen then 
 			clutchRpmInc = 1
+		elseif self.vehicle.vcaClutchMode == listOfClutchModes.turboManu then 
+			clutchRpmInc = 0.4
 		end
 		local clutchCloseRpm = math.min( fakeRpm, math.max( self.minRpm + clutchRpmInc * rpmRange, 0.9 * motorPtoRpm, math.min( 1.1 * motorPtoRpm, fakeRpm ) ) )
 		local clutchDt       = dt
-		if self.vehicle.vcaClutchMode == 1 or self.vehicle.vcaClutchMode == 4 then 
+		if     self.vehicle.vcaClutchMode == listOfClutchModes.autoSlow  
+				or self.vehicle.vcaClutchMode == listOfClutchModes.turboSlow then 
 			clutchDt = dt + dt 
 		end 
 					
@@ -5973,7 +5990,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		end 
 		
 		local minRequiredRpm = math.max( self.minRpm, motorPtoRpm )
-		if self.vehicle.vcaClutchMode == 5 then 
+		if self.vehicle.vcaClutchMode == listOfClutchModes.turboOpen then 
 			minRequiredRpm = math.max( minRequiredRpm, 0.8 * self.maxRpm )
 		end 
 						
@@ -6063,7 +6080,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		-- *******************************************
 		-- clutch
 		local clutchFactor = 0 
-		if self.vehicle:vcaGetAutoClutch() then 
+		if self.vehicle:vcaGetAutoClutch() or self.vehicle:vcaGetTurboClutch() then 
 			if self.vehicle.vcaClutchPercent > 0 then 
 				self.vcaClutchTimer = math.max( self.vcaClutchTimer, self.vehicle.vcaClutchPercent * VCAGlobals.clutchTimer )
 			end 
@@ -6132,7 +6149,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 				local m
 				
 				m = c * fakeRpm + ( 1 - c ) * vehicleControlAddon.maxRpmF1 * self.maxRpm
-				if self.vehicle:vcaGetAutoClutch() and m > clutchCloseRpm then
+				if m > clutchCloseRpm and ( self.vehicle:vcaGetAutoClutch() or self.vehicle:vcaGetTurboClutch() ) then
 					m = clutchCloseRpm
 				end 
 				if m < wheelRpm then 
@@ -6858,8 +6875,8 @@ function vehicleControlAddon:vcaShowSettingsUI()
 	self.vcaUI.oldTransmission = self.vcaTransmission
 	
 	self.vcaUI.vcaClutchMode = {}
-	for i,t in pairs( listOfClutchModes ) do 
-		table.insert( self.vcaUI.vcaClutchMode, vehicleControlAddon.getText( string.format( "vcaClutchMode_%d", i-1 ) ) )
+	for i=0,6 do
+		self.vcaUI.vcaClutchMode[i+1] = vehicleControlAddon.getText( string.format( "vcaClutchMode_%d", i ), t )
 	end 
 	
 	self.vcaUI.vcaSnapDraw = { vehicleControlAddon.getText("vcaValueNever", "NEVER"), 
