@@ -1246,7 +1246,7 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 		end 
 		
 		self:vcaSetState( "vcaHandthrottle", h )
-	--self:vcaSetState( "vcaWarningText", vehicleControlAddon.getText( "vcaHANDTHROTTLE", "" )..": ".. t )
+		self:vcaSetState( "vcaWarningText", vehicleControlAddon.getText( "vcaHANDTHROTTLE", "" )..": ".. t )
 
 	elseif actionName == "vcaManRatio" then 
 
@@ -1290,17 +1290,17 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 			self.vcaHandthrottle2 = nil 
 		end 
 		
-	--if not isAnalog then 
-	--	if h <= 0 then 
-	--		self:vcaSetState( "vcaWarningText", vehicleControlAddon.getText( "vcaHANDTHROTTLE", "" )..": off" )
-	--	elseif  self.spec_motorized ~= nil 
-	--			and self.spec_motorized.motor ~= nil 
-	--			and self.spec_motorized.motor.maxRpm ~= nil 
-	--			and self.spec_motorized.motor.maxRpm > 0 then 
-	--		local r = self.spec_motorized.motor.minRpm + h * ( self.spec_motorized.motor.maxRpm - self.spec_motorized.motor.minRpm )
-	--		self:vcaSetState( "vcaWarningText", string.format("%s: %4.0f %s", vehicleControlAddon.getText( "vcaHANDTHROTTLE", "" ), r, vehicleControlAddon.getText( "vcaValueRPM", "RPM"  ) ) )
-	--	end 
-	--end 
+		if not isAnalog then 
+			if h <= 0 then 
+				self:vcaSetState( "vcaWarningText", vehicleControlAddon.getText( "vcaHANDTHROTTLE", "" )..": off" )
+			elseif  self.spec_motorized ~= nil 
+					and self.spec_motorized.motor ~= nil 
+					and self.spec_motorized.motor.maxRpm ~= nil 
+					and self.spec_motorized.motor.maxRpm > 0 then 
+				local r = self.spec_motorized.motor.minRpm + h * ( self.spec_motorized.motor.maxRpm - self.spec_motorized.motor.minRpm )
+				self:vcaSetState( "vcaWarningText", string.format("%s: %4.0f %s", vehicleControlAddon.getText( "vcaHANDTHROTTLE", "" ), r, vehicleControlAddon.getText( "vcaValueRPM", "RPM"  ) ) )
+			end 
+		end 
   elseif actionName == "vcaLowerF" then 
 		vehicleControlAddon.setToolStateRec( self, true, false, true, false )
   elseif actionName == "vcaLowerB" then 
@@ -2055,8 +2055,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 	if self.vcaHandthrottle ~= nil and self.vcaHandthrottle > 0 then 
 		self.vcaHandthrottle2 = self.vcaHandthrottle 
 	end 
-	
-	
+		
 	if self.vcaIsEntered then
 		self.vcaKeepCamRot     = self.vcaKeepRotPressed 
 		self.vcaKeepRotPressed = false 
@@ -2087,6 +2086,16 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 		self.vcaKeepCamRot = false 
 		self:vcaSetState( "vcaInchingIsOn", false )
 		self:vcaSetState( "vcaKSIsOn", false )
+	end 
+	
+	--*******************************************************************
+	if not ( self.vcaIsEntered ) then 
+		self.vcaWarningText  = ""
+		self.vcaWarningTimer = 0
+	elseif self.vcaWarningTimer ~= nil and self.vcaWarningTimer > 0  then 
+		self.vcaWarningTimer = self.vcaWarningTimer - dt
+	elseif self.vcaWarningText ~= nil  and self.vcaWarningText ~= "" then
+		self.vcaWarningText = ""
 	end 
 	
 	--*******************************************************************
@@ -2717,20 +2726,6 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 		self.vcaCamIsInside  = nil
 		self.vcaKeepCamRot   = false  
 	end	
-	
-	self.vcaWarningTimer = self.vcaWarningTimer - dt
-	
-	if      self:getIsActive()
-			and self.vcaWarningText ~= nil
-			and self.vcaWarningText ~= "" then
-		if self.vcaWarningTimer <= 0 then
-			self.vcaWarningText = ""
-		elseif self.vcaIsEntered then 
-			g_currentMission:showBlinkingWarning(self.vcaWarningText, self.vcaWarningTimer)
-			self.vcaWarningTimer = 0
-			self.vcaWarningText  = ""
-		end	
-	end		
 	
 --******************************************************************************************************************************************
 -- Reverse driving sound
@@ -3364,6 +3359,11 @@ end
 function vehicleControlAddon:onDraw()
 
 	if self.vcaIsEntered then
+
+		if self.vcaWarningText ~= nil and self.vcaWarningText ~= "" then
+			g_currentMission:addExtraPrintText( self.vcaWarningText )
+		end		
+
 		local x = g_currentMission.inGameMenu.hud.speedMeter.gaugeCenterX
 		local y = g_currentMission.inGameMenu.hud.speedMeter.gaugeCenterY + g_currentMission.inGameMenu.hud.speedMeter.fuelGaugeRadiusY * 1.6
 		local l = getCorrectTextSize(0.02)
@@ -4280,8 +4280,16 @@ function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, ax
 			
 		--print(string.format("%3d°, %3d°, %2d, %2d, %6.3f, %6.3f",math.deg(rot), math.deg(curSnapAngle), m, self.movingDirection, a, axisSide ))
 		end 
+		
+		self.vcaSnapAngleTimer = 400 
+		self.vcaAxisSideLast   = axisSide
+	elseif axisSideLast ~= nil and lastSnapAngleTimer ~= nil and lastSnapAngleTimer > dt then  
+		f = 0.0025 * lastSnapAngleTimer
+		axisSide = f * axisSideLast + ( 1 - f ) * axisSide 
+			
+		self.vcaSnapAngleTimer = lastSnapAngleTimer - dt 
+		self.vcaAxisSideLast   = axisSideLast
 	end 
-	self.vcaAxisSideLast = axisSide
 	
 	local ccState = nil
 	local spec = self.spec_drivable
@@ -5554,9 +5562,9 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		
 		local clutchRpmInc = 0.25
 		if     self.vehicle.vcaClutchMode == listOfClutchModes.autoSlow then 
-			clutchRpmInc = 1 
+			clutchRpmInc = 0.8 
 		elseif self.vehicle.vcaClutchMode == listOfClutchModes.autoFast then 
-			clutchRpmInc = 0.25
+			clutchRpmInc = 0.2
 		elseif self.vehicle.vcaClutchMode == listOfClutchModes.turboSlow then 
 			clutchRpmInc = 0.4
 		elseif self.vehicle.vcaClutchMode == listOfClutchModes.turboFast then 
@@ -5568,8 +5576,9 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		end
 		local clutchCloseRpm = math.min( fakeRpm, math.max( self.minRpm + clutchRpmInc * rpmRange, 0.9 * motorPtoRpm, math.min( 1.1 * motorPtoRpm, fakeRpm ) ) )
 		local clutchDt       = dt
-		if     self.vehicle.vcaClutchMode == listOfClutchModes.autoSlow  
-				or self.vehicle.vcaClutchMode == listOfClutchModes.turboSlow then 
+		if     self.vehicle.vcaClutchMode == listOfClutchModes.autoFast  
+				or self.vehicle.vcaClutchMode == listOfClutchModes.turboFast
+				or self.vehicle.vcaClutchMode == listOfClutchModes.turboManu then 
 			clutchDt = dt + dt 
 		end 
 					
@@ -6756,7 +6765,7 @@ end
 
 function vehicleControlAddon:vcaOnSetWarningText( old, new, noEventSend )
 	self.vcaWarningText  = new
-  self.vcaWarningTimer = 2000
+  self.vcaWarningTimer = 4000
 end
 
 function vehicleControlAddon:vcaOnSetOwn( name, old, new, noEventSend )
