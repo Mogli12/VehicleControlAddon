@@ -59,8 +59,8 @@ listOfClutchModes = {}
 listOfClutchModes.autoSlow  = 0
 listOfClutchModes.autoFast  = 1
 listOfClutchModes.manual    = 2
-listOfClutchModes.turboSlow = 3
-listOfClutchModes.turboFast = 4
+listOfClutchModes.turboFast = 3
+listOfClutchModes.turboSlow = 4
 listOfClutchModes.turboOpen = 5
 listOfClutchModes.turboManu = 6
             
@@ -1579,7 +1579,7 @@ function vehicleControlAddon:vcaGetTurboClutch()
 		if self.vcaGearbox ~= nil and self.vcaGearbox.isIVT and not self:vcaGetIVTManual() then	
 			-- autmoatic IVT (aka TMS) => no turbo clutch 
 			return false
-		elseif listOfClutchModes.turboFast <= self.vcaClutchMode and self.vcaClutchMode <= listOfClutchModes.turboManu then 
+		elseif listOfClutchModes.manual < self.vcaClutchMode and self.vcaClutchMode <= listOfClutchModes.turboManu then 
 			return true 
 		end 
 	end 
@@ -5707,18 +5707,19 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 				end 
 				local f = math.min( math.max( self.vehicle.vcaGearRatioF, 0 ), t )
 				local h = nil 
+				local m = ratio * self.vehicle.vcaMaxSpeed
 
 				if     f >= t then 
 				elseif autoNeutral then 
 					if not( lastSetLaunchGear ) then 
-						h = self.vehicle.vcaLaunchSpeed / self.vehicle.vcaMaxSpeed 
+						h = self.vehicle.vcaLaunchSpeed / m
 					end 
 					self.vcaSetLaunchGear = true 
 				-- lower ratio automatically when braking 
 				elseif curBrake > 0.1 then 
-					h = self.vehicle.lastSpeedReal * 1000 * self.maxRpm / ( self.vehicle.vcaMaxSpeed * self.vcaMaxPowerRpmL )
-					if h * self.vehicle.vcaMaxSpeed < self.vehicle.vcaLaunchSpeed then 
-						h = self.vehicle.vcaLaunchSpeed / self.vehicle.vcaMaxSpeed 
+					h = self.vehicle.lastSpeedReal * 1000 * self.maxRpm / ( m * self.vcaMaxPowerRpmL )
+					if h * m < self.vehicle.vcaLaunchSpeed then 
+						h = self.vehicle.vcaLaunchSpeed / m
 					end 
 				end 
 				
@@ -6036,12 +6037,12 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 					self.vehicle.vcaForceStopMotor = 2000
 				end 
 			end 
-		elseif wheelRpm < 0.74 * minRequiredRpm and curBrake > 0.1 then 
-			self.vcaClutchTimer = VCAGlobals.clutchTimer - 1
+		elseif wheelRpm < 0.85 * minRequiredRpm and curBrake > 0.1 then 
+			self.vcaClutchTimer = math.max( self.vcaClutchTimer, VCAGlobals.clutchTimer - 1 )
 		elseif wheelRpm < minRequiredRpm and curBrake > 0.1 then 
 			self.vcaClutchTimer = math.max( self.vcaClutchTimer, math.min( self.vcaClutchTimer + clutchDt + clutchDt, VCAGlobals.clutchTimer - 1 ) )
-		elseif wheelRpm < minRequiredRpm and self.vehicle:vcaGetTurboClutch() then 
-			self.vcaClutchTimer = math.max( self.vcaClutchTimer, math.min( self.vcaClutchTimer + clutchDt + clutchDt, 0.9 * VCAGlobals.clutchTimer ) )
+		elseif wheelRpm < 0.85 * minRequiredRpm and self.vehicle:vcaGetTurboClutch() then 
+			self.vcaClutchTimer = math.max( self.vcaClutchTimer, math.min( self.vcaClutchTimer + clutchDt + clutchDt, VCAGlobals.clutchTimer - 1 ) )
 		end 
 		
 		self.vehicle.vcaDebugM = debugFormat("%5.0f, %5.0f, %5.0f, %3.0f%%, %s, %5.0f", motorRpm, wheelRpm, minRequiredRpm, newAcc*100, tostring(self.vcaAutoStop), self.vcaClutchTimer )
@@ -6190,7 +6191,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			
 			-- *******************************************
 			-- idle acceleration
-			local fullRpm = idleRpm - 0.25 * self.minRpm
+			local fullRpm = idleRpm - 0.15 * self.minRpm
 			local zeroRpm = math.min( idleRpm + 0.05 * self.minRpm, self.maxRpm )
 			local idleAcc = 0
 			
