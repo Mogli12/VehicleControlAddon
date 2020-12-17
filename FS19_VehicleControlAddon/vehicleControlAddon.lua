@@ -5562,15 +5562,15 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		
 		local clutchRpmInc = 0.25
 		if     self.vehicle.vcaClutchMode == listOfClutchModes.autoSlow then 
-			clutchRpmInc = 0.8 
+			clutchRpmInc = 0.3 
 		elseif self.vehicle.vcaClutchMode == listOfClutchModes.autoFast then 
-			clutchRpmInc = 0.2
+			clutchRpmInc = 0.15
 		elseif self.vehicle.vcaClutchMode == listOfClutchModes.turboSlow then 
 			clutchRpmInc = 0.4
 		elseif self.vehicle.vcaClutchMode == listOfClutchModes.turboFast then 
 			clutchRpmInc = 0.6
 		elseif self.vehicle.vcaClutchMode == listOfClutchModes.turboOpen then 
-			clutchRpmInc = 1
+			clutchRpmInc = 0.9
 		elseif self.vehicle.vcaClutchMode == listOfClutchModes.turboManu then 
 			clutchRpmInc = 0.4
 		end
@@ -5585,7 +5585,13 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		if self.vcaClutchTimer == nil then
 			self.vcaClutchTimer = VCAGlobals.clutchTimer
 		elseif self.vcaClutchTimer > 0 then 
-			self.vcaClutchTimer = math.max( 0, math.min( self.vcaClutchTimer - clutchDt, VCAGlobals.clutchTimer - 1 ) )
+			local minCT = 0
+			if      self.vcaClutchTimer >= 0.8 * VCAGlobals.clutchTimer
+					and lastFakeRpm < math.min( 0.95 * fakeRpm, 0.95 * clutchCloseRpm, self.vcaMaxPowerRpmL ) then 
+			-- keep clutch open to increase RPM
+				minCT = 0.801 * VCAGlobals.clutchTimer
+			end 
+			self.vcaClutchTimer = math.max( minCT, math.min( self.vcaClutchTimer - clutchDt, VCAGlobals.clutchTimer - 1 ) )
 		end 
 		
 		if autoNeutral then 
@@ -6043,6 +6049,10 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			self.vcaClutchTimer = math.max( self.vcaClutchTimer, math.min( self.vcaClutchTimer + clutchDt + clutchDt, VCAGlobals.clutchTimer - 1 ) )
 		elseif wheelRpm < 0.85 * minRequiredRpm and self.vehicle:vcaGetTurboClutch() then 
 			self.vcaClutchTimer = math.max( self.vcaClutchTimer, math.min( self.vcaClutchTimer + clutchDt + clutchDt, VCAGlobals.clutchTimer - 1 ) )
+		elseif wheelRpm < 0.95 * minRequiredRpm and launchGear ~= nil and gear <= launchGear then -- automatic shifting  
+			self.vcaClutchTimer = math.max( self.vcaClutchTimer, math.min( self.vcaClutchTimer + clutchDt + clutchDt, 0.5 * VCAGlobals.clutchTimer ) )
+		elseif wheelRpm < 0.95 * minRequiredRpm then 
+			self.vcaClutchTimer = math.max( self.vcaClutchTimer, math.min( self.vcaClutchTimer + 0.9 * clutchDt, 0.5 * VCAGlobals.clutchTimer ) )
 		end 
 		
 		self.vehicle.vcaDebugM = debugFormat("%5.0f, %5.0f, %5.0f, %3.0f%%, %s, %5.0f", motorRpm, wheelRpm, minRequiredRpm, newAcc*100, tostring(self.vcaAutoStop), self.vcaClutchTimer )
@@ -6149,7 +6159,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 
 			if      self.vcaClutchTimer   > 0
 					and self.vcaFakeRpm      == nil
-					and 0.9 * curGearRatio < self.vcaCurGearRatio and self.vcaCurGearRatio < 1.1 * curGearRatio
+					and 0.75 * curGearRatio < self.vcaCurGearRatio and self.vcaCurGearRatio < 1.2 * curGearRatio
 					and wheelRpm             >= 0.8 * self.minRpm then 
 				self.vcaClutchTimer = 0
 			end 
@@ -6162,8 +6172,8 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 				if m > clutchCloseRpm and ( self.vehicle:vcaGetAutoClutch() or self.vehicle:vcaGetTurboClutch() ) then
 					m = clutchCloseRpm
 				end 
-				if m < wheelRpm then 
-					m = wheelRpm 
+				if m < 1.1 * wheelRpm then 
+					m = 1.1 * wheelRpm 
 				end 
 				if m > vehicleControlAddon.maxRpmF1 * self.maxRpm then 
 					m = vehicleControlAddon.maxRpmF1 * self.maxRpm 

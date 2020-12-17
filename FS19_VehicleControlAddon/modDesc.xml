@@ -26,8 +26,9 @@ Changelog version 1.1.0.0:
 - Differentials, all wheel drive and real two wheel drive
 - Raise, lower and turn on/off tools in the front or back
 - Many small fixes, adjustments and improvements
-Changelog version 1.1.0.1:
+Changelog version 1.2.0.0:
 - Bug fix loading clutch mode from savegame
+- Improved automatic clutch
 - Display of handthrottle in speed meter
 - warnings in info box]]></en>
 		<de><![CDATA[Dieses Script variiert abhängig von der gefahrenen Geschwindigkeit die Lenkgeschwindigkeit und dreht die Kamera passend zum Lenkeinschlag und zur Fahrtrichtung. 
@@ -51,17 +52,18 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 - Differentials, Allradantriebe und echter Einachsantrieb
 - Heben, Senken und Aktivieren der vorderen und hinteren Geräte
 - Viele kleine Korrekturen, Anpassungen und Verbesserungen
-Änderungsliste Versoin 1.1.0.1:
+Änderungsliste Versoin 1.2.0.0:
 - Korrektur Kupplungsmodus wird nicht aus Savegame geladen
+- Verbesserung der automatischen Kupplung
 - Handgas-Anzeige im SpeedMeter
 - Warnungen in InfoBox]]></de>
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>store.dds</iconFilename>
-	<version>9.2.0.4</version>
+	<version>9.2.0.5</version>
 	<l10n filenamePrefix="modDesc_l10n">
 		<text name="vcaVERSION">          
-			<en>Vehicle Control Addon beta build 204</en>
+			<en>Vehicle Control Addon beta build 205</en>
 		</text>
 	</l10n>
 	
