@@ -6166,9 +6166,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		
 			if     clutchFactor > 0 then 
 				local c = clutchFactor ^2 
-				local m
-				
-				m = c * fakeRpm + ( 1 - c ) * vehicleControlAddon.maxRpmF1 * self.maxRpm
+				local m = c * fakeRpm + ( 1 - c ) * vehicleControlAddon.maxRpmF1 * self.maxRpm
 				if m > clutchCloseRpm and ( self.vehicle:vcaGetAutoClutch() or self.vehicle:vcaGetTurboClutch() ) then
 					m = clutchCloseRpm
 				end 

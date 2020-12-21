@@ -1,0 +1,20 @@
+Ideas more complex transmission
+
+- new sub-class of vehicleControlAddonTransmissionBase
+  - list of forward gear ratios
+	- optional list of reverse gear ratios
+	- optoinal list of forward range ratios
+	- optional list of reverse range ratios
+	- gear names, upshift and downshift times, ...
+	- same for ranges
+	
+- copy of own transmission screen
+	- comma separated list of gear ratios 
+	- comma separated list of reverse gear ratios; empty means same as forward
+	- same for ranges 
+	- same for gear and range texts
+	- same for gear and range upshift times, no value => 0 => power shift 
+	- different layout?
+	- explanation text shows final gear speeds?
+	
+- button to save transmission to config.xml with popup for name
