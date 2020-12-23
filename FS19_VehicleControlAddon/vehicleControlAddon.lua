@@ -5641,7 +5641,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			clutchDt = dt + dt 
 		end 					
 
-		if self.vcaAutoStop or self.vcaClutchTimer >= VCAGlobals.clutchTimer then 
+		if self.vcaAutoStop or self.vcaClutchTimer == nil or self.vcaClutchTimer >= VCAGlobals.clutchTimer then 
 			self.vcaAutoStopNoRpm = true 
 		end 
 		if self.vcaAutoStopNoRpm then 
@@ -5649,10 +5649,10 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		end 
 		if     self.vcaClutchTimer == nil or autoNeutral then 
 			self.vcaClutchTimer = VCAGlobals.clutchTimer
-	--elseif lastAutoStopNoRpm and fakeRpmS < math.min( fakeRpm, clutchCloseRpm, self.vcaMaxPowerRpmL ) then 
-	--	self.vcaAutoStopNoRpm = true 
-	--	self.vcaClutchTimer 	= VCAGlobals.clutchTimer 
-	--	autoNeutral           = true 
+		elseif lastAutoStopNoRpm and fakeRpmS < math.min( fakeRpm, clutchCloseRpm, self.vcaMaxPowerRpmL ) then 
+			self.vcaAutoStopNoRpm = true 
+			self.vcaClutchTimer 	= VCAGlobals.clutchTimer 
+			autoNeutral           = true 
 		elseif self.vcaClutchTimer > 0 then 
 			self.vcaClutchTimer = math.max( 0, math.min( self.vcaClutchTimer - clutchDt, VCAGlobals.clutchTimer - 1 ) )
 		end 
@@ -6479,8 +6479,8 @@ function vehicleControlAddon:vcaGetTotalConsumedPtoTorque( superFunc, excludeVeh
 	end 
 	if f <= 1.01 then 
 		return superFunc( self, excludeVehicle, ... )
-	elseif f > 20 then 
-		f = 20
+	elseif f > 10 then 
+		f = 10
 	end 
 	
 	local p = superFunc( self, excludeVehicle, ... )
