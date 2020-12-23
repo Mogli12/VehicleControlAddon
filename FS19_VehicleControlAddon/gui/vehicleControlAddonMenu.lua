@@ -23,6 +23,7 @@ VehicleControlAddonMenu.CONTROLS = {
 	FRAME4 = "vcaFrame4",
 	FRAME5 = "vcaFrame5",
 	FRAME6 = "vcaFrame6",
+	FRAME7 = "vcaFrame7",
 }
 
 local alwaysVisiblePredicate = function() return true end
@@ -43,6 +44,7 @@ VehicleControlAddonMenu.FRAMES = {
 	{ name = "vcaFrame6", iconUVs = {200,0,65,65},predicate=alwaysVisiblePredicate, uiFilename=Utils.getFilename("gui/icons.dds",g_currentModDirectory) },
 	{ name = "vcaFrame4", iconUVs = VehicleControlAddonMenu.TAB_UV.GLOBAL,      predicate=frame4VisiblePredicate },
 	{ name = "vcaFrame5", iconUVs = VehicleControlAddonMenu.TAB_UV.PLAYER   },
+	{ name = "vcaFrame7", iconUVs = VehicleControlAddonMenu.TAB_UV.PLAYER   },
 }
 
 VehicleControlAddonMenu.L10N_SYMBOL = {
@@ -118,13 +120,18 @@ function VehicleControlAddonMenu:setupMenuButtonInfo()
 end
 
 function VehicleControlAddonMenu:setShowOwnTransmission( enabled )
-	local b1 = self:vcaGetIsFrameVisible( "vcaFrame5" )
+	if not type( enabled ) == "number" then return end 
 	
-	self:vcaSetIsFrameVisible( "vcaFrame5", enabled )
+	local b1 = self:vcaGetIsFrameVisible( "vcaFrame5" )
+	local b3 = self:vcaGetIsFrameVisible( "vcaFrame7" )
+	
+	self:vcaSetIsFrameVisible( "vcaFrame5", enabled == 1 )
+	self:vcaSetIsFrameVisible( "vcaFrame7", enabled == 2 )
 	
 	local b2 = self:vcaGetIsFrameVisible( "vcaFrame5" )
+	local b4 = self:vcaGetIsFrameVisible( "vcaFrame7" )
 	
-	if b1 ~= b2 and self.vcaInputEnabled then 
+	if ( b1 ~= b2 or b3 ~= b4 ) and self.vcaInputEnabled then 
 		self:updatePages()
 	end 
 end 

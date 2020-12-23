@@ -11,7 +11,7 @@ vehicleControlAddonTransmissionBase_mt = vcaClass(vehicleControlAddonTransmissio
 vehicleControlAddonTransmissionBase.gearRatios = { 0.120, 0.145, 0.176, 0.213, 0.259, 0.314, 0.381, 0.462, 0.560, 0.680, 0.824, 1.000 }
 
 
-function vehicleControlAddonTransmissionBase:new( params )
+function vehicleControlAddonTransmissionBase:new( params, mt )
 
 	local self = {}
 
@@ -829,7 +829,7 @@ vehicleControlAddonTransmissionBase.transmissionList =
                  noGears            = 4, 
                  rangeGearOverlap   = {2,1,1}, 
 								 timeRanges         = 1000,
-								 autoRanges´        = false,
+								 autoRanges         = false,
 								 speedMatching      = false },
 			text   = "4x4" },
 		{ class  = vehicleControlAddonTransmissionBase,
@@ -884,7 +884,7 @@ vehicleControlAddonTransmissionBase.transmissionList =
                  rangeGearOverlap   = {3}, 1000, 
                  gearRatios         = { 0.1, 0.15, 0.2, 
 																				0.2778, 0.3889, 0.5278, 0.7222, 1, 1.3889 }, 
-                 autoRanges´        = false },
+                 autoRanges         = false },
 			text   = "Car with low range" },
 		{ class  = vehicleControlAddonTransmissionBase, 
 			params = { name               = "VARIO",
@@ -892,7 +892,7 @@ vehicleControlAddonTransmissionBase.transmissionList =
 			           noGears            = 1, 
 			           rangeGearOverlap   = {0}, 
 			           gearRatios         = { 0.5, 1.0 }, 
-			           autoRanges´        = false, 
+			           autoRanges         = false, 
 			           gearTexts          = {""}, 
 			           rangeTexts         = { "low", "high" } },
 			text   = "Vario" },
@@ -917,7 +917,7 @@ vehicleControlAddonTransmissionBase.transmissionList =
 			           noGears            = 1, 
 			           rangeGearOverlap   = {0,0}, 
 			           gearRatios         = { 0.3, 0.5, 1.0 }, 
-			           autoRanges´        = false, 
+			           autoRanges         = false, 
 			           gearTexts          = {""}, 
 			           rangeTexts         = { "1", "2", "3" } },
 			text   = "Harvester" },
@@ -939,12 +939,26 @@ vehicleControlAddonTransmissionBase.transmissionList =
 			params = { name               = "OWN", 
                  noGears            = 1, 
                  rangeGearOverlap   = {},
-								 autoRanges´        = false,
+								 autoRanges         = false,
 								 autoGears          = true,
 								 speedMatching      = true },
 			text   = "own configuration" },
+--	{ class  = vehicleControlAddonTransmissionOwn2, 
+--		params = { name               = "OWN2", 
+--               noGears            = 1, 
+--               rangeGearOverlap   = {},
+--							 autoRanges         = false,
+--							 autoGears          = true,
+--							 speedMatching      = true },
+--		text   = "own complex" },
+--}
+--vehicleControlAddonTransmissionBase.ownTransmission  = table.getn( vehicleControlAddonTransmissionBase.transmissionList ) - 1
+--vehicleControlAddonTransmissionBase.own2Transmission = table.getn( vehicleControlAddonTransmissionBase.transmissionList )
 	}
-vehicleControlAddonTransmissionBase.ownTransmission = table.getn( vehicleControlAddonTransmissionBase.transmissionList )
+vehicleControlAddonTransmissionBase.ownTransmission  = table.getn( vehicleControlAddonTransmissionBase.transmissionList )
+vehicleControlAddonTransmissionBase.own2Transmission = -1
+
+
 function vehicleControlAddonTransmissionBase.loadSettings()
 	if g_server == nil or g_client == nil then return end 
 
