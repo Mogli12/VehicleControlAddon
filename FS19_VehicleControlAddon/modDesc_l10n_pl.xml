@@ -165,6 +165,9 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="input_vcaHandRpm_1" text="VCA: Dodaj gazu ręcznie"/>
 		<text name="input_vcaHandRpm_2" text="VCA: Odejmij gazu ręcznie"/>
 		<text name="input_vcaHandMode"  text="VCA: Tryb gazu ręcznego"/>
+		<text name="input_vcaManRatio"   text="VCA: Ręczne Vario"/>
+		<text name="input_vcaManRatio_1" text="VCA: Przyspiesz Vario"/>
+		<text name="input_vcaManRatio_2" text="VCA: Zwolnij Vario"/>
 		<text name="input_vcaAutoShift" text="VCA: Wł./Wył. automatyczną zmianę biegów"/>
 		<text name="input_vcaDiffLockF" text="VCA: Ster. blokadą przedniego dyf."/>
 		<text name="input_vcaDiffLockM" text="VCA: Ster. napędem na wszystkie koła"/>
@@ -184,6 +187,14 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vcaValueInactive"   text="jeśli nieaktywny"/>
 		<text name="vcaValueInactiveH"  text="jeśli nieaktywny (wysoko)"/>
 		<text name="vcaValueRPM"        text="RPM"/>
+		
+		<text name="vcaClutchMode_0"    text="Automatyczne"/>
+		<text name="vcaClutchMode_1"    text="Auto (szybkie)"/>
+		<text name="vcaClutchMode_2"    text="Ręczne"/>
+		<text name="vcaClutchMode_3"    text="Turbo (szybkie)"/>
+		<text name="vcaClutchMode_4"    text="Turbo (wolne)"/>
+		<text name="vcaClutchMode_5"    text="Turbo (otwarte)"/>
+		<text name="vcaClutchMode_6"    text="Turbo (ręcznie)"/>
 	</texts>
 	
 	<longTexts>
@@ -211,7 +222,7 @@ IVT: Nadal standardowa skrzynia biegów, ale z niewielkimi zmianami dopuszczalne
 4PS: Ta sama skrzynia biegów jak powyżej, ale z przesunięciem mocy dla biegów
 2X6: Dwie grupy z 6 biegami. Ta przekładnia jest przydatna w przypadku dźwigni zmiany biegów G27/G29. Istnieje niski i wysoki zakres. 6 biegów w jednym zakresie nie pokrywa się z 6 biegami w innym zakresie
 FPS: Skrzynia Full Power Shift: Ma 12 biegów które można zmieniać bez sprzęgła.
-6PS: Skrzynia John Deer AutoQuad. Ma 6 biegów, a każdy z nich można zredukować o około 80%
+6PS: Skrzynia John Deere AutoQuad. Ma 6 biegów, a każdy z nich można zredukować o około 80%
 PKW: 6-biegowa skrzynia biegów do samochodów o niskim zasięgu
 VARIO: Skrzynia Fendt Vario. Jest bardzo podobna do IVT, ale ma niski i wysoki zakres
 46A: Skrzynia Class HexaShift. Ma 4 ręczne zakresy i 6 automatycznych biegów
@@ -230,7 +241,7 @@ Maksymalna prędkość na najwyższym biegu może być tylko teoretyczna. Możes
 Dwie maksymalne prędkości drugiego najwyższego zakresu są zbędne. Jeśli wpiszesz jedną wartość, druga zostanie odpowiednio zmieniona.]]>
 		</longText>
 		<longText name="vca_Help_6">
-<![CDATA[Dyferencjały i napęd na wszytskie koła]]>
+<![CDATA[Dyferencjały i napęd na wszystkie koła]]>
 		</longText>
 	</longTexts>
 </l10n>
