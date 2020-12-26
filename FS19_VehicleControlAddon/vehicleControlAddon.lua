@@ -193,10 +193,10 @@ vehicleControlAddon.g27Mode4RD = 9 -- 4 Gears, Range up/down, Fwd/back
 vehicleControlAddon.g27ModeSGR =10 -- Fwd/back , Gear up/down, Range up/down
 vehicleControlAddon.speedRatioOpen       = 1000
 vehicleControlAddon.speedRatioClosed0    = -1   -- maxSpeedRatio of diff of diffs
-vehicleControlAddon.speedRatioClosed1    = 3    -- maxSpeedRatio of diff of wheels
-vehicleControlAddon.speedRatioClosed2    = 1.2  -- at least 20% difference 
+vehicleControlAddon.speedRatioClosed1    = 1.3  -- maxSpeedRatio of diff of wheels
+vehicleControlAddon.speedRatioClosed2    = 1.3  -- at least 20% difference 
 vehicleControlAddon.distributeTorqueOpen = false  
-vehicleControlAddon.minTorqueRatio       = 0.2
+vehicleControlAddon.minTorqueRatio       = 0.3
 
 function vehicleControlAddon.debugPrint( ... )
 	if VCAGlobals.debugPrint then
