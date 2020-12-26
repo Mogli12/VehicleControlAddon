@@ -419,6 +419,7 @@ function vehicleControlAddon:onLoad(savegame)
 	vehicleControlAddon.registerState( self, "vcaKSIsOn",       false ) --, vehicleControlAddon.vcaOnSetKSIsOn )
 	vehicleControlAddon.registerState( self, "vcaKeepSpeed",    0 )
 	vehicleControlAddon.registerState( self, "vcaKSToggle",     false )
+	vehicleControlAddon.registerState( self, "vcaKSBrake",      false )
 	vehicleControlAddon.registerState( self, "vcaCCSpeed2",     10 )
 	vehicleControlAddon.registerState( self, "vcaCCSpeed3",     15 )
 	vehicleControlAddon.registerState( self, "vcaClutchMode",   0 )
@@ -1819,6 +1820,68 @@ function vehicleControlAddon:vcaGetTransmissionDef()
 	end 	
 end 
 
+--******************************************************************************************************************************************
+-- ProSeed
+function vehicleControlAddon:vcaGetHasGuidanceSystem()
+	if 			self ~= nil and self.vcaIsLoaded 
+			and self.vcaSnapDistance >= 0.25 
+			and -4 <= self.vcaLastSnapAngle and self.vcaLastSnapAngle <= 4 then 
+		return true 
+	end 
+	return false 
+end 
+function vehicleControlAddon:vcaGetGuidanceData()
+	local data = {}
+	
+  data.width            = 3
+  data.offsetWidth      = 0
+  data.movingDirection  = 1
+  data.isReverseDriving = false
+  data.movingForwards   = false
+  data.snapDirectionMultiplier = 1
+  data.alphaRad         = 0
+  data.currentLane      = 0
+	data.snapDirection    = { 0, 0, 0, 0 }
+  data.driveTarget      = { 0, 0, 0, 0, 0 }
+	
+	if 			self ~= nil and self.vcaIsLoaded 
+			and self.vcaSnapDistance >= 0.25 
+			and -4 <= self.vcaLastSnapAngle and self.vcaLastSnapAngle <= 4 then 
+		data.width            = self.vcaSnapDistance
+
+		local wx,wy,wz = getWorldTranslation( self:vcaGetSteeringNode() )
+		local lx,_,lz = localDirectionToWorld( self:vcaGetSteeringNode(), 0, 0, 1 )			
+		local d = 0
+		if lx*lx+lz*lz > 1e-6 then 
+			d = math.atan2( lx, lz )
+		end 
+		local curSnapAngle, _, curSnapOffset = self:vcaGetCurrentSnapAngle( d )
+		local dx    = math.sin( curSnapAngle )
+		local dz    = math.cos( curSnapAngle )			
+		local distX = wx - self.vcaLastSnapPosX
+		local distZ = wz - self.vcaLastSnapPosZ 	
+		local dist  = distX * dz - distZ * dx + self.vcaSnapFactor * self.vcaSnapDistance
+		
+		data.currentLane = self.vcaSnapFactor
+
+		if not self.vcaSnapIsOn then 
+			while dist+dist > self.vcaSnapDistance do 
+				data.currentLane = data.currentLane - 1
+				dist  = distX * dz - distZ * dx + data.currentLane * self.vcaSnapDistance + curSnapOffset
+			end 
+			while dist+dist <-self.vcaSnapDistance do 
+				data.currentLane = data.currentLane + 1
+				dist  = distX * dz - distZ * dx + data.currentLane * self.vcaSnapDistance + curSnapOffset
+			end 		
+		end 		
+	
+	-- lineDirX, lineDirZ, lineX, lineZ	
+		data.snapDirection = { dz, dx, self.vcaLastSnapPosX, self.vcaLastSnapPosZ }
+	end 
+	
+	return data 
+end 
+
 function vehicleControlAddon:onPreUpdate(dt, isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
 
 --******************************************************************************************************************************************
@@ -2475,6 +2538,8 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 	--*******************************************************************
 	-- Keep Speed 
 	if self.vcaKSIsOn and self.vcaIsEntered then	
+		local ksBrake = false 
+	
 		local m
 		if self.vcaShuttleCtrl  then
 			if self.vcaShuttleFwd       then 
@@ -2509,8 +2574,8 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 				end 
 			end 
 			
-			local f = 3.6 * math.max( -self.spec_motorized.motor.maxBackwardSpeed, s * self.movingDirection - 0.4 )
-			local t = 3.6 * math.min(  self.spec_motorized.motor.maxForwardSpeed,  s * self.movingDirection + 0.4  )
+			local f = 3.6 * math.max( -self.spec_motorized.motor.maxBackwardSpeed, s * self.movingDirection - 0.3 )
+			local t = 3.6 * math.min(  self.spec_motorized.motor.maxForwardSpeed,  s * self.movingDirection + 0.3  )
 			local a = self.spec_drivable.axisForward
 			-- joystick
 			if self:vcaGetShuttleCtrl() then 
@@ -2551,10 +2616,18 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 				t = sl 
 			end 
 			
+			if     self.vcaKeepSpeed > 0 and a < 0 then 
+				ksBrake = true 
+			elseif self.vcaKeepSpeed > 0 and a < 0 then 
+				ksBrake = true 
+			end 
+			
 			self:vcaSetState( "vcaKeepSpeed", vehicleControlAddon.mbClamp( self.vcaKeepSpeed + a * 0.005 * dt, f, t )  )
 		elseif math.abs( self.vcaKeepSpeed ) > sl then 
 			self:vcaSetState( "vcaKeepSpeed", vehicleControlAddon.mbClamp( self.vcaKeepSpeed, -sl, sl )  )
 		end 
+		
+		self:vcaSetState( "vcaKSBrake", ksBrake )
 	end 
 	
 	--*******************************************************************
@@ -3338,6 +3411,15 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 	end 
 	
 --******************************************************************************************************************************************
+-- ProSeed 
+
+	if self.spec_globalPositioningSystem == nil and self.vcaIsLoaded and self:vcaIsVehicleControlledByPlayer() then 
+		self.getHasGuidanceSystem = vehicleControlAddon.vcaGetHasGuidanceSystem
+		self.getGuidanceData      = vehicleControlAddon.vcaGetGuidanceData
+	end 
+
+
+--******************************************************************************************************************************************
 -- Simple fix if vcaMaxSpeed was cleared for unknown reasons on Dedi
 	local somethingWentWrong = false 
 	for _,n in pairs({ "vcaSteeringIsOn",
@@ -3877,7 +3959,8 @@ function vehicleControlAddon:newUpdateSpeedGauge( superFunc, dt )
 	
 	if self.vcaHandthrottleIndicator ~= nil then 
 		local gaugeValue = 0
-		if self.vehicle.isServer then 
+		if     self.vehicle == nil   then 
+		elseif self.vehicle.isServer then 
 			if      self.vehicle.vcaIdleRpmRatio ~= nil then 
 				gaugeValue = MathUtil.clamp( 0.1 + 0.8 * self.vehicle.vcaIdleRpmRatio, 0, 1)
 			end 
@@ -3887,11 +3970,8 @@ function vehicleControlAddon:newUpdateSpeedGauge( superFunc, dt )
 		local indicatorRotation = MathUtil.lerp(SpeedMeterDisplay.ANGLE.SPEED_GAUGE_MIN, SpeedMeterDisplay.ANGLE.SPEED_GAUGE_MAX, gaugeValue)
 		self:updateGaugeIndicator(self.vcaHandthrottleIndicator, self.speedIndicatorRadiusX, self.speedIndicatorRadiusY, indicatorRotation)
 		
-		if     self.vcaHandthrottleIndicator.setVisible == nil then 
-		elseif self.vehicle.vcaHandthrottle == nil or self.vehicle.vcaHandthrottle == 0 then 
-			self.vcaHandthrottleIndicator:setVisible( false )
-		else 
-			self.vcaHandthrottleIndicator:setVisible( true )
+		if self.vcaHandthrottleIndicator.setVisible ~= nil then 
+			self.vcaHandthrottleIndicator:setVisible( gaugeValue > 0 )
 		end 
 	end 
 end 
@@ -4978,9 +5058,9 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		if     self.vcaSpeedLimit > limit then 
 			self.vcaSpeedLimit = math.max( self.vcaWantedSpeedLimit, math.min( speed, self.vcaSpeedLimit ) - 0.004 * dt )
 		elseif self.vcaSpeedLimit > self.vcaWantedSpeedLimit then  
-			self.vcaSpeedLimit = math.max( self.vcaWantedSpeedLimit, math.min( speed, self.vcaSpeedLimit ) - 0.001 * dt * math.max( 2, speed * 0.1 ) )
+			self.vcaSpeedLimit = math.max( self.vcaWantedSpeedLimit, math.min( speed, self.vcaSpeedLimit ) - 0.0015 * dt * math.max( 2, speed * 0.1 ) )
 		elseif self.vcaSpeedLimit < self.vcaWantedSpeedLimit then 
-			self.vcaSpeedLimit = math.min( self.vcaWantedSpeedLimit, math.max( speed, self.vcaSpeedLimit ) + 0.002 * dt )
+			self.vcaSpeedLimit = math.min( self.vcaWantedSpeedLimit, math.max( speed, self.vcaSpeedLimit ) + 0.0025 * dt )
 		end 
 		self.speedLimit = self.vcaSpeedLimit
 	else 
@@ -5412,7 +5492,8 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			if speed > 0 then 
 				newMinRpm = vehicleControlAddon.mbClamp( speedFactor * math.min( speed, 3.6 * maxSpeed ), newMinRpm, newMaxRpm )
 			end 
-			if curBrake >= 0.1 and speed > 1 then 
+			if     ( self.vehicle.vcaKSIsOn and self.vehicle.vcaIsEnteredMP and self.vehicle.vcaKSBrake )
+					or ( self.vcaWantedSpeedLimit ~= nil and self.vcaWantedSpeedLimit > 1 and speed > 1 + self.vcaWantedSpeedLimit ) then 
 				newMinRpm = vehicleControlAddon.mbClamp( self.vcaMaxPowerRpmL + 0.8 * math.max( self.vcaMaxPowerRpmH - self.vcaMaxPowerRpmL, 0 ), newMinRpm, newMaxRpm )
 			end
 			
