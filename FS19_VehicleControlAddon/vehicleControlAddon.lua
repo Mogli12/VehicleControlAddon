@@ -3911,6 +3911,9 @@ function vehicleControlAddon:newUpdateSpeedGauge( superFunc, dt )
 			 and self.vehicle.spec_motorized.motor.maxRpm ~= nil
 			 and self.vehicle.spec_motorized.motor.maxRpm > self.vehicle.spec_motorized.motor.minRpm
 			 and self.vehicle:vcaGetTransmissionActive() ) then 		
+		if self.vcaHandthrottleIndicator ~= nil and self.vcaHandthrottleIndicator.setVisible ~= nil then 
+			self.vcaHandthrottleIndicator:setVisible( false )
+		end 
 		return superFunc( self, dt )
 	end 
 
@@ -5493,6 +5496,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 				newMinRpm = vehicleControlAddon.mbClamp( speedFactor * math.min( speed, 3.6 * maxSpeed ), newMinRpm, newMaxRpm )
 			end 
 			if     ( self.vehicle.vcaKSIsOn and self.vehicle.vcaIsEnteredMP and self.vehicle.vcaKSBrake )
+					or ( speed < 0 and self.vcaDirTimer ~= nil )
 					or ( self.vcaWantedSpeedLimit ~= nil and self.vcaWantedSpeedLimit > 1 and speed > 1 + self.vcaWantedSpeedLimit ) then 
 				newMinRpm = vehicleControlAddon.mbClamp( self.vcaMaxPowerRpmL + 0.8 * math.max( self.vcaMaxPowerRpmH - self.vcaMaxPowerRpmL, 0 ), newMinRpm, newMaxRpm )
 			end
