@@ -21,6 +21,7 @@ function vehicleControlAddonTransmissionBase:new( params, mt )
 		setmetatable(self, mt)
 	end 
 
+	self.firstTimeRun     = false 
 	self.name             = params.name 
 	self.numberOfGears    = params.noGears 
 	self.numberOfRanges   = 1 + #params.rangeGearOverlap
@@ -143,7 +144,7 @@ end
 
 function vehicleControlAddonTransmissionBase:initGears( noEventSend )	
 	local initGear = false 
-	if     self.vehicle.vcaGear == 0 then 
+	if not self.firstTimeRun then 
 		initGear = true 
 		self.vehicle:vcaSetState( "vcaGear", 1, noEventSend )
 		self.vehicle:vcaSetState( "vcaRange", self.numberOfRanges, noEventSend )			
@@ -161,6 +162,7 @@ function vehicleControlAddonTransmissionBase:initGears( noEventSend )
 		initGear = true 
 		self.vehicle:vcaSetState( "vcaRange", self.numberOfRanges, noEventSend )
 	end 
+	self.firstTimeRun = true 
 	return initGear 
 end 
 
@@ -386,7 +388,7 @@ function vehicleControlAddonTransmissionBase:getNumberOfRatios()
 	return table.getn( self.gearRatios )
 end 
 
-function vehicleControlAddonTransmissionBase:getAutoShiftIndeces( curIndex, minIndex, searchDown, searchUp )
+function vehicleControlAddonTransmissionBase:getAutoShiftIndeces( curRatio, lowRatio, searchDown, searchUp )
 	local gearList = {}
 	
 	local delta = 0
@@ -398,11 +400,6 @@ function vehicleControlAddonTransmissionBase:getAutoShiftIndeces( curIndex, minI
 	local ar = self.autoShiftRange
 	local cg = self.vehicle.vcaGear
 	local cr = self.vehicle.vcaRange
-	
-	if self.vehicle.vcaShifterUsed then 
-		ag = false 
-		ar = ar and self:getG27ShifterOnGears()
-	end 
 
 	if self.vehicle.vcaSingleReverse ~= 0 and self.vehicle:vcaGetIsReverse() then 
 		if self.vehicle.vcaSingleReverse > 0 then 
@@ -436,8 +433,9 @@ function vehicleControlAddonTransmissionBase:getAutoShiftIndeces( curIndex, minI
 	
 	if ag and ar then 
 		for i=1,table.getn( self.gearRatios ) do 
-			if 			( rf <= self.gearRatios[i] and self.gearRatios[i] <= rt )
-					and ( ( i < curIndex and searchDown and i >= minIndex ) or ( searchUp and i > curIndex ) ) then 
+			local r = self.gearRatios[i]
+			if 			( rf <= r and r <= rt )
+					and ( ( r < curRatio and searchDown and r >= lowRatio ) or ( searchUp and r > curRatio ) ) then 
 				table.insert( gearList, i )
 			end 
 		end 
@@ -451,8 +449,9 @@ function vehicleControlAddonTransmissionBase:getAutoShiftIndeces( curIndex, minI
 		end 
 		if tmpList ~= nil then 
 			for _,i in pairs(tmpList) do 
-				if 			( rf <= self.gearRatios[i] and self.gearRatios[i] <= rt )
-						and ( ( i < curIndex and searchDown and i >= minIndex ) or ( searchUp and i > curIndex ) ) then 
+				local r = self.gearRatios[i]
+				if 			( rf <= r and r <= rt )
+						and ( ( r < curRatio and searchDown and r >= lowRatio ) or ( searchUp and r > curRatio ) ) then 
 					table.insert( gearList, i )
 				end 
 			end 
@@ -943,20 +942,21 @@ vehicleControlAddonTransmissionBase.transmissionList =
 								 autoGears          = true,
 								 speedMatching      = true },
 			text   = "own configuration" },
---	{ class  = vehicleControlAddonTransmissionOwn2, 
---		params = { name               = "OWN2", 
---               noGears            = 1, 
---               rangeGearOverlap   = {},
---							 autoRanges         = false,
---							 autoGears          = true,
---							 speedMatching      = true },
---		text   = "own complex" },
---}
---vehicleControlAddonTransmissionBase.ownTransmission  = table.getn( vehicleControlAddonTransmissionBase.transmissionList ) - 1
---vehicleControlAddonTransmissionBase.own2Transmission = table.getn( vehicleControlAddonTransmissionBase.transmissionList )
 	}
 vehicleControlAddonTransmissionBase.ownTransmission  = table.getn( vehicleControlAddonTransmissionBase.transmissionList )
 vehicleControlAddonTransmissionBase.own2Transmission = -1
+
+-- table.insert( vehicleControlAddonTransmissionBase.transmissionList, 
+-- 		{ class  = vehicleControlAddonTransmissionOwn2, 
+-- 			params = { name               = "OWN2", 
+-- 								noGears            = 1, 
+-- 								rangeGearOverlap   = {},
+-- 								autoRanges         = false,
+-- 								autoGears          = true,
+-- 								speedMatching      = true },
+-- 			text   = "own complex" }
+-- 		)
+-- vehicleControlAddonTransmissionBase.own2Transmission = table.getn( vehicleControlAddonTransmissionBase.transmissionList )
 
 
 function vehicleControlAddonTransmissionBase.loadSettings()

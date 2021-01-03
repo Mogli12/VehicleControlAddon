@@ -121,19 +121,19 @@
 
 				<GuiElement type="textInput" profile="ingameMenuGameSettingsTextInput" id="vcaSnapDistance" onCreate="onCreateSubElement" 
 										toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_DISTANCE"
-										maxCharacters="5" imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed">
+										maxCharacters="10" imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed">
 					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaDISTANCE"/>
 				</GuiElement>
 				
 				<GuiElement type="textInput" profile="ingameMenuGameSettingsTextInput" id="vcaSnapOffset1" onCreate="onCreateSubElement" 
 										toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_OFFSET1"
-										maxCharacters="5" imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed">
+										maxCharacters="10" imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed">
 					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaOFFSET1"/>
 				</GuiElement>
 				
 				<GuiElement type="textInput" profile="ingameMenuGameSettingsTextInput" id="vcaSnapOffset2" onCreate="onCreateSubElement" 
 										toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_OFFSET2"
-										maxCharacters="5" imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed">
+										maxCharacters="10" imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed">
 					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaOFFSET2"/>
 				</GuiElement>
 				

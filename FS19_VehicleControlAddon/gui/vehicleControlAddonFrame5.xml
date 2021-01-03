@@ -18,13 +18,13 @@
 			
 				<GuiElement type="textInput" profile="ingameMenuGameSettingsTextInput" id="vcaMaxSpeed" onCreate="onCreateSubElement" 
 										toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_MAXSPEED"
-										maxCharacters="5" imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed">
+										maxCharacters="10" imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed">
 					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaMAXSPEED"/>
 				</GuiElement>
 				
 				<GuiElement type="textInput" profile="ingameMenuGameSettingsTextInput" id="vcaOwnGearFactor" onCreate="onCreateSubElement"
 										toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_OWNMINSPEED"
-										maxCharacters="5" imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed">
+										maxCharacters="10" imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed">
 					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaOWNMINSPEED"/>
 				</GuiElement>
 				
@@ -63,13 +63,13 @@
 
 				<GuiElement type="textInput" profile="ingameMenuGameSettingsTextInput" id="vcaOwnRangeFactor2" onCreate="onCreateSubElement"
 										toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_OWNMAXRANGE"
-										maxCharacters="5" imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed">
+										maxCharacters="10" imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed">
 					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaOWNMAXRANGE"/>
 				</GuiElement>
 
 				<GuiElement type="textInput" profile="ingameMenuGameSettingsTextInput" id="vcaOwnRangeFactor" onCreate="onCreateSubElement"
 										toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_OWNMINRANGE"
-										maxCharacters="5" imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed">
+										maxCharacters="10" imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed">
 					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaOWNMINRANGE"/>
 				</GuiElement>
 							

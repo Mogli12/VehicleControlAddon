@@ -4,28 +4,17 @@
 	<GuiElement type="empty" profile="uiInGameMenuFrame">
 		<GuiElement type="bitmap" profile="vcaSettingsBox" id="container">
 			<GuiElement id="boxLayout1" type="boxLayout" profile="vcaSettingsLayoutLeft">	
-
-				<GuiElement type="multiTextOption" profile="vcaMTOSettings" id="vcaOwnGears"
-												toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_"
-												onCreate="onCreateSubElement" onCreateArgs="list">
-					<GuiElement type="button" profile="vcaMTOLeft" />
-					<GuiElement type="button" profile="vcaMTORight"/>
-					<GuiElement type="text" profile="vcaMTOText" />
-					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaOWNGEARS"/>
-					<GuiElement type="bitmap" profile="vcaMTOBg" />
-				</GuiElement>
-
 			
-				<GuiElement type="textInput" profile="ingameMenuGameSettingsTextInput" id="vcaMaxSpeed" onCreate="onCreateSubElement" 
-										toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_MAXSPEED"
-										maxCharacters="5" imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed">
-					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaMAXSPEED"/>
+				<GuiElement type="textInput" profile="ingameMenuGameSettingsTextInput" id="vcaOwn2GearRatio" onCreate="onCreateSubElement" 
+										toolTipElementId="mogliToolTipBoxText" toolTipText="vcaOwn2GearRatio"
+										maxCharacters="50" imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed">
+					<GuiElement type="text" profile="vcaMTOTitle" text="vcaOwn2GearRatio"/>
 				</GuiElement>
 				
-				<GuiElement type="textInput" profile="ingameMenuGameSettingsTextInput" id="vcaOwnGearFactor" onCreate="onCreateSubElement"
-										toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_OWNMINSPEED"
-										maxCharacters="5" imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed">
-					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaOWNMINSPEED"/>
+				<GuiElement type="textInput" profile="ingameMenuGameSettingsTextInput" id="vcaOwn2GearNames" onCreate="onCreateSubElement" 
+										toolTipElementId="mogliToolTipBoxText" toolTipText="vcaOwn2GearNames"
+										maxCharacters="50" imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed">
+					<GuiElement type="text" profile="vcaMTOTitle" text="vcaOwn2GearNames"/>
 				</GuiElement>
 				
 				<GuiElement type="multiTextOption" profile="vcaMTOSettings" id="vcaOwnGearTime" 
@@ -48,31 +37,31 @@
 					<GuiElement type="bitmap" profile="vcaMTOBg" />
 				</GuiElement>
 
-			</GuiElement>			
-			<GuiElement id="boxLayout2" type="boxLayout" profile="vcaSettingsLayoutMid">
-
-				<GuiElement type="multiTextOption" profile="vcaMTOSettings" id="vcaOwnRanges"
-												toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_OWNRANGES"
-												onCreate="onCreateSubElement" onCreateArgs="list">
+				<GuiElement type="multiTextOption" profile="vcaMTOSettings" id="vcaOwn2RevMode" 
+												toolTipElementId="mogliToolTipBoxText" toolTipText="vcaOwn2RevMode" 
+												onCreate="onCreateSubElement" onCreateArgs="list0">
 					<GuiElement type="button" profile="vcaMTOLeft" />
 					<GuiElement type="button" profile="vcaMTORight"/>
 					<GuiElement type="text" profile="vcaMTOText" />
-					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaOWNRANGES"/>
+					<GuiElement type="text" profile="vcaMTOTitle" text="vcaOwn2RevMode"/>
 					<GuiElement type="bitmap" profile="vcaMTOBg" />
 				</GuiElement>
 
-				<GuiElement type="textInput" profile="ingameMenuGameSettingsTextInput" id="vcaOwnRangeFactor2" onCreate="onCreateSubElement"
-										toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_OWNMAXRANGE"
-										maxCharacters="5" imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed">
-					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaOWNMAXRANGE"/>
-				</GuiElement>
+			</GuiElement>			
+			<GuiElement id="boxLayout2" type="boxLayout" profile="vcaSettingsLayoutMid">
 
-				<GuiElement type="textInput" profile="ingameMenuGameSettingsTextInput" id="vcaOwnRangeFactor" onCreate="onCreateSubElement"
-										toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_OWNMINRANGE"
-										maxCharacters="5" imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed">
-					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaOWNMINRANGE"/>
+				<GuiElement type="textInput" profile="ingameMenuGameSettingsTextInput" id="vcaOwn2RangeRatio" onCreate="onCreateSubElement" 
+										toolTipElementId="mogliToolTipBoxText" toolTipText="vcaOwn2RangeRatio"
+										maxCharacters="50" imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed">
+					<GuiElement type="text" profile="vcaMTOTitle" text="vcaOwn2RangeRatio"/>
 				</GuiElement>
-							
+				
+				<GuiElement type="textInput" profile="ingameMenuGameSettingsTextInput" id="vcaOwn2RangeNames" onCreate="onCreateSubElement" 
+										toolTipElementId="mogliToolTipBoxText" toolTipText="vcaOwn2RangeNames"
+										maxCharacters="50" imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed">
+					<GuiElement type="text" profile="vcaMTOTitle" text="vcaOwn2RangeNames"/>
+				</GuiElement>
+				
 				<GuiElement type="multiTextOption" profile="vcaMTOSettings" id="vcaOwnRangeTime" 
 												toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_OWNRANGETIME"
 												onCreate="onCreateSubElement" onCreateArgs="list0">
@@ -93,6 +82,18 @@
 					<GuiElement type="bitmap" profile="vcaMTOBg" />
 				</GuiElement>
 
+				<GuiElement type="textInput" profile="ingameMenuGameSettingsTextInput" id="vcaOwn2RevRatio" onCreate="onCreateSubElement" 
+										toolTipElementId="mogliToolTipBoxText" toolTipText="vcaOwn2RevRatio"
+										maxCharacters="50" imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed">
+					<GuiElement type="text" profile="vcaMTOTitle" text="vcaOwn2RevRatio"/>
+				</GuiElement>
+				
+				<GuiElement type="textInput" profile="ingameMenuGameSettingsTextInput" id="vcaOwn2RevNames" onCreate="onCreateSubElement" 
+										toolTipElementId="mogliToolTipBoxText" toolTipText="vcaOwn2RevNames"
+										maxCharacters="50" imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed">
+					<GuiElement type="text" profile="vcaMTOTitle" text="vcaOwn2RevNames"/>
+				</GuiElement>
+											
 			</GuiElement>
 		
 			<GuiElement id="vcaHelp" type="text" profile="vcaHelpText" text="$l10n_vca_Help_5" />				
