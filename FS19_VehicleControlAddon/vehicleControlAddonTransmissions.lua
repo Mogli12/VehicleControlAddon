@@ -144,11 +144,7 @@ end
 
 function vehicleControlAddonTransmissionBase:initGears( noEventSend )	
 	local initGear = false 
-	if not self.firstTimeRun then 
-		initGear = true 
-		self.vehicle:vcaSetState( "vcaGear", 1, noEventSend )
-		self.vehicle:vcaSetState( "vcaRange", self.numberOfRanges, noEventSend )			
-	elseif self.vehicle.vcaGear < 1 then 
+	if     self.vehicle.vcaGear < 1 then 
 		initGear = true 
 		self.vehicle:vcaSetState( "vcaGear", 1, noEventSend )
 	elseif self.vehicle.vcaGear > self.numberOfGears then 

@@ -2439,7 +2439,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 					self:vcaSetState( "vcaGear",  Utils.getNoNil( g, 0 ))
 					self:vcaSetState( "vcaRange", Utils.getNoNil( r, 0 ))
 				end 
-				self.vcaGearbox:initGears()	
+			--self.vcaGearbox:initGears()	
 			end 
 		
 			local spec = self.spec_motorized
