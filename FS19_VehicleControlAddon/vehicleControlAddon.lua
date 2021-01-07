@@ -4324,7 +4324,7 @@ end
 
 function vehicleControlAddon:getDefaultLaunchSpeed()
 	local n = Utils.getNoNil( self.vcaMaxForwardSpeed, self.spec_motorized.motor.maxForwardSpeed )
-	return math.max( math.floor( 0.9 * n + 0.5 ), 10 ) / 3.6
+	return math.max( math.floor( 0.9 * n + 0.5 ), 15 ) / 3.6
 end 
 
 function vehicleControlAddon:getDefaultReverse( isInside )
@@ -5709,7 +5709,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 --****************************************************************************************	
 	
 		local initGear = transmission:initGears() 
-		
+
 		if     self.vcaClutchTimer == nil 
 				or self.vcaAutoStop    == nil then 
 			autoNeutral      = true 
@@ -5798,13 +5798,6 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			self.vcaClutchTimer = math.max( 0, math.min( self.vcaClutchTimer - clutchDt, VCAGlobals.clutchTimer - 1 ) )
 		end 
 		
-		if autoNeutral then 
-		--self.vcaAutoDownTimer = 0
-		--self.vca^^q^^AutoUpTimer   = VCAGlobals.clutchTimer
-			self.vcaAutoDownTimer = VCAGlobals.clutchTimer
-			self.vcaAutoUpTimer   = 0
-		end 
-	
 		local gear  = transmission:getRatioIndex( self.vehicle.vcaGear, self.vehicle.vcaRange )		
 		local ratio = transmission:getGearRatio( gear )
 		if ratio == nil then 
@@ -5838,10 +5831,10 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		elseif self.vcaAutoUpTimer > 0 then 
 			self.vcaAutoUpTimer = self.vcaAutoUpTimer - dt 
 		end 
-		if     self.vcaWheelAccS > 0.05 then 
-			self.vcaAutoDownTimer = math.max( 250, self.vcaAutoDownTimer )
-		elseif self.vcaWheelAccS < -0.05 then 
-			self.vcaAutoUpTimer   = math.max( 250, self.vcaAutoUpTimer )
+		if     self.vcaWheelAccS >  0.05 and self.vcaAutoDownTimer < 250 and motorRpm > self.minRpm + 0.1 * rpmRange then  
+			self.vcaAutoDownTimer = 250
+		elseif self.vcaWheelAccS < -0.05 and self.vcaAutoUpTimer   < 250 and motorRpm < self.maxRpm - 0.1 * rpmRange then  
+			self.vcaAutoUpTimer   = 250
 		end 
 		if self.vcaAutoLowTimer == nil or lastFwd ~= fwd or autoNeutral then 
 			self.vcaAutoLowTimer = 5000
@@ -5874,16 +5867,15 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		if self.vcaClutchTimer > 0 and self.vcaAutoUpTimer < 1000 then 
 			self.vcaAutoUpTimer = 1000 
 		end 
-		if self.gearChangeTimer > 0 and self.vcaAutoUpTimer < 1000 then 
-			self.vcaAutoUpTimer = 1000 
-		end 
-		if curBrake >= 0.1 and self.vcaBrakeTimer ~= nil and self.vcaBrakeTimer > 500 then 
-			self.vcaAutoDownTimer = 0
+		if self.gearChangeTimer > 0 and self.vcaAutoUpTimer < 500 then 
+			self.vcaAutoUpTimer = 500 
 		end 
 		if self.gearChangeTimer > 0 and self.vcaAutoDownTimer < 1000 then 
 			self.vcaAutoDownTimer = 1000 
 		end 
-		if self.vcaClutchTimer <= 0 and motorPtoRpm < self.minRpm and curAcc < 0.1 and curBrake < 0.1 and self.vcaAutoDownTimer < 1 then
+		if     self.vcaBrakeTimer ~= nil and self.vcaBrakeTimer > 100 then
+			self.vcaAutoDownTimer = 0
+		elseif self.vcaClutchTimer <= 0 and motorPtoRpm < self.minRpm and curAcc < 0.1 and curBrake < 0.1 and self.vcaAutoDownTimer < 1 then
 			self.vcaAutoDownTimer = 1
 		end 
 		if motorPtoRpm < self.minRpm and autoShiftLoad < 0.667 then 
