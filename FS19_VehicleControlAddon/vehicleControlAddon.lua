@@ -584,6 +584,7 @@ function vehicleControlAddon:onLoad(savegame)
 	self.vcaLastRpmFactor = 1
 	self.vcaROIFactor     = 1 
 	self.vcaMaxWheelSlip  = 0
+	self.vcaMaxBrakePedal = 1
 	
 	self.vcaKeepRotPressed   = false 
 	self.vcaInchingPressed   = false 
@@ -4505,8 +4506,8 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 		return superFunc( self, dt, currentSpeed, acceleration, doHandbrake, stopAndGoBraking )
 	end 
 
-	local lightsBackup = self.spec_lights
-	local brake        = ( acceleration < -0.1 )
+	local lightsBackup   = self.spec_lights
+	local brake          = ( acceleration < -0.1 )
 	
 	self.vcaOldAcc       = acceleration
 	self.vcaOldHandbrake = doHandbrake
@@ -4613,8 +4614,10 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 			end		
 			if doHandbrake then 
 				self.vcaBrakePedal = 1
+			elseif acceleration >= 0 then 
+				self.vcaBrakePedal = 0
 			else 
-				self.vcaBrakePedal = math.max( 0, -acceleration )
+				self.vcaBrakePedal = -acceleration
 			end 
 		elseif doHandbrake then 
 			acceleration       = 0
@@ -4708,7 +4711,6 @@ WheelsUtil.updateWheelPhysics = Utils.overwrittenFunction( WheelsUtil.updateWhee
 -- getSmoothedAcceleratorAndBrakePedals
 function vehicleControlAddon:vcaGetSmoothedAcceleratorAndBrakePedals( superFunc, acceleratorPedal, brakePedal, dt )
 	if self.vcaIsLoaded and self:vcaIsVehicleControlledByPlayer() and self.vcaOldAcc ~= nil then 
-		
 		if     self.vcaBrakePedal ~= nil and self.vcaBrakePedal >= 0.001 then  
 		-- shuttle control and braking 
 			brakePedal = self.vcaBrakePedal
@@ -4725,8 +4727,12 @@ function vehicleControlAddon:vcaGetSmoothedAcceleratorAndBrakePedals( superFunc,
 			end 
 		end 
 		
-		return acceleratorPedal, brakePedal
+		self.vcaMaxBrakePedal = vehicleControlAddon.mbClamp( brakePedal, self.vcaMaxBrakePedal - 0.001 * dt, self.vcaMaxBrakePedal + 0.001 * dt )
+			
+		return acceleratorPedal, math.min( brakePedal, self.vcaMaxBrakePedal )
 	end 
+	
+	self.vcaMaxBrakePedal = 1
 	
 	return superFunc( self, acceleratorPedal, brakePedal, dt )
 end 
