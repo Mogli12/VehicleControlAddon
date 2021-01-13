@@ -125,6 +125,32 @@ function vehicleControlAddonTransmissionBase:new( params, mt )
 		self.speedMatching = false
 	end 
 	
+	if type( params.reverseGears ) == "table" and table.getn( params.reverseGears ) >= 1 then 
+		self.blockedRevGears = {}
+		for i=1,self.numberOfGears do 
+			self.blockedRevGears[i] = true 
+		end 
+		for _,i in pairs( params.reverseGears ) do 
+			self.blockedRevGears[i] = false  
+		end 
+	end 
+	
+	if type( params.reverseRanges ) == "table" and table.getn( params.reverseRanges ) >= 1 then 
+		self.blockedRevRange = {}
+		for i=1,self.numberOfRanges do 
+			self.blockedRevRange[i] = true 
+		end 
+		for _,i in pairs( params.reverseRanges ) do 
+			self.blockedRevRange[i] = false  
+		end 
+	end 
+	
+	if params.reverseRatio == nil then 
+		self.reverseRatio = 1 
+	else 
+		self.reverseRatio = params.reverseRatio
+	end 
+	
 	self.shifterIndexList = params.shifterIndexList
 	
 	return self
@@ -158,9 +184,48 @@ function vehicleControlAddonTransmissionBase:initGears( noEventSend )
 		initGear = true 
 		self.vehicle:vcaSetState( "vcaRange", self.numberOfRanges, noEventSend )
 	end 
-	self.firstTimeRun = true 
+	
+	if ( self.blockedRevGears ~= nil or self.blockedRevRange ~= nil ) and self.vehicle:vcaGetIsReverse() then 
+		local g, r = self:findBestReverse()
+		self.vehicle:vcaSetState( "vcaGear",  r )
+		self.vehicle:vcaSetState( "vcaRange", g )
+	end 
+	
 	return initGear 
 end 
+
+function vehicleControlAddonTransmissionBase:findBestReverse()
+	local g, r = self.vehicle.vcaGear, self.vehicle.vcaRange
+
+	if self.blockedRevGears ~= nil and self.vehicle:vcaGetIsReverse() then 
+		for i=2,self.numberOfGears do 
+			local j = g + 1 - i 
+			if j < 1 then 
+				j = j + self.numberOfGears 
+			end 
+			if not self.blockedRevGears[j] then 
+				g = j 
+				break
+			end 
+		end 
+	end 
+	
+	if self.blockedRevRange ~= nil and self.vehicle:vcaGetIsReverse() then 
+		for i=2,self.numberOfRanges do 
+			local j = r + 1 - i 
+			if j < 1 then 
+				j = j + self.numberOfRanges 
+			end 
+			if not self.blockedRevRange[j] then 
+				r = j 
+				break
+			end 
+		end 
+	end 
+	
+	return g, r 
+end 
+
 
 function vehicleControlAddonTransmissionBase:getName()
 	return self.name 
@@ -377,6 +442,9 @@ function vehicleControlAddonTransmissionBase:getGearShifterIndeces( maxNum, noSp
 end 
 
 function vehicleControlAddonTransmissionBase:getGearRatio( index )
+	if self.reverseRatio ~= 1 and self.vehicle:vcaGetIsReverse() then 
+		return self.gearRatios[index] * self.reverseRatio
+	end 
 	return self.gearRatios[index]
 end 
 
@@ -940,19 +1008,6 @@ vehicleControlAddonTransmissionBase.transmissionList =
 			text   = "own configuration" },
 	}
 vehicleControlAddonTransmissionBase.ownTransmission  = table.getn( vehicleControlAddonTransmissionBase.transmissionList )
-vehicleControlAddonTransmissionBase.own2Transmission = -1
-
--- table.insert( vehicleControlAddonTransmissionBase.transmissionList, 
--- 		{ class  = vehicleControlAddonTransmissionOwn2, 
--- 			params = { name               = "OWN2", 
--- 								noGears            = 1, 
--- 								rangeGearOverlap   = {},
--- 								autoRanges         = false,
--- 								autoGears          = true,
--- 								speedMatching      = true },
--- 			text   = "own complex" }
--- 		)
--- vehicleControlAddonTransmissionBase.own2Transmission = table.getn( vehicleControlAddonTransmissionBase.transmissionList )
 
 
 function vehicleControlAddonTransmissionBase.loadSettings()

@@ -1866,27 +1866,6 @@ function vehicleControlAddon:vcaGetTransmissionDef()
 		return vehicleControlAddonTransmissionBase:new( params ) 
 	end 
 	
-	if self.vcaTransmission == vehicleControlAddonTransmissionBase.own2Transmission then 
-		local params = {}
-
-		params.gearRatios    = vehicleControlAddon.stringToList( self.vcaOwn2GearRatio, tonumber )
-		params.rangeRatios   = vehicleControlAddon.stringToList( self.vcaOwn2RangeRatio, tonumber )
-		params.reverseRatios = vehicleControlAddon.stringToList( self.vcaOwn2RevRatio, tonumber )
-
-		params.gearNames     = vehicleControlAddon.stringToList( self.vcaOwn2GearNames, trim )
-		params.rangeNames    = vehicleControlAddon.stringToList( self.vcaOwn2RangeNames, trim )
-		params.reverseNames  = vehicleControlAddon.stringToList( self.vcaOwn2RevNames, trim )
-		
-		params.reverserMode  = self.vcaOwn2RevMode
-			
-		params.timeGears     = self.vcaOwnGearTime
-		params.timeRanges    = self.vcaOwnRangeTime
-		params.autoGears     = self.vcaOwnAutoGears
-		params.autoRanges    = self.vcaOwnAutoRange
-		
-		return vehicleControlAddonTransmissionOwn2:new( params ) 
-	end 
-	
 	local def = vehicleControlAddonTransmissionBase.transmissionList[self.vcaTransmission]
 	if def ~= nil then 
 		return def.class:new( def.params )
@@ -4613,15 +4592,17 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 				doHandbrake  = true 
 			end		
 			if doHandbrake then 
-				self.vcaBrakePedal = 1
+				self.vcaBrakePedal    = 1
+				self.vcaMaxBrakePedal = math.max( self.vcaMaxBrakePedal, 0.5 )
 			elseif acceleration >= 0 then 
-				self.vcaBrakePedal = 0
+				self.vcaBrakePedal    = 0
 			else 
-				self.vcaBrakePedal = -acceleration
+				self.vcaBrakePedal    = -acceleration
 			end 
 		elseif doHandbrake then 
-			acceleration       = 0
-			self.vcaBrakePedal = 1
+			acceleration          = 0
+			self.vcaBrakePedal    = 1
+			self.vcaMaxBrakePedal = 1
 		end 			
 			
 		if self.spec_drivable.cruiseControl.state == 0 and self.vcaLimitThrottle ~= nil and self.vcaInchingIsOn ~= nil and math.abs( acceleration ) > 0.01 then 
@@ -5210,17 +5191,27 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	end 
 
 	if     self.vehicle:vcaGetNeutral() then 
-		self.vcaDirTimer = nil
+		self.vcaDirTimer        = nil 
+		self.vcaDirChangeTime   = nil 
 	elseif fwd ~= lastFwd and speed < -0.5 then 
-		self.vcaDirTimer = dftDirTimer 
+		if self.vcaDirTimer == nil then 
+			self.vcaDirChangeTime = g_currentMission.time 
+		end 
+		self.vcaDirTimer        = dftDirTimer 
 	elseif speed >  0.5 then 
-		self.vcaDirTimer = nil 
+		self.vcaDirTimer        = nil 
+		self.vcaDirChangeTime   = nil 
 	elseif self.vcaDirTimer == nil then
-	elseif speed > -0.1 then 
+		self.vcaDirChangeTime   = nil 
+	elseif speed > -0.5 then 
 		self.vcaDirTimer = self.vcaDirTimer - dt
 		if self.vcaDirTimer < 0 then 
-			self.vcaDirTimer = nil 
+			self.vcaDirTimer      = nil 
+			self.vcaDirChangeTime = nil 
 		end 
+	elseif self.vcaDirChangeTime ~= nil and self.vcaDirChangeTime + 4000 < g_currentMission.time then 
+		self.vcaDirTimer        = nil 
+		self.vcaDirChangeTime   = nil 
 	end 
 
 	local newAcc = acceleratorPedal
@@ -5870,11 +5861,11 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		end 
 
 		-- no automatic shifting#
-		if self.vcaClutchTimer > 0 and self.vcaAutoUpTimer < 1000 then 
-			self.vcaAutoUpTimer = 1000 
-		end 
-		if self.gearChangeTimer > 0 and self.vcaAutoUpTimer < 500 then 
+		if self.vcaClutchTimer > 0 and self.vcaAutoUpTimer < 500 then 
 			self.vcaAutoUpTimer = 500 
+		end 
+		if self.gearChangeTimer > 0 and self.vcaAutoUpTimer < 250 then 
+			self.vcaAutoUpTimer = 250 
 		end 
 		if self.gearChangeTimer > 0 and self.vcaAutoDownTimer < 1000 then 
 			self.vcaAutoDownTimer = 1000 
@@ -6016,8 +6007,8 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 				elseif self.gearChangeTimer <= 0 and not self.vehicle:vcaGetNeutral() then
 					local m1 = self.minRpm + 0.1 * rpmRange
 					local m4 = math.min( math.max( self.vehicle.vcaRatedRpm, motorPtoRpm * 1.025 ), 
-															 math.max( self.vcaMaxPowerRpmL, self.vcaMaxPowerRpmH - rpmRange * 0.2 * math.max( 0, self.vcaWheelAccS ) ),
-															 self.minRpm + rpmRange * 0.975 )
+															 math.max( self.vcaMaxPowerRpmL, self.vcaMaxPowerRpmH - rpmRange * 0.3 * math.max( 0, self.vcaWheelAccS ) ),
+															 self.minRpm + rpmRange * 0.95 )
 					if hasActiveWorkArea then  
 						m1 = math.min( math.max( m1, 0.7*math.min( 2200, self.maxRpm ) ), m4 )
 					end 
@@ -7236,13 +7227,7 @@ function vehicleControlAddon:vcaShowSettingsUI()
 	
 	self.vcaUI.vcaOwn2RevMode = { "reverser", "gear", "range" }
 
-	local vis = 0
-	if     self.vcaTransmission == vehicleControlAddonTransmissionBase.ownTransmission  then
-		vis = 1
-	elseif self.vcaTransmission == vehicleControlAddonTransmissionBase.own2Transmission then
-		vis = 2
-	end 
-	g_vehicleControlAddonTabbedMenu:setShowOwnTransmission( vis )
+	g_vehicleControlAddonTabbedMenu:setShowOwnTransmission( self.vcaTransmission == vehicleControlAddonTransmissionBase.ownTransmission )
 
 	g_gui:showGui( "vehicleControlAddonMenu" )	
 end
@@ -7548,13 +7533,7 @@ end
 
 function vehicleControlAddon:vcaUISetvcaTransmission( value )
 	self:vcaSetState("vcaTransmission", value )
-	local vis = 0
-	if     self.vcaTransmission == vehicleControlAddonTransmissionBase.ownTransmission  then 
-		vis = 1
-	elseif self.vcaTransmission == vehicleControlAddonTransmissionBase.own2Transmission then 
-		vis = 2
-	end 
-	g_vehicleControlAddonTabbedMenu:setShowOwnTransmission( vis )
+	g_vehicleControlAddonTabbedMenu:setShowOwnTransmission( self.vcaTransmission == vehicleControlAddonTransmissionBase.ownTransmission )
 end 
 
 function vehicleControlAddon:vcaUIGetvcaBlowOffVolume()
