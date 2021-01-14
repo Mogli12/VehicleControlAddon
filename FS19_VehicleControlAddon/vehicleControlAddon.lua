@@ -6,7 +6,6 @@
 --***************************************************************
 source(Utils.getFilename("mogliBase.lua", g_currentModDirectory))
 source(Utils.getFilename("vehicleControlAddonTransmissions.lua", g_currentModDirectory))
-source(Utils.getFilename("vehicleControlAddonTransmissionOwn2.lua", g_currentModDirectory))
 _G[g_currentModName..".mogliBase"].newClass( "vehicleControlAddon" )
 --***************************************************************
 
@@ -170,11 +169,11 @@ function vehicleControlAddon.stringToList( text, fct )
 		table.insert(list, fct( string.sub(text, start )))
 	end
 	
-	print("===============================================================")
-	for i,l in pairs( list ) do 
-		print(tostring(i)..": "..tostring(l).." ("..type(l)..")")
-	end 
-	print("---------------------------------------------------------------")
+--print("===============================================================")
+--for i,l in pairs( list ) do 
+--	print(tostring(i)..": "..tostring(l).." ("..type(l)..")")
+--end 
+--print("---------------------------------------------------------------")
 	
 	return list;
 end 		
@@ -255,13 +254,10 @@ local listOfProperties =
 		{ func=listOfFunctions.bool,  xmlName="diffLockSwap",  propName="vcaDiffLockSwap"  },
 		{ func=listOfFunctions.bool,  xmlName="diffFrontAdv",  propName="vcaDiffFrontAdv"  },
 		{ func=listOfFunctions.bool,  xmlName="diffManual",    propName="vcaDiffManual"    },
-		{ func=listOfFunctions.string,xmlName="own2GearRatio", propName="vcaOwn2GearRatio" },
-		{ func=listOfFunctions.string,xmlName="own2RevRatio",  propName="vcaOwn2RevRatio"  },
-		{ func=listOfFunctions.string,xmlName="own2RangeRatio",propName="vcaOwn2RangeRatio"},
-		{ func=listOfFunctions.string,xmlName="own2GearNames", propName="vcaOwn2GearNames" },
-		{ func=listOfFunctions.string,xmlName="own2RevNames",  propName="vcaOwn2RevNames"  },
-		{ func=listOfFunctions.string,xmlName="own2RangeNames",propName="vcaOwn2RangeNames"},
-		{ func=listOfFunctions.int16, xmlName="own2RevMode",   propName="vcaOwn2RevMode"},
+		{ func=listOfFunctions.string,xmlName="ownRevGears",   propName="vcaOwnRevGears"   },
+		{ func=listOfFunctions.string,xmlName="ownRevRange",   propName="vcaOwnRevRange"   },
+		{ func=listOfFunctions.string,xmlName="ownRevRatio",   propName="vcaOwnRevRatio"   },
+		{ func=listOfFunctions.string,xmlName="ownSplitG27",   propName="vcaOwnSplitG27"   },
 	}
 
 
@@ -552,13 +548,10 @@ function vehicleControlAddon:onLoad(savegame)
 	vehicleControlAddon.registerState( self, "vcaOwnAutoGears"  , true  , function( self, ... ) vehicleControlAddon.vcaOnSetOwn( self, "vcaOwnAutoGears"  , ... ) end )
 	vehicleControlAddon.registerState( self, "vcaOwnAutoRange"  , false , function( self, ... ) vehicleControlAddon.vcaOnSetOwn( self, "vcaOwnAutoRange"  , ... ) end )
 	
-	vehicleControlAddon.registerState( self, "vcaOwn2GearRatio" , "2, 1.587, 1.260, 1", function( self, ... ) vehicleControlAddon.vcaOnSetOwn( self, "vcaOwn2GearRatio" , ... ) end )
-	vehicleControlAddon.registerState( self, "vcaOwn2GearNames" , "G1, G2, G3, G4"    , function( self, ... ) vehicleControlAddon.vcaOnSetOwn( self, "vcaOwn2GearNames" , ... ) end )
-	vehicleControlAddon.registerState( self, "vcaOwn2RangeRatio", "5, 3, 2, 1"        , function( self, ... ) vehicleControlAddon.vcaOnSetOwn( self, "vcaOwn2RangeRatio", ... ) end )
-	vehicleControlAddon.registerState( self, "vcaOwn2RangeNames", "A, B, C, D"        , function( self, ... ) vehicleControlAddon.vcaOnSetOwn( self, "vcaOwn2RangeNames", ... ) end )
-	vehicleControlAddon.registerState( self, "vcaOwn2RevRatio"  , "1.8"               , function( self, ... ) vehicleControlAddon.vcaOnSetOwn( self, "vcaOwn2RevRatio"  , ... ) end )
-	vehicleControlAddon.registerState( self, "vcaOwn2RevNames"  , "R"                 , function( self, ... ) vehicleControlAddon.vcaOnSetOwn( self, "vcaOwn2RevNames"  , ... ) end )
-	vehicleControlAddon.registerState( self, "vcaOwn2RevMode"   , 2                   , function( self, ... ) vehicleControlAddon.vcaOnSetOwn( self, "vcaOwn2RevMode"   , ... ) end )
+	vehicleControlAddon.registerState( self, "vcaOwnRevGears"   , ""    , function( self, ... ) vehicleControlAddon.vcaOnSetOwn( self, "vcaOwnRevGears"   , ... ) end )
+	vehicleControlAddon.registerState( self, "vcaOwnRevRange"   , ""    , function( self, ... ) vehicleControlAddon.vcaOnSetOwn( self, "vcaOwnRevRange"   , ... ) end )
+	vehicleControlAddon.registerState( self, "vcaOwnRevRatio"   , 1.0   , function( self, ... ) vehicleControlAddon.vcaOnSetOwn( self, "vcaOwnRevRatio"   , ... ) end )
+	vehicleControlAddon.registerState( self, "vcaOwnSplitG27"   , true  , function( self, ... ) vehicleControlAddon.vcaOnSetOwn( self, "vcaOwnSplitG27"   , ... ) end )
 	
 	self.vcaFactor        = 1
 	self.vcaReverseTimer  = 1.5 / VCAGlobals.timer4Reverse
@@ -1858,10 +1851,14 @@ function vehicleControlAddon:vcaGetTransmissionDef()
 			end 
 		end 
 			
-		params.timeGears  = self.vcaOwnGearTime
-		params.timeRanges = self.vcaOwnRangeTime
-		params.autoGears  = self.vcaOwnAutoGears
-		params.autoRanges = self.vcaOwnAutoRange
+		params.timeGears     = self.vcaOwnGearTime
+		params.timeRanges    = self.vcaOwnRangeTime
+		params.autoGears     = self.vcaOwnAutoGears
+		params.autoRanges    = self.vcaOwnAutoRange
+		params.reverseGears  = vehicleControlAddon.stringToList( self.vcaOwnRevGears, tonumber )
+		params.reverseRanges = vehicleControlAddon.stringToList( self.vcaOwnRevRange, tonumber )
+		params.reverseRatio  = self.vcaOwnRevRatio
+		params.splitGears4Shifter = self.vcaOwnSplitG27
 		
 		return vehicleControlAddonTransmissionBase:new( params ) 
 	end 
@@ -7617,24 +7614,27 @@ function vehicleControlAddon:vcaUISetvcaSingleReverse( value )
 	end 
 end 
 
-local function uiSetsList( name, value )
+local function uiSetsList( self, name, value )
 	self:vcaSetState( name, vehicleControlAddon.listToString( vehicleControlAddon.stringToList( value, trim ) ) )
 end 
-local function uiSetnList( name, value )
+local function uiSetnList( self, name, value )
 	self:vcaSetState( name, vehicleControlAddon.listToString( vehicleControlAddon.stringToList( value, tonumber ) ) )
 end 
 
-function vehicleControlAddon:vcaUIGetvcaOwn2GearRatio()  return self.vcaOwn2GearRatio end 
-function vehicleControlAddon:vcaUIGetvcaOwn2RevRatio()   return self.vcaOwn2RevRatio end 
-function vehicleControlAddon:vcaUIGetvcaOwn2RangeRatio() return self.vcaOwn2RangeRatio end 
-function vehicleControlAddon:vcaUIGetvcaOwn2GearNames()  return self.vcaOwn2GearNames  end 
-function vehicleControlAddon:vcaUIGetvcaOwn2RevNames()   return self.vcaOwn2RevNames  end 
-function vehicleControlAddon:vcaUIGetvcaOwn2RangeNames() return self.vcaOwn2RangeNames  end 
+function vehicleControlAddon:vcaUIGetvcaOwnRevGears() return self.vcaOwnRevGears end 
+function vehicleControlAddon:vcaUIGetvcaOwnRevRange() return self.vcaOwnRevRange end 
 
-function vehicleControlAddon:vcaUISetOwn2GearRatio( value ) uiSetnList( "vcaOwn2GearRatio" , value ) end 
-function vehicleControlAddon:vcaUISetOwn2RevRatio(  value ) uiSetnList( "vcaOwn2RevRatio"  , value ) end 
-function vehicleControlAddon:vcaUISetOwn2RangeRatio(value ) uiSetnList( "vcaOwn2RangeRatio", value ) end 
-function vehicleControlAddon:vcaUISetOwn2GearNames( value ) uiSetsList( "vcaOwn2GearNames" , value ) end 
-function vehicleControlAddon:vcaUISetOwn2RevNames(  value ) uiSetsList( "vcaOwn2RevNames"  , value ) end 
-function vehicleControlAddon:vcaUISetOwn2RangeNames(value ) uiSetsList( "vcaOwn2RangeNames", value ) end 
+function vehicleControlAddon:vcaUISetvcaOwnRevGears( value ) uiSetnList( self, "vcaOwnRevGears" , value ) end 
+function vehicleControlAddon:vcaUISetvcaOwnRevRange( value ) uiSetnList( self, "vcaOwnRevRange" , value ) end 
+
+function vehicleControlAddon:vcaUIGetvcaOwnRevRatio() 
+	return tostring( self.vcaOwnRevRatio ) 
+end 
+
+function vehicleControlAddon:vcaUISetvcaOwnRevRatio( value ) 
+	local v = tonumber( value )
+	if type( v ) == "number" and v > 0 then 
+		self:vcaSetState( "vcaOwnRevRatio", v )
+	end 
+end 
 

@@ -47,6 +47,18 @@
 					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaOWNAUTOGEARS"/>
 					<GuiElement type="bitmap" profile="vcaMTOBg" />
 				</GuiElement>
+				
+				<GuiElement type="textInput" profile="ingameMenuGameSettingsTextInput" id="vcaOwnRevGears" onCreate="onCreateSubElement"
+										toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_OWNREVGEARS"
+										maxCharacters="50" imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed">
+					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaOWNREVGEARS"/>
+				</GuiElement>
+
+				<GuiElement type="textInput" profile="ingameMenuGameSettingsTextInput" id="vcaOwnRevRatio" onCreate="onCreateSubElement"
+										toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_OWNREVRATIO"
+										maxCharacters="10" imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed">
+					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaOWNREVRATIO"/>
+				</GuiElement>
 
 			</GuiElement>			
 			<GuiElement id="boxLayout2" type="boxLayout" profile="vcaSettingsLayoutMid">
@@ -92,6 +104,24 @@
 					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaOWNAUTORANGE"/>
 					<GuiElement type="bitmap" profile="vcaMTOBg" />
 				</GuiElement>
+				
+				<GuiElement type="textInput" profile="ingameMenuGameSettingsTextInput" id="vcaOwnRevRange" onCreate="onCreateSubElement"
+										toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_OWNREVRANGE"
+										maxCharacters="50" imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed">
+					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaOWNREVRANGE"/>
+				</GuiElement>
+				
+				<GuiElement type="checkedOption" profile="vcaMTOSettings" id="vcaOwnSplitG27" 
+												toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_OWNSPLITG27" 
+												onCreate="onCreateSubElement">
+					<GuiElement type="button" profile="vcaMTOLeft" />
+					<GuiElement type="button" profile="vcaMTORight"/>
+					<GuiElement type="text" profile="vcaMTOText" />
+					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaOWNSPLITG27"/>
+					<GuiElement type="bitmap" profile="vcaMTOBg" />
+				</GuiElement>
+				
+				
 
 			</GuiElement>
 		

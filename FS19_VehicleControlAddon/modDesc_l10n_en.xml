@@ -51,6 +51,10 @@
 		<text name="vcaOWNRANGETIME"    text="Time to shift ranges"/>
 		<text name="vcaOWNAUTOGEARS"    text="Automatic gears"/>
 		<text name="vcaOWNAUTORANGE"    text="Automatic ranges"/>
+		<text name="vcaOWNREVGEARS"     text="Reverse gears"/>
+		<text name="vcaOWNREVRANGE"     text="Reverse ranges"/>
+		<text name="vcaOWNREVRATIO"     text="Reverse ratio"/>
+		<text name="vcaOWNSPLITG27"     text="Split G27 shifter gears"/>
 
 		<text name="vcaAntiSlip"        text="Traction control"/>
 		<text name="vcaDiffManual"      text="Manual AWD and differentials"/>
@@ -105,6 +109,10 @@
 		<text name="vca_tip_OWNRANGETIME" text="Time to shift ranges"/>
 		<text name="vca_tip_OWNAUTOGEARS" text="Automatic gears and speed matching"/>
 		<text name="vca_tip_OWNAUTORANGE" text="Automatic ranges and speed matching"/>
+		<text name="vca_tip_OWNREVGEARS"  text="Reverse gears; all if empty"/>
+		<text name="vca_tip_OWNREVRANGE"  text="Reverse ranges; all if empty"/>
+		<text name="vca_tip_OWNREVRATIO"  text="Reverse ratio"/>
+		<text name="vca_tip_OWNSPLITG27"  text="G27 shifter splits gears. If you have 12 gears than the splitter will switch between even and odd gears."/>
 		
 		<text name="vca_tip_AntiSlip"     text="Traction control brakes individual wheels in case of slip"/>
 		<text name="vca_tip_DiffManual"   text="Manual control of all wheel drive and front and back differentials"/>
