@@ -25,6 +25,8 @@ function vehicleControlAddonTransmissionBase:new( params, mt )
 	self.name             = params.name 
 	self.numberOfGears    = params.noGears 
 	self.numberOfRanges   = 1 + #params.rangeGearOverlap
+	self.numberOfRevGears = 0
+	self.numberOfRevRange = 0
 	self.rangeGearFromTo  = {} 
 	local ft = { from = 1, to = self.numberOfGears, ofs = 0 }
 	local i  = 1
@@ -126,22 +128,102 @@ function vehicleControlAddonTransmissionBase:new( params, mt )
 	end 
 	
 	if type( params.reverseGears ) == "table" and table.getn( params.reverseGears ) >= 1 then 
-		self.blockedRevGears = {}
+		self.blockedRevGears  = {}
+		self.reverseGearTexts = {}
 		for i=1,self.numberOfGears do 
-			self.blockedRevGears[i] = true 
+			self.blockedRevGears[i]  = true 
+			self.reverseGearTexts[i] = self.gearTexts[i]
 		end 
-		for _,i in pairs( params.reverseGears ) do 
-			self.blockedRevGears[i] = false  
+		local l = 0
+		for j,i in pairs( params.reverseGears ) do 
+			if 1 <= i and i <= self.numberOfGears then 
+				self.numberOfRevGears   = self.numberOfRevGears + 1 
+				self.blockedRevGears[i] = false  
+				if type( params.reverseGearTexts ) == "table" then 
+					if params.reverseGearTexts[j] ~= nil then 
+						self.reverseGearTexts[i] = params.reverseGearTexts[j]
+					end 
+				else 
+					self.reverseGearTexts[i]   = "R"..tostring(self.numberOfRevGears)
+				end 
+				l = i 
+			end 
+		end 
+		if     type( params.reverseGearTexts ) == "table" then 
+		-- keep external texts
+		elseif self.numberOfRevGears == 1 then 
+			self.reverseGearTexts[l] = "R"
 		end 
 	end 
 	
 	if type( params.reverseRanges ) == "table" and table.getn( params.reverseRanges ) >= 1 then 
-		self.blockedRevRange = {}
+		self.blockedRevRange  = {}
+		self.reverseRangeTexts = {} 
 		for i=1,self.numberOfRanges do 
-			self.blockedRevRange[i] = true 
+			self.blockedRevRange[i]   = true 
+			self.reverseRangeTexts[i] = self.rangeTexts[i]
 		end 
-		for _,i in pairs( params.reverseRanges ) do 
-			self.blockedRevRange[i] = false  
+		local f, l = 0, 0
+		for j,i in pairs( params.reverseRanges ) do 
+			if 1 <= i and i <= self.numberOfRanges then 
+				self.numberOfRevRange   = self.numberOfRevRange + 1 
+				self.blockedRevRange[i] = false  
+				if type( params.reverseRangeTexts ) == "table" then 
+					if params.reverseRangeTexts[j] ~= nil then 
+						self.reverseRangeTexts[i] = params.reverseRangeTexts[j]
+					end 
+				else 
+					self.reverseRangeTexts[i]   = "r"..tostring(self.numberOfRevRange)
+				end 
+				l = i 
+				if f <= 0 then 
+					f = i 
+				end 
+			end 
+		end
+		if     type( params.reverseRangeTexts ) == "table" then 
+		-- keep external texts
+		elseif self.reverseGearTexts ~= nil and self.numberOfRevRange == 1 then 
+			self.reverseRangeTexts[l] = "" 
+		elseif f >= l then 
+			self.reverseRangeTexts[l] = "R" 
+		elseif self.numberOfRevRange <= 3 then 
+			self.reverseRangeTexts[f] = "L" 
+			self.reverseRangeTexts[l] = "H" 
+			for i=f+1,l-1 do 
+				if not self.blockedRevRange[i] then 
+					self.reverseRangeTexts[l] = "M" 
+				end 
+			end 
+		end 
+	end 
+	
+	if self.blockedRevGears ~= nil or self.blockedRevRange ~= nil then 
+		self.blockedRevIndex = {}
+		for i,r in pairs( self.gearRatios ) do 
+			self.blockedRevIndex[i] = false 
+		end 
+		
+		if self.blockedRevGears ~= nil then 
+			for gear,b in pairs( self.blockedRevGears ) do 
+				if b then 
+					for range=1,self.numberOfRanges do 
+						local i = self.rangeGearFromTo[range].ofs + gear 
+						self.blockedRevIndex[i] = true 
+					end 
+				end 
+			end 
+		end 
+
+		if self.blockedRevRange ~= nil then 
+			for range,b in pairs( self.blockedRevRange ) do 
+				if b then 
+					for gear=1,self.numberOfGears do 
+						local i = self.rangeGearFromTo[range].ofs + gear 
+						self.blockedRevIndex[i] = true 
+					end 
+				end 
+			end 
 		end 
 	end 
 	
@@ -185,10 +267,10 @@ function vehicleControlAddonTransmissionBase:initGears( noEventSend )
 		self.vehicle:vcaSetState( "vcaRange", self.numberOfRanges, noEventSend )
 	end 
 	
-	if ( self.blockedRevGears ~= nil or self.blockedRevRange ~= nil ) and self.vehicle:vcaGetIsReverse() then 
+	if self.blockedRevIndex ~= nil and self.vehicle:vcaGetIsReverse() then 
 		local g, r = self:findBestReverse()
-		self.vehicle:vcaSetState( "vcaGear",  r )
-		self.vehicle:vcaSetState( "vcaRange", g )
+		self.vehicle:vcaSetState( "vcaGear",  g )
+		self.vehicle:vcaSetState( "vcaRange", r )
 	end 
 	
 	return initGear 
@@ -198,30 +280,34 @@ function vehicleControlAddonTransmissionBase:findBestReverse()
 	local g, r = self.vehicle.vcaGear, self.vehicle.vcaRange
 
 	if self.blockedRevGears ~= nil and self.vehicle:vcaGetIsReverse() then 
-		for i=2,self.numberOfGears do 
-			local j = g + 1 - i 
-			if j < 1 then 
-				j = j + self.numberOfGears 
-			end 
+		local j = g
+		for i=1,self.numberOfGears do 
 			if not self.blockedRevGears[j] then 
 				g = j 
 				break
+			end 
+			j = j - 1
+			if j < 1 then 
+				j = self.numberOfGears 
 			end 
 		end 
 	end 
 	
 	if self.blockedRevRange ~= nil and self.vehicle:vcaGetIsReverse() then 
-		for i=2,self.numberOfRanges do 
-			local j = r + 1 - i 
-			if j < 1 then 
-				j = j + self.numberOfRanges 
-			end 
+		local j = r
+		for i=1,self.numberOfRanges do 
 			if not self.blockedRevRange[j] then 
 				r = j 
 				break
 			end 
+			j = j - 1
+			if j < 1 then 
+				j = self.numberOfRanges 
+			end 
 		end 
 	end 
+	
+	vehicleControlAddon.debugPrint(tostring(self.name)..", findBestReverse: "..tostring(self.vehicle.vcaGear)..", "..tostring(self.vehicle.vcaRange).." => "..tostring(g)..", "..tostring(r))	
 	
 	return g, r 
 end 
@@ -232,14 +318,23 @@ function vehicleControlAddonTransmissionBase:getName()
 end 
 
 function vehicleControlAddonTransmissionBase:getGearText( gear, range )
-	local rt = self.rangeTexts[range]
 	local gt = self.gearTexts[gear]
+	local rt = self.rangeTexts[range]
 
-	if self.vehicle.vcaSingleReverse ~= 0 and self.vehicle:vcaGetIsReverse() then 
+	if self.blockedRevIndex == nil and self.vehicle.vcaSingleReverse ~= 0 and self.vehicle:vcaGetIsReverse() then 
 		if self.vehicle.vcaSingleReverse > 0 then 
 			gt = "R"
 		else
 			rt = "R"
+		end 
+	end 
+	
+	if self.vehicle:vcaGetIsReverse() then 
+		if self.reverseGearTexts ~= nil then 
+			gt = self.reverseGearTexts[gear] 
+		end 
+		if self.reverseRangeTexts ~= nil then 
+			rt = self.reverseRangeTexts[range] 
 		end 
 	end 
 
@@ -282,43 +377,67 @@ end
 function vehicleControlAddonTransmissionBase:gearUp()
 	vehicleControlAddon.debugPrint(tostring(self.name)..", gearUp: "..tostring(self.vehicle.vcaGear)..", "..tostring(self.numberOfGears))
 	
-	if self.vehicle.vcaSingleReverse > 0 and self.vehicle:vcaGetIsReverse() then 
+	if self.blockedRevIndex == nil and self.vehicle.vcaSingleReverse > 0 and self.vehicle:vcaGetIsReverse() then 
 		return 
 	end 
 	
-	if self.vehicle.vcaGear < self.numberOfGears then 
-		if self:getChangeTimeGears() > 100 then 
-			if not ( self.vehicle:vcaGetAutoClutch() or self.vehicle.vcaNeutral ) and self.vehicle.vcaClutchPercent < 1 then 
-				self:grindingGears()
-				return 
-			end 
-			self:gearShiftSound()
-		else 
-			self:powerShiftSound()
+	local old = self.vehicle.vcaGear
+	local new = self.vehicle.vcaGear + 1
+	
+	if self.blockedRevGears ~= nil and self.vehicle:vcaGetIsReverse() then 
+		while new <= self.numberOfGears and self.blockedRevGears[new] do 
+			new = new + 1
 		end 
-		self.vehicle:vcaSetState( "vcaGear", self.vehicle.vcaGear + 1 )
-		vehicleControlAddon.debugPrint(tostring(self.name)..", result: "..tostring(self.vehicle.vcaGear)..", "..tostring(self.numberOfGears))
 	end 
+	
+	if new > self.numberOfGears or new == old then  
+		return 
+	end 
+
+	if self:getChangeTimeGears() > 100 then 
+		if not ( self.vehicle:vcaGetAutoClutch() or self.vehicle.vcaNeutral ) and self.vehicle.vcaClutchPercent < 1 then 
+			self:grindingGears()
+			return 
+		end 
+		self:gearShiftSound()
+	else 
+		self:powerShiftSound()
+	end 
+
+	self.vehicle:vcaSetState( "vcaGear", new )
+	vehicleControlAddon.debugPrint(tostring(self.name)..", result: "..tostring(self.vehicle.vcaGear)..", "..tostring(self.numberOfGears))
 end 
 
 function vehicleControlAddonTransmissionBase:gearDown()
 	
-	if self.vehicle.vcaSingleReverse > 0 and self.vehicle:vcaGetIsReverse() then 
+	if self.blockedRevIndex == nil and self.vehicle.vcaSingleReverse > 0 and self.vehicle:vcaGetIsReverse() then 
 		return 
 	end 
 	
-	if self.vehicle.vcaGear > 1 then 
-		if self:getChangeTimeGears() > 100 then 
-			if not ( self.vehicle:vcaGetAutoClutch() or self.vehicle.vcaNeutral ) and self.vehicle.vcaClutchPercent < 1 then 
-				self:grindingGears()
-				return 
-			end 
-			self:gearShiftSound()
-		else 
-			self:powerShiftSound()
+	local old = self.vehicle.vcaGear
+	local new = self.vehicle.vcaGear - 1
+	
+	if self.blockedRevGears ~= nil and self.vehicle:vcaGetIsReverse() then 
+		while new >= 1 and self.blockedRevGears[new] do 
+			new = new - 1
 		end 
-		self.vehicle:vcaSetState( "vcaGear", self.vehicle.vcaGear - 1 )
 	end 
+	
+	if new < 1 or new == old then  
+		return 
+	end 
+
+	if self:getChangeTimeGears() > 100 then 
+		if not ( self.vehicle:vcaGetAutoClutch() or self.vehicle.vcaNeutral ) and self.vehicle.vcaClutchPercent < 1 then 
+			self:grindingGears()
+			return 
+		end 
+		self:gearShiftSound()
+	else 
+		self:powerShiftSound()
+	end 
+
+	self.vehicle:vcaSetState( "vcaGear", new )
 end 
 
 function vehicleControlAddonTransmissionBase:rangeSpeedMatching( noSpeedMatching )
@@ -329,6 +448,7 @@ function vehicleControlAddonTransmissionBase:rangeSpeedMatching( noSpeedMatching
 			and self.rangeGearFromTo[self.vehicle.vcaRange] ~= nil 
 			and not ( noSpeedMatching )
 			and not self.vehicle:vcaGetAutoHold()
+			and ( self.blockedRevGears == nil or not self.vehicle:vcaGetIsReverse() )
 			then
 		return true 
 	end 
@@ -338,74 +458,94 @@ end
 function vehicleControlAddonTransmissionBase:rangeUp( noSpeedMatching )
 	vehicleControlAddon.debugPrint(tostring(self.name)..", rangeUp: "..tostring(self.vehicle.vcaRange)..", "..tostring(self.numberOfRanges))
 	
-	if self.vehicle.vcaSingleReverse < 0 and self.vehicle:vcaGetIsReverse() then 
+	if self.blockedRevIndex == nil and self.vehicle.vcaSingleReverse < 0 and self.vehicle:vcaGetIsReverse() then 
 		return 
 	end 
 	
-	if self.vehicle.vcaRange < self.numberOfRanges then 
-		if self:getChangeTimeRanges() > 100 then
-			if not ( self.vehicle:vcaGetAutoClutch() or self.vehicle.vcaNeutral ) and self.vehicle.vcaClutchPercent < 1 then 
-				self:grindingGears()
-				return 
-			end 
-			self:gearShiftSound()
-		else 
-			self:powerShiftSound()
+	local old = self.vehicle.vcaRange
+	local new = self.vehicle.vcaRange + 1
+	
+	if self.blockedRevRange ~= nil and self.vehicle:vcaGetIsReverse() then 
+		while new <= self.numberOfRanges and self.blockedRevRange[new] do 
+			new = new + 1
 		end 
-		local r 
-		if self:rangeSpeedMatching( noSpeedMatching ) then 
-			local j = self:getRatioIndex( self.vehicle.vcaGear, self.vehicle.vcaRange )
-			r = self.gearRatios[j] 
-		end 
-		self.vehicle:vcaSetState( "vcaRange", self.vehicle.vcaRange + 1 )
-		if r ~= nil then 
-			local g = 1
-			for i=1,self.numberOfGears do 
-				g = i 
-				local j = self:getRatioIndex( i, self.vehicle.vcaRange )
-				if j ~= nil and self.gearRatios[j] ~= nil and self.gearRatios[j] > r * 1.1 then 
-					break 
-				end 
-			end 
-			self.vehicle:vcaSetState( "vcaGear", g )				
-		end 
-		vehicleControlAddon.debugPrint(tostring(self.name)..", result: "..tostring(self.vehicle.vcaRange)..", "..tostring(self.numberOfRanges))
 	end 
+	
+	if new > self.numberOfRanges or new == old then  
+		return 
+	end	
+
+	if self:getChangeTimeRanges() > 100 then
+		if not ( self.vehicle:vcaGetAutoClutch() or self.vehicle.vcaNeutral ) and self.vehicle.vcaClutchPercent < 1 then 
+			self:grindingGears()
+			return 
+		end 
+		self:gearShiftSound()
+	else 
+		self:powerShiftSound()
+	end 
+
+	self.vehicle:vcaSetState( "vcaRange", new )
+	
+	if self:rangeSpeedMatching( noSpeedMatching ) then 
+		local j = self:getRatioIndex( self.vehicle.vcaGear, old )
+		local r = self.gearRatios[j] 
+		local g = 1
+		for i=1,self.numberOfGears do 
+			g = i 
+			local j = self:getRatioIndex( i, self.vehicle.vcaRange )
+			if j ~= nil and self.gearRatios[j] ~= nil and self.gearRatios[j] > r * 1.1 then 
+				break 
+			end 
+		end 
+		self.vehicle:vcaSetState( "vcaGear", g )				
+	end 
+	vehicleControlAddon.debugPrint(tostring(self.name)..", result: "..tostring(self.vehicle.vcaRange)..", "..tostring(self.numberOfRanges))
 end 
 
 function vehicleControlAddonTransmissionBase:rangeDown( noSpeedMatching )
 	
-	if self.vehicle.vcaSingleReverse < 0 and self.vehicle:vcaGetIsReverse() then 
+	if self.blockedRevIndex == nil and self.vehicle.vcaSingleReverse < 0 and self.vehicle:vcaGetIsReverse() then 
 		return 
 	end 
 	
-	if self.vehicle.vcaRange > 1 then 
-		if self:getChangeTimeRanges() > 100 then
-			if not ( self.vehicle:vcaGetAutoClutch() or self.vehicle.vcaNeutral ) and self.vehicle.vcaClutchPercent < 1 then 
-				self:grindingGears()
-				return 
+	local old = self.vehicle.vcaRange
+	local new = self.vehicle.vcaRange - 1
+	
+	if self.blockedRevRange ~= nil and self.vehicle:vcaGetIsReverse() then 
+		while new >= 1 and self.blockedRevRange[new] do 
+			new = new - 1
+		end 
+	end 
+	
+	if new < 1 or new == old then  
+		return 
+	end 
+
+	if self:getChangeTimeRanges() > 100 then
+		if not ( self.vehicle:vcaGetAutoClutch() or self.vehicle.vcaNeutral ) and self.vehicle.vcaClutchPercent < 1 then 
+			self:grindingGears()
+			return 
+		end 
+		self:gearShiftSound()
+	else 
+		self:powerShiftSound()
+	end 
+
+	self.vehicle:vcaSetState( "vcaRange", new )
+
+	if self:rangeSpeedMatching( noSpeedMatching ) then 
+		local j = self:getRatioIndex( self.vehicle.vcaGear, old )
+		local r = self.gearRatios[j] 
+		local g = self.numberOfGears
+		for i=self.numberOfGears,1,-1 do 
+			g = i 
+			local j = self:getRatioIndex( i, self.vehicle.vcaRange )
+			if j ~= nil and self.gearRatios[j] ~= nil and self.gearRatios[j] < r / 1.1 then 
+				break 
 			end 
-			self:gearShiftSound()
-		else 
-			self:powerShiftSound()
 		end 
-		local r 
-		if self:rangeSpeedMatching( noSpeedMatching ) then 
-			local j = self:getRatioIndex( self.vehicle.vcaGear, self.vehicle.vcaRange )
-			r = self.gearRatios[j] 
-		end 
-		self.vehicle:vcaSetState( "vcaRange", self.vehicle.vcaRange - 1 )
-		if r ~= nil then 
-			local g = self.numberOfGears
-			for i=self.numberOfGears,1,-1 do 
-				g = i 
-				local j = self:getRatioIndex( i, self.vehicle.vcaRange )
-				if j ~= nil and self.gearRatios[j] ~= nil and self.gearRatios[j] < r / 1.1 then 
-					break 
-				end 
-			end 
-			self.vehicle:vcaSetState( "vcaGear", g )				
-		end 
+		self.vehicle:vcaSetState( "vcaGear", g )				
 	end 
 end 
 
@@ -465,7 +605,7 @@ function vehicleControlAddonTransmissionBase:getAutoShiftIndeces( curRatio, lowR
 	local cg = self.vehicle.vcaGear
 	local cr = self.vehicle.vcaRange
 
-	if self.vehicle.vcaSingleReverse ~= 0 and self.vehicle:vcaGetIsReverse() then 
+	if self.blockedRevIndex == nil and self.vehicle.vcaSingleReverse ~= 0 and self.vehicle:vcaGetIsReverse() then 
 		if self.vehicle.vcaSingleReverse > 0 then 
 			ag = false 
 			cg = math.min( self.vehicle.vcaSingleReverse, self.numberOfGears )
@@ -499,7 +639,9 @@ function vehicleControlAddonTransmissionBase:getAutoShiftIndeces( curRatio, lowR
 		for i=1,table.getn( self.gearRatios ) do 
 			local r = self.gearRatios[i]
 			if 			( rf <= r and r <= rt )
-					and ( ( r < curRatio and searchDown and r >= lowRatio ) or ( searchUp and r > curRatio ) ) then 
+					and ( ( r < curRatio and searchDown and r >= lowRatio ) or ( searchUp and r > curRatio ) )
+					and not ( self.blockedRevIndex ~= nil and self.vehicle:vcaGetIsReverse() and self.blockedRevIndex[i] ) 
+					then 
 				table.insert( gearList, i )
 			end 
 		end 
@@ -515,7 +657,9 @@ function vehicleControlAddonTransmissionBase:getAutoShiftIndeces( curRatio, lowR
 			for _,i in pairs(tmpList) do 
 				local r = self.gearRatios[i]
 				if 			( rf <= r and r <= rt )
-						and ( ( r < curRatio and searchDown and r >= lowRatio ) or ( searchUp and r > curRatio ) ) then 
+						and ( ( r < curRatio and searchDown and r >= lowRatio ) or ( searchUp and r > curRatio ) ) 
+						and not ( self.blockedRevIndex ~= nil and self.vehicle:vcaGetIsReverse() and self.blockedRevIndex[i] ) 
+						then 
 					table.insert( gearList, i )
 				end 
 			end 
@@ -526,7 +670,7 @@ function vehicleControlAddonTransmissionBase:getAutoShiftIndeces( curRatio, lowR
 end 
 
 function vehicleControlAddonTransmissionBase:getRatioIndex( gear, range )
-	if self.vehicle.vcaSingleReverse ~= 0 and self.vehicle:vcaGetIsReverse() then 
+	if self.blockedRevIndex == nil and self.vehicle.vcaSingleReverse ~= 0 and self.vehicle:vcaGetIsReverse() then 
 		if self.vehicle.vcaSingleReverse > 0 then
 			gear  =  self.vehicle.vcaSingleReverse
 		else
@@ -581,7 +725,7 @@ function vehicleControlAddonTransmissionBase:getRatioIndexListOfGear( gear )
 	
 	for i,r in pairs(self.rangeGearFromTo) do 
 		local i = gear + r.ofs
-		if self.gearRatios[i] ~= nil then 
+		if self.gearRatios[i] ~= nil and not ( self.blockedRevIndex ~= nil and self.vehicle:vcaGetIsReverse() and self.blockedRevIndex[i] ) then 
 			table.insert( list, i ) 
 			
 			if self.vehicle ~= nil then 
@@ -603,7 +747,7 @@ function vehicleControlAddonTransmissionBase:getRatioIndexListOfRange( range )
 	end 
 	
 	for i=self.rangeGearFromTo[range].from,self.rangeGearFromTo[range].to do	
-		if self.gearRatios[i] ~= nil then 
+		if self.gearRatios[i] ~= nil and not ( self.blockedRevIndex ~= nil and self.vehicle:vcaGetIsReverse() and self.blockedRevIndex[i] ) then 
 			table.insert( list, i )
 			if self.vehicle ~= nil then 
 				self.vehicle.vcaDebugR = self.vehicle.vcaDebugR .. string.format( "%d  ",i )
@@ -906,6 +1050,10 @@ vehicleControlAddonTransmissionBase.transmissionList =
 			params = { name               = "2x6",
                  noGears            = 6,
                  rangeGearOverlap   = {0},
+								 reverseGears       = { 3, 6 },
+								 reverseRanges      = { 1 },
+								 reverseGearTexts   = { "RL",  "RH" },
+								 shifterIndexList   = { 1,7, 2,8, 3,9, 4,10, 5,11, 6,12, 3,6 },
                  splitGears4Shifter = false },
 			text   = "2x6" },
 		{ class  = vehicleControlAddonTransmissionBase, 
@@ -947,6 +1095,9 @@ vehicleControlAddonTransmissionBase.transmissionList =
                  rangeGearOverlap   = {3}, 1000, 
                  gearRatios         = { 0.1, 0.15, 0.2, 
 																				0.2778, 0.3889, 0.5278, 0.7222, 1, 1.3889 }, 
+								 reverseGears       = { 1 },
+								 reverseRatio       = 1.2,
+								 shifterIndexList   = { 1,4, 2,5, 3,6, 4,7, 5,8, 6,9, 1,4 },
                  autoRanges         = false },
 			text   = "Car with low range" },
 		{ class  = vehicleControlAddonTransmissionBase, 
@@ -998,6 +1149,34 @@ vehicleControlAddonTransmissionBase.transmissionList =
                  rangeTexts         = {"A","B","C"}, 
                  shifterIndexList   = { 7, 9, 13, 15, 17, 18, 19, 20, 21, 22, 23, 24, 13, 17 } },
 			text   = "Direct Drive" },
+		{ class  = vehicleControlAddonTransmissionBase, 
+			params = { name               = "F16", 
+                 noGears            = 16, 
+                 timeGears          = 0, 
+                 gearRatios         = { 0.051219512, 0.068292683, 0.090243902, 0.12195122 ,
+                                        0.136585366, 0.156097561, 0.180487805, 0.209756098,
+																				0.241463415, 0.27804878 , 0.324390244, 0.373170732,
+																				0.43902439 , 0.587804878, 0.782926829, 1 },
+								 reverseGears       = { 1, 5, 7, 11, 13 },
+								 reverseRatio       = 0.92,
+								 shifterIndexList   = { 1,3, 5,7, 9,10, 11,12, 13,14, 15,16, 7,13 },
+                 rangeGearOverlap   = {} },
+			text   = "16x5 full power shift" },
+		{ class  = vehicleControlAddonTransmissionBase, 
+			params = { name               = "E23", 
+                 noGears            = 23, 
+                 timeGears          = 0, 
+                 gearRatios         = { 0.04467354 , 0.049828179, 0.058419244, 0.067010309,
+                                        0.077319588, 0.089347079, 0.103092784, 0.118556701,
+																				0.135738832, 0.156357388, 0.180412371, 0.20790378 ,
+																				0.240549828, 0.274914089, 0.317869416, 0.369415808,
+																				0.426116838, 0.493127148, 0.568728522, 0.654639175,
+																				0.756013746, 0.865979381, 1 }, 
+								 reverseGears       = { 1, 3, 5, 7, 8, 10, 12, 14, 16, 18, 20 },
+								 reverseRatio       = 0.935,
+								 shifterIndexList   = { 1,3, 5,7, 9,11, 13,15, 17,19, 21,23, 10, 14 },
+                 rangeGearOverlap   = {} },
+			text   = "John Deere e23" },
 		{ class  = vehicleControlAddonTransmissionBase, 
 			params = { name               = "OWN", 
                  noGears            = 1, 
