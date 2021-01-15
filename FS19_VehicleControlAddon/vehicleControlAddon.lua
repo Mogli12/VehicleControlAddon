@@ -256,8 +256,8 @@ local listOfProperties =
 		{ func=listOfFunctions.bool,  xmlName="diffManual",    propName="vcaDiffManual"    },
 		{ func=listOfFunctions.string,xmlName="ownRevGears",   propName="vcaOwnRevGears"   },
 		{ func=listOfFunctions.string,xmlName="ownRevRange",   propName="vcaOwnRevRange"   },
-		{ func=listOfFunctions.string,xmlName="ownRevRatio",   propName="vcaOwnRevRatio"   },
-		{ func=listOfFunctions.string,xmlName="ownSplitG27",   propName="vcaOwnSplitG27"   },
+		{ func=listOfFunctions.float, xmlName="ownRevRatio",   propName="vcaOwnRevRatio"   },
+		{ func=listOfFunctions.bool,  xmlName="ownSplitG27",   propName="vcaOwnSplitG27"   },
 	}
 
 
