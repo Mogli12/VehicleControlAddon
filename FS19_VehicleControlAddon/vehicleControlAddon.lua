@@ -5258,7 +5258,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	end 
 	local fakeRpmS    = vehicleControlAddon.mbClamp( fakeRpm, lastFakeRpm - 0.0005 * dt * rpmRange, lastFakeRpm + 0.001 * dt * rpmRange )	
 	
-	if autoNeutral or lastAutoStopNoRpm then  
+	if autoNeutral then  
 		self.vcaFakeRpm   = fakeRpmS	
 		self.vcaFakeTimer = 500 
 		newAcc            = 0
@@ -5717,7 +5717,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			self.vcaAutoStop = true
 		elseif lastFwd ~= fwd or self.vcaDirTimer ~= nil then 
 		-- no change 
-			self.vcaAutoStopNoRpm = true 
+			self.vcaAutoStopNoRpm = g_currentMission.time  
 		elseif  curBrake > 0.1
 				and not self.vcaAutoStop
 				and ( wheelRpm < 0.9 * self.minRpm or speed < 2 )
@@ -5776,20 +5776,42 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			clutchDt = dt + dt 
 		end 					
 
-		if self.vcaAutoStop or self.vcaClutchTimer == nil or self.vcaClutchTimer >= VCAGlobals.clutchTimer then 
-			self.vcaAutoStopNoRpm = true 
+		if     self.vcaAutoStop
+				or self.vcaClutchTimer == nil 
+				or self.vcaClutchTimer >= VCAGlobals.clutchTimer 
+				or self.vcaDirTimer    ~= nil
+				or self.vehicle:vcaGetNeutral() then 
+			self.vcaAutoStopNoRpm = g_currentMission.time 
 		end 
-		if self.vcaAutoStopNoRpm then 
-			lastAutoStopNoRpm = true 
+		if self.vcaAutoStopNoRpm ~= nil then
+			lastAutoStopNoRpm = self.vcaAutoStopNoRpm
 		end 
-		if     self.vcaClutchTimer == nil or autoNeutral then 
-			self.vcaClutchTimer = VCAGlobals.clutchTimer
-		elseif lastAutoStopNoRpm and fakeRpmS < math.min( fakeRpm, clutchCloseRpm, self.vcaMaxPowerRpmL ) then 
-			self.vcaAutoStopNoRpm = true 
-			self.vcaClutchTimer 	= VCAGlobals.clutchTimer 
-			autoNeutral           = true 
-		elseif self.vcaClutchTimer > 0 then 
-			self.vcaClutchTimer = math.max( 0, math.min( self.vcaClutchTimer - clutchDt, VCAGlobals.clutchTimer - 1 ) )
+		if lastAutoStopNoRpm ~= nil and lastAutoStopNoRpm + 2000 < g_currentMission.time then 
+			self.vcaAutoStopNoRpm = nil 
+			lastAutoStopNoRpm     = nil 
+		end 
+		
+		if      self.vcaClutchTimer == nil or autoNeutral then 
+			self.vcaClutchTimer   = VCAGlobals.clutchTimer
+		elseif  lastAutoStopNoRpm  ~= nil
+				and fakeRpmS            < fakeRpm 
+				and fakeRpmS            < 0.95 * clutchCloseRpm
+				and fakeRpmS            < self.vcaMaxPowerRpmL
+				and self.vcaClutchTimer < 0.9  * VCAGlobals.clutchTimer then 
+			-- keep clutch above 90% if RPM is too low
+			self.vcaClutchTimer 	= 0.9 * VCAGlobals.clutchTimer
+			if self.vcaFakeRpm == nil then 
+				self.vcaFakeRpm     = fakeRpmS 
+				self.vcaFakeTimer   = 100 
+			end 
+		elseif  self.vcaClutchTimer > 0 then 
+			self.vcaClutchTimer   = math.max( 0, math.min( self.vcaClutchTimer - clutchDt, VCAGlobals.clutchTimer - 1 ) )
+		end 
+		
+		if lastAutoStopNoRpm ~= nil and self.vcaClutchTimer > 0 then 
+			self.vcaAutoStopNoRpm = lastAutoStopNoRpm
+		elseif self.vcaAutoStopNoRpm ~= nil then 
+			self.vcaAutoStopNoRpm = nil 
 		end 
 		
 		local gear  = transmission:getRatioIndex( self.vehicle.vcaGear, self.vehicle.vcaRange )		
@@ -6363,7 +6385,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		
 				if self.vehicle:vcaGetAutoClutch() or self.vehicle:vcaGetTurboClutch() then 
 					-- keep max RPM low is important if clutchFactor is small => close the clutch
-					self.vcaMaxRpm = math.min( math.max( wheelRpm, clutchCloseRpm ), self.vcaMaxRpm )
+					self.vcaMaxRpm = math.min( math.max( 1.1 * wheelRpm, clutchCloseRpm ), self.vcaMaxRpm )
 					if self.vcaFakeRpm ~= nil and self.vcaMaxRpm < self.vcaFakeRpm then   
 						self.vcaMaxRpm = self.vcaFakeRpm
 					end 
