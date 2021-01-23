@@ -6839,7 +6839,10 @@ Motorized.updateMotorProperties = Utils.overwrittenFunction( Motorized.updateMot
 function vehicleControlAddon:vcaGetTorqueCurveValue( superFunc, rpm )
 	
 	local damage = 1 - (self.vehicle:getVehicleDamage() * VehicleMotor.DAMAGE_TORQUE_REDUCTION)
-	if     self.vehicle.vcaTorqueCurve > 0 then  
+	
+	if not ( self.vehicle ~= nil and self.vehicle.vcaIsLoaded ) then 
+	-- 
+	elseif self.vehicle.vcaTorqueCurve ~= nil and self.vehicle.vcaTorqueCurve > 0 then  
 		local rRated = Utils.getNoNil( self.vcaMaxRpm, self.vehicle.vcaRatedRpm )
 		local tRated 
 		if self.vehicle.vcaRatedPower > 0 then
@@ -6913,7 +6916,7 @@ function vehicleControlAddon:vcaGetTorqueCurveValue( superFunc, rpm )
 				vehicleControlAddon.torqueCurve4:addKeyframe({ 0.00, time = 1.10})
 			end 
 			c = vehicleControlAddon.torqueCurve4
-		else--if self.vehicle.vcaTorqueCurve == 4 then  
+		else--if self.vehicle.vcaTorqueCurve == 5 then  
 			if vehicleControlAddon.torqueCurve5 == nil then 
 				vehicleControlAddon.torqueCurve5 = AnimCurve:new(linearInterpolator1)
 				vehicleControlAddon.torqueCurve5:addKeyframe({ 0.00, time = 0.00})
@@ -6931,7 +6934,8 @@ function vehicleControlAddon:vcaGetTorqueCurveValue( superFunc, rpm )
 			c = vehicleControlAddon.torqueCurve5
 		end 
 		return tRated * damage * c:get( rpm / rRated ) / c:get( 1 )
-	elseif self.vehicle.vcaGearbox ~= nil or self.vehicle.vcaRatedPower > 0 then 
+	elseif self.vehicle.vcaGearbox ~= nil 
+			or ( self.vehicle.vcaRatedPower ~= nil and self.vehicle.vcaRatedPower > 0 ) then 
 		local factor = 1
 		if self.vehicle.vcaRatedPower > 0 then   
 			factor = self.vehicle.vcaRatedPower / math.max( 0.01, self:getTorqueCurve():get( self.vehicle.vcaRatedRpm ) * self.vehicle.vcaRatedRpm * vehicleControlAddon.factorpi30 )
@@ -6944,13 +6948,14 @@ function vehicleControlAddon:vcaGetTorqueCurveValue( superFunc, rpm )
 		end 
 		return self:getTorqueCurve():get(rpm) * damage * factor 
 	end 
+
 	return superFunc( self, rpm )
 end
 VehicleMotor.getTorqueCurveValue = Utils.overwrittenFunction( VehicleMotor.getTorqueCurveValue, vehicleControlAddon.vcaGetTorqueCurveValue )
 
 function vehicleControlAddon:vcaGetTorqueAndSpeedValues( superFunc )
 
-	if self.vehicle.vcaGearbox ~= nil then 
+	if self.vehicle ~= nil and self.vehicle.vcaIsLoaded and self.vehicle.vcaGearbox ~= nil and self.torqueCurve ~= nil then 
 		local rotationSpeeds = {}
 		local torques = {}
 
