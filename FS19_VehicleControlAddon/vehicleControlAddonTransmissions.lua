@@ -267,10 +267,34 @@ function vehicleControlAddonTransmissionBase:initGears( noEventSend )
 		self.vehicle:vcaSetState( "vcaRange", self.numberOfRanges, noEventSend )
 	end 
 	
-	if self.blockedRevIndex ~= nil and self.vehicle:vcaGetIsReverse() then 
-		local g, r = self:findBestReverse()
-		self.vehicle:vcaSetState( "vcaGear",  g )
-		self.vehicle:vcaSetState( "vcaRange", r )
+	if self.blockedRevIndex ~= nil then 
+		if self.vehicle:vcaGetIsReverse() then 
+			self.lastReverse = true 
+			local g, r = self:findBestReverse()
+			self.vehicle:vcaSetState( "vcaGear",  g )
+			self.vehicle:vcaSetState( "vcaRange", r )
+		elseif self.lastReverse then 
+			self.lastReverse = false 
+			if self.lastGear  ~= nil then 
+				self.vehicle:vcaSetState( "vcaGear",  self.lastGear )
+				self.lastGear  = nil 
+			end 
+			if self.lastRange ~= nil then 
+				self.vehicle:vcaSetState( "vcaRange", self.lastRange )
+				self.lastRange = nil 
+			end 
+		else 
+			if self.blockedRevGears ~= nil and self.blockedRevGears[self.vehicle.vcaGear]  then 
+				self.lastGear  = self.vehicle.vcaGear
+			else
+				self.lastGear  = nil 
+			end 
+			if self.blockedRevRange ~= nil and self.blockedRevRange[self.vehicle.vcaRange] then 
+				self.lastRange = self.vehicle.vcaRange 
+			else 
+				self.lastRange = nil 
+			end 
+		end 
 	end 
 	
 	return initGear 

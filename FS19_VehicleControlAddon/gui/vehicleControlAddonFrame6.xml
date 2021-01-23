@@ -58,8 +58,35 @@
 			</GuiElement>			
 			<GuiElement id="boxLayout2" type="boxLayout" profile="vcaSettingsLayoutMid">
 
+				<GuiElement type="textInput" profile="ingameMenuGameSettingsTextInput" id="vcaSpeedLimitF" onCreate="onCreateSubElement" 
+										toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_SPEEDLIMITF"
+										maxCharacters="10" imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed">
+					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaSPEEDLIMITF"/>
+				</GuiElement>
+				<GuiElement type="textInput" profile="ingameMenuGameSettingsTextInput" id="vcaSpeedLimitB" onCreate="onCreateSubElement" 
+										toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_SPEEDLIMITB"
+										maxCharacters="10" imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed">
+					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaSPEEDLIMITB"/>
+				</GuiElement>
+
+				<GuiElement type="textInput" profile="ingameMenuGameSettingsTextInput" id="vcaRatedPower" onCreate="onCreateSubElement" 
+										toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_RATEDPOWER"
+										maxCharacters="10" imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed">
+					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaRATEDPOWER"/>
+				</GuiElement>
+				
+				<GuiElement type="multiTextOption" profile="vcaMTOSettings" id="vcaTorqueCurve"
+												toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_TORQUECURVE"
+												onCreate="onCreateSubElement" onCreateArgs="list0">
+					<GuiElement type="button" profile="vcaMTOLeft" />
+					<GuiElement type="button" profile="vcaMTORight"/>
+					<GuiElement type="text" profile="vcaMTOText" />
+					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaTORQUECURVE"/>
+					<GuiElement type="bitmap" profile="vcaMTOBg" />
+				</GuiElement>			
 
 			</GuiElement>
+
 		
 			<GuiElement id="vcaHelp" type="text" profile="vcaHelpText" text="$l10n_vca_Help_6" />				
 		</GuiElement>

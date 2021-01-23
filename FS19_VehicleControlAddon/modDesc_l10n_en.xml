@@ -63,7 +63,12 @@
 		<text name="vcaHudX"            text="Hud position x"/>
 		<text name="vcaHudY"            text="Hud position y"/>
 		<text name="vcaHIREDWORKER2"    text="Differentials and hired worker"/>
-		                                
+		
+		<text name="vcaSPEEDLIMITF"     text="Speed limit"/>
+		<text name="vcaSPEEDLIMITB"     text="Maximum reverse speed"/>
+		<text name="vcaRATEDPOWER"      text="Rated power in HP"/>
+		<text name="vcaTORQUECURVE"     text="More realistic torque curve"/>
+		
 		<text name="vca_tip_CAMERAI"      text="The interior camera rotates automatically according to the steering angle"/>
 		<text name="vca_tip_CAMERAO"      text="The exterior camera rotates automatically according to the steering angle"/>
 		<text name="vca_tip_EXPONENT"     text="Sensitivity of the adaptive steering with respect to ground speed"/>
@@ -121,6 +126,11 @@
 		<text name="vca_tip_HudX"         text="Hud position x"/>
 		<text name="vca_tip_HudY"         text="Hud position y"/>
 		<text name="vca_tip_HIREDWORKER2" text="Controls if the hired worked operates the vehicle with vanilla or modified differentials"/>
+	
+		<text name="vca_tip_SPEEDLIMITF"  text="Speed limit of the vehicle"/>
+		<text name="vca_tip_SPEEDLIMITB"  text="Maximum speed limit of the vehicle if reverse driving"/>
+		<text name="vca_tip_RATEDPOWER"   text="Horse power of the vehicle at rated RPM"/>
+		<text name="vca_tip_TORQUECURVE"  text="More realistic torque curve of the vehicle"/>
 		                               
 		<text name="input_vcaSETTINGS"  text="VCA: settings"/>
 		<text name="input_vcaUP"        text="VCA: toggle view direction / lock forwards"/>
@@ -195,6 +205,13 @@
 		<text name="vcaClutchMode_4"    text="turbo (slow)"/>
 		<text name="vcaClutchMode_5"    text="turbo (open)"/>
 		<text name="vcaClutchMode_6"    text="turbo (manual)"/>
+
+		<text name="vcaTorqueCurve_0"   text="default"/>
+		<text name="vcaTorqueCurve_1"   text="modern (40% increase)"/>
+		<text name="vcaTorqueCurve_2"   text="modern (50% increase)"/>
+		<text name="vcaTorqueCurve_3"   text="truck engine (60% increase)"/>
+		<text name="vcaTorqueCurve_4"   text="classic (20% increase)"/>
+		<text name="vcaTorqueCurve_5"   text="classic (30% increase)"/>
 	</texts>
 
 	<longTexts>
@@ -231,6 +248,16 @@ Changes to the global settings have no effect on the current vehicle. They are s
 Here you can configure your own transmission. Gears may be switched automatically.. 
 The maximum speed in highest gear may be theoretical only. You can reach it only without speed limiter. The ratios between gears is calculated from the maximum speed of 1st gear. 
 The two maximum speeds of 2nd highest range are redundant. If you enter one value, the other one is changed accordingly.]]></longText>
-		<longText name="vca_Help_6"><![CDATA[Differentials and all wheel drive]]></longText>		
+		<longText name="vca_Help_6"><![CDATA[Differentials and all wheel drive
+
+If VCA can identify the differentials, then you have the possibility to operate them manually.
+Can you overwrite the speed limits for forwards and reverse driving.
+If the power and torque curve are not accurate enought, then you can overwrite them here.
+- default uses the torque curve of the vehicle
+- modern with 40% torque increase and more 4% peak than rated power
+- modern with 50% torque increase and more 5% peak than rated power
+- truck engine, 55% torque increase and peak power from max torque to rated RPM
+- classic, only 20% torque increase, peak power and rated RPM
+- classic, but 30% torque increase, peak power and rated RPM]]></longText>		
 	</longTexts>
 </l10n>

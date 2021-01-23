@@ -63,7 +63,12 @@
 		<text name="vcaHudX"            text="Hud position x"/>
 		<text name="vcaHudY"            text="Hud position y"/>
 		<text name="vcaHIREDWORKER2"    text="Differentiale und Helfer"/>
-	
+
+		<text name="vcaSPEEDLIMITF"     text="Höchstgeschwindigkeit"/>
+		<text name="vcaSPEEDLIMITB"     text="Geschwindigkeit beim Rückwärtsfahren"/>
+		<text name="vcaRATEDPOWER"      text="Nennleistung in PS"/>
+		<text name="vcaTORQUECURVE"     text="Drehmomentkurve"/>
+		
 		<text name="vca_tip_CAMERAI"      text="Die innere Kamera dreht sich passend zum Lenkeinschlag automatisch mit."/>
 		<text name="vca_tip_CAMERAO"      text="Die äußere Kamera dreht sich passend zum Lenkeinschlag automatisch mit."/>
 		<text name="vca_tip_EXPONENT"     text="Geschwindigkeitsabhängigkeit der adaptiven Lenkung"/>
@@ -121,6 +126,11 @@
 		<text name="vca_tip_HudX"         text="Hud Position X"/>
 		<text name="vca_tip_HudY"         text="Hud Position Y"/>
 		<text name="vca_tip_HIREDWORKER2" text="Steuert, ob die Differentiale modifiziert werden, wenn das Fahrzeug vom Helfer kontrolliert wird"/>
+
+		<text name="vca_tip_SPEEDLIMITF"  text="Abgeregelte Höchstgeschwindigkeit des Fahrzeugs"/>
+		<text name="vca_tip_SPEEDLIMITB"  text="Höchstgeschwindigkeit beim Rückwärtsfahren"/>
+		<text name="vca_tip_RATEDPOWER"   text="Nennleistung in PS bei Nenndrehzahl"/>
+		<text name="vca_tip_TORQUECURVE"  text="Alternative, realistischere Drehmomentkurve"/>
 		
 		<text name="input_vcaSETTINGS"  text="VCA: Einstellungen"/>
 		<text name="input_vcaUP"        text="VCA: Blickrichtung wechseln oder nach vorne schauen"/>
@@ -195,6 +205,13 @@
 		<text name="vcaClutchMode_4"    text="Turbo (langsam)"/>
 		<text name="vcaClutchMode_5"    text="Turbo (offen)"/>
 		<text name="vcaClutchMode_6"    text="Turbo (manuell)"/>
+
+		<text name="vcaTorqueCurve_0"   text="Default"/>
+		<text name="vcaTorqueCurve_1"   text="modern (40% Anstieg)"/>
+		<text name="vcaTorqueCurve_2"   text="modern (50% Anstieg)"/>
+		<text name="vcaTorqueCurve_3"   text="LKW Motor (60% Anstieg)"/>
+		<text name="vcaTorqueCurve_4"   text="klassisch (20% Anstieg)"/>
+		<text name="vcaTorqueCurve_5"   text="klassisch (30% Anstieg)"/>
 	</texts>   
 
 	<longTexts>
@@ -232,6 +249,16 @@ Hier kann man sich sein eigenes Getriebe konfigurieren. Gänge können automatis
 Die Übersetzung des höchsten Gangs ist die theoretische Endgeschwindigkeit bei ausgeschaltetem Begrenzer. Die Höchstgeschwindigkeit im 1. Gang der höchsten Gruppe bestimmt
 das Verhältnis der Gänge untereinander. 
 Die Höchstgeschwindigkeiten in der vorletzten Gruppe sind redundant. Man muss nur einen von beiden Werten eingeben. Der andere wird automatisch angepasst.]]></longText>
-		<longText name="vca_Help_6"><![CDATA[Differentiale und Allradantrieb]]></longText>
+		<longText name="vca_Help_6"><![CDATA[Differentiale, Allradantrieb, Leistung
+		
+Wenn VCA die Differentiale zuordnen kann, dann ist es hier möglich, die Differentialsperren und den Allradantrieb selber zu ein- und auszuschalten.
+Man kann die Höchstgeschwindigkeiten vorwärts und rückwärts anpassen.
+Sollte das Fahrzeug nicht die korrekte Nennleistung haben, dann kann diese hier überschreiben. Dazu gibt es 4 verschiedene Drehmomentkurven
+- default nutzt die Drehmomentkurve des Fahrzeugs
+- modern mit 40% Drehmomentanstieg und 4% höherer Maximalleistung
+- modern mit 50% Drehmomentanstieg und 5% höherer Maximalleistung
+- LKW Motor mit 55% Drehmomentanstieg und Nennleistung vom Maximaldrehmoment bis Nenndrehzahl
+- klassisch mit nur 20% Drehmomentanstieg und Maximalleistung erst bei Nenndrehzahl
+- klassisch aber mit 30% Drehmomentanstieg und Maximalleistung erst bei Nenndrehzahl]]></longText>
 	</longTexts>
 </l10n>

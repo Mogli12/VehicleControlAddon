@@ -11,6 +11,7 @@ function VehicleControlAddonFrame:new(menu, controls, target, customMt)
 	local self = TabbedMenuFrameElement:new(target, customMt or VehicleControlAddonFrame_mt )
 	self.menu = menu 
 	self.controls = controls
+	self.hasCustomMenuButtons = false 
 	self.vcaElements = {}
 	self.vcaIsDirty = true 
 	self.vcaState = {}
@@ -34,27 +35,34 @@ function VehicleControlAddonFrame:copyAttributes(src)
 	self.controls = src.controls
 	self.vcaElements = src.vcaElements
 end
+
 function VehicleControlAddonFrame:update(dt)
 	VehicleControlAddonFrame:superClass().update(self, dt)
-
+	
 	self:vcaSetValues()
 	self:vcaGetValues()
 end
 
 function VehicleControlAddonFrame:onFrameOpen()
 	VehicleControlAddonFrame:superClass().onFrameOpen(self)
-
+	
 	self:vcaGetValues( true ) 
 end 
 
+function VehicleControlAddonFrame:updateMenuButtons()
+	self.menuButtonInfo = { { inputAction = InputAction.MENU_BACK, text = g_i18n:getText("buttonBack"), callback = function() self:onClickBack() end } }
+	self:vcaUpdateMenuButtons()
+	self:setMenuButtonInfoDirty()
+end
 
 function VehicleControlAddonFrame:onFrameClose()
 	VehicleControlAddonFrame:superClass().onFrameClose(self)
-
---print("VCA frame close @"..tostring(g_currentMission.time))
-
 	self:vcaSetValues( true )
 end	
+
+function VehicleControlAddonFrame:vcaUpdateMenuButtons()
+--table.insert(self.menuButtonInfo, {inputAction = InputAction.MENU_ACTIVATE, text = g_i18n:getText("button_rename"), callback = function() self:onButtonRename() end} )
+end 
 	
 function VehicleControlAddonFrame:vcaGetValues( force )
 	if self.vcaState.vcaGetValues then 
