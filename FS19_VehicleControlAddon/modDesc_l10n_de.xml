@@ -255,10 +255,10 @@ Wenn VCA die Differentiale zuordnen kann, dann ist es hier möglich, die Differe
 Man kann die Höchstgeschwindigkeiten vorwärts und rückwärts anpassen.
 Sollte das Fahrzeug nicht die korrekte Nennleistung haben, dann kann diese hier überschreiben. Dazu gibt es 4 verschiedene Drehmomentkurven
 - default nutzt die Drehmomentkurve des Fahrzeugs
-- modern mit 40% Drehmomentanstieg und 4% höherer Maximalleistung
-- modern mit 50% Drehmomentanstieg und 5% höherer Maximalleistung
+- modern mit 40% Drehmomentanstieg und 7% höherer Maximalleistung
+- modern mit 50% Drehmomentanstieg und 8% höherer Maximalleistung
 - LKW Motor mit 55% Drehmomentanstieg und Nennleistung vom Maximaldrehmoment bis Nenndrehzahl
 - klassisch mit nur 20% Drehmomentanstieg und Maximalleistung erst bei Nenndrehzahl
-- klassisch aber mit 30% Drehmomentanstieg und Maximalleistung erst bei Nenndrehzahl]]></longText>
+- klassisch aber mit 30% Drehmomentanstieg und 2% höherer Maximalleistung]]></longText>
 	</longTexts>
 </l10n>

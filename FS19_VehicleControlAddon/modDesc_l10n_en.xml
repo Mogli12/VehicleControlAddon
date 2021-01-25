@@ -254,10 +254,10 @@ If VCA can identify the differentials, then you have the possibility to operate 
 Can you overwrite the speed limits for forwards and reverse driving.
 If the power and torque curve are not accurate enought, then you can overwrite them here.
 - default uses the torque curve of the vehicle
-- modern with 40% torque increase and more 4% peak than rated power
-- modern with 50% torque increase and more 5% peak than rated power
+- modern with 40% torque increase and more 7% peak than rated power
+- modern with 50% torque increase and more 8% peak than rated power
 - truck engine, 55% torque increase and peak power from max torque to rated RPM
 - classic, only 20% torque increase, peak power and rated RPM
-- classic, but 30% torque increase, peak power and rated RPM]]></longText>		
+- classic, but 30% torque increase, peak power 2% over rated power]]></longText>		
 	</longTexts>
 </l10n>

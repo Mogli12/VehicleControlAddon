@@ -6216,8 +6216,8 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 						self.vcaAutoUpTimer = 250
 					elseif rpmLo < autoMinRpm and self.vcaAutoUpTimer < 1000 then 
 						self.vcaAutoUpTimer = 1000
-					elseif rpmLo < autoMaxRpm and self.vcaAutoUpTimer < 250 then 
-						self.vcaAutoUpTimer = 250
+				--elseif rpmLo < autoMaxRpm and self.vcaAutoUpTimer < 250 then 
+				--	self.vcaAutoUpTimer = 250
 					end 
 
 					local searchUp   = ( rpmHi > autoMaxRpm and self.vcaAutoUpTimer   <= 0 and self.vcaNoShiftTimer <= 0 )
@@ -6855,14 +6855,16 @@ function vehicleControlAddon:vcaGetTorqueCurveValue( superFunc, rpm )
 			if vehicleControlAddon.torqueCurve1 == nil then 
 				vehicleControlAddon.torqueCurve1 = AnimCurve:new(linearInterpolator1)
 				vehicleControlAddon.torqueCurve1:addKeyframe({ 0.00, time = 0.00})
-				vehicleControlAddon.torqueCurve1:addKeyframe({ 0.70, time = 0.25})
-				vehicleControlAddon.torqueCurve1:addKeyframe({ 0.90, time = 0.40})
-				vehicleControlAddon.torqueCurve1:addKeyframe({ 0.96, time = 0.47})
-				vehicleControlAddon.torqueCurve1:addKeyframe({ 1.00, time = 0.58})
-				vehicleControlAddon.torqueCurve1:addKeyframe({ 1.00, time = 0.65})
-				vehicleControlAddon.torqueCurve1:addKeyframe({ 0.93, time = 0.76})
-				vehicleControlAddon.torqueCurve1:addKeyframe({ 0.85, time = 0.87})
-				vehicleControlAddon.torqueCurve1:addKeyframe({ 0.80, time = 0.93})
+				vehicleControlAddon.torqueCurve1:addKeyframe({ 0.55, time = 0.10})
+				vehicleControlAddon.torqueCurve1:addKeyframe({ 0.80, time = 0.25})
+				vehicleControlAddon.torqueCurve1:addKeyframe({ 0.90, time = 0.35})
+				vehicleControlAddon.torqueCurve1:addKeyframe({ 0.96, time = 0.42})
+				vehicleControlAddon.torqueCurve1:addKeyframe({ 1.00, time = 0.51})
+				vehicleControlAddon.torqueCurve1:addKeyframe({ 1.00, time = 0.63})
+				vehicleControlAddon.torqueCurve1:addKeyframe({ 0.97, time = 0.73})
+				vehicleControlAddon.torqueCurve1:addKeyframe({ 0.90, time = 0.84})
+				vehicleControlAddon.torqueCurve1:addKeyframe({ 0.86, time = 0.89})
+				vehicleControlAddon.torqueCurve1:addKeyframe({ 0.81, time = 0.93})
 				vehicleControlAddon.torqueCurve1:addKeyframe({ 0.714,time = 1.00})
 				vehicleControlAddon.torqueCurve1:addKeyframe({ 0.64, time = 1.03})
 				vehicleControlAddon.torqueCurve1:addKeyframe({ 0.00, time = 1.10})
@@ -6872,14 +6874,16 @@ function vehicleControlAddon:vcaGetTorqueCurveValue( superFunc, rpm )
 			if vehicleControlAddon.torqueCurve2 == nil then 
 				vehicleControlAddon.torqueCurve2 = AnimCurve:new(linearInterpolator1)
 				vehicleControlAddon.torqueCurve2:addKeyframe({ 0.00, time = 0.00})
-				vehicleControlAddon.torqueCurve2:addKeyframe({ 0.70, time = 0.25})
-				vehicleControlAddon.torqueCurve2:addKeyframe({ 0.90, time = 0.41})
-				vehicleControlAddon.torqueCurve2:addKeyframe({ 0.96, time = 0.46})
-				vehicleControlAddon.torqueCurve2:addKeyframe({ 1.00, time = 0.55})
-				vehicleControlAddon.torqueCurve2:addKeyframe({ 1.00, time = 0.58})
-				vehicleControlAddon.torqueCurve2:addKeyframe({ 0.93, time = 0.71})
-				vehicleControlAddon.torqueCurve2:addKeyframe({ 0.855,time = 0.82})
-				vehicleControlAddon.torqueCurve2:addKeyframe({ 0.76, time = 0.92})
+				vehicleControlAddon.torqueCurve2:addKeyframe({ 0.55, time = 0.10})
+				vehicleControlAddon.torqueCurve2:addKeyframe({ 0.80, time = 0.25})
+				vehicleControlAddon.torqueCurve2:addKeyframe({ 0.90, time = 0.35})
+				vehicleControlAddon.torqueCurve2:addKeyframe({ 0.96, time = 0.42})
+				vehicleControlAddon.torqueCurve2:addKeyframe({ 1.00, time = 0.50})
+				vehicleControlAddon.torqueCurve2:addKeyframe({ 1.00, time = 0.63})
+				vehicleControlAddon.torqueCurve2:addKeyframe({ 0.95, time = 0.72})
+				vehicleControlAddon.torqueCurve2:addKeyframe({ 0.87, time = 0.82})
+				vehicleControlAddon.torqueCurve2:addKeyframe({ 0.83, time = 0.87})
+				vehicleControlAddon.torqueCurve2:addKeyframe({ 0.77, time = 0.92})
 				vehicleControlAddon.torqueCurve2:addKeyframe({ 0.667,time = 1.00})
 				vehicleControlAddon.torqueCurve2:addKeyframe({ 0.60, time = 1.03})
 				vehicleControlAddon.torqueCurve2:addKeyframe({ 0.00, time = 1.10})
@@ -6889,9 +6893,10 @@ function vehicleControlAddon:vcaGetTorqueCurveValue( superFunc, rpm )
 			if vehicleControlAddon.torqueCurve3 == nil then 
 				vehicleControlAddon.torqueCurve3 = AnimCurve:new(linearInterpolator1)
 				vehicleControlAddon.torqueCurve3:addKeyframe({ 0.00, time = 0.00})
-				vehicleControlAddon.torqueCurve3:addKeyframe({ 0.70, time = 0.25})
-				vehicleControlAddon.torqueCurve3:addKeyframe({ 0.95, time = 0.40})
-				vehicleControlAddon.torqueCurve3:addKeyframe({ 1.00, time = 0.45})
+				vehicleControlAddon.torqueCurve3:addKeyframe({ 0.55, time = 0.1})
+				vehicleControlAddon.torqueCurve3:addKeyframe({ 0.80, time = 0.25})
+				vehicleControlAddon.torqueCurve3:addKeyframe({ 0.95, time = 0.35})
+				vehicleControlAddon.torqueCurve3:addKeyframe({ 1.00, time = 0.42})
 				vehicleControlAddon.torqueCurve3:addKeyframe({ 1.00, time = 0.645})
 				vehicleControlAddon.torqueCurve3:addKeyframe({ 0.80, time = 0.81})
 				vehicleControlAddon.torqueCurve3:addKeyframe({ 0.72, time = 0.9 })
@@ -6904,13 +6909,14 @@ function vehicleControlAddon:vcaGetTorqueCurveValue( superFunc, rpm )
 			if vehicleControlAddon.torqueCurve4 == nil then 
 				vehicleControlAddon.torqueCurve4 = AnimCurve:new(linearInterpolator1)
 				vehicleControlAddon.torqueCurve4:addKeyframe({ 0.00, time = 0.00})
-				vehicleControlAddon.torqueCurve4:addKeyframe({ 0.70, time = 0.25})
-				vehicleControlAddon.torqueCurve4:addKeyframe({ 0.90, time = 0.41})
-				vehicleControlAddon.torqueCurve4:addKeyframe({ 0.97, time = 0.48})
-				vehicleControlAddon.torqueCurve4:addKeyframe({ 1.00, time = 0.55})
-				vehicleControlAddon.torqueCurve4:addKeyframe({ 1.00, time = 0.62})
-				vehicleControlAddon.torqueCurve4:addKeyframe({ 0.96, time = 0.76})
-				vehicleControlAddon.torqueCurve4:addKeyframe({ 0.87, time = 0.94})
+				vehicleControlAddon.torqueCurve4:addKeyframe({ 0.55, time = 0.10})
+				vehicleControlAddon.torqueCurve4:addKeyframe({ 0.80, time = 0.25})
+				vehicleControlAddon.torqueCurve4:addKeyframe({ 0.90, time = 0.35})
+				vehicleControlAddon.torqueCurve4:addKeyframe({ 0.96, time = 0.42})
+				vehicleControlAddon.torqueCurve4:addKeyframe({ 1.00, time = 0.50})
+				vehicleControlAddon.torqueCurve4:addKeyframe({ 1.00, time = 0.59})
+				vehicleControlAddon.torqueCurve4:addKeyframe({ 0.96, time = 0.73})
+				vehicleControlAddon.torqueCurve4:addKeyframe({ 0.89, time = 0.89})
 				vehicleControlAddon.torqueCurve4:addKeyframe({ 0.83, time = 1.00})
 				vehicleControlAddon.torqueCurve4:addKeyframe({ 0.79, time = 1.02})
 				vehicleControlAddon.torqueCurve4:addKeyframe({ 0.00, time = 1.10})
@@ -6920,13 +6926,15 @@ function vehicleControlAddon:vcaGetTorqueCurveValue( superFunc, rpm )
 			if vehicleControlAddon.torqueCurve5 == nil then 
 				vehicleControlAddon.torqueCurve5 = AnimCurve:new(linearInterpolator1)
 				vehicleControlAddon.torqueCurve5:addKeyframe({ 0.00, time = 0.00})
-				vehicleControlAddon.torqueCurve5:addKeyframe({ 0.70, time = 0.25})
-				vehicleControlAddon.torqueCurve5:addKeyframe({ 0.90, time = 0.41})
-				vehicleControlAddon.torqueCurve5:addKeyframe({ 0.97, time = 0.48})
-				vehicleControlAddon.torqueCurve5:addKeyframe({ 1.00, time = 0.55})
-				vehicleControlAddon.torqueCurve5:addKeyframe({ 1.00, time = 0.62})
-				vehicleControlAddon.torqueCurve5:addKeyframe({ 0.93, time = 0.76})
-				vehicleControlAddon.torqueCurve5:addKeyframe({ 0.81, time = 0.94})
+				vehicleControlAddon.torqueCurve5:addKeyframe({ 0.55, time = 0.10})
+				vehicleControlAddon.torqueCurve5:addKeyframe({ 0.80, time = 0.25})
+				vehicleControlAddon.torqueCurve5:addKeyframe({ 0.90, time = 0.35})
+				vehicleControlAddon.torqueCurve5:addKeyframe({ 0.96, time = 0.42})
+				vehicleControlAddon.torqueCurve5:addKeyframe({ 1.00, time = 0.50})
+				vehicleControlAddon.torqueCurve5:addKeyframe({ 1.00, time = 0.59})
+				vehicleControlAddon.torqueCurve5:addKeyframe({ 0.96, time = 0.74})
+				vehicleControlAddon.torqueCurve5:addKeyframe({ 0.92, time = 0.83})
+				vehicleControlAddon.torqueCurve5:addKeyframe({ 0.864,time = 0.91})
 				vehicleControlAddon.torqueCurve5:addKeyframe({ 0.77, time = 1.00})
 				vehicleControlAddon.torqueCurve5:addKeyframe({ 0.73, time = 1.02})
 				vehicleControlAddon.torqueCurve5:addKeyframe({ 0.00, time = 1.10})
@@ -7097,7 +7105,7 @@ function vehicleControlAddon:vcaGetTorqueAndSpeedValues( superFunc )
 			self.vcaMaxPowerRpmH = listH[1].r
 			if numKeyFrames > 1 then 
 				local i = 2 
-				local p = 0.97 * pMax
+				local p = 0.99 * pMax
 				while i < numKeyFrames and listH[i].p > p do 
 					i = i + 1
 				end 
@@ -7108,8 +7116,8 @@ function vehicleControlAddon:vcaGetTorqueAndSpeedValues( superFunc )
 				end 
 			end 
 
-			if self.vcaMaxRpm ~= nil and self.vcaMaxPowerRpmH > self.vcaMaxRpm then 
-				self.vcaMaxPowerRpmH = self.vcaMaxRpm
+			if self.vcaMaxRpm ~= nil and self.vcaMaxPowerRpmH > r then 
+				self.vcaMaxPowerRpmH = r
 			end 
 			if self.vcaMaxPowerRpmL > self.vcaMaxPowerRpmH then 
 				self.vcaMaxPowerRpmL = self.vcaMaxPowerRpmH

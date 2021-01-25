@@ -1132,7 +1132,7 @@ vehicleControlAddonTransmissionBase.transmissionList =
 			           gearRatios         = { 0.5, 1.0 }, 
 			           autoRanges         = false, 
 			           gearTexts          = {""}, 
-			           rangeTexts         = { "low", "high" } },
+			           rangeTexts         = { "I", "II" } },
 			text   = "Vario" },
 		{ class  = vehicleControlAddonTransmissionBase,
 			params = { name               = "46A", 
