@@ -5537,10 +5537,6 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		end 
 	end 
 	
-if speedMS > 1 and self.vehicle:getIsMotorStarted() and self.vcaLastGear ~= nil then  
-print(string.format("%5.1f km/f, %5.1f km/f, %5.0f, %5.0f, %d, %d, %4.2f", speed, 3.6 * wheelSpeed, wheelRpm, clutchRpm, self.vehicle.vcaGear, self.vcaLastGear, self.vehicle.vcaClutchDisp )) 
-end 
-	
 	if speedMS > 1 and wheelRpm < self.minRpm + 0.1 * rpmRange then 
 		autoShiftLoad = math.max( math.abs( newAcc ), autoShiftLoad )
 	end 
