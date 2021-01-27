@@ -32,7 +32,10 @@ Changelog version 1.1.1.0:
 - Display of handthrottle in speed meter
 - warnings in info box
 Changelog version 1.2.0.0
-- Rework of clutch]]></en>
+- Rework of clutch
+- Rework of automatic gear shifting
+- Possbiility to overwrite speed limits
+- Possibility to overwrite rated power and torque curve]]></en>
 		<de><![CDATA[Dieses Script variiert abhängig von der gefahrenen Geschwindigkeit die Lenkgeschwindigkeit und dreht die Kamera passend zum Lenkeinschlag und zur Fahrtrichtung. 
 Mit Umschalt-Llinks wird das Gaspedal, der Tempomat und die maximale Drehzahl auf 75% begrenzt. Mit Umschalt-Rechts und den Pfeiltasten kann man in die entsprechende Richtung blicken. 
 Drückt man Strg Links zusammen mit W, dann richtet sich die Fahrtrichtung an festen Richtungen aus.
@@ -60,14 +63,17 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 - Handgas-Anzeige im SpeedMeter
 - Warnungen in InfoBox
 Änderungsliste Versoin 1.2.0.0:
-- Kupplung überarbeitet]]></de>
+- Kupplung überarbeitet
+- Korrekturen an automatischer Gangschaltung
+- Möglichkeit zum Überschreiben der maximalen Geschwindigkeit
+- Möglichkeit zum Überschreiben der Nennleistung und des Drehmomentverlaufs]]></de>
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>store.dds</iconFilename>
-	<version>9.3.1.8</version>
+	<version>9.3.1.9</version>
 	<l10n filenamePrefix="modDesc_l10n">
 		<text name="vcaVERSION">          
-			<en>Vehicle Control Addon beta build 318</en>
+			<en>Vehicle Control Addon beta build 319</en>
 		</text>
 	</l10n>
 	
