@@ -128,7 +128,7 @@
 		<text name="vca_tip_HIREDWORKER2" text="Bedient of de ingehuurde werker het voertuig bestuurd met vanilla of aangepaste versnellingsbak"/>
 
 		<text name="vca_tip_SPEEDLIMITF" text="Snelheidslimiet van het voertuig"/>
-		<text name="vca_tip_SPEEDLIMITB" text="Maximale snelheidslimiet van het voertuig bij achteruit rijden"
+		<text name="vca_tip_SPEEDLIMITB" text="Maximale snelheidslimiet van het voertuig bij achteruit rijden"/>
 		<text name="vca_tip_RATEDPOWER" text="PK's van het voertuig op nominaal toerental"/>
 		<text name="vca_tip_TORQUECURVE" text="Meer realistische koppelkromme van het voertuig"/>
 
