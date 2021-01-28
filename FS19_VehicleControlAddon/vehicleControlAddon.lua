@@ -6053,9 +6053,9 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 
 	
 		local autoShiftLoad = self.vcaUsedPowerRatioS
-		if curAcc > autoShiftLoad and speed < lastRealSpeedLimit - 1 and speed >= 0.99 * self.vcaLastSpeedLimit then 
-			autoShiftLoad = curAcc 
-		end 
+	--if curAcc > autoShiftLoad and speed < lastRealSpeedLimit - 1 and wheelSpeed >= 0.275 * self.vcaLastSpeedLimit then 
+	--	autoShiftLoad = curAcc 
+	--end 
 
 		-- no automatic shifting#
 		if self.vcaClutchTimer > 0 and self.vcaAutoUpTimer < 500 then 
@@ -6783,6 +6783,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	end 
 	
 	--****************************************************************************	
+	self.vcaRealSpeedLimit = self.speedLimit
 	
 	if self.vcaDirTimer ~= nil or self.vcaMaxAccFactor == nil then -- or self.gearChangeTimer > 0 or self.vehicle.vcaClutchDisp > 0 then   
 		self.vcaMaxAccFactor  = 0.01
@@ -6855,7 +6856,6 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 																									dbg, 3.6 * wheelSpeed, 3.6 * expectedWheelSpeed, self.speedLimit, self.vcaAccSpeedLimit * 3.6 ) 
 	end 
 
-	self.vcaRealSpeedLimit = self.speedLimit
 	self.speedLimit = self.speedLimit * ( 1 + self.vcaWheelSlipS )
 
 	self.vehicle.vcaDebugSL = debugFormat("a:%5.3f, p:%5.3f, l:%7.3f, l1:%7.3f, l2:%7.3f\nw:%7.3f, s:%7.3f, s2:%7.3f, e:%7.3f\n aw:%7.3f, a1:%7.3f, a2:%7.3f, am:%7.3f, a1:%7.3f, a2:%7.3f", 
