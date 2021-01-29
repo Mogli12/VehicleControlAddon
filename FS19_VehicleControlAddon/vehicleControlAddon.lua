@@ -5241,14 +5241,10 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		
 	if self.vcaDirTimer ~= nil or self.gearChangeTimer > 0 or self.vcaWheelAccS == nil then 
 		self.vcaWheelAccS = 0
-		self.vcaWheelAccF = 0
 		self.vcaMotorAccS = 0
-		self.vcaMotorAccF = 0
 	else 
-		self.vcaWheelAccS = self.vcaWheelAccS + 0.02 * ( self.vcaWheelAcc - self.vcaWheelAccS )
-		self.vcaWheelAccF = self.vcaWheelAccF + 0.10 * ( self.vcaWheelAcc - self.vcaWheelAccF )
-		self.vcaMotorAccS = self.vcaMotorAccS + 0.02 * ( self.vcaMotorAcc - self.vcaMotorAccS )
-		self.vcaMotorAccF = self.vcaMotorAccF + 0.10 * ( self.vcaMotorAcc - self.vcaMotorAccF )
+		self.vcaWheelAccS = self.vcaWheelAccS + 0.04 * ( self.vcaWheelAcc - self.vcaWheelAccS )
+		self.vcaMotorAccS = self.vcaMotorAccS + 0.04 * ( self.vcaMotorAcc - self.vcaMotorAccS )
 	end 
 	
 	self.vehicle.vcaIdleRpmRatio = nil
@@ -5418,11 +5414,6 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		minGearRatio = -minGearRatio
 		maxGearRatio = -maxGearRatio
 	end 
-	if self.vcaGearRatioS == nil then 
-		self.vcaGearRatioS = self.vcaCurGearRatio
-	else 
-		self.vcaGearRatioS = self.vcaGearRatioS + 0.02 * ( self.vcaCurGearRatio - self.vcaGearRatioS )
-	end 
 	
 	--****************************************
 	-- neutral
@@ -5568,7 +5559,8 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		self.vcaAutoLowTimer  = nil
 		self.vcaBrakeTimer    = nil
 		self.vcaIncreaseRpm   = nil
-		self.vcaAutoStop      = nil
+		self.vcaAutoStop      = true 
+		self.vcaAutoStopNoRpm = true 
 
 		if      self.minForwardGearRatio  ~= nil 
 				and self.maxForwardGearRatio  ~= nil 
@@ -6059,6 +6051,9 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	--if curAcc > autoShiftLoad and speed < lastRealSpeedLimit - 1 and wheelSpeed >= 0.275 * self.vcaLastSpeedLimit then 
 	--	autoShiftLoad = curAcc 
 	--end 
+		if self.vcaWheelAccS > 1.0 then 
+			autoShiftLoad = autoShiftLoad * ( 1 - 0.5 * math.min( 1, self.vcaWheelAccS - 1.0 ) )
+		end 
 
 		-- no automatic shifting#
 		if self.vcaClutchTimer > 0 and self.vcaAutoUpTimer < 500 then 
@@ -6075,6 +6070,12 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			self.vcaNoShiftTimer  = 0
 	--elseif self.vcaClutchTimer <= 0 and motorPtoRpm < self.minRpm and curAcc < 0.1 and curBrake < 0.1 and self.vcaAutoDownTimer < 1 then
 	--	self.vcaAutoDownTimer = 1
+		end 
+		if      self.vcaWheelAccS > 1 
+				and wheelRpm > self.minRpm + 0.7 * rpmRange
+				and wheelRpm > motorPtoRpm then 
+			self.vcaAutoUpTimer  = 0
+			self.vcaNoShiftTimer = 0
 		end 
 		if motorPtoRpm < self.minRpm and autoShiftLoad < 0.5 then 
 			self.vcaAutoLowTimer = 5000 
@@ -6214,10 +6215,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 						autoMinRpm = vehicleControlAddon.mbClamp( idleRpm - 0.05 * rpmRange, m1, m4 )
 					elseif motorPtoRpm < self.minRpm then 
 					-- no PTO
-						local m5 = math.max( m1, 1.25 * self.vcaMaxPowerRpmL ) -- typical RPM reduction of gear shifting is 80%
-						if self.vcaWheelAccS > 0 and m4 > m5 then 
-							m4 = m4 - ( m4 - m5 ) * math.min( 1, self.vcaWheelAccS )
-						end 
+						m4 = math.min( self.vcaMaxPowerRpmH, m4 )
 						if curBrake > 0.5 and self.vcaBrakeTimer ~= nil and self.vcaBrakeTimer > 0 then 
 							m1 = math.min( math.max( m1, self.minRpm + math.min( 0.6, self.vcaBrakeTimer * 0.0005 ) * rpmRange ), m4 )
 						elseif hasActiveWorkArea then  
@@ -6424,7 +6422,12 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			end 
 		end 
 		
-		if self.gearChangeTimer > 100 and curBrake > 0.5 and self.vcaBrakeTimer ~= nil and self.vcaBrakeTimer > 100 then
+		if      self.gearChangeTimer > 100
+				and curBrake             > 0.5
+				and self.vcaBrakeTimer  ~= nil
+				and self.vcaBrakeTimer   > 100
+				and self.vehicle:vcaGetAutoShift()
+				then
 			self.gearChangeTimer = 100
 		end 
 		
@@ -6755,6 +6758,8 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	if      self.vehicle.vcaNeutral 
 			or  self.vehicle.vcaClutchPercent > 0.8 then 
 		f = VCAGlobals.rotInertiaFactorLow 
+	elseif  self.vehicle.vcaGearbox ~= nil and self.vehicle.vcaGearbox.isIVT then 
+		f = VCAGlobals.rotInertiaFactorIVT
 	elseif  ( self.vcaAutoStop or fwd ~= lastFwd or self.vcaDirTimer ~= nil )
 			and curGearRatio ~= nil then 
 		self.vcaLowROIFactor = true 
@@ -6766,18 +6771,17 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			and math.abs( self.vcaLastAccS ) > 0.5 then 
 		self.vcaLowROIFactor = true 
 		f = VCAGlobals.rotInertiaFactorLow 
-	elseif self.vehicle.vcaClutchDisp > 0 
+	elseif  self.vehicle.vcaClutchDisp > 0 
 			and self.gearChangeTimer <= 0
-			and lastLowROIFactor then 
-		self.vcaLowROIFactor = true 
+			and lastLowROIFactor 
+			and self.vcaWheelAccS < 0.4 then 
+		self.vcaLowROIFactor = true 		
 		f = VCAGlobals.rotInertiaFactorLow 
-	elseif  curGearRatio ~= nil 
+	elseif  curGearRatio ~= nil then 
 	-- high ROI if vehicle is in a very low gear 
-			and curGearRatio > 33 then 
-		f = f * math.min( 5, math.max( 1 , curGearRatio * 0.03 ) )
-	elseif  self.gearChangeTimer <= 0 
-			and self.vcaGearChangeTime ~= nil then 
-		f = VCAGlobals.rotInertiaFactorPS
+		-- rotInertiaFactorInc	
+		-- rotInertiaFactorMax	
+		f =  math.min( VCAGlobals.rotInertiaFactorMax, math.max( VCAGlobals.rotInertiaFactor, curGearRatio * VCAGlobals.rotInertiaFactorInc ) )
 	end 
 	
 	self.vehicle:vcaSetROIFactor( f )
