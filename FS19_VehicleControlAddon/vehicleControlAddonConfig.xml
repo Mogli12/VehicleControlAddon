@@ -15,7 +15,7 @@
 	<autoHoldTimer       type="int"   value="1000"/> <!-- ms; 0 = no auto hold -->
 	<rotInertiaFactor    type="float" value="1.5"/>  <!-- rot. interatia is more than just the flywheel, it includes the transmission and the wheels as well -->
 	<rotInertiaFactorLow type="float" value="0.5"/>  <!-- rot. interatia is more than just the flywheel, it includes the transmission and the wheels as well -->
-	<rotInertiaFactorPS  type="float" value="1.5"/>  <!-- rot. interatia is more than just the flywheel, it includes the transmission and the wheels as well -->
+	<rotInertiaFactorPS  type="float" value="1.0"/>  <!-- rot. interatia is more than just the flywheel, it includes the transmission and the wheels as well -->
 	<modifyPitch         type="bool"  value="true"/>
 	<mouseAutoRotateBack type="bool"  value="false"/>
 	<turnOffAWDSpeed     type="float" value="30"/><!-- km/h -->
