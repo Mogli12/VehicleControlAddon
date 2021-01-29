@@ -501,6 +501,7 @@ function vehicleControlAddon:onLoad(savegame)
 	self.vcaSetCruiseSpeed      = vehicleControlAddon.vcaSetCruiseSpeed
 	self.vcaSetROIFactor        = vehicleControlAddon.vcaSetROIFactor
 	self.vcaSpeedToString       = vehicleControlAddon.vcaSpeedToString
+	self.vcaResetMotorProperties= vehicleControlAddon.vcaResetMotorProperties
 	
 	--********************************************************************************************
 	-- functions for others mods 
@@ -2538,7 +2539,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 		
 			local spec = self.spec_motorized
 			if spec.motorizedNode ~= nil and next(spec.differentials) ~= nil then
-				self:updateMotorProperties()
+				self:vcaResetMotorProperties()
 			end 
 		end 
 				
@@ -4433,7 +4434,7 @@ end
 
 function vehicleControlAddon:getDefaultLaunchSpeed()
 	local n = Utils.getNoNil( self.vcaMaxForwardSpeed, self.spec_motorized.motor.maxForwardSpeed )
-	return math.max( math.floor( 0.9 * n + 0.5 ), 15 ) / 3.6
+	return math.max( math.floor( 0.9 * n + 0.5 ), 10 ) / 3.6
 end 
 
 function vehicleControlAddon:getDefaultRatedPower( force )
@@ -5115,7 +5116,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	end 
 	
 	if lastAccPedal == nil then   
-		self.vcaLastAccS = nil
+		self.vcaLastAccS = 0
 	elseif self.vcaLastAccS == nil then
 		self.vcaLastAccS = lastAccPedal 
 	else 
@@ -6211,20 +6212,20 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 						autoMinRpm = vehicleControlAddon.mbClamp( idleRpm - 0.05 * rpmRange, m1, m4 )
 					elseif motorPtoRpm < self.minRpm then 
 					-- no PTO
-						local m5 = 1.25 * self.vcaMaxPowerRpmL -- typical RPM reduction of gear shifting is 80%
+						local m5 = math.max( m1, 1.25 * self.vcaMaxPowerRpmL ) -- typical RPM reduction of gear shifting is 80%
 						if self.vcaWheelAccS > 0 and m4 > m5 then 
-							m4 = math.max( m4 - ( m4 - m5 ) * math.min( 1, self.vcaWheelAccS ), m4 )
+							m4 = m4 - ( m4 - m5 ) * math.min( 1, self.vcaWheelAccS )
 						end 
-						if curBrake > 0.5 and self.vcaBrakeTimer ~= nil and self.vcaBrakeTimer > 100 then 
-							m1 = math.min( math.max( m1, self.minRpm + 0.6 * rpmRange ), m4 )
+						if curBrake > 0.5 and self.vcaBrakeTimer ~= nil and self.vcaBrakeTimer > 0 then 
+							m1 = math.min( math.max( m1, self.minRpm + math.min( 0.6, self.vcaBrakeTimer * 0.0005 ) * rpmRange ), m4 )
 						elseif hasActiveWorkArea then  
 							m1 = math.min( math.max( m1, self.minRpm + 0.4 * rpmRange ), m4 )
 						end 
 						if  curBrake < 0.1 and curAcc > 0.1 and curAcc < 0.8 and self.gearChangeTimer <= 0 then 
 							m4 = math.max( m1, math.min( m4, self.minRpm + curAcc * rpmRange * 0.975 ) )
 						end 
-						local m2 = vehicleControlAddon.mbClamp( self.vcaMaxPowerRpmL, m1, m4 )
-						autoMinRpm = m1 + autoShiftLoad * ( m2 - m1 )
+						m1 = m1 + autoShiftLoad * ( vehicleControlAddon.mbClamp( self.vcaMaxPowerRpmL, m1, m4 ) - m1 )
+						autoMinRpm = m1
 						autoMaxRpm = m4 
 					elseif -1 < self.vehicle.vcaHandthrottle and self.vehicle.vcaHandthrottle < -0.8 then 
 					-- 90% PTO 
@@ -6763,6 +6764,13 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	if      self.vehicle.vcaNeutral 
 			or  self.vehicle.vcaClutchPercent > 0.8 then 
 		f = VCAGlobals.rotInertiaFactorLow 
+	elseif  curGearRatio ~= nil 
+	-- high ROI if vehicle is in a very low gear 
+			and curGearRatio > 33
+	-- give the vehicle a change to start if 1. clutch is open & 2. acceleration is low and 3. throttle is pressed  
+			and not ( self.vehicle.vcaClutchDisp > 0.5 and self.vcaWheelAccS < 0.1 and math.abs( self.vcaLastAccS ) > 0.5 )
+			then 
+		f = f * math.min( 5, math.max( 1 , curGearRatio * 0.03 ) )
 	elseif  self.gearChangeTimer <= 0 
 			and self.vcaGearChangeTime ~= nil then 
 		f = VCAGlobals.rotInertiaFactorPS
@@ -6776,10 +6784,6 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		self.vcaMaxAccFactor = 0.01
 		self.vcaLastAcc      = 0 
 		return 0
-	end 
-
-	if lastAccPedal == nil then 
-		lastAccPedal = 0 
 	end 
 	
 	--****************************************************************************	
@@ -6966,6 +6970,14 @@ end
 Motorized.getCanMotorRun = Utils.overwrittenFunction( Motorized.getCanMotorRun, vehicleControlAddon.vcaGetCanMotorRun )
 --******************************************************************************************************************************************
 
+function vehicleControlAddon:vcaResetMotorProperties()
+	local motor = self:getMotor() 
+	if motor ~= nil then 
+		motor.vcaLastVehicleDamage = nil 
+	end 
+	self:updateMotorProperties()
+end 
+
 function vehicleControlAddon:vcaUpdateMotorProperties( superFunc, ... )
 
 	local motor = self:getMotor()	
@@ -7121,199 +7133,205 @@ VehicleMotor.getTorqueCurveValue = Utils.overwrittenFunction( VehicleMotor.getTo
 function vehicleControlAddon:vcaGetTorqueAndSpeedValues( superFunc )
 
 	if self.vehicle ~= nil and self.vehicle.vcaIsLoaded and self.vehicle.vcaGearbox ~= nil then 
-		local rotationSpeeds = {}
-		local torques = {}
+		if self.vcaLastVehicleDamage == nil or self.vcaLastVehicleDamage ~= self.vehicle:getVehicleDamage() then  
+			self.vcaLastVehicleDamage = self.vehicle:getVehicleDamage()
+			self.vcaRotationSpeeds = {}
+			self.vcaTorqueValues = {}
 
-		local numKeyFrames = 0
-		if type( self.torqueCurve ) == "table" and type( self.torqueCurve.keyframes ) == "table" then 
-			numKeyFrames = #self.torqueCurve.keyframes
-		end 
-		if numKeyFrames < 1 and self.vehicle.vcaTorqueCurve <= 0 then  
-			self.vcaMaxPowerRpmL = self.minRpm 
-			self.vcaMaxPowerRpmH = self.maxRpm 
-			self.vcaPeakPower    = 0
-			self.vcaRatedPower   = 0
-			self.vcaRatedTorque  = 0
-			self.vcaPeakPowerRpm = self.maxRpm
-		else
-			local listL = { { r = 0, p = 0 } }
-			local listH = { { r = 0, p = 0 } }
-
-			self.vcaPeakPower    = 0
-			self.vcaPeakPowerRpm = 0
-
-			local tMax, vLast = 0, 0
-			local tOver, vOver
-			
-			local c, f, r
-			local r = Utils.getNoNil( self.vcaMaxRpm, self.vehicle.vcaRatedRpm )
-			
-			self.vcaRatedTorque = self:getTorqueCurveValue( r )
-			self.vcaRatedPower  = self.vcaRatedTorque * r * vehicleControlAddon.factorpi30
-			
-			if     self.vehicle.vcaTorqueCurve == 1 then 
-				c = vehicleControlAddon.torqueCurve1
-				f = r
-			elseif self.vehicle.vcaTorqueCurve == 2 then 
-				c = vehicleControlAddon.torqueCurve2
-				f = r
-			elseif self.vehicle.vcaTorqueCurve == 3 then 
-				c = vehicleControlAddon.torqueCurve3
-				f = r
-			elseif self.vehicle.vcaTorqueCurve == 4 then 
-				c = vehicleControlAddon.torqueCurve4
-				f = r
-			elseif self.vehicle.vcaTorqueCurve == 5 then 
-				c = vehicleControlAddon.torqueCurve5
-				f = r
-			else 
-				c = self.torqueCurve
-				f = 1
+			local numKeyFrames = 0
+			if type( self.torqueCurve ) == "table" and type( self.torqueCurve.keyframes ) == "table" then 
+				numKeyFrames = #self.torqueCurve.keyframes
 			end 
-			
-			for i,v in ipairs(c.keyframes) do
-				local rpm      = v.time * f
-				local rotSpeed = rpm * vehicleControlAddon.factorpi30
-				local torque   = self:getTorqueCurveValue(rpm)
+			if numKeyFrames < 1 and self.vehicle.vcaTorqueCurve <= 0 then  
+				self.vcaMaxPowerRpmL = self.minRpm 
+				self.vcaMaxPowerRpmH = self.maxRpm 
+				self.vcaPeakPower    = 0
+				self.vcaRatedPower   = 0
+				self.vcaRatedTorque  = 0
+				self.vcaPeakPowerRpm = self.maxRpm
+			else
+				local listL = { { r = 0, p = 0 } }
+				local listH = { { r = 0, p = 0 } }
+
+				self.vcaPeakPower    = 0
+				self.vcaPeakPowerRpm = 0
+
+				local tMax, vLast = 0, 0
+				local tOver, vOver
 				
-				local p = rotSpeed*torque
-
-				if i == 1 and rpm > 0 then  
-					table.insert(rotationSpeeds, 0)
-					table.insert(torques, 0)
-				end
-
-				table.insert(rotationSpeeds, rotSpeed)
-				table.insert(torques, torque)
-				tMax  = rpm
-				vLast = torque 
-				if self.vehicle.vcaTorqueCurve <= 0 and #rotationSpeeds == 3 and torques[3] > torques[2] and rotationSpeeds[3] > rotationSpeeds[2] then
-					torques[1] = math.max( 0, torques[3] - rotationSpeeds[3] * ( torques[3] - torques[2] ) / ( rotationSpeeds[3] - rotationSpeeds[2] ) ) 
+				local c, f, r
+				local r = Utils.getNoNil( self.vcaMaxRpm, self.vehicle.vcaRatedRpm )
+				
+				self.vcaRatedTorque = self:getTorqueCurveValue( r )
+				self.vcaRatedPower  = self.vcaRatedTorque * r * vehicleControlAddon.factorpi30
+				
+				if     self.vehicle.vcaTorqueCurve == 1 then 
+					c = vehicleControlAddon.torqueCurve1
+					f = r
+				elseif self.vehicle.vcaTorqueCurve == 2 then 
+					c = vehicleControlAddon.torqueCurve2
+					f = r
+				elseif self.vehicle.vcaTorqueCurve == 3 then 
+					c = vehicleControlAddon.torqueCurve3
+					f = r
+				elseif self.vehicle.vcaTorqueCurve == 4 then 
+					c = vehicleControlAddon.torqueCurve4
+					f = r
+				elseif self.vehicle.vcaTorqueCurve == 5 then 
+					c = vehicleControlAddon.torqueCurve5
+					f = r
+				else 
+					c = self.torqueCurve
+					f = 1
 				end 
 				
-				if self.vcaMaxRpm ~= nil and tMax > self.vcaMaxRpm then 
-					if p > self.vcaPeakPower then 
-						break 
-					elseif tOver == nil then 
-						tOver = rpm
-						vOver = torque 
-					end 
-				end 
-				
-				if p > self.vcaPeakPower then 
-					self.vcaPeakPower    = p
-					self.vcaPeakPowerRpm = rpm
-					if #listH == 1 then 
-						listH[1].r = rpm 
-						listH[1].p = p 
-					else 
-						listH = { { r = rpm, p = p } }
-					end 
-				else
-					table.insert( listH, { r = rpm, p = p } )
-				end 
-			end 
-
-			for i,rotSpeed in ipairs(rotationSpeeds) do
-				local rpm    = rotSpeed / vehicleControlAddon.factorpi30
-				local torque = torques[i]
-				
-				local p = rotSpeed*torque
-			
-				if rpm >= self.vcaPeakPowerRpm then 
-					table.insert( listL, { r = rpm, p = p } )
-					break 
-				elseif p > 0.97 * self.vcaPeakPower then 
-					table.insert( listL, { r = rpm, p = p } )
-				elseif #listL == 1 then  
-					listL[1].r = rpm 
-					listL[1].p = p 
-				end 
-			end 
-		
-			-- last real torque value at vcaMaxRpm 
-			if self.vcaMaxRpm ~= nil and tMax < self.vcaMaxRpm - 1 and tOver ~= nil then  			
-				vLast = vLast + ( self.vcaMaxRpm - tMax ) * ( vOver - vLast ) / ( tOver - tMax )
-				tMax  = self.vcaMaxRpm
-				table.insert(rotationSpeeds, tMax*vehicleControlAddon.factorpi30)
-				table.insert(torques, vLast )
-			end 
-			-- at a smooth ending
-			if tMax * vehicleControlAddon.maxRpmF0 < self.maxRpm then 
-				tMax  = tMax * vehicleControlAddon.maxRpmF0
-				vLast = 0
-				table.insert(rotationSpeeds, tMax*vehicleControlAddon.factorpi30)
-				table.insert(torques, vLast)
-			end 
-			-- 0 torque at maxRpm 
-			if tMax < self.maxRpm then 	
-				tMax = self.maxRpm
-				table.insert(rotationSpeeds, tMax*vehicleControlAddon.factorpi30)
-				table.insert(torques, 0)
-			end 
+				for i,v in ipairs(c.keyframes) do
+					local rpm      = v.time * f
+					local rotSpeed = rpm * vehicleControlAddon.factorpi30
+					local torque   = self:getTorqueCurveValue(rpm)
 					
-			numKeyFrames = #listL
-			self.vcaMaxPowerRpmL = listL[numKeyFrames].r
-			if numKeyFrames > 1 then 
-				local i = numKeyFrames - 1 
-				local p = 0.97 * self.vcaPeakPower
-				while i > 1 and listL[i].p > p do 
-					i = i - 1
-				end 
-				if listL[i].p < p then 
-					self.vcaMaxPowerRpmL = listL[i].r + ( p - listL[i].p ) * ( listL[i+1].r - listL[i].r ) / ( listL[i+1].p - listL[i].p )
-				else 
-					self.vcaMaxPowerRpmL = listL[i].r
-				end 
-			end 
-			
-			numKeyFrames = #listH
-			self.vcaMaxPowerRpmH = listH[1].r
-			if numKeyFrames > 1 then 
-				local i = 2 
-				local p = 0.99 * self.vcaPeakPower
-				while i < numKeyFrames and listH[i].p > p do 
-					i = i + 1
-				end 
-				if listH[i].p < p then 
-					self.vcaMaxPowerRpmH = listH[i].r + ( p - listH[i].p ) * ( listH[i-1].r - listH[i].r ) / ( listH[i-1].p - listH[i].p )
-				else 
-					self.vcaMaxPowerRpmH = listH[i].r
-				end 
-			end 
+					local p = rotSpeed*torque
 
-			if self.vcaMaxRpm ~= nil and self.vcaMaxPowerRpmH > r then 
-				self.vcaMaxPowerRpmH = r
-			end 
-			if self.vcaMaxPowerRpmL > self.vcaMaxPowerRpmH then 
-				self.vcaMaxPowerRpmL = self.vcaMaxPowerRpmH
-			end 
-			
-			vehicleControlAddon.debugPrint(string.format("ListL => %5.0f", self.vcaMaxPowerRpmL))
-			for i=1,#listL do 
-				vehicleControlAddon.debugPrint(string.format("  %2d, r=%5.0f, p=%6f", i, listL[i].r, listL[i].p ))
-			end 			
-			
-			vehicleControlAddon.debugPrint(string.format("ListH => %5.0f", self.vcaMaxPowerRpmH))
-			for i=1,#listH do 
-				vehicleControlAddon.debugPrint(string.format("  %2d, r=%5.0f, p=%6f", i, listH[i].r, listH[i].p ))
-			end 			
+					if i == 1 and rpm > 0 then  
+						table.insert(self.vcaRotationSpeeds, 0)
+						table.insert(self.vcaTorqueValues, 0)
+					end
 
+					table.insert(self.vcaRotationSpeeds, rotSpeed)
+					table.insert(self.vcaTorqueValues, torque)
+					tMax  = rpm
+					vLast = torque 
+					if self.vehicle.vcaTorqueCurve <= 0 and #self.vcaRotationSpeeds == 3 and self.vcaTorqueValues[3] > self.vcaTorqueValues[2] and self.vcaRotationSpeeds[3] > self.vcaRotationSpeeds[2] then
+						self.vcaTorqueValues[1] = math.max( 0, self.vcaTorqueValues[3] - self.vcaRotationSpeeds[3] * ( self.vcaTorqueValues[3] - self.vcaTorqueValues[2] ) / ( self.vcaRotationSpeeds[3] - self.vcaRotationSpeeds[2] ) ) 
+					end 
+					
+					if self.vcaMaxRpm ~= nil and tMax > self.vcaMaxRpm then 
+						if p > self.vcaPeakPower then 
+							break 
+						elseif tOver == nil then 
+							tOver = rpm
+							vOver = torque 
+						end 
+					end 
+					
+					if p > self.vcaPeakPower then 
+						self.vcaPeakPower    = p
+						self.vcaPeakPowerRpm = rpm
+						if #listH == 1 then 
+							listH[1].r = rpm 
+							listH[1].p = p 
+						else 
+							listH = { { r = rpm, p = p } }
+						end 
+					else
+						table.insert( listH, { r = rpm, p = p } )
+					end 
+				end 
+
+				for i,rotSpeed in ipairs(self.vcaRotationSpeeds) do
+					local rpm    = rotSpeed / vehicleControlAddon.factorpi30
+					local torque = self.vcaTorqueValues[i]
+					
+					local p = rotSpeed*torque
+				
+					if rpm >= self.vcaPeakPowerRpm then 
+						table.insert( listL, { r = rpm, p = p } )
+						break 
+					elseif p > 0.97 * self.vcaPeakPower then 
+						table.insert( listL, { r = rpm, p = p } )
+					elseif #listL == 1 then  
+						listL[1].r = rpm 
+						listL[1].p = p 
+					end 
+				end 
+			
+				-- last real torque value at vcaMaxRpm 
+				if self.vcaMaxRpm ~= nil and tMax < self.vcaMaxRpm - 1 and tOver ~= nil then  			
+					vLast = vLast + ( self.vcaMaxRpm - tMax ) * ( vOver - vLast ) / ( tOver - tMax )
+					tMax  = self.vcaMaxRpm
+					table.insert(self.vcaRotationSpeeds, tMax*vehicleControlAddon.factorpi30)
+					table.insert(self.vcaTorqueValues, vLast )
+				end 
+				-- at a smooth ending
+				if tMax * vehicleControlAddon.maxRpmF0 < self.maxRpm then 
+					tMax  = tMax * vehicleControlAddon.maxRpmF0
+					vLast = 0
+					table.insert(self.vcaRotationSpeeds, tMax*vehicleControlAddon.factorpi30)
+					table.insert(self.vcaTorqueValues, vLast)
+				end 
+				-- 0 torque at maxRpm 
+				if tMax < self.maxRpm then 	
+					tMax = self.maxRpm
+					table.insert(self.vcaRotationSpeeds, tMax*vehicleControlAddon.factorpi30)
+					table.insert(self.vcaTorqueValues, 0)
+				end 
+						
+				numKeyFrames = #listL
+				self.vcaMaxPowerRpmL = listL[numKeyFrames].r
+				if numKeyFrames > 1 then 
+					local i = numKeyFrames - 1 
+					local p = 0.97 * self.vcaPeakPower
+					while i > 1 and listL[i].p > p do 
+						i = i - 1
+					end 
+					if listL[i].p < p then 
+						self.vcaMaxPowerRpmL = listL[i].r + ( p - listL[i].p ) * ( listL[i+1].r - listL[i].r ) / ( listL[i+1].p - listL[i].p )
+					else 
+						self.vcaMaxPowerRpmL = listL[i].r
+					end 
+				end 
+				
+				numKeyFrames = #listH
+				self.vcaMaxPowerRpmH = listH[1].r
+				if numKeyFrames > 1 then 
+					local i = 2 
+					local p = 0.99 * self.vcaPeakPower
+					while i < numKeyFrames and listH[i].p > p do 
+						i = i + 1
+					end 
+					if listH[i].p < p then 
+						self.vcaMaxPowerRpmH = listH[i].r + ( p - listH[i].p ) * ( listH[i-1].r - listH[i].r ) / ( listH[i-1].p - listH[i].p )
+					else 
+						self.vcaMaxPowerRpmH = listH[i].r
+					end 
+				end 
+
+				if self.vcaMaxRpm ~= nil and self.vcaMaxPowerRpmH > r then 
+					self.vcaMaxPowerRpmH = r
+				end 
+				if self.vcaMaxPowerRpmL > self.vcaMaxPowerRpmH then 
+					self.vcaMaxPowerRpmL = self.vcaMaxPowerRpmH
+				end 
+				
+				vehicleControlAddon.debugPrint(string.format("ListL => %5.0f", self.vcaMaxPowerRpmL))
+				for i=1,#listL do 
+					vehicleControlAddon.debugPrint(string.format("  %2d, r=%5.0f, p=%6f", i, listL[i].r, listL[i].p ))
+				end 			
+				
+				vehicleControlAddon.debugPrint(string.format("ListH => %5.0f", self.vcaMaxPowerRpmH))
+				for i=1,#listH do 
+					vehicleControlAddon.debugPrint(string.format("  %2d, r=%5.0f, p=%6f", i, listH[i].r, listH[i].p ))
+				end 			
+
+			end 
+			
+			for i=1,#self.vcaRotationSpeeds do	
+				local r = self.vcaRotationSpeeds[i]*30/math.pi
+				local t = self.vcaTorqueValues[i]*1000
+				local p = 1.36 * self.vcaRotationSpeeds[i] * self.vcaTorqueValues[i]
+				vehicleControlAddon.debugPrint(string.format("%5.0f, %5.0f, %5.0f",r, t, p ))
+			end 
+			
+		--vehicleControlAddon.debugPrint(string.format("%5.0f .. %5.0f", self.vcaMaxPowerRpmL, self.vcaMaxPowerRpmH ))
+			vehicleControlAddon.debugPrint(string.format("%5.0f .. %5.0f", self.vcaMinRpm, self.vcaMaxRpm ))
+			vehicleControlAddon.debugPrint(string.format("%5.0f .. %5.0f", self.minRpm, self.maxRpm ))
 		end 
 		
-		for i=1,#rotationSpeeds do	
-			local r = rotationSpeeds[i]*30/math.pi
-			local t = torques[i]*1000
-			local p = 1.36 * rotationSpeeds[i] * torques[i]
-			vehicleControlAddon.debugPrint(string.format("%5.0f, %5.0f, %5.0f",r, t, p ))
-		end 
-		
-	--vehicleControlAddon.debugPrint(string.format("%5.0f .. %5.0f", self.vcaMaxPowerRpmL, self.vcaMaxPowerRpmH ))
-		vehicleControlAddon.debugPrint(string.format("%5.0f .. %5.0f", self.vcaMinRpm, self.vcaMaxRpm ))
-		vehicleControlAddon.debugPrint(string.format("%5.0f .. %5.0f", self.minRpm, self.maxRpm ))
-		
-		return torques, rotationSpeeds
+		return self.vcaTorqueValues, self.vcaRotationSpeeds
 	end 
+	
+	self.vcaLastVehicleDamage = nil
+	
 	return superFunc( self )
 end 
 
@@ -7391,14 +7409,14 @@ end
 function vehicleControlAddon:onSetRatedPower( old, new, noEventSend )
 	self.vcaRatedPower = new 
 	if self.isServer then 
-		self:updateMotorProperties()
+		self:vcaResetMotorProperties()
 	end 
 end
 
 function vehicleControlAddon:onSetTorqueCurve( old, new, noEventSend )
 	self.vcaTorqueCurve = new 
 	if self.isServer then 
-		self:updateMotorProperties()
+		self:vcaResetMotorProperties()
 	end 
 end 
 
