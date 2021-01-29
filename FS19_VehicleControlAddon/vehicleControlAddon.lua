@@ -5091,6 +5091,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	local lastAutoStopNoRpm   = self.vcaAutoStopNoRpm
 	local lastAccSpeedLimit   = self.vcaAccSpeedLimit
 	local lastShiftWheelRpm   = self.vcaShiftWheelRpm
+	local lastLowROIFactor    = self.vcaLowROIFactor
 	local lastRealSpeedLimit  = Utils.getNoNil( self.vcaRealSpeedLimit, math.huge )  
 	
 	self.vcaMinRpm            = nil 
@@ -5111,6 +5112,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	self.vcaAccSpeedLimit     = nil 
 	self.vcaShiftWheelRpm     = nil 
 	self.vcaRealSpeedLimit    = nil 
+	self.vcaLowROIFactor      = nil
 	if self.vcaLastSpeedLimit == nil then 
 		self.vcaLastSpeedLimit  = math.huge 
 	end 
@@ -5962,9 +5964,9 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 				and fakeRpmS            < fakeRpm 
 				and fakeRpmS            < 0.95 * clutchCloseRpm
 				and fakeRpmS            < self.vcaMaxPowerRpmL
-				and self.vcaClutchTimer < 0.95 * VCAGlobals.clutchTimer then 
+				and self.vcaClutchTimer < VCAGlobals.clutchTimer * 0.97 then 
 			-- keep clutch above 90% if RPM is too low
-			self.vcaClutchTimer 	= 0.95 * VCAGlobals.clutchTimer
+			self.vcaClutchTimer 	= 0.97 * VCAGlobals.clutchTimer
 			if self.vcaFakeRpm == nil then 
 				self.vcaFakeRpm     = fakeRpmS 
 				self.vcaFakeTimer   = 100 
@@ -6748,16 +6750,26 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	
 --self.minGearRatio = self.minGearRatio / ( 1 + 0.1 * self.vcaWheelSlipS )
 --self.maxGearRatio = self.maxGearRatio * ( 1 + 0.1 * self.vcaWheelSlipS )
-		
+	
 	local f = VCAGlobals.rotInertiaFactor
 	if      self.vehicle.vcaNeutral 
 			or  self.vehicle.vcaClutchPercent > 0.8 then 
 		f = VCAGlobals.rotInertiaFactorLow 
+	elseif  ( self.vcaAutoStop or fwd ~= lastFwd or self.vcaDirTimer ~= nil )
+			and curGearRatio ~= nil then 
+		self.vcaLowROIFactor = true 
+		f = VCAGlobals.rotInertiaFactorLow 
 	elseif  self.vehicle.vcaClutchDisp > 0 
 			and self.gearChangeTimer <= 0
 			and wheelSpeed < self.minRpm + 0.1 * rpmRange
-			and self.vcaWheelAccS < 0.1
+			and self.vcaWheelAccS < 0.2
 			and math.abs( self.vcaLastAccS ) > 0.5 then 
+		self.vcaLowROIFactor = true 
+		f = VCAGlobals.rotInertiaFactorLow 
+	elseif self.vehicle.vcaClutchDisp > 0 
+			and self.gearChangeTimer <= 0
+			and lastLowROIFactor then 
+		self.vcaLowROIFactor = true 
 		f = VCAGlobals.rotInertiaFactorLow 
 	elseif  curGearRatio ~= nil 
 	-- high ROI if vehicle is in a very low gear 
