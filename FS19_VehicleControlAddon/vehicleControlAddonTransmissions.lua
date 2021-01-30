@@ -1025,6 +1025,10 @@ function vehicleControlAddonTransmissionBase:gearShifter( number, isPressed )
 			g, r = self:getBestGearRangeFromIndex( self.vehicle.vcaGear, self.vehicle.vcaRange, index )
 		end 
 		
+		vehicleControlAddon.debugPrint( tostring(number).." "..tostring(isPressed)..": "..
+																		tostring(maxNum)..", "..tostring(self.vehicle.vcaShifterLH)..", "..tostring(self.splitGears4Shifter)..", "..
+																		tostring(noSplit).." => "..tostring(num2)..", "..tostring(index)..", "..tostring(g)..", "..tostring(r)..", "..tostring(goFwd))
+		
 		if not ( self.vehicle:vcaGetAutoClutch() ) and self.vehicle.vcaClutchPercent < 1
 				and ( ( g ~= self.vehicle.vcaGear  and self:getChangeTimeGears()  > 100 )
 					 or ( r ~= self.vehicle.vcaRange and self:getChangeTimeRanges() > 100 ) ) then 
@@ -1077,8 +1081,7 @@ vehicleControlAddonTransmissionBase.transmissionList =
 								 reverseGears       = { 3, 6 },
 								 reverseRanges      = { 1 },
 								 reverseGearTexts   = { "RL",  "RH" },
-								 shifterIndexList   = { 1,7, 2,8, 3,9, 4,10, 5,11, 6,12, 3,6 },
-                 splitGears4Shifter = false },
+								 shifterIndexList   = { 1,7, 2,8, 3,9, 4,10, 5,11, 6,12, 3,6 } },
 			text   = "2x6" },
 		{ class  = vehicleControlAddonTransmissionBase, 
 			params = { name               = "FPS", 
