@@ -59,6 +59,10 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vcaOWNRANGETIME"    text="Czas zmiany zakresów"/>
 		<text name="vcaOWNAUTOGEARS"    text="Biegi automatyczne"/>
 		<text name="vcaOWNAUTORANGE"    text="Zakresy automatyczne"/>
+		<text name="vcaOWNREVGEARS"     text="Biegi wsteczne"/>
+		<text name="vcaOWNREVRANGE"     text="Zakresy wsteczne"/>
+		<text name="vcaOWNREVRATIO"     text="Mnożnik wsteczny"/>
+		<text name="vcaOWNSPLITG27"     text="Dzielone biegi w G27"/>
 		
 		<text name="vcaAntiSlip"        text="Kontrola trakcji"/>
 		<text name="vcaDiffManual"      text="Ręczne ustawianie napędów i blokad"/>
@@ -113,6 +117,10 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vca_tip_OWNRANGETIME" text="Czas pomiędzy przełączeniem zakresów"/>
 		<text name="vca_tip_OWNAUTOGEARS" text="Automatyczna zmiana biegów i dopasowanie prędkości"/>
 		<text name="vca_tip_OWNAUTORANGE" text="Automatyczna zmiana zakresów i dopasowanie prędkości"/>
+		<text name="vca_tip_OWNREVGEARS"  text="Biegi wsteczne, jeśli nieustalone to będą nimi wszystkie"/>
+		<text name="vca_tip_OWNREVRANGE"  text="Zakresy wsteczne, jeśli nieustalone to będą nimi wszystkie"/>
+		<text name="vca_tip_OWNREVRATIO"  text="Mnożnik dla biegów wstecznych"/>
+		<text name="vca_tip_OWNSPLITG27"  text="Dzielenie biegów w Shifterze G27. Jeśli masz 12 biegów wtedy dielnik może przełączać pomiędzy biegami parzystymi i nieparzystymi."/>
 		
 		<text name="vca_tip_AntiSlip"     text="Kontrola trakcji automatycznie blokuje koła obracające się bez oporów"/>
 		<text name="vca_tip_DiffManual"   text="Ręczne przełączanie napędów i blokad dyfernecjałów"/>
@@ -121,6 +129,11 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vca_tip_HudX"         text="Pozycja HUDa w osi poziomej"/>
 		<text name="vca_tip_HudY"         text="Pozycja HUDa w osi pionowej"/>
 		<text name="vca_tip_HIREDWORKER2" text="Ustala, czy wynajęty pracownik używa domyślnych czy zmodyfikowanych dyferencjałów"/>
+		
+		<text name="vcaSPEEDLIMITF"     text="Limit prędkości"/>
+		<text name="vcaSPEEDLIMITB"     text="Max. prędkość do tyłu"/>
+		<text name="vcaRATEDPOWER"      text="Moc znamionowa w KM"/>
+		<text name="vcaTORQUECURVE"     text="Bardziej realistyczna krzywa momentu obrotowego"/>
 		
 		<text name="input_vcaSETTINGS"  text="VCA: Ustawienia"/>
 		<text name="input_vcaUP"        text="VCA: Zmiana widok / Widok w przód"/>
@@ -195,6 +208,13 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vcaClutchMode_4"    text="Turbo (wolne)"/>
 		<text name="vcaClutchMode_5"    text="Turbo (otwarte)"/>
 		<text name="vcaClutchMode_6"    text="Turbo (ręcznie)"/>
+		
+		<text name="vcaTorqueCurve_0"   text="Domyślna"/>
+		<text name="vcaTorqueCurve_1"   text="Nowoczesna (wzrost 40%)"/>
+		<text name="vcaTorqueCurve_2"   text="Nowoczesna (wzrost 50%)"/>
+		<text name="vcaTorqueCurve_3"   text="Silnik ciężarówki (wzrost 60%)"/>
+		<text name="vcaTorqueCurve_4"   text="Klasyczna (wzrost 20%)"/>
+		<text name="vcaTorqueCurve_5"   text="Klasyczna (wzrost 30%)"/>
 	</texts>
 	
 	<longTexts>
@@ -241,7 +261,17 @@ Maksymalna prędkość na najwyższym biegu może być tylko teoretyczna. Możes
 Dwie maksymalne prędkości drugiego najwyższego zakresu są zbędne. Jeśli wpiszesz jedną wartość, druga zostanie odpowiednio zmieniona.]]>
 		</longText>
 		<longText name="vca_Help_6">
-<![CDATA[Dyferencjały i napęd na wszystkie koła]]>
+<![CDATA[Dyferencjały i napęd na wszystkie koła
+
+Jeśli VCA może zidentyfikować dyferencjały to masz możliwość ich ręcznej obsługi.
+Możesz nadpisać ograniczenia prędkości dla jazdy do przodu i do tyłu.
+Jeśli krzywa mocy i momentu obrotowego nie jest wystarczająco dokładna, możesz ją tutaj nadpisać.
+- Domyślna - wykorzystuje domyślną krzywą momentu obrotowego pojazdu
+- Nowoczesna - z 40% wzrostem momentu obrotowego i większym o 4% szczytem niż moc znamionowa
+- Nowoczesna - z 60% wzrostem momentu obrotowego i większym o 5% szczytem niż moc znamionowa
+- Silnik ciężarówki - z 55% wzrostem momentu obrotowego i mocy szczytowej od momentu maksymalnego przy znamionowych RPM
+- Klasyczna - tylko 20% wzrost momentu obrotowego i mocy szczytowej przy znamionowych RPM
+- Klasyczna - ale 30% wzrost momentu obrotowego i mocy szczytowej przy znamionowych RPM]]>
 		</longText>
 	</longTexts>
 </l10n>
