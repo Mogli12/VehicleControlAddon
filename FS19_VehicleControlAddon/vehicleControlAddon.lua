@@ -334,8 +334,8 @@ vehicleControlAddon.g27Mode4RD = 9 -- 4 Gears, Range up/down, Fwd/back
 vehicleControlAddon.g27ModeSGR =10 -- Fwd/back , Gear up/down, Range up/down
 vehicleControlAddon.speedRatioOpen       = 1000
 vehicleControlAddon.speedRatioClosed0    = -1   -- maxSpeedRatio of diff of diffs
-vehicleControlAddon.speedRatioClosed1    = 1.3  -- maxSpeedRatio of diff of wheels
-vehicleControlAddon.speedRatioClosed2    = 1.3  -- at least 20% difference 
+vehicleControlAddon.speedRatioClosed1    = 1.1  -- maxSpeedRatio of diff of wheels
+vehicleControlAddon.speedRatioClosed2    = 1.2  -- at least 20% difference 
 vehicleControlAddon.distributeTorqueOpen = false  
 vehicleControlAddon.minTorqueRatio       = 0.3
 
@@ -1960,6 +1960,7 @@ function vehicleControlAddon:vcaGetTransmissionDef()
 			end 
 		end 
 			
+		params.name          = "OWN"
 		params.timeGears     = self.vcaOwnGearTime
 		params.timeRanges    = self.vcaOwnRangeTime
 		params.autoGears     = self.vcaOwnAutoGears
@@ -3168,11 +3169,6 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 				self:vcaSetState( "vcaDiffLockAWD", false )
 			end 
 		end 
-		
-		local a = false 
-		if self:vcaIsVehicleControlledByPlayer() and self:getIsMotorStarted() and not self:vcaGetNeutral() then  
-			a = self.vcaAntiSlip
-		end 
 
 		local f, m, b = self:vcaGetDiffState()
 		
@@ -3182,16 +3178,8 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 		local minWheelSpeed, maxWheelSpeed
 		
 		self.vcaDebugS = debugFormat("%6.3f",vehicleSpeed)
-			
-		for _,wheel in pairs(self.spec_wheels.wheels) do 
-			wheel.vcaDiffBrake = nil 
-			wheel.vcaMaxSpeed  = nil
-			wheel.vcaAttached  = false 
-		end 
-			
+		
 		local function updateWheelSpeed( wheel )
-			wheel.vcaDiffBrake = nil 
-			wheel.vcaMaxSpeed  = nil
 			local s = getWheelShapeAxleSpeed(wheel.node, wheel.wheelShape) * wheel.radius 
 			if wheel.vcaSpeed == nil then 
 				wheel.vcaSpeed = s 
@@ -3243,48 +3231,17 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 			maxWheelSpeed = -1 
 		end 
 
-		if a then  
-			if     gearRatio > 0 then
-				for _,wheel in pairs(self.spec_wheels.wheels) do
-					wheel.vcaMaxSpeed = 1.1 * minWheelSpeed 
-				end 
-			elseif gearRatio < 0 then 
-				for _,wheel in pairs(self.spec_wheels.wheels) do
-					wheel.vcaMaxSpeed = 1.1 * maxWheelSpeed 
-				end 
-			end 
-		end 
-		
-	
-		
-		local function setMaxSpeed( index, isWheel, maxSpeed, allWheels )
-			if maxSpeed == nil then 
-				return 
-			end 
-			if isWheel then
-				local wheel = self:getWheelFromWheelIndex( index )
-				if wheel.vcaMaxSpeed == nil or wheel.vcaMaxSpeed > maxSpeed then 
-					wheel.vcaMaxSpeed = maxSpeed 
-				end 
-			else
-				local diff = spec.differentials[index+1]
-				diff.vcaMaxSpeed = maxSpeed 
-				if allWheels then 
-					setMaxSpeed( diff.diffIndex1, diff.diffIndex1IsWheel, maxSpeed, allWheels )
-					setMaxSpeed( diff.diffIndex2, diff.diffIndex2IsWheel, maxSpeed, allWheels )
-				end 
-			end
-		end			
-
     local function getDiffSpeed(index)
-			local speed1, speed2
+			local speed1, speed2, diffOfWheels
 			local diff = spec.differentials[index]
 			if diff.diffIndex1IsWheel then
 				local wheel = self:getWheelFromWheelIndex( diff.diffIndex1 )
 				speed1 = wheel.vcaSpeed
+				diffOfWheels = true  
 			else
 				local s1,s2 = getDiffSpeed(diff.diffIndex1+1);
 				speed1 = (s1+s2)/2
+				diffOfWheels = false  
 			end
 			if diff.diffIndex2IsWheel then
 				local wheel = self:getWheelFromWheelIndex( diff.diffIndex2 )
@@ -3292,8 +3249,9 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 			else
 				local s1,s2 = getDiffSpeed(diff.diffIndex2+1);
 				speed2 = (s1+s2)/2
+				diffOfWheels = false 
 			end
-			return speed1,speed2;
+			return speed1,speed2,diffOfWheels
     end
 		
 		local function disableDiff( index, isWheel )
@@ -3359,19 +3317,26 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 					r = torqueRatioOpen
 				end 
 
-				if r1 <= r and r <= r2 and vehicleControlAddon.distributeTorqueOpen then  
-					-- inverse torque ratio => put more torque on turning wheel
+				if r1 <= r and r <= r2 then   
 					local s1,s2 = getDiffSpeed(index)
-					r = vehicleControlAddon.mbClamp( getClosedTorqueRatio( r, s2, s1 ), r1, r2 )		
+					if self.vcaAntiSlip then 
+						r = vehicleControlAddon.mbClamp( getClosedTorqueRatio( r, s1, s2 ), r1, r2 )	
+					elseif vehicleControlAddon.distributeTorqueOpen then
+						-- inverse torque ratio => put more torque on turning wheel
+						r = vehicleControlAddon.mbClamp( getClosedTorqueRatio( r, s2, s1 ), r1, r2 )
+          end 						
 				end 				
 				m = vehicleControlAddon.speedRatioOpen
 			elseif newState == 2 then 			
-				if vehicleControlAddon.speedRatioClosed0 >= 0 then 
+
+				local s1,s2,dow = getDiffSpeed(index)
+				
+				if dow then 
+					m = vehicleControlAddon.speedRatioClosed1
+				elseif vehicleControlAddon.speedRatioClosed0 >= 0 then 
 					m = vehicleControlAddon.speedRatioClosed0 
 				end 
-
-				local s1,s2 = getDiffSpeed(index)
-				
+					
 				-- advance speed by 7% (minus 2% error)
 				if     torqueRatioOpen == nil or not self.vcaDiffFrontAdv then  
 				elseif torqueRatioOpen > r2 then 
@@ -3500,7 +3465,6 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 					local diffIndex2 = differential.diffIndex2
 					if differential.diffIndex1IsWheel then
 						local wheel = self:getWheelFromWheelIndex(diffIndex1)
-						wheel.vcaAttached = true 
 						diffIndex1 = wheel.wheelShape
 					else 
 						vehicleControlAddon.debugPrint("1: New index of "..tostring(diffIndex1).." is "..tostring(diffMap[diffIndex1]))
@@ -3508,7 +3472,6 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 					end
 					if differential.diffIndex2IsWheel then
 						local wheel = self:getWheelFromWheelIndex(diffIndex2)
-						wheel.vcaAttached = true 
 						diffIndex2 = wheel.wheelShape
 					else 
 						vehicleControlAddon.debugPrint("2: New index of "..tostring(diffIndex2).." is "..tostring(diffMap[diffIndex2]))
@@ -3538,22 +3501,6 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 				end 
 			end
 			self:updateMotorProperties()
-		else 
-			-- mark wheels attached to diff
-			for i, differential in pairs(spec.differentials) do
-				if differential.vcaEnabled == 3 then 
-					local diffIndex1 = differential.diffIndex1
-					local diffIndex2 = differential.diffIndex2
-					if differential.diffIndex1IsWheel then
-						local wheel = self:getWheelFromWheelIndex(diffIndex1)
-						wheel.vcaAttached = true 
-					end
-					if differential.diffIndex2IsWheel then
-						local wheel = self:getWheelFromWheelIndex(diffIndex2)
-						wheel.vcaAttached = true 
-					end
-				end 
-			end
 		end 
 		
 		self.vcaDebugD = nil
@@ -3577,25 +3524,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 																													differential.maxSpeedRatio )
 			end 
 		end 
-		
-		self.vcaDebugB = ""
-		if not self:vcaGetNeutral() then 
-			for _,wheel in pairs(self.spec_wheels.wheels) do 
-				if     wheel.vcaMaxSpeed == nil or not ( wheel.vcaAttached ) then 
-				elseif gearRatio > 0 and wheel.vcaSpeed > wheel.vcaMaxSpeed then 
-					wheel.vcaDiffBrake = math.min( wheel.vcaSpeed - wheel.vcaMaxSpeed, 5 ) * 4
-				elseif gearRatio < 0 and wheel.vcaSpeed < wheel.vcaMaxSpeed then     
-					wheel.vcaDiffBrake = math.min( wheel.vcaMaxSpeed - wheel.vcaSpeed, 5 ) * 4
-				end 
-				if wheel.vcaDiffBrake == nil then 
-					self.vcaDebugB = self.vcaDebugB.." nil   "
-				else
-					self.vcaDebugB = self.vcaDebugB..debugFormat("%6.3f ",wheel.vcaDiffBrake)
-				end 
-			end 
-		end 
 	end 
-	
 --******************************************************************************************************************************************
 -- ProSeed 
 
@@ -4819,27 +4748,6 @@ end
 WheelsUtil.updateWheelsPhysics = Utils.overwrittenFunction( WheelsUtil.updateWheelsPhysics, vehicleControlAddon.vcaUpdateWheelsPhysics )
 --******************************************************************************************************************************************
 
-function vehicleControlAddon:vcaUpdateWheelPhysics( superFunc, wheel, brakePedal, dt )
-	if not (  self.vcaIsLoaded
-				and self:vcaIsVehicleControlledByPlayer() 
-				and self:getIsMotorStarted()
-				and ( self.vcaAntiSlip or self.vcaDiffManual ) ) then 
-		return superFunc( self, wheel, brakePedal, dt )
-	end 
-	
-	WheelsUtil.updateWheelSteeringAngle(self, wheel, dt)
-	if self.isServer and self.isAddedToPhysics then
-		local brakeForce = self:getBrakeForce() * brakePedal * wheel.brakeFactor
-		if wheel.vcaDiffBrake ~= nil then 
-			brakeForce = brakeForce + wheel.vcaDiffBrake
-			wheel.vcaDiffBrake = nil 
-		end 
-		setWheelShapeProps(wheel.node, wheel.wheelShape, wheel.torque, brakeForce, wheel.steeringAngle, wheel.rotationDamping)
-	end
-end
-WheelsUtil.updateWheelPhysics = Utils.overwrittenFunction( WheelsUtil.updateWheelPhysics, vehicleControlAddon.vcaUpdateWheelPhysics )
---******************************************************************************************************************************************
-
 --******************************************************************************************************************************************
 -- getSmoothedAcceleratorAndBrakePedals
 function vehicleControlAddon:vcaGetSmoothedAcceleratorAndBrakePedals( superFunc, acceleratorPedal, brakePedal, dt )
@@ -5091,7 +4999,6 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	local lastAutoStopNoRpm   = self.vcaAutoStopNoRpm
 	local lastAccSpeedLimit   = self.vcaAccSpeedLimit
 	local lastShiftWheelRpm   = self.vcaShiftWheelRpm
-	local lastLowROIFactor    = self.vcaLowROIFactor
 	local lastRealSpeedLimit  = Utils.getNoNil( self.vcaRealSpeedLimit, math.huge )  
 	
 	self.vcaMinRpm            = nil 
@@ -5112,7 +5019,6 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	self.vcaAccSpeedLimit     = nil 
 	self.vcaShiftWheelRpm     = nil 
 	self.vcaRealSpeedLimit    = nil 
-	self.vcaLowROIFactor      = nil
 	if self.vcaLastSpeedLimit == nil then 
 		self.vcaLastSpeedLimit  = math.huge 
 	end 
@@ -5286,6 +5192,8 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	else 
 		self.vcaSpeedLimit = nil 
 	end 
+	
+	self.speedLimit = math.min( self.speedLimit, vehicleControlAddon.maxRpmF1 * self.vehicle.vcaMaxSpeed * 3.6 )
 	
 	if      self.vehicle.vcaForceStopMotor ~= nil 
 			and self.vehicle.vcaForceStopMotor > 0		
@@ -5560,7 +5468,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		self.vcaBrakeTimer    = nil
 		self.vcaIncreaseRpm   = nil
 		self.vcaAutoStop      = true 
-		self.vcaAutoStopNoRpm = true 
+		self.vcaAutoStopNoRpm = g_currentMission.time
 
 		if      self.minForwardGearRatio  ~= nil 
 				and self.maxForwardGearRatio  ~= nil 
@@ -5577,11 +5485,17 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		
 		self.vehicle:vcaSetROIFactor( 1 )
 
-		
 		if autoNeutral then 
 			self.vcaLastAcc = 0
 			return 0
 		end 
+
+		if      self.vehicle.vcaMaxWheelSlip ~= nil 
+				and self.vehicle.vcaMaxWheelSlip > 0.1  
+				and self.vehicle.vcaAntiSlip then 
+			self.speedLimit = math.min( self.speedLimit, math.max( 0, speed ) + 1 )
+		end 
+		
 		return newAcc		
 		
 	elseif self.vehicle.vcaGearbox ~= nil and self.vehicle.vcaGearbox.isIVT and not self.vehicle:vcaGetIVTManual() then
@@ -6247,9 +6161,12 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 					elseif wheelRpm < autoMinRpm and self.vcaAutoUpTimer < 1000 then 
 						self.vcaAutoUpTimer = 1000
 					end 
+					
+					local rpmLo      = math.min( wheelRpm, speedMS * self.maxRpm / maxSpeed )
+					local rpmHi      = math.max( wheelRpm, speedMS * self.maxRpm / maxSpeed )
 
-					local searchUp   = ( wheelRpm > autoMinRpm and self.vcaAutoUpTimer   <= 0 and self.vcaNoShiftTimer <= 0 )
-					local searchDown = ( wheelRpm < autoMaxRpm and self.vcaAutoDownTimer <= 0 and self.vcaNoShiftTimer <= 0 )
+					local searchUp   = ( rpmHi > autoMinRpm and self.vcaAutoUpTimer   <= 0 and self.vcaNoShiftTimer <= 0 )
+					local searchDown = ( rpmLo < autoMaxRpm and self.vcaAutoDownTimer <= 0 and self.vcaNoShiftTimer <= 0 )
 
 					local lowRatio = launchRatio
 					if self.vcaAutoStop or curBrake > 0.1 then
@@ -6317,7 +6234,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 									end 
 								end 
 								
-								local rpm = wheelRpm * ratio / nr
+								local rpm = rpmLo * ratio / nr
 								if rf ~= nil then rpm = rpm * rf end 
 								local d2 = 0
 								if rpm < autoMinRpm then 
@@ -6326,7 +6243,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 								
 								local p2 = math.max( 0, p0 - self:getTorqueCurveValue( rpm ) * rpm * vehicleControlAddon.factorpi30 )
 								
-								rpm = wheelRpm * ratio / nr 
+								rpm = rpmHi * ratio / nr 
 								if rpm > autoMaxRpm then 
 									d2 = math.max( d2, rpm - autoMaxRpm )
 								end 
@@ -6700,6 +6617,8 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 
 				self.vcaClutchClosedTime   = g_currentMission.time 
 			end  
+
+			self.speedLimit = math.min( self.speedLimit, math.max( vehicleControlAddon.maxRpmF1 * maxSpeed, speedMS * ( 1 - 0.001 * dt ) ) * 3.6 )
 			
 			-- *******************************************
 			-- idle acceleration
@@ -6751,31 +6670,26 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		end 
 	end 
 	
---self.minGearRatio = self.minGearRatio / ( 1 + 0.1 * self.vcaWheelSlipS )
---self.maxGearRatio = self.maxGearRatio * ( 1 + 0.1 * self.vcaWheelSlipS )
-	
 	local f = VCAGlobals.rotInertiaFactor
 	if      self.vehicle.vcaNeutral 
-			or  self.vehicle.vcaClutchPercent > 0.8 then 
+			or  self.vehicle.vcaClutchPercent > 0.8 
+			or  not self.vehicle:vcaIsVehicleControlledByPlayer() 
+			or curBrake > 0.1 
+			or speed < -0.1 then   
 		f = VCAGlobals.rotInertiaFactorLow 
-	elseif  self.vehicle.vcaGearbox ~= nil and self.vehicle.vcaGearbox.isIVT then 
-		f = VCAGlobals.rotInertiaFactorIVT
-	elseif  ( self.vcaAutoStop or fwd ~= lastFwd or self.vcaDirTimer ~= nil )
-			and curGearRatio ~= nil then 
-		self.vcaLowROIFactor = true 
-		f = VCAGlobals.rotInertiaFactorLow 
+	elseif  curAcc > 0.1 and self.vcaWheelAcc ~= nil and self.vcaWheelAcc > self.accelerationLimit then 
+		f = VCAGlobals.rotInertiaFactorMax
+	elseif  curGearRatio == nil then 
+		if  self.vcaAutoStop or fwd ~= lastFwd or self.vcaDirTimer ~= nil or speed < 1 then  
+			f = VCAGlobals.rotInertiaFactorLow 
+		else 
+			f = VCAGlobals.rotInertiaFactorIVT
+		end 
 	elseif  self.vehicle.vcaClutchDisp > 0 
 			and self.gearChangeTimer <= 0
 			and wheelSpeed < self.minRpm + 0.1 * rpmRange
 			and self.vcaWheelAccS < 0.2
 			and math.abs( self.vcaLastAccS ) > 0.5 then 
-		self.vcaLowROIFactor = true 
-		f = VCAGlobals.rotInertiaFactorLow 
-	elseif  self.vehicle.vcaClutchDisp > 0 
-			and self.gearChangeTimer <= 0
-			and lastLowROIFactor 
-			and self.vcaWheelAccS < 0.4 then 
-		self.vcaLowROIFactor = true 		
 		f = VCAGlobals.rotInertiaFactorLow 
 	elseif  curGearRatio ~= nil then 
 	-- high ROI if vehicle is in a very low gear 
@@ -6784,10 +6698,15 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		f =  math.min( VCAGlobals.rotInertiaFactorMax, math.max( VCAGlobals.rotInertiaFactor, curGearRatio * VCAGlobals.rotInertiaFactorInc ) )
 	end 
 	
-	self.vehicle:vcaSetROIFactor( f )
+	if self.vehicle.vcaROIFactor ~= nil then 
+		f = vehicleControlAddon.mbClamp( f, self.vehicle.vcaROIFactor - 0.005 * dt, self.vehicle.vcaROIFactor + 0.005 * dt )
+	end 
+	if curAcc > 0.1 and self.vcaWheelSlipF > 0.1 and speed > 1 then  
+		f = math.max( f, math.min( self.vehicle.vcaMaxWheelSlip * 10, VCAGlobals.rotInertiaFactorMax ) )
+	end 
 	
-	self.speedLimit = math.min( self.speedLimit, vehicleControlAddon.maxRpmF1 * self.vehicle.vcaMaxSpeed * 3.6 )
-		
+	self.vehicle:vcaSetROIFactor( f )
+			
 	if autoNeutral then 
 		self.vcaMaxAccFactor = 0.01
 		self.vcaLastAcc      = 0 
@@ -6796,7 +6715,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	
 	--****************************************************************************	
 	self.vcaRealSpeedLimit = self.speedLimit
-	
+
 	if self.vcaDirTimer ~= nil or self.vcaMaxAccFactor == nil then -- or self.gearChangeTimer > 0 or self.vehicle.vcaClutchDisp > 0 then   
 		self.vcaMaxAccFactor  = 0.01
 		self.vcaMaxWheelAcc   = self.accelerationLimit
@@ -6878,6 +6797,12 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		self.vehicle.vcaDebugSL = self.vehicle.vcaDebugSL .. debugFormat( ", amw:%7.3f", self.vcaMaxMotorAcc / curGearRatio )
 	end 
 
+	if      self.vehicle.vcaMaxWheelSlip ~= nil 
+			and self.vehicle.vcaMaxWheelSlip > 0.1 
+			and self.vehicle.vcaAntiSlip then 
+		self.speedLimit = math.min( self.speedLimit, math.max( 0, speed ) + 1 )
+	end 
+	
 	self.vcaLastSpeedLimit = self.speedLimit
 	
 	self.vcaLastAcc = newAcc 
@@ -7013,20 +6938,41 @@ end
 Motorized.updateMotorProperties = Utils.overwrittenFunction( Motorized.updateMotorProperties, vehicleControlAddon.vcaUpdateMotorProperties )
 --******************************************************************************************************************************************
 
+function vehicleControlAddon:vcaMotorGetRatedRpm()
+	if self.vehicle == nil then 
+		return 0.0001
+	elseif self.vehicle.vcaRatedRpm ~= nil then 
+		return self.vehicle.vcaRatedRpm  
+	elseif self.vcaMaxRpm ~= nli then 
+		return self.vcaMaxRpm 
+	end 
+	return self.maxRpm 
+end 
+
+function vehicleControlAddon:vcaMotorGetRatedTorque()
+	local r = vehicleControlAddon.vcaMotorGetRatedRpm( self )
+	
+	if self.vcaRatedTorqueNoDamage == nil then 
+		if self.vehicle.vcaRatedPower > 0 then
+			self.vcaRatedTorqueNoDamage = self.vehicle.vcaRatedPower / ( r * vehicleControlAddon.factorpi30 )
+		else
+			self.vcaRatedTorqueNoDamage = self:getTorqueCurve():get( r )
+		end 
+	end 
+	
+	return self.vcaRatedTorqueNoDamage
+end 
+
 function vehicleControlAddon:vcaGetTorqueCurveValue( superFunc, rpm )
 	
 	local damage = 1 - (self.vehicle:getVehicleDamage() * VehicleMotor.DAMAGE_TORQUE_REDUCTION)
+	local rRated = vehicleControlAddon.vcaMotorGetRatedRpm( self )
 	
 	if not ( self.vehicle ~= nil and self.vehicle.vcaIsLoaded ) then 
 	-- 
 	elseif self.vehicle.vcaTorqueCurve ~= nil and self.vehicle.vcaTorqueCurve > 0 then  
-		local rRated = Utils.getNoNil( self.vcaMaxRpm, self.vehicle.vcaRatedRpm )
-		local tRated 
-		if self.vehicle.vcaRatedPower > 0 then
-			tRated = self.vehicle.vcaRatedPower / ( rRated * vehicleControlAddon.factorpi30 )
-		else 
-			tRated = self:getTorqueCurve():get( rRated )
-		end 
+		local tRated = vehicleControlAddon.vcaMotorGetRatedTorque( self )
+ 
 		local c
 		if     self.vehicle.vcaTorqueCurve == 1 then  
 			if vehicleControlAddon.torqueCurve1 == nil then 
@@ -7123,7 +7069,7 @@ function vehicleControlAddon:vcaGetTorqueCurveValue( superFunc, rpm )
 			or ( self.vehicle.vcaRatedPower ~= nil and self.vehicle.vcaRatedPower > 0 ) then 
 		local factor = 1
 		if self.vehicle.vcaRatedPower > 0 then   
-			factor = self.vehicle.vcaRatedPower / math.max( 0.01, self:getTorqueCurve():get( self.vehicle.vcaRatedRpm ) * self.vehicle.vcaRatedRpm * vehicleControlAddon.factorpi30 )
+			factor = self.vehicle.vcaRatedPower / math.max( 0.01, self:getTorqueCurve():get( rRated ) * rRated * vehicleControlAddon.factorpi30 )
 		elseif self.vehicle.vcaGearbox == nil then 
 			factor = 1 
 		elseif self.vehicle.vcaGearbox.isIVT then 
@@ -7156,6 +7102,7 @@ function vehicleControlAddon:vcaGetTorqueAndSpeedValues( superFunc )
 				self.vcaPeakPower    = 0
 				self.vcaRatedPower   = 0
 				self.vcaRatedTorque  = 0
+				self.vcaPeakTorque   = 0
 				self.vcaPeakPowerRpm = self.maxRpm
 			else
 				local listL = { { r = 0, p = 0 } }
@@ -7169,6 +7116,9 @@ function vehicleControlAddon:vcaGetTorqueAndSpeedValues( superFunc )
 				
 				local c, f, r
 				local r = Utils.getNoNil( self.vcaMaxRpm, self.vehicle.vcaRatedRpm )
+
+				self.vcaRatedTorqueNoDamage = nil 
+				vehicleControlAddon.vcaMotorGetRatedTorque( self )
 				
 				self.vcaRatedTorque = self:getTorqueCurveValue( r )
 				self.vcaRatedPower  = self.vcaRatedTorque * r * vehicleControlAddon.factorpi30
@@ -7176,21 +7126,27 @@ function vehicleControlAddon:vcaGetTorqueAndSpeedValues( superFunc )
 				if     self.vehicle.vcaTorqueCurve == 1 then 
 					c = vehicleControlAddon.torqueCurve1
 					f = r
+					self.vcaPeakTorque = self.vcaRatedTorqueNoDamage / c:get(1)
 				elseif self.vehicle.vcaTorqueCurve == 2 then 
 					c = vehicleControlAddon.torqueCurve2
 					f = r
+					self.vcaPeakTorque = self.vcaRatedTorqueNoDamage / c:get(1)
 				elseif self.vehicle.vcaTorqueCurve == 3 then 
 					c = vehicleControlAddon.torqueCurve3
 					f = r
+					self.vcaPeakTorque = self.vcaRatedTorqueNoDamage / c:get(1)
 				elseif self.vehicle.vcaTorqueCurve == 4 then 
 					c = vehicleControlAddon.torqueCurve4
 					f = r
+					self.vcaPeakTorque = self.vcaRatedTorqueNoDamage / c:get(1)
 				elseif self.vehicle.vcaTorqueCurve == 5 then 
 					c = vehicleControlAddon.torqueCurve5
 					f = r
+					self.vcaPeakTorque = self.vcaRatedTorqueNoDamage / c:get(1)
 				else 
 					c = self.torqueCurve
 					f = 1
+					self.vcaPeakTorque = c:getMaximum()
 				end 
 				
 				for i,v in ipairs(c.keyframes) do
@@ -7389,11 +7345,10 @@ function vehicleControlAddon:vcaMotorGetRotInertia( superFunc )
 			and self.vehicle              ~= nil
 			and self.vehicle.vcaROIFactor ~= nil 
 			and self.vehicle.vcaIsLoaded  
-			and self.vehicle.vcaGearbox   ~= nil then 
-		vehicleControlAddon.debugPrint(string.format('vcaMotorGetRotInertia: %5.2f', self.vehicle.vcaROIFactor))
-		return self.vehicle.vcaROIFactor * r 
+			and self.vehicle.vcaGearbox   ~= nil 
+			and self.vcaPeakTorque        ~= nil then 
+		return self.vehicle.vcaROIFactor * self.vcaPeakTorque / 600
 	end 
-	vehicleControlAddon.debugPrint('default vcaMotorGetRotInertia')
 	return r
 end 
 VehicleMotor.getRotInertia = Utils.overwrittenFunction( VehicleMotor.getRotInertia, vehicleControlAddon.vcaMotorGetRotInertia )
