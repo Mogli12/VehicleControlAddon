@@ -2,7 +2,7 @@
 
 ## Version 1.1
 
-Version 1.1 on ModHub is the most recent version. Currently, the mod appears on page 63 of the most downloaded mods with less than 4 stars. (https://www.farming-simulator.com/mods.php?title=fs2019&filter=most&page=63).
+Version 1.1 on ModHub is the most recent version. (https://www.farming-simulator.com/mods.php?title=fs2019&filter=most&page=63).
 
 ## Developer version
 Please be aware you're using a developer version, which may and will contain errors, bugs, mistakes and unfinished code. 
@@ -28,11 +28,7 @@ This error happens in MultiPlayer only. It happens if there is another mod with 
 It seems that many players have problems with thier inpubBindings. Just look at issues #470, #468, # 464, ... I think this is a general problem in the handling of input bindings in FS19. Please try to delete your inputBinding.xml.
 
 ## Status
-I rearranged the settings menu. If you choose transmission "own transmission", then a 4th tab strip appears.
-
-Saving settings is now user dependent. I hope it does not break loading of saving games in MP. Please follow up in [#143](https://github.com/Mogli12/VehicleControlAddon/issues/143).
-
-I re-implemented the adaptive steering. The old implementation was too simillar to the vanilla steering. If you have problems with automatic back rotation just press the key to steer into the opposite direction.
+The vehicles have now much more inertia. That should make gear changes easier as the vehicle looses less speed during gear shifts. That is why I increased the time to shift gears. The increased inertia seems to work very well with REA mod. The main problem of spinning wheels was in the past that the wheel speed started to oscilate. This got better with the increased inertia and the vehicle is not able to reach 100% motor load even with 20% wheel slip.
 
 If you are looking for a realistic manual transmisison please visit [FS19_realManualTransmission](https://github.com/modelleicher/FS19_realManualTransmission)
 
