@@ -639,6 +639,8 @@ function vehicleControlAddon:onLoad(savegame)
 	self.vcaROIFactor     = 1 
 	self.vcaMaxWheelSlip  = 0
 	self.vcaMaxBrakePedal = 1
+	self.vcaMaxThrottle   = 1
+	self.vcaMaxThrottleT  = 0
 	
 	self.vcaKeepRotPressed   = false 
 	self.vcaInchingPressed   = false 
@@ -4751,6 +4753,8 @@ WheelsUtil.updateWheelsPhysics = Utils.overwrittenFunction( WheelsUtil.updateWhe
 --******************************************************************************************************************************************
 -- getSmoothedAcceleratorAndBrakePedals
 function vehicleControlAddon:vcaGetSmoothedAcceleratorAndBrakePedals( superFunc, acceleratorPedal, brakePedal, dt )
+	-- WheelsUtil.getSmoothedAcceleratorAndBrakePedals is is called AFTER WheelsUtil.updateGear 
+	-- just smooth brake pedal here
 	if self.vcaIsLoaded and self:vcaIsVehicleControlledByPlayer() and self.vcaOldAcc ~= nil then 
 		if     self.vcaBrakePedal ~= nil and self.vcaBrakePedal >= 0.001 then  
 		-- shuttle control and braking 
@@ -5314,6 +5318,39 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		end 
 	end 
 	
+	--****************************************
+	-- smooth acceleratorPedal here 
+	--****************************************
+	local curAcc = math.abs( newAcc )
+	local accSpeed = 0.001 * dt 
+	
+	if     curBrake > 0.1
+			or autoNeutral
+			or self.gearChangeTimer > 0
+		--or speed                > lastRealSpeedLimit
+			or wheelSpeed           > expectedMotorSpeed
+			or self.motorRotSpeed   > expectedMotorSpeed 
+			or self.vcaWheelAccS    > self.accelerationLimit
+			or self.vcaMotorAccS    > self.motorRotationAccelerationLimit   
+			then   
+		self.vehicle.vcaMaxThrottle  = math.max( 0, self.vehicle.vcaMaxThrottle - accSpeed )
+		self.vehicle.vcaMaxThrottleT = 0
+	elseif self.vehicle.vcaMaxThrottle > 0.9 and curAcc < self.vehicle.vcaMaxThrottle and self.vehicle.vcaMaxThrottleT + 500 > g_currentMission.time then 
+	-- changing camera etc. => keep self.vehicle.vcaMaxThrottle up for 500 ms
+	else 
+		self.vehicle.vcaMaxThrottle  = vehicleControlAddon.mbClamp( curAcc, self.vehicle.vcaMaxThrottle - accSpeed, self.vehicle.vcaMaxThrottle + accSpeed )
+		if curAcc > 0.9 and self.vehicle.vcaMaxThrottle > 0.9 then 
+			self.vehicle.vcaMaxThrottleT = g_currentMission.time 
+		end 
+	end 
+	
+	if fwd then
+		newAcc = math.min( newAcc,  self.vehicle.vcaMaxThrottle )
+	else 
+		newAcc = math.max( newAcc, -self.vehicle.vcaMaxThrottle )
+	end 
+	--****************************************
+	
 	self.vcaCurGearRatio = self.gearRatio 
 	local minGearRatio   = self.minGearRatio
 	local maxGearRatio   = self.maxGearRatio
@@ -5325,7 +5362,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	
 	--****************************************
 	-- neutral
-	local curAcc      = math.abs( newAcc )
+	--****************************************
 	local fakeAcc     = curAcc 
 	if self.vehicle:vcaGetShuttleCtrl() and self.vehicle.vcaOldAcc ~= nil then 
 		fakeAcc         =  self.vehicle.vcaOldAcc
@@ -5900,9 +5937,6 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 
 	
 		local autoShiftLoad = self.vcaUsedPowerRatioS
-	--if curAcc > autoShiftLoad and speed < lastRealSpeedLimit - 1 and wheelSpeed >= 0.275 * self.vcaLastSpeedLimit then 
-	--	autoShiftLoad = curAcc 
-	--end 
 		if self.vcaWheelAccS > 1.0 then 
 			autoShiftLoad = autoShiftLoad * ( 1 - 0.5 * math.min( 1, self.vcaWheelAccS - 1.0 ) )
 		end 
@@ -5924,10 +5958,12 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	--	self.vcaAutoDownTimer = 1
 		end 
 		if      self.vcaWheelAccS > 1 
-				and wheelRpm > self.minRpm + 0.7 * rpmRange
-				and wheelRpm > motorPtoRpm then 
-			self.vcaAutoUpTimer  = 0
-			self.vcaNoShiftTimer = 0
+				and wheelRpm > motorPtoRpm 
+				and wheelRpm > self.minRpm + 0.7 * rpmRange then 
+			self.vcaAutoUpTimer   = 0
+			if wheelRpm > self.minRpm + 0.9 * rpmRange then 
+				self.vcaNoShiftTimer = 0
+			end
 		end 
 		if motorPtoRpm < self.minRpm and autoShiftLoad < 0.5 then 
 			self.vcaAutoLowTimer = 5000 
@@ -6484,7 +6520,8 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 					and fakeRpmS            < self.vcaMaxPowerRpmL
 					and self.vcaClutchTimer < clutchTimerMax then 
 			-- keep clutch above 90% if RPM is too low
-				self.vcaClutchTimer 	= clutchTimerMax
+				self.vcaClutchTimer 	      = clutchTimerMax
+				self.vehicle.vcaMaxThrottle = 1 
 			elseif motorRpm < 0.85 * self.minRpm and self.vcaClutchTimer > 0 and ( autoOpen or clutchDir < 0.1 ) then  
 			-- turbo clutch emergency
 				self.vcaClutchTimer = math.max( self.vcaClutchTimer, clutchTimerMax )
@@ -6750,7 +6787,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	if self.vehicle.vcaROIFactor ~= nil then 
 		f = vehicleControlAddon.mbClamp( f, self.vehicle.vcaROIFactor - 0.005 * dt, self.vehicle.vcaROIFactor + 0.005 * dt )
 	end 
-	if curAcc > 0.1 and self.vcaWheelSlipF > 0.1 and speed > 1 then  
+	if curAcc > 0.1 and self.vcaWheelSlipF > 0.1 and speed > 2 and motorRpm > self.minRpm + 0.3 * rpmRange then    
 		f = math.max( f, math.min( self.vehicle.vcaMaxWheelSlip * 10, VCAGlobals.rotInertiaFactorMax ) )
 	end 
 	
@@ -6793,7 +6830,10 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			acc = self.vcaMaxMotorAccE 
 		end 
 		self.vcaMaxMotorSpeed = math.max( self.minRpm * vehicleControlAddon.factorpi30, expectedMotorSpeed + dt2 * 0.001 * acc )
-				
+		if self.vcaMaxRpm ~= nil then 
+			self.vcaMaxRpm = vehicleControlAddon.mbClamp( self.vcaMaxMotorSpeed * vehicleControlAddon.factor30pi, self.vcaMinRpm, self.vcaMaxRpm )
+		end 
+		
 		local dbg = "."
 		self.vcaAccSpeedLimit = math.huge 
 		if lastAccSpeedLimit == nil or wheelSpeed >= 0.99*expectedWheelSpeed then 
@@ -6824,7 +6864,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		end 
 		if self.vcaMaxMotorAccE == nil then 
 			self.vcaMaxMotorAccE = self.motorRotationAccelerationLimit
-		end 		
+		end 	
 		
 		if self.speedLimit > self.vcaAccSpeedLimit * 3.6 then 
 			dbg = "!" .. dbg 
