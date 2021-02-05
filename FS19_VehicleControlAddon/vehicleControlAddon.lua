@@ -7787,11 +7787,7 @@ function vehicleControlAddon:vcaShowSettingsUI()
 		self:vcaSetState( "vcaSnapDistance", d )
 		self:vcaSetState( "vcaSnapOffset1", o )
 		self:vcaSetState( "vcaSnapOffset2", p )
-	end
-	self.vcaUI.vcaSnapDistance = tostring( self.vcaSnapDistance )
-	self.vcaUI.vcaSnapOffset1  = tostring( self.vcaSnapOffset1 )
-	self.vcaUI.vcaSnapOffset2  = tostring( self.vcaSnapOffset2 )
-	
+	end	
 	
 	self.vcaUI.vcaOwnGears   = {}
 	self.vcaUI.vcaOwnRanges  = {}
@@ -8159,7 +8155,7 @@ function vehicleControlAddon:vcaUIDrawvcaGearRatioT()
 end
 
 function vehicleControlAddon:vcaUIGetvcaSnapDistance()
-	return self.vcaUI.vcaSnapDistance
+	return vehicleControlAddon.formatNumber( self.vcaSnapDistance )
 end 
 function vehicleControlAddon:vcaUISetvcaSnapDistance( value )
 	local v = tonumber( value )
@@ -8172,20 +8168,17 @@ function vehicleControlAddon:vcaUISetvcaSnapDistance( value )
 			self:vcaSetState( "vcaSnapDistance", d )
 			self:vcaSetState( "vcaSnapOffset1", o )
 			self:vcaSetState( "vcaSnapOffset2", p )
-			self.vcaUI.vcaSnapOffset1 = tostring( self.vcaSnapOffset1 )
-			self.vcaUI.vcaSnapOffset2 = tostring( self.vcaSnapOffset2 )
 		else 
 			self:vcaSetState( "vcaSnapDistance", v )
 		end 
 	end 
-	self.vcaUI.vcaSnapDistance = vehicleControlAddon.formatNumber( self.vcaSnapDistance )
 end 
 
 function vehicleControlAddon:vcaUIGetvcaSnapOffset1()
-	return self.vcaUI.vcaSnapOffset1
+	return vehicleControlAddon.formatNumber( self.vcaSnapOffset1 )
 end 
 function vehicleControlAddon:vcaUIGetvcaSnapOffset2()
-	return self.vcaUI.vcaSnapOffset2
+	return vehicleControlAddon.formatNumber( self.vcaSnapOffset2 )
 end 
 function vehicleControlAddon:vcaUISetvcaSnapOffset1( value )
 	local v = tonumber( value )
@@ -8199,15 +8192,12 @@ function vehicleControlAddon:vcaUISetvcaSnapOffset1( value )
 			self:vcaSetState( "vcaSnapOffset2",-v )
 		end
 	end 
-	self.vcaUI.vcaSnapOffset1 = vehicleControlAddon.formatNumber( self.vcaSnapOffset1 )
-	self.vcaUI.vcaSnapOffset2 = vehicleControlAddon.formatNumber( self.vcaSnapOffset2 )
 end 
 function vehicleControlAddon:vcaUISetvcaSnapOffset2( value )
 	local v = tonumber( value )
 	if type( v ) == "number" then 
 		self:vcaSetState( "vcaSnapOffset2", v )
 	end
-	self.vcaUI.vcaSnapOffset2 = vehicleControlAddon.formatNumber( self.vcaSnapOffset2, 3 )
 end 
 
 function vehicleControlAddon:vcaUISetvcaTransmission( value )

@@ -212,6 +212,9 @@
 		<text name="vcaTorqueCurve_3"   text="LKW Motor (60% Anstieg)"/>
 		<text name="vcaTorqueCurve_4"   text="klassisch (20% Anstieg)"/>
 		<text name="vcaTorqueCurve_5"   text="klassisch (30% Anstieg)"/>
+		
+		<text name="vcaButtonSnapWidth"  text="Breite ermitteln"/>
+		<text name="vcaButtonSnapOffset" text="Offset tauschen"/>
 	</texts>   
 
 	<longTexts>

@@ -11,7 +11,7 @@ function VehicleControlAddonFrame:new(menu, controls, target, customMt)
 	local self = TabbedMenuFrameElement:new(target, customMt or VehicleControlAddonFrame_mt )
 	self.menu = menu 
 	self.controls = controls
-	self.hasCustomMenuButtons = false 
+	self.hasCustomMenuButtons = true 
 	self.vcaElements = {}
 	self.vcaIsDirty = true 
 	self.vcaState = {}
@@ -36,6 +36,14 @@ function VehicleControlAddonFrame:copyAttributes(src)
 	self.vcaElements = src.vcaElements
 end
 
+function VehicleControlAddonFrame:onGuiSetupFinished()
+	VehicleControlAddonFrame:superClass().onGuiSetupFinished(self)
+	
+	self.menuButtonInfo = { { inputAction = InputAction.MENU_BACK } }
+	self:vcaUpdateMenuButtons()
+	self:setMenuButtonInfoDirty()
+end 
+
 function VehicleControlAddonFrame:update(dt)
 	VehicleControlAddonFrame:superClass().update(self, dt)
 	
@@ -49,12 +57,6 @@ function VehicleControlAddonFrame:onFrameOpen()
 	self:vcaGetValues( true ) 
 end 
 
-function VehicleControlAddonFrame:updateMenuButtons()
-	self.menuButtonInfo = { { inputAction = InputAction.MENU_BACK, text = g_i18n:getText("buttonBack"), callback = function() self:onClickBack() end } }
-	self:vcaUpdateMenuButtons()
-	self:setMenuButtonInfoDirty()
-end
-
 function VehicleControlAddonFrame:onFrameClose()
 	VehicleControlAddonFrame:superClass().onFrameClose(self)
 	self:vcaSetValues( true )
@@ -62,6 +64,21 @@ end
 
 function VehicleControlAddonFrame:vcaUpdateMenuButtons()
 --table.insert(self.menuButtonInfo, {inputAction = InputAction.MENU_ACTIVATE, text = g_i18n:getText("button_rename"), callback = function() self:onButtonRename() end} )
+end 
+
+function VehicleControlAddonFrame:vcaMakeCallback( func )
+	if type( func) ~= "function" then 
+		print("Warning [VehicleControlAddonFrame.vcaMakeCallback]: invalid function")
+		return NO_CALLBACK
+	end 
+	
+	return function()
+		if g_currentMission.controlledVehicle ~= nil and g_currentMission.controlledVehicle.vcaUI ~= nil then 
+			func( self, g_currentMission.controlledVehicle )
+		else 
+			print("Warning [VehicleControlAddonFrame.vcaMakeCallback]: invalid vehicle")
+		end 
+	end 
 end 
 	
 function VehicleControlAddonFrame:vcaGetValues( force )

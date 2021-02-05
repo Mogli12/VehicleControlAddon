@@ -212,6 +212,9 @@
 		<text name="vcaTorqueCurve_3"   text="truck engine (60% increase)"/>
 		<text name="vcaTorqueCurve_4"   text="classic (20% increase)"/>
 		<text name="vcaTorqueCurve_5"   text="classic (30% increase)"/>
+		
+		<text name="vcaButtonSnapWidth"  text="Detect width"/>
+		<text name="vcaButtonSnapOffset" text="Swap offset"/>
 	</texts>
 
 	<longTexts>
