@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<GUI onOpen="onOpen" onClose="onClose" onCreate="onCreate">
+	<GuiElement type="empty" profile="newLayer" />
+	<GuiElement type="bitmap" profile="dialogFullscreenBg" />
+
+	<GuiElement debugEnabled="false" type="bitmap" profile="dialogBg" size="400px 120px" id="dialogElement">
+		<GuiElement type="bitmap" profile="headerBoxDocked" size="400px 40px">
+			<GuiElement type="text" profile="dialogHeaderText" textOffset="0px 4px" text="VCA Own Presets" id="title"/>
+		</GuiElement>
+		
+		<GuiElement type="textInput" profile="ingameMenuGameSettingsTextInput" id="input" position="40px 40px"	maxCharacters="50" imeKeyboardType="normal"/>
+
+		<GuiElement type="flowLayout" profile="buttonBoxDialog">
+			<GuiElement type="button" profile="buttonOK"   text="$l10n_button_ok"   onClick="onClickOk" />
+			<GuiElement type="button" profile="buttonBack" text="$l10n_button_back" onClick="onClickBack" />
+		</GuiElement>
+	</GuiElement>
+</GUI>

@@ -68,6 +68,7 @@
 		<text name="vcaSPEEDLIMITB"     text="Maximum reverse speed"/>
 		<text name="vcaRATEDPOWER"      text="Rated power in HP"/>
 		<text name="vcaTORQUECURVE"     text="More realistic torque curve"/>
+		<text name="vcaROTACCTIME"      text="Motor acceleration time"/>
 		
 		<text name="vca_tip_CAMERAI"      text="The interior camera rotates automatically according to the steering angle"/>
 		<text name="vca_tip_CAMERAO"      text="The exterior camera rotates automatically according to the steering angle"/>
@@ -131,6 +132,7 @@
 		<text name="vca_tip_SPEEDLIMITB"  text="Maximum speed limit of the vehicle if reverse driving"/>
 		<text name="vca_tip_RATEDPOWER"   text="Horse power of the vehicle at rated RPM"/>
 		<text name="vca_tip_TORQUECURVE"  text="More realistic torque curve of the vehicle"/>
+		<text name="vca_tip_ROTACCTIME"   text="Time in ms that the motor needs to rev up from min RPM to max RPM"/>
 		                               
 		<text name="input_vcaSETTINGS"  text="VCA: settings"/>
 		<text name="input_vcaUP"        text="VCA: toggle view direction / lock forwards"/>
@@ -215,6 +217,9 @@
 		
 		<text name="vcaButtonSnapWidth"  text="Detect width"/>
 		<text name="vcaButtonSnapOffset" text="Swap offset"/>
+		<text name="vcaButtonLoadPreset" text="Load transmission"/>
+		<text name="vcaButtonSavePreset" text="Save transmission"/>
+		<text name="vcaButtonDelPreset"  text="Delete transmission"/>
 	</texts>
 
 	<longTexts>

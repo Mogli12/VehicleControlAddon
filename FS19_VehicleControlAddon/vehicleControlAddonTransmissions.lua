@@ -1454,8 +1454,186 @@ function vehicleControlAddonTransmissionBase.loadSettings()
 			end 		
 		end 		
 	end 
-
+	
+	vehicleControlAddonTransmissionBase.loadOwnTransPresets()
 end 
+
+function vehicleControlAddonTransmissionBase.loadOwnTransPresets()
+	vehicleControlAddonTransmissionBase.ownTransPresets      = {}
+	vehicleControlAddonTransmissionBase.ownTransPresetNextID = nil
+	for i = 1,99 do
+		local file = getUserProfileAppPath().. string.format("modsSettings/FS19_VehicleControlAddon/ownTransmission%d.xml",i)
+		
+		if fileExists(file) then	
+			local xmlFile = loadXMLFile( "ownTransmission", file, "ownTransmission" )
+		
+			local key    = "ownTransmission"
+			local preset = {}
+			
+			preset.index       = i
+			preset.name        = Utils.getNoNil( getXMLString( xmlFile, key..".name#string" ), "" ) 
+			preset.maxSpeed    = Utils.getNoNil( getXMLFloat( xmlFile, key..".maxSpeed#float" ), 15 )
+			preset.gearFactor  = Utils.getNoNil( getXMLFloat( xmlFile, key..".gearFactor#float" ), 0.4096 )
+			preset.rangeFactor = Utils.getNoNil( getXMLFloat( xmlFile, key..".rangeFactor#float" ), 0.4096 )
+			preset.range1st1st = Utils.getNoNil( getXMLFloat( xmlFile, key..".range1st1st#float" ), -0.1 )
+			preset.gears       = Utils.getNoNil( getXMLInt( xmlFile, key..".gears#int" ), 5 )
+			preset.ranges      = Utils.getNoNil( getXMLInt( xmlFile, key..".ranges#int" ), 3 )
+			preset.gearTime    = Utils.getNoNil( getXMLInt( xmlFile, key..".gearTime#int" ), 0 )
+			preset.rangeTime   = Utils.getNoNil( getXMLInt( xmlFile, key..".rangeTime#int" ), 1000 )
+			preset.autoGears   = Utils.getNoNil( getXMLBool( xmlFile, key..".autoGears#bool" ), true )
+			preset.autoRange   = Utils.getNoNil( getXMLBool( xmlFile, key..".autoRange#bool" ), false )
+			preset.splitG27    = Utils.getNoNil( getXMLBool( xmlFile, key..".splitG27#bool" ), true )
+			preset.revRatio    = Utils.getNoNil( getXMLFloat( xmlFile, key..".revRatio#float" ), 1 )
+			preset.clutchMode  = vehicleControlAddon.getClutch( xmlFile, key..".clutchMode", "int" )
+			preset.g27Mode     = Utils.getNoNil( getXMLInt( xmlFile, key..".g27Mode#int" ), 0 )
+
+			local listG = {} 
+			local j = 0
+			while true do 
+				local key2 = key..string.format( ".regGears.regGear(%d)", j )
+				local num  = getXMLInt( xmlFile, key2.."#int" ) 
+				if num == nil then
+					break 
+				end 
+				table.insert( listG, num ) 
+				j = j + 1 
+			end 
+
+			local listR = {} 
+			local j = 0
+			while true do 
+				local key2 = key..string.format( ".revRanges.revRange(%d)", j )
+				local num  = getXMLInt( xmlFile, key2.."#int" ) 
+				if num == nil then
+					break 
+				end 
+				table.insert( listR, num ) 
+				j = j + 1 
+			end 
+			
+			preset.revGears = vehicleControlAddon.listToString( listG )
+			preset.revRange = vehicleControlAddon.listToString( listR )
+			
+			table.insert( vehicleControlAddonTransmissionBase.ownTransPresets, preset )
+			
+		elseif vehicleControlAddonTransmissionBase.ownTransPresetNextID == nil then
+			vehicleControlAddonTransmissionBase.ownTransPresetNextID = i
+		end 
+	end 
+end 
+
+function vehicleControlAddonTransmissionBase.saveOwnTransPreset( index 
+																															 , name 
+                                                               , maxSpeed   
+                                                               , gearFactor 
+                                                               , rangeFactor
+                                                               , range1st1st
+                                                               , gears      
+                                                               , ranges     
+                                                               , gearTime   
+                                                               , rangeTime  
+                                                               , autoGears  
+                                                               , autoRange  
+                                                               , splitG27   
+                                                               , revRatio   
+                                                               , clutchMode 
+                                                               , g27Mode  
+                                                               , revGears  
+                                                               , revRange )
+
+	if g_server == nil or g_client == nil then return end 
+	
+	if index == nil then 
+		index = 0
+		while true do 
+			index = index + 1
+			local file = getUserProfileAppPath().. string.format("modsSettings/FS19_VehicleControlAddon/ownTransmission%d.xml",index )
+			
+			if not fileExists(file) then
+				break 
+			end 
+		end 
+	end 
+	
+	vehicleControlAddonTransmissionBase.ownTransPresets[index] = { index       = index 
+																															 , name        = name 
+	                                                             , maxSpeed    = maxSpeed   
+	                                                             , gearFactor  = gearFactor 
+	                                                             , rangeFactor = rangeFactor
+	                                                             , range1st1st = range1st1st
+	                                                             , gears       = gears      
+	                                                             , ranges      = ranges     
+	                                                             , gearTime    = gearTime   
+	                                                             , rangeTime   = rangeTime  
+	                                                             , autoGears   = autoGears  
+	                                                             , autoRange   = autoRange  
+	                                                             , splitG27    = splitG27   
+	                                                             , revRatio    = revRatio   
+	                                                             , clutchMode  = clutchMode 
+	                                                             , g27Mode     = g27Mode  
+	                                                             , revGears    = revGears  
+	                                                             , revRange  	 = revRange }	
+																																											
+	local file = getUserProfileAppPath().. string.format("modsSettings/FS19_VehicleControlAddon/ownTransmission%d.xml",index )
+
+	if fileExists(file) then
+		getfenv(0).deleteFile(file)
+	end 
+	local xmlFile = createXMLFile( "ownTransmission", file, "ownTransmission" )
+	local key     = "ownTransmission"
+
+  if name        ~= nil then setXMLString( xmlFile, key..".name#string"     , name        ) end
+  if maxSpeed    ~= nil then setXMLFloat( xmlFile, key..".maxSpeed#float"   , maxSpeed    ) end
+  if gearFactor  ~= nil then setXMLFloat( xmlFile, key..".gearFactor#float" , gearFactor  ) end
+  if rangeFactor ~= nil then setXMLFloat( xmlFile, key..".rangeFactor#float", rangeFactor ) end
+  if range1st1st ~= nil then setXMLFloat( xmlFile, key..".range1st1st#float", range1st1st ) end
+  if gears       ~= nil then setXMLInt( xmlFile, key..".gears#int"          , gears       ) end
+  if ranges      ~= nil then setXMLInt( xmlFile, key..".ranges#int"         , ranges      ) end
+  if gearTime    ~= nil then setXMLInt( xmlFile, key..".gearTime#int"       , gearTime    ) end
+  if rangeTime   ~= nil then setXMLInt( xmlFile, key..".rangeTime#int"      , rangeTime   ) end
+  if autoGears   ~= nil then setXMLBool( xmlFile, key..".autoGears#bool"    , autoGears   ) end
+  if autoRange   ~= nil then setXMLBool( xmlFile, key..".autoRange#bool"    , autoRange   ) end
+  if splitG27    ~= nil then setXMLBool( xmlFile, key..".splitG27#bool"     , splitG27    ) end
+  if revRatio    ~= nil then setXMLFloat( xmlFile, key..".revRatio#float"   , revRatio    ) end
+  if g27Mode     ~= nil then setXMLInt( xmlFile, key..".g27Mode#int"        , g27Mode     ) end
+	
+  if clutchMode  ~= nil then vehicleControlAddon.getClutch( xmlFile, key..".clutchMode", "int", clutchMode ) end 
+	
+	local listG = vehicleControlAddon.stringToList( revGears, tonumber )
+	if type( listG ) == "table" then 
+		for j,num in pairs( listG ) do 
+			local key2 = key..string.format( ".regGears.regGear(%d)", j-1 )
+			setXMLInt( xmlFile, key2.."#int", num ) 
+		end 
+	end 
+	
+	local listR = vehicleControlAddon.stringToList( revRange, tonumber )
+	if type( listG ) == "table" then 
+		for j,num in pairs( listG ) do 
+			local key2 = key..string.format( ".revRanges.revRange(%d)", j-1 )
+			setXMLInt( xmlFile, key2.."#int", num ) 
+		end 
+	end 
+	
+	saveXMLFile(xmlFile)
+	
+end 
+
+function vehicleControlAddonTransmissionBase.deleteOwnTransPreset( index )
+	local file = getUserProfileAppPath().. string.format("modsSettings/FS19_VehicleControlAddon/ownTransmission%d.xml",index )
+
+	if fileExists(file) then
+		getfenv(0).deleteFile(file)
+	end 
+end 
+
+
+
+
+
+
+
+
 
 
 vehicleControlAddonTransmissionBase.clutchList =

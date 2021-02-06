@@ -147,6 +147,9 @@ function vehicleControlAddonRegister:postLoadMission(mission)
 		g_vehicleControlAddonTabbedFrame5 = VehicleControlAddonFrame5:new(g_vehicleControlAddonTabbedMenu,self.i18n)
 		g_vehicleControlAddonTabbedFrame6 = VehicleControlAddonFrame6:new(g_vehicleControlAddonTabbedMenu,self.i18n)
 		
+		g_vehicleControlAddonDialog1      = VehicleControlAddonDialog1:new()
+		g_vehicleControlAddonDialog2      = VehicleControlAddonDialog2:new()
+		
 		g_gui:loadGui(Utils.getFilename("gui/vehicleControlAddonFrame1.xml", self.vcaDirectory), "vehicleControlAddonFrame1", g_vehicleControlAddonTabbedFrame1, true)
 		g_gui:loadGui(Utils.getFilename("gui/vehicleControlAddonFrame2.xml", self.vcaDirectory), "vehicleControlAddonFrame2", g_vehicleControlAddonTabbedFrame2, true)
 		g_gui:loadGui(Utils.getFilename("gui/vehicleControlAddonFrame3.xml", self.vcaDirectory), "vehicleControlAddonFrame3", g_vehicleControlAddonTabbedFrame3, true)
@@ -154,6 +157,9 @@ function vehicleControlAddonRegister:postLoadMission(mission)
 		g_gui:loadGui(Utils.getFilename("gui/vehicleControlAddonFrame5.xml", self.vcaDirectory), "vehicleControlAddonFrame5", g_vehicleControlAddonTabbedFrame5, true)
 		g_gui:loadGui(Utils.getFilename("gui/vehicleControlAddonFrame6.xml", self.vcaDirectory), "vehicleControlAddonFrame6", g_vehicleControlAddonTabbedFrame6, true)
 		g_gui:loadGui(Utils.getFilename("gui/vehicleControlAddonMenu.xml",   self.vcaDirectory), "vehicleControlAddonMenu", g_vehicleControlAddonTabbedMenu)
+		
+		g_gui:loadGui(Utils.getFilename("gui/vehicleControlAddonDialog1.xml", self.vcaDirectory), "vehicleControlAddonDialog1", g_vehicleControlAddonDialog1)
+		g_gui:loadGui(Utils.getFilename("gui/vehicleControlAddonDialog2.xml", self.vcaDirectory), "vehicleControlAddonDialog2", g_vehicleControlAddonDialog2)
 	end 
 end;
 

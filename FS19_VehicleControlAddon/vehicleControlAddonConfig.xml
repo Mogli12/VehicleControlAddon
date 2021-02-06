@@ -13,11 +13,11 @@
 	<transmission        type="int"   value="1"/>  <!-- 0 = Giants, 1 = IVT, 2 = 4x4, 3 = 4x4 PowerShift, 4 = 2x6, 5 = FullPowerShift -->
 	<clutchTimer         type="int"   value="6000"/> <!-- ms -->
 	<autoHoldTimer       type="int"   value="1000"/> <!-- ms; 0 = no auto hold -->
-	<rotInertiaFactor    type="float" value="2.0"/>  <!-- rot. inertia is more than just the flywheel, it includes the transmission and the wheels as well -->
+	<rotInertiaFactor    type="float" value="1.5"/>  <!-- rot. inertia is more than just the flywheel, it includes the transmission and the wheels as well -->
 	<rotInertiaFactorInc type="float" value="0.04"/> <!-- gear ratio factor -->
-	<rotInertiaFactorMax type="float" value="5.0"/>  <!-- maximum inertia -->
+	<rotInertiaFactorMax type="float" value="4.0"/>  <!-- maximum inertia -->
 	<rotInertiaFactorLow type="float" value="1.0"/>  <!-- neutral -->
-	<rotInertiaFactorIVT type="float" value="2.0"/>  <!-- IVT transmission -->
+	<rotInertiaFactorIVT type="float" value="1.5"/>  <!-- IVT transmission -->
 	<modifyPitch         type="bool"  value="true"/>
 	<mouseAutoRotateBack type="bool"  value="false"/>
 	<turnOffAWDSpeed     type="float" value="30"/><!-- km/h -->

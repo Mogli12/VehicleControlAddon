@@ -38,7 +38,10 @@ end
 
 function VehicleControlAddonFrame:onGuiSetupFinished()
 	VehicleControlAddonFrame:superClass().onGuiSetupFinished(self)
+	self:updateMenuButtons() 
+end 
 	
+function VehicleControlAddonFrame:updateMenuButtons()
 	self.menuButtonInfo = { { inputAction = InputAction.MENU_BACK } }
 	self:vcaUpdateMenuButtons()
 	self:setMenuButtonInfoDirty()
