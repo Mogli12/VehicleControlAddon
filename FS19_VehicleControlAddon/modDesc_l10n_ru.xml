@@ -212,6 +212,9 @@
 		<text name="vcaTorqueCurve_3" 		text="грузовик (60% увеличения)"/>
 		<text name="vcaTorqueCurve_4" 		text="классика (20% увеличения)"/>
 		<text name="vcaTorqueCurve_5" 		text="классика (30% увеличения)"/>
+
+		<text name="vcaButtonSnapWidth"		text="Определить ширину"/>
+		<text name="vcaButtonSnapOffset"	text="Сменить смещение"/>
 	</texts>
 	
 	<longTexts>
