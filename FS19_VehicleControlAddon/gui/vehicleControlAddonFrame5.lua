@@ -12,17 +12,19 @@ function VehicleControlAddonFrame5:new(menu)
 end
 
 function VehicleControlAddonFrame5:vcaUpdateMenuButtons()
-	if #vehicleControlAddonTransmissionBase.ownTransPresets > 0 then 
-		table.insert(self.menuButtonInfo, { inputAction = InputAction.MENU_EXTRA_2,
-																				text        = g_i18n:getText( "vcaButtonLoadPreset" ),
-																				callback    = self:vcaMakeCallback( VehicleControlAddonFrame5.onClickLoad ) } )
-		table.insert(self.menuButtonInfo, { inputAction = InputAction.MENU_CANCEL,
-																				text        = g_i18n:getText( "vcaButtonDelPreset" ),
-																				callback    = self:vcaMakeCallback( VehicleControlAddonFrame5.onClickDelete ) } )
+	if not g_vehicleControlAddon.isMP then 
+		if #vehicleControlAddonTransmissionBase.ownTransPresets > 0 then 
+			table.insert(self.menuButtonInfo, { inputAction = InputAction.MENU_EXTRA_2,
+																					text        = g_i18n:getText( "vcaButtonLoadPreset" ),
+																					callback    = self:vcaMakeCallback( VehicleControlAddonFrame5.onClickLoad ) } )
+			table.insert(self.menuButtonInfo, { inputAction = InputAction.MENU_CANCEL,
+																					text        = g_i18n:getText( "vcaButtonDelPreset" ),
+																					callback    = self:vcaMakeCallback( VehicleControlAddonFrame5.onClickDelete ) } )
+		end 
+		table.insert(self.menuButtonInfo, { inputAction = InputAction.MENU_EXTRA_1,
+																				text        = g_i18n:getText( "vcaButtonSavePreset" ),
+																				callback    = self:vcaMakeCallback( VehicleControlAddonFrame5.onClickSave ) } )
 	end 
-	table.insert(self.menuButtonInfo, { inputAction = InputAction.MENU_EXTRA_1,
-																			text        = g_i18n:getText( "vcaButtonSavePreset" ),
-																			callback    = self:vcaMakeCallback( VehicleControlAddonFrame5.onClickSave ) } )
 end 
 
 function VehicleControlAddonFrame5:onClickLoad( vehicle )
@@ -53,8 +55,8 @@ function VehicleControlAddonFrame5:onClickLoadOK( vehicle, state )
 	vehicle:vcaSetState( "vcaOwnRevRatio"   , preset.revRatio    )
 	vehicle:vcaSetState( "vcaClutchMode"    , preset.clutchMode  )
 	vehicle:vcaSetState( "vcaG27Mode"       , preset.g27Mode     )
-	vehicle:vcaSetState( "vcaRevGears"      , preset.revGears    )
-	vehicle:vcaSetState( "vcaRevRange"      , preset.revRange    )
+	vehicle:vcaSetState( "vcaOwnRevGears"   , preset.revGears    )
+	vehicle:vcaSetState( "vcaOwnRevRange"   , preset.revRange    )
 
 	self:vcaGetValues( true ) 
 end 
@@ -108,8 +110,8 @@ function VehicleControlAddonFrame5:onClickSaveOk( vehicle, text )
                                                         , vehicle.vcaOwnRevRatio   
                                                         , vehicle.vcaClutchMode 
                                                         , vehicle.vcaG27Mode  
-                                                        , vehicle.vcaRevGears  
-                                                        , vehicle.vcaRevRange )
+                                                        , vehicle.vcaOwnRevGears  
+                                                        , vehicle.vcaOwnRevRange )
 
 	self:updateMenuButtons()
 end

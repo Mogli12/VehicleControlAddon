@@ -5838,7 +5838,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			self.gearChangeTimer = self.gearChangeTimer - dt 
 		end 			
 		if self.gearChangeTimer > 0 then 
-			self.vcaFakeRpm     = vehicleControlAddon.mbClamp( math.min( math.max( self.minRpm, motorPtoRpm, wheelRpm ), self.maxRpm ), 
+			self.vcaFakeRpm     = vehicleControlAddon.mbClamp( vehicleControlAddon.mbClamp( wheelRpm, self.minRpm, self.maxRpm ), 
 			                                                   lastFakeRpm - maxRpmAccDt, lastFakeRpm + maxRpmAccDt )		
 			self.vcaFakeTimer   = 100 
 			newAcc              = 0
@@ -6660,7 +6660,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		if clutchFactor >= 1 then 
 		-- neutral or no gear
 			if self.gearChangeTimer > 0 and not autoNeutral then 
-				self.vcaFakeRpm   = vehicleControlAddon.mbClamp( vehicleControlAddon.mbClamp( math.max( motorPtoRpm, wheelRpm ) - 0.1 * rpmRange, self.minRpm, self.maxRpm ), 
+				self.vcaFakeRpm   = vehicleControlAddon.mbClamp( vehicleControlAddon.mbClamp( wheelRpm, self.minRpm, self.maxRpm ), 
 																												 lastFakeRpm - maxRpmAccDt, lastFakeRpm + maxRpmAccDt )		
 				self.vcaFakeTimer = 100 
 			elseif self.vcaFakeRpm == nil then 

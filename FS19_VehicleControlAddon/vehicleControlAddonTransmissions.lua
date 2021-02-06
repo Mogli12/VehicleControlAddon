@@ -1242,6 +1242,9 @@ vehicleControlAddonTransmissionBase.ownTransmission  = table.getn( vehicleContro
 
 
 function vehicleControlAddonTransmissionBase.loadSettings()
+	vehicleControlAddonTransmissionBase.ownTransPresets      = {}
+	vehicleControlAddonTransmissionBase.ownTransPresetNextID = nil
+
 	if g_server == nil or g_client == nil then return end 
 
 	local file = getUserProfileAppPath().. "modsSettings/FS19_VehicleControlAddon/transmissions.xml"
@@ -1608,8 +1611,8 @@ function vehicleControlAddonTransmissionBase.saveOwnTransPreset( index
 	end 
 	
 	local listR = vehicleControlAddon.stringToList( revRange, tonumber )
-	if type( listG ) == "table" then 
-		for j,num in pairs( listG ) do 
+	if type( listR ) == "table" then 
+		for j,num in pairs( listR ) do 
 			local key2 = key..string.format( ".revRanges.revRange(%d)", j-1 )
 			setXMLInt( xmlFile, key2.."#int", num ) 
 		end 

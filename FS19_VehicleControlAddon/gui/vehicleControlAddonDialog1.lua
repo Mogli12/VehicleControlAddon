@@ -18,7 +18,6 @@ function VehicleControlAddonDialog1:new(target, custom_mt)
 end
 
 function VehicleControlAddonDialog1:onClickOk(...)
-	print( "OK pressed")
 	self.vcaCallback( self.presets:getState() )
 	self:close()
 	return false -- event used
