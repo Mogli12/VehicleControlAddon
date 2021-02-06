@@ -215,6 +215,9 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vcaTorqueCurve_3"   text="Silnik ciężarówki (wzrost 60%)"/>
 		<text name="vcaTorqueCurve_4"   text="Klasyczna (wzrost 20%)"/>
 		<text name="vcaTorqueCurve_5"   text="Klasyczna (wzrost 30%)"/>
+		
+		<text name="vcaButtonSnapWidth"  text="Wykryj szerokość"/>
+		<text name="vcaButtonSnapOffset" text="Wyrównaj przesunięcie"/>
 	</texts>
 	
 	<longTexts>
