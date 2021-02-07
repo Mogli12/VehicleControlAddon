@@ -8345,7 +8345,7 @@ function vehicleControlAddon:vcaUISetvcaOwnRevGears( value ) uiSetnList( self, "
 function vehicleControlAddon:vcaUISetvcaOwnRevRange( value ) uiSetnList( self, "vcaOwnRevRange" , value ) end 
 
 function vehicleControlAddon:vcaUIGetvcaOwnRevRatio() 
-	return tostring( self.vcaOwnRevRatio ) 
+	return vehicleControlAddon.formatNumber( self.vcaOwnRevRatio ) 
 end 
 
 function vehicleControlAddon:vcaUISetvcaOwnRevRatio( value ) 

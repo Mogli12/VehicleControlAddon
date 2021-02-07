@@ -11,8 +11,17 @@ function VehicleControlAddonFrame5:new(menu)
 	return self
 end
 
+function VehicleControlAddonFrame5:onFrameOpen()
+	VehicleControlAddonFrame5:superClass().onFrameOpen(self)
+
+	if vehicleControlAddonTransmissionBase.ownTransPresets == nil then 
+		vehicleControlAddonTransmissionBase.loadOwnTransPresets()
+		self:updateMenuButtons()
+	end
+end
+
 function VehicleControlAddonFrame5:vcaUpdateMenuButtons()
-	if not g_vehicleControlAddon.isMP then 
+	if vehicleControlAddonTransmissionBase.ownTransPresets ~= nil then 
 		if #vehicleControlAddonTransmissionBase.ownTransPresets > 0 then 
 			table.insert(self.menuButtonInfo, { inputAction = InputAction.MENU_EXTRA_2,
 																					text        = g_i18n:getText( "vcaButtonLoadPreset" ),
@@ -21,9 +30,12 @@ function VehicleControlAddonFrame5:vcaUpdateMenuButtons()
 																					text        = g_i18n:getText( "vcaButtonDelPreset" ),
 																					callback    = self:vcaMakeCallback( VehicleControlAddonFrame5.onClickDelete ) } )
 		end 
-		table.insert(self.menuButtonInfo, { inputAction = InputAction.MENU_EXTRA_1,
-																				text        = g_i18n:getText( "vcaButtonSavePreset" ),
-																				callback    = self:vcaMakeCallback( VehicleControlAddonFrame5.onClickSave ) } )
+		
+		if vehicleControlAddonTransmissionBase.ownTransPresetNextID < 100 then 
+			table.insert(self.menuButtonInfo, { inputAction = InputAction.MENU_EXTRA_1,
+																					text        = g_i18n:getText( "vcaButtonSavePreset" ),
+																					callback    = self:vcaMakeCallback( VehicleControlAddonFrame5.onClickSave ) } )
+		end
 	end 
 end 
 

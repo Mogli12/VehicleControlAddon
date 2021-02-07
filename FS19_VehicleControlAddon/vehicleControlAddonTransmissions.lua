@@ -1242,8 +1242,6 @@ vehicleControlAddonTransmissionBase.ownTransmission  = table.getn( vehicleContro
 
 
 function vehicleControlAddonTransmissionBase.loadSettings()
-	vehicleControlAddonTransmissionBase.ownTransPresets      = {}
-	vehicleControlAddonTransmissionBase.ownTransPresetNextID = nil
 
 	if g_server == nil or g_client == nil then return end 
 
@@ -1277,6 +1275,10 @@ function vehicleControlAddonTransmissionBase.loadSettings()
 
 			local splitGears4Shifter = getXMLBool( xmlFile, key.."#splitGears4Shifter" )
 			local noGears            = getXMLInt(  xmlFile, key.."#numberOfGears" )
+			local reverseRatio       = getXMLFloat( xmlFile, key.."#reverseRatio" )
+
+			local revGears           = {}
+			local revRange           = {}
 			
 			local j
 			
@@ -1318,6 +1320,10 @@ function vehicleControlAddonTransmissionBase.loadSettings()
 						end 
 					end
 					j = j + 1 
+					
+					if not ( getXMLBool( xmlFile, key2.."#forwardOnly" ) ) then 
+						table.insert( revGears, j )
+					end 
 				end 
 				
 				if #gears < 1 then 
@@ -1361,6 +1367,10 @@ function vehicleControlAddonTransmissionBase.loadSettings()
 						end 
 					end
 					j = j + 1 
+					
+					if not ( getXMLBool( xmlFile, key2.."#forwardOnly" ) ) then 
+						table.insert( revRange, j )
+					end 
 				end 
 				
 			elseif noGears ~= nil then 
@@ -1390,13 +1400,18 @@ function vehicleControlAddonTransmissionBase.loadSettings()
 				
 				j = 0
 				while true do 
+					local offset = nil 
 					local key2   = key..string.format( ".rangeGearOffsets.rangeGearOffset(%d)", j )
 					local number = getXMLInt( xmlFile, key2.."#value" ) 
 				--print(tostring(key2)..": "..tostring(number))
-					if number == nil then
-						break 
+					if number == nil then 
+						offset = getXMLInt( xmlFile, key2.."#overlap" ) 
+						if number == nil then
+							break 
+						end 
+					else 
+						offset = noGears - number
 					end 
-					local offset = noGears - number
 					table.insert( rangeGearOverlap, offset ) 
 					j = j + 1 
 				end 
@@ -1415,6 +1430,10 @@ function vehicleControlAddonTransmissionBase.loadSettings()
 						table.insert( gearTexts, text ) 
 					end 
 					j = j + 1 
+					
+					if not ( getXMLBool( xmlFile, key2.."#forwardOnly" ) ) then 
+						table.insert( revGears, j )
+					end 
 				end 
 				
 				j = 0
@@ -1431,6 +1450,10 @@ function vehicleControlAddonTransmissionBase.loadSettings()
 						table.insert( rangeTexts, text ) 
 					end 
 					j = j + 1 
+
+					if not ( getXMLBool( xmlFile, key2.."#forwardOnly" ) ) then 
+						table.insert( revRange, j )
+					end 
 				end 
 				
 			end 
@@ -1452,13 +1475,14 @@ function vehicleControlAddonTransmissionBase.loadSettings()
                                    gearTexts          = gearTexts,
                                    rangeTexts         = rangeTexts,
                                    shifterIndexList   = shifterIndexList,
-                                   speedMatching      = speedMatching },
+                                   speedMatching      = speedMatching,
+																	 reverseGears       = revGears,
+																	 reverseRanges      = revRange,
+																	 reverseRatio       = reverseRatio, },
 												text   = label } )
 			end 		
 		end 		
-	end 
-	
-	vehicleControlAddonTransmissionBase.loadOwnTransPresets()
+	end 	
 end 
 
 function vehicleControlAddonTransmissionBase.loadOwnTransPresets()
