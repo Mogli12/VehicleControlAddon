@@ -1278,7 +1278,9 @@ function vehicleControlAddonTransmissionBase.loadSettings()
 			local reverseRatio       = getXMLFloat( xmlFile, key.."#reverseRatio" )
 
 			local revGears           = {}
+			local allRevGears        = true 
 			local revRange           = {}
+			local allRevRange        = true  
 			
 			local j
 			
@@ -1321,7 +1323,9 @@ function vehicleControlAddonTransmissionBase.loadSettings()
 					end
 					j = j + 1 
 					
-					if not ( getXMLBool( xmlFile, key2.."#forwardOnly" ) ) then 
+					if getXMLBool( xmlFile, key2.."#forwardOnly" ) then
+						allRevGears = false 
+					else 
 						table.insert( revGears, j )
 					end 
 				end 
@@ -1368,7 +1372,9 @@ function vehicleControlAddonTransmissionBase.loadSettings()
 					end
 					j = j + 1 
 					
-					if not ( getXMLBool( xmlFile, key2.."#forwardOnly" ) ) then 
+					if getXMLBool( xmlFile, key2.."#forwardOnly" ) then
+						allRevRange = false 
+					else 
 						table.insert( revRange, j )
 					end 
 				end 
@@ -1431,7 +1437,9 @@ function vehicleControlAddonTransmissionBase.loadSettings()
 					end 
 					j = j + 1 
 					
-					if not ( getXMLBool( xmlFile, key2.."#forwardOnly" ) ) then 
+					if getXMLBool( xmlFile, key2.."#forwardOnly" ) then
+						allRevGears = false 
+					else 
 						table.insert( revGears, j )
 					end 
 				end 
@@ -1451,7 +1459,9 @@ function vehicleControlAddonTransmissionBase.loadSettings()
 					end 
 					j = j + 1 
 
-					if not ( getXMLBool( xmlFile, key2.."#forwardOnly" ) ) then 
+					if getXMLBool( xmlFile, key2.."#forwardOnly" ) then
+						allRevRange = false 
+					else 
 						table.insert( revRange, j )
 					end 
 				end 
@@ -1460,6 +1470,9 @@ function vehicleControlAddonTransmissionBase.loadSettings()
 			
 			if noGears ~= nil and noGears > 0 then 		
 				print("Transmission: "..tostring(label)..", #gears "..tostring(noGears)..", #ranges "..tostring(#rangeGearOverlap+1))
+
+				if allRevGears then revGears = nil end 
+				if allRevRange then revRange = nil end 
 
 				table.insert( vehicleControlAddonTransmissionBase.transmissionList, 
 											{ class  = vehicleControlAddonTransmissionBase,
