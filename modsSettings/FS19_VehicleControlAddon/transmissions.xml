@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <transmissions>
-	<transmission label="Test 6 gears with auto power shift" numberOfGears="2" gearShiftTimeMs="0" rangeShiftTimeMs="750" autoShiftGears="true" autoShiftRanges="false">
+	<transmission label="Test 6 gears with auto power shift" reverseRatio="1.1" numberOfGears="2" gearShiftTimeMs="0" rangeShiftTimeMs="750" autoShiftGears="true" autoShiftRanges="false">
 		<rangeGearOffsets>
 			<rangeGearOffset value="2"/><!-- range 1 to 2 -->
 			<rangeGearOffset value="2"/><!-- range 2 to 3 -->
@@ -10,7 +10,7 @@
 		</rangeGearOffsets>
 		<gearTexts>
 			<gearText value="-"/>
-			<gearText value="+"/>
+			<gearText value="+" forwardOnly="true"/>
 		</gearTexts>
 		<rangeTexts>
 			<rangeText value="1"/>
@@ -24,12 +24,12 @@
 
 	<transmission label="Test 6-speed with low range">
 		<gears shiftTimeMs="750" baseSpeed="180">
-			<gear speed="50"  text="I"/>
-			<gear speed="70"  text="II"/>
-			<gear speed="95"  text="III"/>
-			<gear speed="130" text="IV"/>
-			<gear speed="180" text="V"/>
-			<gear speed="250" text="VI"/>
+			<gear speed="50"  text="I"   forwardOnly="false"/>
+			<gear speed="70"  text="II"  forwardOnly="true"/>
+			<gear speed="95"  text="III" forwardOnly="true"/>
+			<gear speed="130" text="IV"  forwardOnly="true"/>
+			<gear speed="180" text="V"   forwardOnly="true"/>
+			<gear speed="250" text="VI"  forwardOnly="true"/>
 		</gears>
 		<ranges shiftTimeMs="1500">
 			<range ratio="0.357" text="Low" />
