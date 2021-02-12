@@ -1085,7 +1085,7 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
 						or  actionName == "vcaRangeUp"
 						or  actionName == "vcaRangeDown") then 
 				-- above actions are still active for hired worker
-				local pBool1, pBool2, pBool3, pBool4 = false, true, false, true 
+				local triggerKeyUp, triggerKeyDown, triggerAlways, isActive = false, true, false, true 
 				if     actionName == "vcaUP"
 						or actionName == "vcaDOWN"
 						or actionName == "vcaLEFT"
@@ -1101,22 +1101,26 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
 						or actionName == "vcaShifter9"
 						or actionName == "vcaNO_ARB"
 						then 
-					pBool1 = true 
+					triggerKeyUp   = true 
 				elseif actionName == "vcaClutch"
 						or actionName == "vcaKEEPSPEED" 
 						or actionName == "vcaKEEPROT"
 						or actionName == "vcaINCHING"
+						or actionName == "vcaSnapDOWN"
+						or actionName == "vcaSnapUP"
+						or actionName == "vcaSnapLEFT"
+						or actionName == "vcaSnapRIGHT"
 						then 
-					pBool1 = true 
-					pBool2 = false 
-					pBool3 = true 
+					triggerKeyUp   = true 
+					triggerKeyDown = false 
+					triggerAlways  = true 
 				elseif actionName == "vcaHandRpm" 
 						or actionName == "vcaManRatio" then 
-					pBool3 = true 
+					triggerAlways  = true 
 				end 
 				
 				
-				local _, eventName = self:addActionEvent(self.vcaActionEvents, InputAction[actionName], self, vehicleControlAddon.actionCallback, pBool1, pBool2, pBool3, pBool4, nil);
+				local _, eventName = self:addActionEvent(self.vcaActionEvents, InputAction[actionName], self, vehicleControlAddon.actionCallback, triggerKeyUp, triggerKeyDown, triggerAlways, isActive, nil);
 
 				if      g_inputBinding                   ~= nil 
 						and g_inputBinding.events            ~= nil 
@@ -1155,7 +1159,28 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 		end 
 		return 
 	end 
-
+	
+	if     actionName == "vcaSnapDOWN"
+			or actionName == "vcaSnapUP"
+			or actionName == "vcaSnapLEFT"
+			or actionName == "vcaSnapRIGHT"
+			then  
+		if self.vcaActionTimer == nil then 
+			self.vcaActionTimer = {} 
+		end 
+		
+		if keyStatus < 0.5 then 
+			self.vcaActionTimer[actionName] = nil 
+			return 
+		elseif self.vcaActionTimer[actionName] == nil then 
+			self.vcaActionTimer[actionName] = g_currentMission.time + 500 
+		elseif self.vcaActionTimer[actionName] > g_currentMission.time then 
+			return 
+		else 
+			self.vcaActionTimer[actionName] = g_currentMission.time + 100
+		end 
+	end 
+	
 	if     actionName == "vcaClutch" then 
 		self.vcaCloseClutchNonAnalog = nil 
 		if     isAnalog then 
@@ -1291,6 +1316,7 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 	elseif  -4 <= self.vcaLastSnapAngle and self.vcaLastSnapAngle <= 4
 			and self.vcaSnapDistance >= 0.25
 			and ( actionName == "vcaSnapLEFT" or actionName == "vcaSnapRIGHT" ) then
+			
 		self.vcaSnapPosTimer  = math.max( Utils.getNoNil( self.vcaSnapPosTimer , 0 ), 3000 )
 		
 		local lx,_,lz = localDirectionToWorld( self:vcaGetSteeringNode(), 0, 0, 1 )			

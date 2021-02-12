@@ -417,6 +417,10 @@ function vehicleControlAddonTransmissionBase:gearUp()
 	if new > self.numberOfGears or new == old then  
 		return 
 	end 
+	
+	if self.lastReverse then 
+		self.lastGear = nil 
+	end 
 
 	if self:getChangeTimeGears() > 100 then 
 		if not ( self.vehicle:vcaGetAutoClutch() or self.vehicle.vcaNeutral ) and self.vehicle.vcaClutchPercent < 1 then 
@@ -450,7 +454,11 @@ function vehicleControlAddonTransmissionBase:gearDown()
 	if new < 1 or new == old then  
 		return 
 	end 
-
+	
+	if self.lastReverse then 
+		self.lastGear = nil 
+	end 
+	
 	if self:getChangeTimeGears() > 100 then 
 		if not ( self.vehicle:vcaGetAutoClutch() or self.vehicle.vcaNeutral ) and self.vehicle.vcaClutchPercent < 1 then 
 			self:grindingGears()
@@ -498,7 +506,11 @@ function vehicleControlAddonTransmissionBase:rangeUp( noSpeedMatching )
 	if new > self.numberOfRanges or new == old then  
 		return 
 	end	
-
+	
+	if self.lastReverse then 
+		self.lastRange = nil 
+	end 
+	
 	if self:getChangeTimeRanges() > 100 then
 		if not ( self.vehicle:vcaGetAutoClutch() or self.vehicle.vcaNeutral ) and self.vehicle.vcaClutchPercent < 1 then 
 			self:grindingGears()
@@ -545,7 +557,11 @@ function vehicleControlAddonTransmissionBase:rangeDown( noSpeedMatching )
 	if new < 1 or new == old then  
 		return 
 	end 
-
+	
+	if self.lastReverse then 
+		self.lastRange = nil 
+	end 
+	
 	if self:getChangeTimeRanges() > 100 then
 		if not ( self.vehicle:vcaGetAutoClutch() or self.vehicle.vcaNeutral ) and self.vehicle.vcaClutchPercent < 1 then 
 			self:grindingGears()
