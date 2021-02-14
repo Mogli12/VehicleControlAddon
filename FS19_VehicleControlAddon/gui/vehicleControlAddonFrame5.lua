@@ -23,16 +23,16 @@ end
 function VehicleControlAddonFrame5:vcaUpdateMenuButtons()
 	if vehicleControlAddonTransmissionBase.ownTransPresets ~= nil then 
 		if #vehicleControlAddonTransmissionBase.ownTransPresets > 0 then 
-			table.insert(self.menuButtonInfo, { inputAction = InputAction.MENU_EXTRA_2,
+			table.insert(self.menuButtonInfo, { inputAction = InputAction.MENU_ACTIVATE,
 																					text        = g_i18n:getText( "vcaButtonLoadPreset" ),
 																					callback    = self:vcaMakeCallback( VehicleControlAddonFrame5.onClickLoad ) } )
-			table.insert(self.menuButtonInfo, { inputAction = InputAction.MENU_CANCEL,
+			table.insert(self.menuButtonInfo, { inputAction = InputAction.MENU_EXTRA_1,
 																					text        = g_i18n:getText( "vcaButtonDelPreset" ),
 																					callback    = self:vcaMakeCallback( VehicleControlAddonFrame5.onClickDelete ) } )
 		end 
 		
 		if vehicleControlAddonTransmissionBase.ownTransPresetNextID < 100 then 
-			table.insert(self.menuButtonInfo, { inputAction = InputAction.MENU_EXTRA_1,
+			table.insert(self.menuButtonInfo, { inputAction = InputAction.MENU_EXTRA_2,
 																					text        = g_i18n:getText( "vcaButtonSavePreset" ),
 																					callback    = self:vcaMakeCallback( VehicleControlAddonFrame5.onClickSave ) } )
 		end
