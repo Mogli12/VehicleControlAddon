@@ -67,7 +67,8 @@
 		<text name="vcaSPEEDLIMITF"         text="Макс. скорость вперёд"/>
 		<text name="vcaSPEEDLIMITB"         text="Макс. скорость назад"/>
 		<text name="vcaRATEDPOWER"          text="Номинальная мощность в л.с."/>
-		<text name="vcaTORQUECURVE"         text="Кривая крутящего момента"/>
+		<text name="vcaTORQUECURVE"			text="Более реалистичная кривая крутящего момента"/>
+		<text name="vcaROTACCTIME"			text="Время разгона двигателя"/>
 
 		<text name="vca_tip_CAMERAI"        text="Внутренняя камера автоматически поворачивается в соответствии с углом поворота рулевого колеса."/>
 		<text name="vca_tip_CAMERAO"        text="Внешняя камера автоматически поворачивается в соответствии с углом поворота рулевого колеса."/>
@@ -127,10 +128,11 @@
 		<text name="vca_tip_HudY"           text="Координата 'y' HUD"/>
 		<text name="vca_tip_HIREDWORKER2"   text="Если техникой управляет наёмный работник, использовать ванильный или модифицированный дифференциал."/>
 		
-		<text name="vca_tip_SPEEDLIMITF"    text="Ограничение скорости автомобиля"/>
-		<text name="vca_tip_SPEEDLIMITB"    text="Ограничение максимальной скорости автомобиля при движении задним ходом"/>
-		<text name="vca_tip_RATEDPOWER"     text="Мощность транспортного средства в лошадиных силах при номинальных оборотах"/>
+		<text name="vca_tip_SPEEDLIMITF"    text="Ограничение скорости автомобиля."/>
+		<text name="vca_tip_SPEEDLIMITB"    text="Ограничение максимальной скорости автомобиля при движении задним ходом."/>
+		<text name="vca_tip_RATEDPOWER"     text="Мощность транспортного средства в лошадиных силах при номинальных оборотах."/>
 		<text name="vca_tip_TORQUECURVE"    text="Более реалистичная кривая крутящего момента автомобиля."/>
+		<text name="vca_tip_ROTACCTIME"     text="Время в мс, которое двигателю необходимо для увеличения оборотов с минимального до максимального значения."/>
 		
 		<text name="input_vcaSETTINGS"      text="VCA: Настройки"/>
 		<text name="input_vcaUP"            text="VCA: Посмотреть вперед"/>
@@ -215,6 +217,9 @@
 
 		<text name="vcaButtonSnapWidth"		text="Определить ширину"/>
 		<text name="vcaButtonSnapOffset"	text="Сменить смещение"/>
+		<text name="vcaButtonLoadPreset"	text="Загрузить трансмиссию"/>
+		<text name="vcaButtonSavePreset"	text="Сохранить трансмиссию"/>
+		<text name="vcaButtonDelPreset"		text="Удалить трансмиссию"/>
 	</texts>
 	
 	<longTexts>
