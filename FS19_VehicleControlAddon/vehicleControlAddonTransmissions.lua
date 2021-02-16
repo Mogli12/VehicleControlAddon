@@ -622,7 +622,12 @@ function vehicleControlAddonTransmissionBase:getGearShifterIndeces( maxNum, noSp
 end 
 
 function vehicleControlAddonTransmissionBase:getGearRatio( index )
+	if self.gearRatios[index] == nil then 
+	-- invalid index => return nil 
+		return 
+	end 
 	if self.reverseRatio ~= 1 and self.vehicle:vcaGetIsReverse() then 
+	-- reverse ratio
 		return self.gearRatios[index] * self.reverseRatio
 	end 
 	return self.gearRatios[index]
