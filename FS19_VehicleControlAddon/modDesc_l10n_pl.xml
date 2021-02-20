@@ -71,6 +71,12 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vcaHudX"            text="Pozycja HUDa X"/>
 		<text name="vcaHudY"            text="Pozycja HUDa Y"/>
 		<text name="vcaHIREDWORKER2"    text="Pracownik i dyferencjały"/>
+		
+		<text name="vcaSPEEDLIMITF"     text="Limit prędkości do przodu"/>
+		<text name="vcaSPEEDLIMITB"     text="Limit prędkościć do tyłu"/>
+		<text name="vcaRATEDPOWER"      text="Moc znamionowa w KM"/>
+		<text name="vcaTORQUECURVE"     text="Bardziej realistyczna krzywa momentu obrotowego"/>
+		<text name="vcaROTACCTIME"      text="Czas rozpędzania silnika"/>
 
 		<text name="vca_tip_CAMERAI"    text="Kamera wewnętrzna obraca się automatycznie zgodnie z kątem skrętu"/>
 		<text name="vca_tip_CAMERAO"    text="Kamera zewnętrzna obraca się automatycznie zgodnie z kątem skrętu"/>
@@ -130,10 +136,11 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vca_tip_HudY"         text="Pozycja HUDa w osi pionowej"/>
 		<text name="vca_tip_HIREDWORKER2" text="Ustala, czy wynajęty pracownik używa domyślnych czy zmodyfikowanych dyferencjałów"/>
 		
-		<text name="vcaSPEEDLIMITF"     text="Limit prędkości"/>
-		<text name="vcaSPEEDLIMITB"     text="Max. prędkość do tyłu"/>
-		<text name="vcaRATEDPOWER"      text="Moc znamionowa w KM"/>
-		<text name="vcaTORQUECURVE"     text="Bardziej realistyczna krzywa momentu obrotowego"/>
+		<text name="vca_tip_SPEEDLIMITF"  text="Maksymalny limit prędkości jazdy w przód pojazdu"/>
+		<text name="vca_tip_SPEEDLIMITB"  text="Maksymalny limit prędkości jazdy wstecz pojazdu"/>
+		<text name="vca_tip_RATEDPOWER"   text="Moc w KM przy znamionowej prędkości RPM"/>
+		<text name="vca_tip_TORQUECURVE"  text="Bardziej realistyczna krzywa momentu obrotowego"/>
+		<text name="vca_tip_ROTACCTIME"   text="Czas w ms jaki potrzebuje silnik na rozpędzenie się od min RPM do max RPM"/>
 		
 		<text name="input_vcaSETTINGS"  text="VCA: Ustawienia"/>
 		<text name="input_vcaUP"        text="VCA: Zmiana widok / Widok w przód"/>
@@ -218,6 +225,9 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		
 		<text name="vcaButtonSnapWidth"  text="Wykryj szerokość"/>
 		<text name="vcaButtonSnapOffset" text="Wyrównaj przesunięcie"/>
+		<text name="vcaButtonLoadPreset" text="Wczytaj skrzynię"/>
+		<text name="vcaButtonSavePreset" text="Zapisz skrzynię"/>
+		<text name="vcaButtonDelPreset"  text="Usuń skrzynię"/>
 	</texts>
 	
 	<longTexts>
