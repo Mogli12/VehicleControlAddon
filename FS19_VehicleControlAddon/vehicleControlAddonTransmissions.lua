@@ -816,16 +816,32 @@ function vehicleControlAddonTransmissionBase:actionCallback( actionName, keyStat
 	vehicleControlAddon.debugPrint(tostring(self.name)..": "..actionName)
 	if     actionName == "vcaGearUp"   then
 		self.vehicle:vcaSetState("vcaShifterUsed", false)
-		self:gearUp()
+		if self.vehicle.vcaGearRangeMode == 1 then 
+			self:rangeUp()
+		else 
+			self:gearUp()
+		end 
 	elseif actionName == "vcaGearDown" then
 		self.vehicle:vcaSetState("vcaShifterUsed", false)
-		self:gearDown()
+		if self.vehicle.vcaGearRangeMode == 1 then 
+			self:rangeDown()
+		else 
+			self:gearDown()
+		end 
 	elseif actionName == "vcaRangeUp"  then
 		self.vehicle:vcaSetState("vcaShifterUsed", false)
-		self:rangeUp()
+		if self.vehicle.vcaGearRangeMode == 1 then 
+			self:gearUp()
+		else 
+			self:rangeUp()
+		end 
 	elseif actionName == "vcaRangeDown"then
 		self.vehicle:vcaSetState("vcaShifterUsed", false)
-		self:rangeDown()
+		if self.vehicle.vcaGearRangeMode == 1 then 
+			self:gearDown()
+		else 
+			self:rangeDown()
+		end 
 	else
 		self.vehicle:vcaSetState("vcaShifterUsed", true)
 		if     self.vehicle.vcaG27Mode == vehicleControlAddon.g27Mode4RR

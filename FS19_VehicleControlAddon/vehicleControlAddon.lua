@@ -314,6 +314,7 @@ local listOfProperties =
 		{ func=listOfFunctions.float, xmlName="ratedPower",    propName="vcaRatedPower"    },
 		{ func=listOfFunctions.int16, xmlName="torqueCurve",   propName="vcaTorqueCurve"   },
 		{ func=listOfFunctions.int16, xmlName="rotAccTime",    propName="vcaRotAccTime"    },
+		{ func=listOfFunctions.int16, xmlName="gearRangeMode", propName="vcaGearRangeMode" },
 	}
 
 
@@ -594,6 +595,7 @@ function vehicleControlAddon:onLoad(savegame)
 	vehicleControlAddon.registerState( self, "vcaDiffManual",   false )
 	vehicleControlAddon.registerState( self, "vcaDiffLockSwap", false )
 	vehicleControlAddon.registerState( self, "vcaDiffFrontAdv", false )
+	vehicleControlAddon.registerState( self, "vcaGearRangeMode",0 )
 
 	vehicleControlAddon.registerState( self, "vcaSpeedLimitF",  0 )
 	vehicleControlAddon.registerState( self, "vcaSpeedLimitB",  0 )
@@ -7933,7 +7935,7 @@ function vehicleControlAddon:vcaShowSettingsUI()
 		g_vehicleControlAddonTabbedFrame6.vcaElements.vcaDiffLockSwap.element:setDisabled( disabled )
 	end 
 	
-	self.vcaUI.vcaOwn2RevMode = { "reverser", "gear", "range" }
+	self.vcaUI.vcaGearRangeMode = { vehicleControlAddon.getText("vcaValueOff", "OFF"), vehicleControlAddon.getText("vcaValueOn", "ON") }
 	
 	self.vcaUI.vcaTorqueCurve = { vehicleControlAddon.getText("vcaTorqueCurve_0", "default" ), 
 																vehicleControlAddon.getText("vcaTorqueCurve_1", "105% peak power, 40% torque increase" ), 
