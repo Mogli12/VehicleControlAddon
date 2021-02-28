@@ -31,6 +31,7 @@
 		<text name="vcaDISTANCE"        text="Working width"/>
 		<text name="vcaOFFSET1"         text="Offset of tool"/>
 		<text name="vcaOFFSET2"         text="Inverse offset"/>
+		<text name="vcaSNAP90"          text="Snap driving every 90°"/>
 		<text name="vcaDRAWMARKER"      text="Draw marker of snap driving"/>
 		<text name="vcaPITCH1"          text="Linear sound pitch"/>
 		<text name="vcaPITCH2"          text="Sound pitch at medium RPM"/>
@@ -96,6 +97,7 @@
 		<text name="vca_tip_DISTANCE"     text="Distance between two snap driving rows"/>
 		<text name="vca_tip_OFFSET1"      text="Offset of snap driving rows"/>
 		<text name="vca_tip_OFFSET2"      text="Inverse offset of snap driving rows"/>
+		<text name="vca_tip_SNAP90"       text="Automatic rotation of snap driving direction by 90°"/>
 		<text name="vca_tip_DRAWMARKER"   text="Draw marker of snap driving"/>
 		<text name="vca_tip_PITCH1"       text="Modification of sound pitch to make it linear"/>
 		<text name="vca_tip_PITCH2"       text="Sound pitch at medium RPM"/>
@@ -197,6 +199,8 @@
 		<text name="vcaValueAlways"     text="always"/>
 		<text name="vcaValueAlwaysH"    text="always (high)"/>
 		<text name="vcaValueNormal"     text="normal"/>
+		<text name="vcaValueLight"      text="light"/> 
+		<text name="vcaValueStrong"     text="strong"/>
 		<text name="vcaValueEntered"    text="if entered"/>
 		<text name="vcaValueInactive"   text="if inactive"/>
 		<text name="vcaValueInactiveH"  text="if inactive (high)"/>

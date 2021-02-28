@@ -31,6 +31,7 @@
 		<text name="vcaDISTANCE"        text="Arbeitsbreite"/>
 		<text name="vcaOFFSET1"         text="Versatz des Geräts"/>
 		<text name="vcaOFFSET2"         text="Inverser Versatz"/>
+		<text name="vcaSNAP90"          text="Rasterbahn alle 90°"/>
 		<text name="vcaDRAWMARKER"      text="Anzeige der Rasterbahn"/>
 		<text name="vcaPITCH1"          text="Lineare Tonhöhe"/>
 		<text name="vcaPITCH2"          text="Tonhöhe bei mittlerer Drehzahl"/>
@@ -96,6 +97,7 @@
 		<text name="vca_tip_DISTANCE"     text="Abstand zwischen zwei Rasterbahnen"/>
 		<text name="vca_tip_OFFSET1"      text="Seitlicher Versatz der Rasterbahnen"/>
 		<text name="vca_tip_OFFSET2"      text="Inverser Versatz der Rasterbahnen"/>
+		<text name="vca_tip_SNAP90"       text="Automatisches Drehen des Rasterbahn um 90°"/>
 		<text name="vca_tip_DRAWMARKER"   text="Anzeige der aktuellen Rasterbahn"/>
 		<text name="vca_tip_PITCH1"       text="Neuberechnung der Tonhöhe, damit sie linear verläuft"/>
 		<text name="vca_tip_PITCH2"       text="Tonhöhe bei mittlerer Drehzahl"/>
@@ -197,6 +199,8 @@
 		<text name="vcaValueAlways"     text="immer"/>
 		<text name="vcaValueAlwaysH"    text="immer (hoch)"/>
 		<text name="vcaValueNormal"     text="normal"/>
+		<text name="vcaValueLight"      text="leicht"/>
+		<text name="vcaValueStrong"     text="stark"/>
 		<text name="vcaValueEntered"    text="falls eingestiegen"/>
 		<text name="vcaValueInactive"   text="falls inaktiv"/>
 		<text name="vcaValueInactiveH"  text="falls inaktiv (hoch)"/>

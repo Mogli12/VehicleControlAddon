@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <VCAGlobals>
-	<cameraRotFactor     type="float" value="0.7"/>
-	<cameraRotFactorRev  type="float" value="0.4"/>
+	<cameraRotFactor     type="float" value="0.5"/>
+	<cameraRotFactorRev  type="float" value="0.3"/>
 	<cameraRotTime       type="float" value="0.001"/>
   <timer4Reverse       type="int"   value="500"/>     
 	<limitThrottle       type="int"   value="15"/> <!-- 9 => 90%/100% 15 => 100%/75% -->
@@ -32,8 +32,8 @@
 	
 	<!-- defaults -->
 	<adaptiveSteering    type="bool"  value="true"/>
-	<camOutsideRotation  type="bool"  value="false"/>
-	<camInsideRotation   type="bool"  value="true"/>
+	<camOutsideRotation  type="int"   value="0"/>
+	<camInsideRotation   type="int"   value="2"/>
 	<camReverseRotation  type="bool"  value="true"/>
 	<camRevOutRotation   type="bool"  value="false"/>
 	<shuttleControl      type="bool"  value="true"/>

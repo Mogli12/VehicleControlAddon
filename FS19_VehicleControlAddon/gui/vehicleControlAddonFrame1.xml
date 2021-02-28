@@ -5,9 +5,9 @@
 		<GuiElement type="bitmap" profile="vcaSettingsBox" id="container">
 			<GuiElement id="boxLayout1" type="boxLayout" profile="vcaSettingsLayoutLeft">
 			
-				<GuiElement type="checkedOption" profile="vcaMTOSettings" id="vcaCamRotInside"
+				<GuiElement type="multiTextOption" profile="vcaMTOSettings" id="vcaCamRotInside"
 												toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_CAMERAI"												
-												onCreate="onCreateSubElement">
+												onCreate="onCreateSubElement" onCreateArgs="list0">
 					<GuiElement type="button" profile="vcaMTOLeft" />
 					<GuiElement type="button" profile="vcaMTORight"/>
 					<GuiElement type="text" profile="vcaMTOText" />
@@ -15,9 +15,9 @@
 					<GuiElement type="bitmap" profile="vcaMTOBg" />
 				</GuiElement>
 					
-				<GuiElement type="checkedOption" profile="vcaMTOSettings" id="vcaCamRotOutside"
+				<GuiElement type="multiTextOption" profile="vcaMTOSettings" id="vcaCamRotOutside"
 												toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_CAMERAO"
-												onCreate="onCreateSubElement">
+												onCreate="onCreateSubElement" onCreateArgs="list0">
 					<GuiElement type="button" profile="vcaMTOLeft" />
 					<GuiElement type="button" profile="vcaMTORight"/>
 					<GuiElement type="text" profile="vcaMTOText" />
@@ -46,16 +46,6 @@
 					<GuiElement type="bitmap" profile="vcaMTOBg" />
 				</GuiElement>
 				
-				<GuiElement type="multiTextOption" profile="vcaMTOSettings" id="vcaExponent"
-												toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_EXPONENT"
-												onCreate="onCreateSubElement" onCreateArgs="list">
-					<GuiElement type="button" profile="vcaMTOLeft" />
-					<GuiElement type="button" profile="vcaMTORight"/>
-					<GuiElement type="text" profile="vcaMTOText" />
-					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaEXPONENT"/>
-					<GuiElement type="bitmap" profile="vcaMTOBg" />
-				</GuiElement>	
-				
 				<GuiElement type="checkedOption" profile="vcaMTOSettings" id="vcaPeekLeftRight"
 												toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_PEEKLR"
 												onCreate="onCreateSubElement">
@@ -63,6 +53,16 @@
 					<GuiElement type="button" profile="vcaMTORight"/>
 					<GuiElement type="text" profile="vcaMTOText" />
 					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaPEEKLR"/>
+					<GuiElement type="bitmap" profile="vcaMTOBg" />
+				</GuiElement>			
+				
+				<GuiElement type="checkedOption" profile="vcaMTOSettings" id="vcaSnapEvery90"
+												toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_SNAP90"
+												onCreate="onCreateSubElement">
+					<GuiElement type="button" profile="vcaMTOLeft" />
+					<GuiElement type="button" profile="vcaMTORight"/>
+					<GuiElement type="text" profile="vcaMTOText" />
+					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaSNAP90"/>
 					<GuiElement type="bitmap" profile="vcaMTOBg" />
 				</GuiElement>			
 				

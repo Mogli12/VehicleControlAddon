@@ -144,6 +144,38 @@ local function setTorqueCurve( xmlFile, xmlProp, xmlAttr, value )
 	end 
 end
 
+local function getCamRot( xmlFile, xmlProp, xmlAttr )
+	local text = getXMLString( xmlFile, xmlProp..'#'..xmlAttr )
+	
+	if     text == nil      then 
+		return nil
+	elseif text == "light"  then
+		return 1
+	elseif text == "true"   then
+		return 2
+	elseif text == "strong" then
+		return 3
+	end 
+	return 0
+end
+
+local function setCamRot( xmlFile, xmlProp, xmlAttr, value )
+	if type( value ) ~= "number" then return end 
+	local text
+	if     value <= 0 then 
+		text = "false" 
+	elseif value == 3 then 
+		text = "strong" 
+	elseif value == 1 then 
+		text = "light" 
+	else 
+		text = "true"
+	end 
+	if text ~= nil then 
+		setXMLString( xmlFile, xmlProp..'#'..xmlAttr, text )
+	end 
+end 
+
 function vehicleControlAddon.formatNumber( n, d, f ) -- number, decimals, (optional) factor 
 	if n == nil then 
 		return "nil" 
@@ -243,6 +275,7 @@ listOfFunctions.string = { getXML=function( xmlFile, xmlProp, xmlAttr ) return g
 listOfFunctions.trans  = { getXML=getTransmission, setXML=setTransmission, streamRead=streamReadInt16  , streamWrite=streamWriteInt16   }
 listOfFunctions.clutch = { getXML=vehicleControlAddon.getClutch, setXML=vehicleControlAddon.setClutch, streamRead=streamReadInt16  , streamWrite=streamWriteInt16   }
 listOfFunctions.torque = { getXML=getTorqueCurve , setXML=setTorqueCurve , streamRead=streamReadInt16  , streamWrite=streamWriteInt16   }
+listOfFunctions.camRot = { getXML=getCamRot , setXML=setCamRot , streamRead=streamReadInt16  , streamWrite=streamWriteInt16   }
 local listOfProperties = 
 	{ { func=listOfFunctions.bool , xmlName="steering",      propName="vcaSteeringIsOn"  },
 		{ func=listOfFunctions.bool , xmlName="shuttle",       propName="vcaShuttleCtrl"   },
@@ -250,16 +283,16 @@ local listOfProperties =
 		{ func=listOfFunctions.bool , xmlName="limitSpeed",    propName="vcaLimitSpeed"    },
 		{ func=listOfFunctions.bool , xmlName="keepSpeed",     propName="vcaKSToggle"      },
 		{ func=listOfFunctions.bool , xmlName="freeSteering",  propName="vcaNoARBToggle"   },
-		{ func=listOfFunctions.bool , xmlName="camRotInside",  propName="vcaCamRotInside"  },
-		{ func=listOfFunctions.bool , xmlName="camRotOutside", propName="vcaCamRotOutside" },
+		{ func=listOfFunctions.camRot,xmlName="camRotInside",  propName="vcaCamRotInside"  },
+		{ func=listOfFunctions.camRot,xmlName="camRotOutside", propName="vcaCamRotOutside" },
 		{ func=listOfFunctions.bool , xmlName="camRevInside",  propName="vcaCamRevInside"  },
 		{ func=listOfFunctions.bool , xmlName="camRevOutside", propName="vcaCamRevOutside" },
-		{ func=listOfFunctions.int16, xmlName="exponent",      propName="vcaExponent"      },
 		{ func=listOfFunctions.int16, xmlName="throttle",      propName="vcaLimitThrottle" },
 		{ func=listOfFunctions.int16, xmlName="snapAngle",     propName="vcaSnapAngle"     },
 		{ func=listOfFunctions.float, xmlName="snapDist",      propName="vcaSnapDistance"  },
 		{ func=listOfFunctions.float, xmlName="snapOffset1",   propName="vcaSnapOffset1"   },
 		{ func=listOfFunctions.float, xmlName="snapOffset2",   propName="vcaSnapOffset2"   },
+		{ func=listOfFunctions.bool,  xmlName="snapEvery90",   propName="vcaSnapEvery90"   },
 		{ func=listOfFunctions.bool , xmlName="drawHud",       propName="vcaDrawHud"       }, 
 		{ func=listOfFunctions.float, xmlName="brakeForce",    propName="vcaBrakeForce"    },
 		{ func=listOfFunctions.trans, xmlName="transmission",  propName="vcaTransmission"  },
@@ -475,7 +508,6 @@ end
 function vehicleControlAddon:onLoad(savegame)
 	self.vcaIsLoaded            = true 
 													    
-	self.vcaScaleFx             = vehicleControlAddon.vcaScaleFx
 	self.vcaSetState            = vehicleControlAddon.mbSetState
 	self.vcaIsValidCam          = vehicleControlAddon.vcaIsValidCam
 	self.vcaIsActive            = vehicleControlAddon.vcaIsActive
@@ -533,13 +565,13 @@ function vehicleControlAddon:onLoad(savegame)
 	vehicleControlAddon.registerState( self, "vcaCamRotOutside",VCAGlobals.camOutsideRotation )
 	vehicleControlAddon.registerState( self, "vcaCamRevInside", vehicleControlAddon.getDefaultReverse( self, true ) )
 	vehicleControlAddon.registerState( self, "vcaCamRevOutside",vehicleControlAddon.getDefaultReverse( self, false ) )
-	vehicleControlAddon.registerState( self, "vcaExponent"    , 1    , vehicleControlAddon.vcaOnSetFactor )
 	vehicleControlAddon.registerState( self, "vcaWarningText" , ""   , vehicleControlAddon.vcaOnSetWarningText )
 	vehicleControlAddon.registerState( self, "vcaLimitThrottle",VCAGlobals.limitThrottle )
 	vehicleControlAddon.registerState( self, "vcaSnapAngle"   , VCAGlobals.snapAngle, vehicleControlAddon.vcaOnSetSnapAngle )
 	vehicleControlAddon.registerState( self, "vcaSnapDistance", 0 )
 	vehicleControlAddon.registerState( self, "vcaSnapOffset1",  0 )
 	vehicleControlAddon.registerState( self, "vcaSnapOffset2",  0 )
+	vehicleControlAddon.registerState( self, "vcaSnapEvery90",  false )
 	vehicleControlAddon.registerState( self, "vcaSnapIsOn" ,    false, vehicleControlAddon.vcaOnSetSnapIsOn )
 	vehicleControlAddon.registerState( self, "vcaDrawHud" ,     VCAGlobals.drawHud )
 	vehicleControlAddon.registerState( self, "vcaInchingIsOn" , false )
@@ -618,7 +650,6 @@ function vehicleControlAddon:onLoad(savegame)
 	vehicleControlAddon.registerState( self, "vcaOwnRevRatio"   , 1.0   , function( self, ... ) vehicleControlAddon.vcaOnSetOwn( self, "vcaOwnRevRatio"   , ... ) end )
 	vehicleControlAddon.registerState( self, "vcaOwnSplitG27"   , true  , function( self, ... ) vehicleControlAddon.vcaOnSetOwn( self, "vcaOwnSplitG27"   , ... ) end )
 	
-	self.vcaFactor        = 1
 	self.vcaReverseTimer  = 1.5 / VCAGlobals.timer4Reverse
 	self.vcaMovingDir     = 0
 	self.vcaLastFactor    = 0
@@ -2861,13 +2892,45 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 			
 		local camera  = self.spec_enterable.cameras[i]
 		local rotIsOn = self.vcaCamRotOutside
-		local revIsOn = self.vcaCamRevOutside
+		local revIsOn = self.vcaCamRevOutside 
 		self.vcaCamIsInside   = false
 		
 		if camera.isInside then 
 			rotIsOn = self.vcaCamRotInside
 		  revIsOn = self.vcaCamRevInside
 			self.vcaCamIsInside = true 
+		end 
+		
+		if self.spec_crabSteering ~= nil and rotIsOn > 0 then  
+			local spec = self.spec_crabSteering
+			if not ( spec.steeringModes == nil or spec.state == nil or spec.steeringModes[spec.state] == nil ) then 
+				entry = spec.steeringModes[spec.state]
+				local mode = 0
+				if     entry.inputAction == nil then 
+				-- do nothing  
+				elseif entry.inputAction == "CRABSTEERING_ALLWHEEL" then 
+					mode = 2
+				elseif entry.inputAction == "CRABSTEERING_CRABLEFT"
+						or entry.inputAction == "CRABSTEERING_CRABRIGHT" then 
+					mode = 3
+				end 
+				if mode <= 0 then 
+					if     entry.name == g_i18n:getText( "action_steeringModeAllWheel"   ) then 
+						mode = 2
+					elseif entry.name == g_i18n:getText( "action_steeringModeFrontWheel" ) then 
+						mode = 1
+					elseif entry.name == g_i18n:getText( "action_steeringModeCrabLeft"   ) then 
+						mode = 3
+					elseif entry.name == g_i18n:getText( "action_steeringModeCrabRight"  ) then 
+						mode = 3
+					end 
+				end 
+				if     mode == 2 then 
+					rotIsOn = rotIsOn * 1.25 
+				elseif mode == 3 then 
+					rotIsOn = rotIsOn * 0.8 
+				end 
+			end 
 		end 
 		
 	--vehicleControlAddon.debugPrint( "Cam: "..tostring(rotIsOn)..", "..tostring(revIsOn)..", "..tostring(self.vcaLastCamIndex)..", "..tostring(self.vcaLastCamFwd))
@@ -2883,8 +2946,8 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 				
 				if (oldCam.resetCameraOnVehicleSwitch == nil and g_gameSettings:getValue("resetCamera")) or oldCam.resetCameraOnVehicleSwitch then
 				-- camera is automatically reset
-				elseif ( not oldCam.isInside and self.vcaCamRotOutside )
-						or (     oldCam.isInside and self.vcaCamRotInside  ) then 
+				elseif ( not oldCam.isInside and self.vcaCamRotOutside > 0 )
+						or (     oldCam.isInside and self.vcaCamRotInside  > 0 ) then 
 					oldCam.rotY = self.vcaZeroCamRotY + oldCam.rotY - self.vcaLastCamRotY
 				end 
 			end 
@@ -2947,7 +3010,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 				end 
 			end 
 			
-		elseif rotIsOn 
+		elseif rotIsOn > 0
 				or revIsOn
 				or self.vcaKeepCamRot
 				or lastWorldRotation ~= nil then 
@@ -2963,7 +3026,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 			-- reset to old rotation 	
 			elseif newRotCursorKey ~= nil then
 				self.vcaZeroCamRotY = vehicleControlAddon.normalizeAngle( camera.origRotY + newRotCursorKey )
-			elseif rotIsOn then
+			elseif rotIsOn > 0 then
 				self.vcaZeroCamRotY = self.vcaZeroCamRotY + diff
 			else
 				self.vcaZeroCamRotY = camera.rotY
@@ -2999,7 +3062,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 				if lastWorldRotation ~= nil then 
 					newRotY = vehicleControlAddon.normalizeAngle( newRotY + ( self.vcaCamRotWorld - lastWorldRotation ) )
 				end 
-			elseif rotIsOn then
+			elseif rotIsOn > 0 then
 				
 				local f = 0
 				if     self.rotatedTime > 0 then
@@ -3013,6 +3076,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 					f = 1.2345679 * ( f - 0.1 ) ^2 / 0.81
 				--f = 1.1111111 * ( f - 0.1 )
 				end
+				f = f * 0.5 * rotIsOn
 				if self.rotatedTime < 0 then
 					f = -f
 				end
@@ -3026,11 +3090,9 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 				end
 				
 				if isRev then
-				--vehicleControlAddon.debugPrint("reverse")
-					newRotY = newRotY - self:vcaScaleFx( VCAGlobals.cameraRotFactorRev, 0.1, 3 ) * f				
+					newRotY = newRotY - VCAGlobals.cameraRotFactorRev * f				
 				else
-				--vehicleControlAddon.debugPrint("forward")
-					newRotY = newRotY + self:vcaScaleFx( VCAGlobals.cameraRotFactor, 0.1, 3 ) * f
+					newRotY = newRotY + VCAGlobals.cameraRotFactor * f
 				end	
 				
 			else
@@ -3590,7 +3652,6 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 	                   "vcaCamRotOutside"  ,
 	                   "vcaCamRevInside"  ,
 	                   "vcaCamRevOutside"  ,
-	                   "vcaExponent"    ,
 	                   "vcaWarningText" ,
 	                   "vcaLimitThrottle",
 	                   "vcaSnapAngle"   ,
@@ -4295,6 +4356,10 @@ function vehicleControlAddon:vcaGetCurrentSnapAngle(curRot)
 	local e = o + p 
 	local c = curRot 
 	local f = math.pi * 0.5 -- 0.5 for 180° and 0.25 for 90°
+	
+	if self.vcaSnapEvery90 then 
+		f = f * 0.5 
+	end 
 
 	while a - c <= -f do 
 		a = a + f+f
@@ -4463,10 +4528,6 @@ function vehicleControlAddon:getDefaultReverse( isInside )
 	end
 	
 	return VCAGlobals.camRevOutRotation
-end
-
-function vehicleControlAddon:vcaScaleFx( fx, mi, ma )
-	return vehicleControlAddon.mbClamp( 1 + self.vcaFactor * ( fx - 1 ), mi, ma )
 end
 
 --******************************************************************************************************************************************
@@ -7548,11 +7609,6 @@ end
 VehicleMotor.getRotInertia = Utils.overwrittenFunction( VehicleMotor.getRotInertia, vehicleControlAddon.vcaMotorGetRotInertia )
 --******************************************************************************************************************************************
 
-function vehicleControlAddon:vcaOnSetFactor( old, new, noEventSend )
-	self.vcaExponent = new
-	self.vcaFactor   = 1.1 ^ new
-end
-
 function vehicleControlAddon:onSetShuttleControl( old, new, noEventSend )
 	self.vcaShuttleCtrl = new 
 	self:requestActionEventUpdate()
@@ -7794,11 +7850,13 @@ function vehicleControlAddon:vcaShowSettingsUI()
 	end
 
 	self.vcaUI = {}
-	self.vcaUI.vcaExponent_V = { -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5 }
-	self.vcaUI.vcaExponent = {}
-	for i,e in pairs( self.vcaUI.vcaExponent_V ) do
-		self.vcaUI.vcaExponent[i] = string.format("%3.0f %%", 100 * ( 1.1 ^ e ), true )
-	end
+	
+	self.vcaUI.vcaCamRotInside    = { vehicleControlAddon.getText("vcaValueOff", "OFF"), 
+																		vehicleControlAddon.getText("vcaValueLight", "LIGHT"), 
+																		vehicleControlAddon.getText("vcaValueNormal", "NORMAL"), 
+																		vehicleControlAddon.getText("vcaValueStrong", "STRONG"), 
+																	}
+	self.vcaUI.vcaCamRotOutside   = self.vcaUI.vcaCamRotInside																
 	self.vcaUI.vcaLimitThrottle   = {}
 	for i=1,20 do
 	  self.vcaUI.vcaLimitThrottle[i] = string.format("%3d %% / %3d %%", 45 + 5 * math.min( i, 11 ), 150 - 5 * math.max( i, 10 ), true )
@@ -7948,21 +8006,6 @@ function vehicleControlAddon:vcaShowSettingsUI()
 	g_vehicleControlAddonTabbedMenu:setShowOwnTransmission( self.vcaTransmission == vehicleControlAddonTransmissionBase.ownTransmission )
 
 	g_gui:showGui( "vehicleControlAddonMenu" )	
-end
-
-function vehicleControlAddon:vcaUIGetvcaExponent()
-	for i,e in pairs( self.vcaUI.vcaExponent_V ) do
-		if math.abs( e - self.vcaExponent ) < 0.5 then
-			return i
-		end
-	end
-	return 7
-end
-
-function vehicleControlAddon:vcaUISetvcaExponent( value )
-	if self.vcaUI.vcaExponent_V[value] ~= nil then
-		self:vcaSetState( "vcaExponent", self.vcaUI.vcaExponent_V[value] )
-	end
 end
 
 function vehicleControlAddon:vcaUIGetvcaBrakeForce()
