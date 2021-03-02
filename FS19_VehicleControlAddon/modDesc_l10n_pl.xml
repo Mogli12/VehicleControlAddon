@@ -39,6 +39,7 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vcaDISTANCE"        text="Szerokość robocza"/>
 		<text name="vcaOFFSET1"         text="Przesunięcie narzędzia"/>
 		<text name="vcaOFFSET2"         text="Odwróć przesunięcie"/>
+		<text name="vcaSNAP90"          text="Zmień wyrówanie kierunku co 90°"/>
 		<text name="vcaDRAWMARKER"      text="Pokaż linie kierunku jazdy"/>
 		<text name="vcaPITCH1"          text="Liniowa wysokość dźwięku"/>
 		<text name="vcaPITCH2"          text="Wysokość dźwięku przy średnich RPM"/>
@@ -77,6 +78,7 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vcaRATEDPOWER"      text="Moc znamionowa w KM"/>
 		<text name="vcaTORQUECURVE"     text="Bardziej realistyczna krzywa momentu obrotowego"/>
 		<text name="vcaROTACCTIME"      text="Czas rozpędzania silnika"/>
+		<text name="vcaGEARRGMODE"      text="Zamień klawisze biegów i zakresów"/>
 
 		<text name="vca_tip_CAMERAI"    text="Kamera wewnętrzna obraca się automatycznie zgodnie z kątem skrętu"/>
 		<text name="vca_tip_CAMERAO"    text="Kamera zewnętrzna obraca się automatycznie zgodnie z kątem skrętu"/>
@@ -103,6 +105,7 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vca_tip_DISTANCE"     text="Odległość pomiędzy kolejnymi ścieżkami"/>
 		<text name="vca_tip_OFFSET1"      text="Przesunięcie względem obecnej ścieżki"/>
 		<text name="vca_tip_OFFSET2"      text="Odwraca przesunięcie na obecnej ścieżce"/>
+		<text name="vca_tip_SNAP90"       text="Automatycznie obraca wyrównanie kierunku jazdy co 90°"/>
 		<text name="vca_tip_DRAWMARKER"   text="Pokazuje ścieżkę jazdy"/>
 		<text name="vca_tip_PITCH1"       text="Modyfikacja wysokości dźwięku aby stworzyć go bardziej liniowym"/>
 		<text name="vca_tip_PITCH2"       text="Wysokość dźwięku przy średnich RPM"/>
@@ -141,6 +144,7 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vca_tip_RATEDPOWER"   text="Moc w KM przy znamionowej prędkości RPM"/>
 		<text name="vca_tip_TORQUECURVE"  text="Bardziej realistyczna krzywa momentu obrotowego"/>
 		<text name="vca_tip_ROTACCTIME"   text="Czas w ms jaki potrzebuje silnik na rozpędzenie się od min RPM do max RPM"/>
+		<text name="vca_tip_GEARRGMODE"   text="Zamienia klawisze pomiędzy biegami a zakresami"/>
 		
 		<text name="input_vcaSETTINGS"  text="VCA: Ustawienia"/>
 		<text name="input_vcaUP"        text="VCA: Zmiana widok / Widok w przód"/>
@@ -203,6 +207,8 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vcaValueAlways"     text="zawsze"/>
 		<text name="vcaValueAlwaysH"    text="zawsze (wysoko)"/>
 		<text name="vcaValueNormal"     text="normalny"/>
+		<text name="vcaValueLight"      text="słaby"/>
+		<text name="vcaValueStrong"     text="mocny"/>
 		<text name="vcaValueEntered"    text="jeśli w środku"/>
 		<text name="vcaValueInactive"   text="jeśli nieaktywny"/>
 		<text name="vcaValueInactiveH"  text="jeśli nieaktywny (wysoko)"/>
