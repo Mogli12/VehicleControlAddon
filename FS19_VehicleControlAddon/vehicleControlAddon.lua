@@ -5365,7 +5365,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 
 	self.vcaLastFwd = fwd
 	
-	local dftDirTimer = 1000
+	local dftDirTimer = 250
 	if not self.vehicle:vcaIsVehicleControlledByPlayer() then
 		dftDirTimer = nil
 	elseif self.vehicle:vcaGetShuttleCtrl() then
