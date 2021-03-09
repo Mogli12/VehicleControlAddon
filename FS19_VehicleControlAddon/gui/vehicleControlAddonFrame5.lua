@@ -23,20 +23,24 @@ end
 function VehicleControlAddonFrame5:vcaUpdateMenuButtons()
 	if vehicleControlAddonTransmissionBase.ownTransPresets ~= nil then 
 		if #vehicleControlAddonTransmissionBase.ownTransPresets > 0 then 
-			table.insert(self.menuButtonInfo, { inputAction = InputAction.MENU_ACTIVATE,
+			table.insert(self.menuButtonInfo, { inputAction = InputAction.vcaMenuAction2,
 																					text        = g_i18n:getText( "vcaButtonLoadPreset" ),
 																					callback    = self:vcaMakeCallback( VehicleControlAddonFrame5.onClickLoad ) } )
-			table.insert(self.menuButtonInfo, { inputAction = InputAction.MENU_EXTRA_1,
+			table.insert(self.menuButtonInfo, { inputAction = InputAction.vcaMenuAction3,
 																					text        = g_i18n:getText( "vcaButtonDelPreset" ),
 																					callback    = self:vcaMakeCallback( VehicleControlAddonFrame5.onClickDelete ) } )
 		end 
 		
 		if vehicleControlAddonTransmissionBase.ownTransPresetNextID < 100 then 
-			table.insert(self.menuButtonInfo, { inputAction = InputAction.MENU_EXTRA_2,
+			table.insert(self.menuButtonInfo, { inputAction = InputAction.vcaMenuAction1,
 																					text        = g_i18n:getText( "vcaButtonSavePreset" ),
 																					callback    = self:vcaMakeCallback( VehicleControlAddonFrame5.onClickSave ) } )
 		end
 	end 
+
+	table.insert(self.menuButtonInfo, { inputAction = InputAction.vcaMenuAction4,
+																			text        = g_i18n:getText( "vcaGEARRGMODE" ),
+																			callback    = self:vcaMakeCallback( VehicleControlAddonFrame5.onClickSwap ) } )
 end 
 
 function VehicleControlAddonFrame5:onClickLoad( vehicle )
@@ -127,3 +131,34 @@ function VehicleControlAddonFrame5:onClickSaveOk( vehicle, text )
 
 	self:updateMenuButtons()
 end
+
+function VehicleControlAddonFrame5:onClickSwap( vehicle )
+
+	local g = vehicleControlAddon.mbClamp( vehicle.vcaOwnGearFactor,  0.001, 0.99 ) ^ ( 1 / math.max( 1, vehicle.vcaOwnGears  - 1 ) ) 
+	local r = vehicleControlAddon.mbClamp( vehicle.vcaOwnRangeFactor, 0.001, 0.99 )
+	
+	vehicle:vcaSetState( "vcaOwnRangeFactor", g )
+	vehicle:vcaSetState( "vcaOwnGearFactor", r ^ math.max( 1, vehicle.vcaOwnRanges  - 1 ) )
+	
+	g = vehicle.vcaOwnGears
+	r = vehicle.vcaOwnRanges
+	vehicle:vcaSetState( "vcaOwnRanges", g )
+	vehicle:vcaSetState( "vcaOwnGears", r )
+	
+	g = vehicle.vcaOwnGearTime 
+	r = vehicle.vcaOwnRangeTime
+	vehicle:vcaSetState( "vcaOwnRangeTime", g )
+	vehicle:vcaSetState( "vcaOwnGearTime", r )
+
+	g = vehicle.vcaOwnAutoGears
+	r = vehicle.vcaOwnAutoRange
+	vehicle:vcaSetState( "vcaOwnAutoRange", g )
+	vehicle:vcaSetState( "vcaOwnAutoGears", r )
+
+	g = vehicle.vcaOwnRevGears
+	r = vehicle.vcaOwnRevRange
+	vehicle:vcaSetState( "vcaOwnRevRange", g )
+	vehicle:vcaSetState( "vcaOwnRevGears", r )
+
+	self:vcaGetValues( true ) 
+end 

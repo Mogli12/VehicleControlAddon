@@ -192,6 +192,10 @@
 		<text name="input_vcaLowerB"    text="VCA: hintere Geräte heben/senken"/>
 		<text name="input_vcaActivateF" text="VCA: vordere Geräte (de-)aktivieren"/>
 		<text name="input_vcaActivateB" text="VCA: hintere Geräte (de-)aktivieren"/>
+		<text name="input_vcaMenuAction1" text="VCA: Menu Button S"/>
+		<text name="input_vcaMenuAction2" text="VCA: Menu Button L"/>
+		<text name="input_vcaMenuAction3" text="VCA: Menu Button D"/>
+		<text name="input_vcaMenuAction4" text="VCA: Menu Button X"/>
 		
 		<text name="vcaValueOn"         text="an"/>
 		<text name="vcaValueOff"        text="aus"/>

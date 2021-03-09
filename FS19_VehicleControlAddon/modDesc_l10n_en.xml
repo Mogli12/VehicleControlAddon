@@ -192,6 +192,10 @@
 		<text name="input_vcaLowerB"    text="VCA: lower/raise back tools "/>
 		<text name="input_vcaActivateF" text="VCA: (de-)activate front tools "/>
 		<text name="input_vcaActivateB" text="VCA: (de-)activate back tools "/>
+		<text name="input_vcaMenuAction1" text="VCA: Menu Button S"/>
+		<text name="input_vcaMenuAction2" text="VCA: Menu Button L"/>
+		<text name="input_vcaMenuAction3" text="VCA: Menu Button D"/>
+		<text name="input_vcaMenuAction4" text="VCA: Menu Button X"/>
 		
 		<text name="vcaValueOn"         text="on"/>
 		<text name="vcaValueOff"        text="off"/>

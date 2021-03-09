@@ -6785,7 +6785,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			end 
 		                     
 			if     clutchFactor > 0 then 
-				local w  = wheelSpeed * self.maxRpm / maxSpeed 
+				local w = wheelSpeed * self.maxRpm / maxSpeed 
 				local m = self.vcaMaxRpm 
 				
 				local function getRelativeRPM( r1, r0 ) 
@@ -6817,12 +6817,14 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 				end 
 				
 				-- gear ratio: from open interval to curGearRatio
-				self.minGearRatio = math.min( curGearRatio, getGR( getRPM( 0 )), getGR( getRPM( m )) )                         
-				self.maxGearRatio = math.max( curGearRatio, getGR( getRPM( 0 )), getGR( getRPM( m )) )
+				local r0 = getGR( getACR( getRPM( 0 )))
+				local rm = getGR( getACR( getRPM( m )))
+				self.minGearRatio = math.min( curGearRatio, r0, rm )                         
+				self.maxGearRatio = math.max( curGearRatio, r0, rm ) 
 				
 				-- min/max RPM: from fakeRpm to open interval 
-				self.vcaMinRpm = getACR( getRelativeRPM( fakeRpm, 0 ) )
-				self.vcaMaxRpm = getACR( getRelativeRPM( fakeRpm, m ) )
+				self.vcaMinRpm = getRelativeRPM( fakeRpm, 0 ) -- getACR( getRelativeRPM( fakeRpm, 0 ) )
+				self.vcaMaxRpm = m -- getACR( getRelativeRPM( fakeRpm, m ) )
 				-- we took raw fake RPM => smooth now  
 				self.vcaMinRpm = vehicleControlAddon.mbClamp( self.vcaMinRpm, lastMinRpm - maxRpmAccDt, lastMinRpm + maxRpmAccDt )
 				self.vcaMaxRpm = vehicleControlAddon.mbClamp( self.vcaMaxRpm, lastMaxRpm - maxRpmAccDt, lastMaxRpm + maxRpmAccDt )
@@ -6957,7 +6959,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	--****************************************************************************	
 	self.vcaRealSpeedLimit = self.speedLimit
 
-	if self.vcaDirTimer ~= nil or self.vcaMaxAccFactor == nil then -- or self.gearChangeTimer > 0 or self.vehicle.vcaClutchDisp > 0 then   
+	if self.vcaDirTimer ~= nil or self.vcaMaxAccFactor == nil or ( self.vehicle.vcaClutchDisp > 0 and speed < 10 ) then   
 		self.vcaMaxAccFactor  = 0.01
 		self.vcaMaxWheelAcc   = self.accelerationLimit
 		self.vcaMaxMotorAcc   = maxRotAcc

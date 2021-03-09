@@ -25,10 +25,10 @@ function VehicleControlAddonFrame1:new(menu)
 end
 
 function VehicleControlAddonFrame1:vcaUpdateMenuButtons()
-	table.insert(self.menuButtonInfo, { inputAction = InputAction.MENU_EXTRA_2,
+	table.insert(self.menuButtonInfo, { inputAction = InputAction.vcaMenuAction3,
 																			text        = g_i18n:getText( "vcaButtonSnapWidth" ),
 																			callback    = self:vcaMakeCallback( VehicleControlAddonFrame1.onClickMagic ) } )
-	table.insert(self.menuButtonInfo, { inputAction = InputAction.MENU_EXTRA_1,
+	table.insert(self.menuButtonInfo, { inputAction = InputAction.vcaMenuAction4,
 																			text        = g_i18n:getText( "vcaButtonSnapOffset" ),
 																			callback    = self:vcaMakeCallback( VehicleControlAddonFrame1.onClickSwap ) } )
 end 
