@@ -31,6 +31,7 @@
 		<text name="vcaDISTANCE"            text="Рабочая ширина"/>
 		<text name="vcaOFFSET1"             text="Смещение оборудования"/>
 		<text name="vcaOFFSET2"             text="Инвертировать смещение"/>
+		<text name="vcaSNAP90"				text="Вращать направления на 90°"/>
 		<text name="vcaDRAWMARKER"          text="Маркеры удержания направления"/>
 		<text name="vcaPITCH1"              text="Линейная высота звука"/>
 		<text name="vcaPITCH2"              text="Звук на средних оборотах"/>
@@ -44,7 +45,7 @@
 		<text name="vcaHIREDWORKER"         text="Трансмиссия и наёмный работник"/>
 		<text name="vcaOWNMINSPEED"         text="Скорость на 1-й передаче"/>
 		<text name="vcaOWNMINRANGE"         text="Скорость на 1-й передаче на 1 диапазоне -"/>
-		<text name="vcaOWNMAXRANGE"         text="Max. скорость на 2 высшем диапазоне -"/>
+		<text name="vcaOWNMAXRANGE"         text="Макс. скорость на 2 высшем диапазоне -"/>
 		<text name="vcaOWNGEARS"            text="К-во передач"/>
 		<text name="vcaOWNRANGES"           text="К-во диапазонов"/>
 		<text name="vcaOWNGEARTIME"         text="Время переключения передач"/>
@@ -69,6 +70,7 @@
 		<text name="vcaRATEDPOWER"          text="Номинальная мощность в л.с."/>
 		<text name="vcaTORQUECURVE"			text="Более реалистичная кривая крутящего момента"/>
 		<text name="vcaROTACCTIME"			text="Время разгона двигателя"/>
+		<text name="vcaGEARRGMODE"			text="Сменить клавиши переключения передач и диапазонов"/>
 
 		<text name="vca_tip_CAMERAI"        text="Внутренняя камера автоматически поворачивается в соответствии с углом поворота рулевого колеса."/>
 		<text name="vca_tip_CAMERAO"        text="Внешняя камера автоматически поворачивается в соответствии с углом поворота рулевого колеса."/>
@@ -95,6 +97,7 @@
 		<text name="vca_tip_DISTANCE"       text="Расстояние между двумя рядами удержания направлений."/>
 		<text name="vca_tip_OFFSET1"        text="Смещение полос удержания направлений."/>
 		<text name="vca_tip_OFFSET2"        text="Инвертировать смещение полос удержания направлений."/>
+		<text name="vca_tip_SNAP90"			text="Автоматическое вращение удержанного направления движения на 90°."/>
 		<text name="vca_tip_DRAWMARKER"     text="Отрисовка маркеров полос удержания направлений."/>
 		<text name="vca_tip_PITCH1"         text="Изменение высоты звука, чтобы сделать его линейным."/>
 		<text name="vca_tip_PITCH2"         text="Высота звука на средних оборотах."/>
@@ -102,8 +105,8 @@
 		<text name="vca_tip_SINGLEREV"      text="При движении задним ходом вместо челнока используется одна передача или группа."/>
 		<text name="vca_tip_AUTOCLUTCH"     text="Автоматическое срабатывание сцепления."/>
 		<text name="vca_tip_TURBOCLUTCH"    text="Дополнительное турбосцепление."/>
-		<text name="vca_tip_GEARRATIOF"     text="Min. ограничение скорости передачи. Автоматически не переключается на более низшую передачу."/>
-		<text name="vca_tip_GEARRATIOT"     text="Max. ограничение скорости передачи. Автоматически не переключается на более высшую передачу."/>
+		<text name="vca_tip_GEARRATIOF"     text="Мин. ограничение скорости передачи. Автоматически не переключается на более низшую передачу."/>
+		<text name="vca_tip_GEARRATIOT"     text="Макс. ограничение скорости передачи. Автоматически не переключается на более высшую передачу."/>
 		<text name="vca_tip_G27MODE"        text="Режим переключения G27/G29."/>
 		<text name="vca_tip_HIREDWORKER"    text="Когда наёмный работник управляет техникой, какую трансмиссию он будет использовать: ванильную или модифицированную."/>
 		<text name="vca_tip_OWNMINSPEED"    text="Макс. скорость которая может быть достигнута на 1й передаче высшего диапазона"/>
@@ -133,6 +136,7 @@
 		<text name="vca_tip_RATEDPOWER"     text="Мощность транспортного средства в лошадиных силах при номинальных оборотах."/>
 		<text name="vca_tip_TORQUECURVE"    text="Более реалистичная кривая крутящего момента автомобиля."/>
 		<text name="vca_tip_ROTACCTIME"     text="Время в мс, которое двигателю необходимо для увеличения оборотов с минимального до максимального значения."/>
+		<text name="vca_tip_GEARRGMODE"		text="Эта настройка меняет местами клавиши для передач вверх / вниз и диапазонов."/>
 		
 		<text name="input_vcaSETTINGS"      text="VCA: Настройки"/>
 		<text name="input_vcaUP"            text="VCA: Посмотреть вперед"/>
@@ -188,13 +192,19 @@
 		<text name="input_vcaLowerB"        text="VCA: Опустить/поднять заднее оборудование"/>
 		<text name="input_vcaActivateF"     text="VCA: (Де-)активировать переднее оборудование"/>
 		<text name="input_vcaActivateB"     text="VCA: (Де-)активировать заднее оборудование"/>
+		<text name="input_vcaMenuAction1"   text="VCA: Клавиша меню S"/>
+		<text name="input_vcaMenuAction2"   text="VCA: Клавиша меню L"/>
+		<text name="input_vcaMenuAction3"   text="VCA: Клавиша меню D"/>
+		<text name="input_vcaMenuAction4"   text="VCA: Клавиша меню X"/>
 		
-		<text name="vcaValueOn"             text="ВКЛ"/>
-		<text name="vcaValueOff"            text="ВЫКЛ"/>
+		<text name="vcaValueOn"             text="Вкл"/>
+		<text name="vcaValueOff"            text="Выкл"/>
 		<text name="vcaValueNever"          text="никогда"/>
 		<text name="vcaValueAlways"         text="всегда"/>
 		<text name="vcaValueAlwaysH"        text="всегда (вверху)"/>
-		<text name="vcaValueNormal"         text="обычный"/>
+		<text name="vcaValueNormal"         text="обычное"/>
+		<text name="vcaValueLight"			text="слабое"/> 
+		<text name="vcaValueStrong"			text="сильное"/>
 		<text name="vcaValueEntered"        text="если внутри"/>
 		<text name="vcaValueInactive"       text="если неактивен"/>
 		<text name="vcaValueInactiveH"      text="если неактивен (вверху)"/>
