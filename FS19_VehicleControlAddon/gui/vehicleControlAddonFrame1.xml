@@ -90,22 +90,22 @@
 				</GuiElement>
 
 				<GuiElement type="multiTextOption" profile="vcaMTOSettings" id="vcaRotSpeedOut"
-												toolTipElementId="mogliToolTipBoxText" toolTipText="Steering Speed"
+												toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_STSPEEDO"
 												onCreate="onCreateSubElement" onCreateArgs="percent5">
 					<GuiElement type="button" profile="vcaMTOLeft" />
 					<GuiElement type="button" profile="vcaMTORight"/>
 					<GuiElement type="text" profile="vcaMTOText" />
-					<GuiElement type="text" profile="vcaMTOTitle" text="Steering Speed"/>
+					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaSTSPEEDO"/>
 					<GuiElement type="bitmap" profile="vcaMTOBg" />
 				</GuiElement>	
 
 				<GuiElement type="multiTextOption" profile="vcaMTOSettings" id="vcaRotSpeedIn"
-												toolTipElementId="mogliToolTipBoxText" toolTipText="Steering inverse speed"
+												toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_STSPEEDI"
 												onCreate="onCreateSubElement" onCreateArgs="percent5">
 					<GuiElement type="button" profile="vcaMTOLeft" />
 					<GuiElement type="button" profile="vcaMTORight"/>
 					<GuiElement type="text" profile="vcaMTOText" />
-					<GuiElement type="text" profile="vcaMTOTitle" text="Steering inverse speed"/>
+					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaSTSPEEDI"/>
 					<GuiElement type="bitmap" profile="vcaMTOBg" />
 				</GuiElement>	
 				
