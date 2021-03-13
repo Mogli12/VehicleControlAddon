@@ -229,6 +229,8 @@
 		<text name="vcaTorqueCurve_4"   text="klassisch (20% Anstieg)"/>
 		<text name="vcaTorqueCurve_5"   text="klassisch (30% Anstieg)"/>
 		
+		<text name="vcaPowerShift"      text="Lastschaltung"/>
+		
 		<text name="vcaButtonSnapWidth"  text="Breite ermitteln"/>
 		<text name="vcaButtonSnapOffset" text="Offset tauschen"/>
 		<text name="vcaButtonLoadPreset" text="Getriebe laden"/>

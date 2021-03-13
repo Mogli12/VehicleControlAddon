@@ -229,6 +229,8 @@
 		<text name="vcaTorqueCurve_4"   text="classic (20% increase)"/>
 		<text name="vcaTorqueCurve_5"   text="classic (30% increase)"/>
 		
+		<text name="vcaPowerShift"      text="power shift"/>
+		
 		<text name="vcaButtonSnapWidth"  text="Detect width"/>
 		<text name="vcaButtonSnapOffset" text="Swap offset"/>
 		<text name="vcaButtonLoadPreset" text="Load transmission"/>

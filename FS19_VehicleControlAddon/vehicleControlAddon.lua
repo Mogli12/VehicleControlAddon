@@ -7962,13 +7962,11 @@ function vehicleControlAddon:vcaShowSettingsUI()
 		table.insert( self.vcaUI.vcaOwnRanges , string.format("%d", i ) )
 	end 
 	
-	self.vcaUI.vcaOwnGearTime  = {}
-	self.vcaUI.vcaOwnRangeTime = {}
-	self.vcaUI.vcaRotAccTime   = {}
-	for i=0,2000,125 do 
-		table.insert( self.vcaUI.vcaOwnGearTime,  string.format( "%4d ms", i ) )
-		table.insert( self.vcaUI.vcaOwnRangeTime, string.format( "%4d ms", i ) )
+	self.vcaUI.vcaOwnGearTime = { vehicleControlAddon.getText("vcaPowerShift", "power shift") }
+	for i=125,2000,125 do 
+		table.insert( self.vcaUI.vcaOwnGearTime, string.format( "%4d ms", i ) )
 	end 
+	self.vcaUI.vcaOwnRangeTime = self.vcaUI.vcaOwnGearTime
 	
 	self.vcaUI.vcaRotAccTime   = {}
 	for i=0,5000,250 do 
