@@ -347,7 +347,7 @@ local listOfProperties =
 		{ func=listOfFunctions.float, xmlName="ratedPower",    propName="vcaRatedPower"    },
 		{ func=listOfFunctions.int16, xmlName="torqueCurve",   propName="vcaTorqueCurve"   },
 		{ func=listOfFunctions.int16, xmlName="rotAccTime",    propName="vcaRotAccTime"    },
-		{ func=listOfFunctions.int16, xmlName="gearRangeMode", propName="vcaGearRangeMode" },
+--	{ func=listOfFunctions.int16, xmlName="gearRangeMode", propName="vcaGearRangeMode" },
 	}
 
 
@@ -2499,7 +2499,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 	lastControllerName = self.vcaControllerName
 	if not g_vehicleControlAddon.isMP then 
 		self.vcaControllerName = "" 
-	elseif self:getIsControlled() then 
+	elseif self:getIsControlled() and ( self.vcaIsEnteredMP or self.isServer ) then  
 		self.vcaControllerName = self:getControllerName()
 		if lastControllerName == nil or lastControllerName ~= self.vcaControllerName then 
 			vehicleControlAddon.mpDebugPrint( self,"New controller of vehicle is: "..self.vcaControllerName)

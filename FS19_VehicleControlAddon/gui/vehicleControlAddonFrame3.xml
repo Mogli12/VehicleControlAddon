@@ -131,7 +131,7 @@
 					<GuiElement type="bitmap" profile="vcaMTOBg" />
 				</GuiElement>
 
-				<GuiElement type="multiTextOption" profile="vcaMTOSettings" id="vcaGearRangeMode"
+				<!-- GuiElement type="multiTextOption" profile="vcaMTOSettings" id="vcaGearRangeMode"
 												toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_GEARRGMODE"
 												onCreate="onCreateSubElement" onCreateArgs="list0">
 					<GuiElement type="button" profile="vcaMTOLeft" />
@@ -139,7 +139,7 @@
 					<GuiElement type="text" profile="vcaMTOText" />
 					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaGEARRGMODE"/>
 					<GuiElement type="bitmap" profile="vcaMTOBg" />
-				</GuiElement>
+				</GuiElement -->
 
 			</GuiElement>			
 			
