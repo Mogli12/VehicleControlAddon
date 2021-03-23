@@ -71,6 +71,8 @@
 		<text name="vcaTORQUECURVE"			text="Более реалистичная кривая крутящего момента"/>
 		<text name="vcaROTACCTIME"			text="Время разгона двигателя"/>
 		<text name="vcaGEARRGMODE"			text="Сменить клавиши переключения передач и диапазонов"/>
+		<text name="vcaSTSPEEDO"			text="Скорость руления"/>
+		<text name="vcaSTSPEEDI"			text="Скорость автовозврата"/>
 
 		<text name="vca_tip_CAMERAI"        text="Внутренняя камера автоматически поворачивается в соответствии с углом поворота рулевого колеса."/>
 		<text name="vca_tip_CAMERAO"        text="Внешняя камера автоматически поворачивается в соответствии с углом поворота рулевого колеса."/>
@@ -137,6 +139,8 @@
 		<text name="vca_tip_TORQUECURVE"    text="Более реалистичная кривая крутящего момента автомобиля."/>
 		<text name="vca_tip_ROTACCTIME"     text="Время в мс, которое двигателю необходимо для увеличения оборотов с минимального до максимального значения."/>
 		<text name="vca_tip_GEARRGMODE"		text="Эта настройка меняет местами клавиши для передач вверх / вниз и диапазонов."/>
+		<text name="vca_tip_STSPEEDO"		text="Скорость рулевого управления."/>
+		<text name="vca_tip_STSPEEDI"		text="Скорость автоматического возврата руля."/>
 		
 		<text name="input_vcaSETTINGS"      text="VCA: Настройки"/>
 		<text name="input_vcaUP"            text="VCA: Посмотреть вперед"/>
@@ -225,6 +229,8 @@
 		<text name="vcaTorqueCurve_4" 		text="классика (20% увеличения)"/>
 		<text name="vcaTorqueCurve_5" 		text="классика (30% увеличения)"/>
 
+		<text name="vcaPowerShift"			text="power shift"/>
+		
 		<text name="vcaButtonSnapWidth"		text="Определить ширину"/>
 		<text name="vcaButtonSnapOffset"	text="Сменить смещение"/>
 		<text name="vcaButtonLoadPreset"	text="Загрузить трансмиссию"/>
