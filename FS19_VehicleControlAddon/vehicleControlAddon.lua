@@ -7944,9 +7944,6 @@ function vehicleControlAddon:vcaShowSettingsUI()
 																vehicleControlAddon.getText("vcaValueAlways", "ALWAYS"), 
 															}
 														
-	self.vcaUI.vcaMaxSpeed     = tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed ) )
-	self.vcaUI.vcaLaunchSpeed  = tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaLaunchSpeed ) )
-	
 	if self.vcaSnapDistance < 0.1 then
 		local d, o, p = self:vcaGetSnapDistance()
 		self:vcaSetState( "vcaSnapDistance", d )
@@ -8027,20 +8024,29 @@ function vehicleControlAddon:vcaUISetvcaBrakeForce( value )
 end
 
 function vehicleControlAddon:vcaUIGetvcaLaunchSpeed()
-	return self.vcaUI.vcaLaunchSpeed
+	return tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaLaunchSpeed ) )
 end 
 function vehicleControlAddon:vcaUISetvcaLaunchSpeed( value )
 	local v = vehicleControlAddon.vcaSpeedExt2Int( tonumber( value ) )
 	if type( v ) == "number" and v > 0 and math.abs( v - self.vcaLaunchSpeed ) > 0.01 then
 		self:vcaSetState( "vcaLaunchSpeed", v )
 	end 
-	self.vcaUI.vcaLaunchSpeed = tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaLaunchSpeed ) )
 end 
 
 function vehicleControlAddon:vcaUIGetvcaMaxSpeed()
-	return self.vcaUI.vcaMaxSpeed
+	return tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed ) )
 end 
 function vehicleControlAddon:vcaUISetvcaMaxSpeed( value )
+	local v = vehicleControlAddon.vcaSpeedExt2Int( tonumber( value ) )
+	if type( v ) == "number" and v > 0 and math.abs( v - self.vcaMaxSpeed ) > 0.01 then
+		self:vcaSetState( "vcaMaxSpeed", v )
+	end 
+end
+
+function vehicleControlAddon:vcaUIGetvcaMaxSpeedOwn()
+	return tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed ) )
+end 
+function vehicleControlAddon:vcaUISetvcaMaxSpeedOwn( value )
 	local v = vehicleControlAddon.vcaSpeedExt2Int( tonumber( value ) )
 	if type( v ) == "number" and v > 0 and math.abs( v - self.vcaMaxSpeed ) > 0.01 then
 		local g = self.vcaMaxSpeed * self.vcaOwnGearFactor
@@ -8053,7 +8059,6 @@ function vehicleControlAddon:vcaUISetvcaMaxSpeed( value )
 			self:vcaSetState( "vcaOwnRange1st1st", math.min( q / v, 0.99 ) )
 		end 
 	end 
-	self.vcaUI.vcaMaxSpeed = tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed ) )
 end
 
 function vehicleControlAddon:vcaUIGetvcaSpeedLimitF()

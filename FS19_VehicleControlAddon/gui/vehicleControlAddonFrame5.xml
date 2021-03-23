@@ -16,7 +16,7 @@
 				</GuiElement>
 
 			
-				<GuiElement type="textInput" profile="ingameMenuGameSettingsTextInput" id="vcaMaxSpeed" onCreate="onCreateSubElement" 
+				<GuiElement type="textInput" profile="ingameMenuGameSettingsTextInput" id="vcaMaxSpeedOwn" onCreate="onCreateSubElement" 
 										toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_MAXSPEED"
 										maxCharacters="10" imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed">
 					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaMAXSPEED"/>
