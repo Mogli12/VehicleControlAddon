@@ -6839,17 +6839,17 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			
 			-- *******************************************
 			-- idle acceleration
-			local fullRpm = idleRpm - 0.15 * self.minRpm
-			local zeroRpm = math.min( idleRpm + 0.05 * self.minRpm, self.maxRpm )
+			local fullRpm = idleRpm - 0.1 * rpmRange
+			local zeroRpm = math.min( idleRpm + 0.05 * rpmRange, self.maxRpm )
 			local idleAcc = 0
 			
 			local smoothF = 0.1414
 			local deltaR  = math.abs( motorRpm - idleRpm )
 			
-			if     3 * deltaR >= 0.4472 * self.minRpm then 
+			if     3 * deltaR >= 0.4472 * rpmRange then 
 				smoothF = 0.4472
-			elseif 3 * deltaR > smoothF * self.minRpm  then 
-				smoothF = 3 * deltaR / self.minRpm 
+			elseif 3 * deltaR > smoothF * rpmRange  then 
+				smoothF = 3 * deltaR / rpmRange
 			end 
 			smoothF = smoothF * smoothF 
 			
@@ -7094,6 +7094,7 @@ function vehicleControlAddon:vcaGetTotalConsumedPtoTorque( superFunc, excludeVeh
 	if not ( self.vcaIsLoaded 
 			 and self:vcaGetTransmissionActive()
 			 and self:vcaGetNoIVT() 
+			 and self.lastSpeedReal * 3600 > 0.5 
 			 and self.spec_motorized ~= nil 
 			 and self.spec_motorized.motor ~= nil
 			 and self.spec_motorized.motor.gearRatio ~= nil
