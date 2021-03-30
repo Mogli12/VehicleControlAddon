@@ -26,8 +26,11 @@ VehicleControlAddonMenu.CONTROLS = {
 }
 
 local alwaysVisiblePredicate = function() return true end
-local frame5VisiblePredicate = function() 
-	return g_currentMission.controlledVehicle.vcaTransmission == vehicleControlAddonTransmissionBase.ownTransmission 
+local frame3VisiblePredicate = function() 
+	if g_currentMission.controlledVehicle == nil or g_currentMission.controlledVehicle.rmtIsOn then 
+		return false
+	end 
+	return true 
 end
 local frame4VisiblePredicate = function() 
 	if g_vehicleControlAddon.isMP then 
@@ -35,11 +38,14 @@ local frame4VisiblePredicate = function()
 	end 
 	return g_server ~= nil 
 end 
+local frame5VisiblePredicate = function() 
+	return g_currentMission.controlledVehicle.vcaTransmission == vehicleControlAddonTransmissionBase.ownTransmission 
+end
 
 VehicleControlAddonMenu.FRAMES = {
 	{ name = "vcaFrame1", iconUVs = {0,0,65,65},  predicate=alwaysVisiblePredicate, uiFilename=Utils.getFilename("gui/icons.dds",g_currentModDirectory) },
 	{ name = "vcaFrame2", iconUVs = {66,0,65,65}, predicate=alwaysVisiblePredicate, uiFilename=Utils.getFilename("gui/icons.dds",g_currentModDirectory) },
-	{ name = "vcaFrame3", iconUVs = {132,0,65,65},predicate=alwaysVisiblePredicate, uiFilename=Utils.getFilename("gui/icons.dds",g_currentModDirectory) },
+	{ name = "vcaFrame3", iconUVs = {132,0,65,65},predicate=frame3VisiblePredicate, uiFilename=Utils.getFilename("gui/icons.dds",g_currentModDirectory) },
 	{ name = "vcaFrame6", iconUVs = {200,0,65,65},predicate=alwaysVisiblePredicate, uiFilename=Utils.getFilename("gui/icons.dds",g_currentModDirectory) },
 	{ name = "vcaFrame4", iconUVs = VehicleControlAddonMenu.TAB_UV.GLOBAL,      predicate=frame4VisiblePredicate },
 	{ name = "vcaFrame5", iconUVs = VehicleControlAddonMenu.TAB_UV.PLAYER   },

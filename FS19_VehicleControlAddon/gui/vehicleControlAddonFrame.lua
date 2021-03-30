@@ -58,6 +58,7 @@ function VehicleControlAddonFrame:onFrameOpen()
 	VehicleControlAddonFrame:superClass().onFrameOpen(self)
 	
 	self:vcaGetValues( true ) 
+	self:vcaSetVisibility()
 end 
 
 function VehicleControlAddonFrame:onFrameClose()
@@ -246,6 +247,31 @@ function VehicleControlAddonFrame:vcaSetValues( force )
 	
 	self.vcaState.vcaSetValues = false 
 end
+
+function VehicleControlAddonFrame:vcaSetVisibility()
+	if self.menu == nil then 
+		return 
+	end 
+
+	if g_currentMission.controlledVehicle ~= nil and g_currentMission.controlledVehicle.vcaIsLoaded then 
+		local vehicle = g_currentMission.controlledVehicle
+		
+		for name,s in pairs( self.vcaElements ) do		
+			local element = s.element
+			if     type( vehicleControlAddon["vcaUIShow"..name] ) == "function" then
+				local getter = vehicleControlAddon["vcaUIShow"..name]
+				
+				if getter( vehicle ) then 
+				--print("vcaSetVisibility: '"..tostring(name).."' is visible")
+					element:setDisabled(false)
+				else 
+				--print("vcaSetVisibility: '"..tostring(name).."' is hidden")
+					element:setDisabled(true)
+				end		
+			end		
+		end 
+	end 
+end 
 
 function VehicleControlAddonFrame:vcaOnEnterPressed( element )
 	self:vcaOnTextChanged( element, element:getText() )

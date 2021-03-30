@@ -8477,3 +8477,51 @@ function vehicleControlAddon:vcaUISetvcaOwnRevRatio( value )
 	end 
 end 
 
+function vehicleControlAddon:vcaUIShowvcaShuttleCtrl()
+	if self.hasRMT then 
+		return false 
+	end 
+	return true 
+end 
+
+local function onlyMasterUser()
+	if VCAGlobals.onlyMasterUser ~= nil then 
+		if VCAGlobals.onlyMasterUser == 1 then 
+			return true 
+		else 
+			return false 
+		end 
+	end 
+	if g_vehicleControlAddon.isMP then 
+		return g_currentMission.isMasterUser 
+	end 
+	return g_server ~= nil 
+end 
+
+function vehicleControlAddon:vcaUIShowvcaMaxSpeed()
+	return onlyMasterUser()
+end 
+function vehicleControlAddon:vcaUIShowvcaMaxSpeedOwn()
+	return onlyMasterUser()
+end 
+
+function vehicleControlAddon:vcaUIShowvcaLimitSpeed()
+	return onlyMasterUser()
+end 
+
+function vehicleControlAddon:vcaUIShowvcaSpeedLimitF()
+	return onlyMasterUser()
+end 
+
+function vehicleControlAddon:vcaUIShowvcaSpeedLimitB()
+	return onlyMasterUser()
+end 
+
+function vehicleControlAddon:vcaUIShowvcaRatedPower()
+	return onlyMasterUser()
+end 
+
+function vehicleControlAddon:vcaUIShowvcaTorqueCurve()
+	return onlyMasterUser()
+end 
+
