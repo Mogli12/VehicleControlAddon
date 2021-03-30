@@ -79,6 +79,8 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vcaTORQUECURVE"     text="Bardziej realistyczna krzywa momentu obrotowego"/>
 		<text name="vcaROTACCTIME"      text="Czas rozpędzania silnika"/>
 		<text name="vcaGEARRGMODE"      text="Zamień klawisze biegów i zakresów"/>
+		<text name="vcaSTSPEEDO"        text="Prędkość skrętu"/>
+		<text name="vcaSTSPEEDI"        text="Odwróć prędkość skrętu"/>
 
 		<text name="vca_tip_CAMERAI"    text="Kamera wewnętrzna obraca się automatycznie zgodnie z kątem skrętu"/>
 		<text name="vca_tip_CAMERAO"    text="Kamera zewnętrzna obraca się automatycznie zgodnie z kątem skrętu"/>
@@ -145,6 +147,8 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vca_tip_TORQUECURVE"  text="Bardziej realistyczna krzywa momentu obrotowego"/>
 		<text name="vca_tip_ROTACCTIME"   text="Czas w ms jaki potrzebuje silnik na rozpędzenie się od min RPM do max RPM"/>
 		<text name="vca_tip_GEARRGMODE"   text="Zamienia klawisze pomiędzy biegami a zakresami"/>
+		<text name="vcaSTSPEEDO"        text="Prędkość skrętu"/>
+		<text name="vcaSTSPEEDI"        text="odwraca prędkość skrętu"/>
 		
 		<text name="input_vcaSETTINGS"  text="VCA: Ustawienia"/>
 		<text name="input_vcaUP"        text="VCA: Zmiana widok / Widok w przód"/>
@@ -200,6 +204,10 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="input_vcaLowerB"    text="VCA: Opuść/Podnieś tylne narzędzie"/>
 		<text name="input_vcaActivateF" text="VCA: Włącz/Wyłącz przednie narzędzie"/>
 		<text name="input_vcaActivateB" text="VCA: Włącz/Wyłącz tylne narzędzie"/>
+		<text name="input_vcaMenuAction1" text="VCA: Przycisk menu S"/>
+		<text name="input_vcaMenuAction2" text="VCA: Przycisk menu L"/>
+		<text name="input_vcaMenuAction3" text="VCA: Przycisk menu D"/>
+		<text name="input_vcaMenuAction4" text="VCA: Przycisk menu X"/>
 		
 		<text name="vcaValueOn"         text="włączone"/>
 		<text name="vcaValueOff"        text="wyłączone"/>
@@ -228,6 +236,8 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vcaTorqueCurve_3"   text="Silnik ciężarówki (wzrost 60%)"/>
 		<text name="vcaTorqueCurve_4"   text="Klasyczna (wzrost 20%)"/>
 		<text name="vcaTorqueCurve_5"   text="Klasyczna (wzrost 30%)"/>
+		
+		<text name="vcaPowerShift"      text="Power Shift"/>
 		
 		<text name="vcaButtonSnapWidth"  text="Wykryj szerokość"/>
 		<text name="vcaButtonSnapOffset" text="Wyrównaj przesunięcie"/>
