@@ -52,6 +52,7 @@ function VehicleControlAddonFrame:update(dt)
 	
 	self:vcaSetValues()
 	self:vcaGetValues()
+	self:vcaSetVisibility()
 end
 
 function VehicleControlAddonFrame:onFrameOpen()

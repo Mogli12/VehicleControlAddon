@@ -8484,6 +8484,13 @@ function vehicleControlAddon:vcaUIShowvcaShuttleCtrl()
 	return true 
 end 
 
+function vehicleControlAddon:vcaUIShowvcaTransmission()
+	if self.rmtIsOn then 
+		return false 
+	end 
+	return true 
+end 
+
 local function onlyMasterUser()
 	if VCAGlobals.onlyMasterUser ~= nil then 
 		if VCAGlobals.onlyMasterUser == 1 then 
@@ -8499,6 +8506,9 @@ local function onlyMasterUser()
 end 
 
 function vehicleControlAddon:vcaUIShowvcaMaxSpeed()
+	if     self.vcaTransmission == nil or self.vcaTransmission <= 0 then 
+		return false 
+	end 
 	return onlyMasterUser()
 end 
 function vehicleControlAddon:vcaUIShowvcaMaxSpeedOwn()
@@ -8506,6 +8516,9 @@ function vehicleControlAddon:vcaUIShowvcaMaxSpeedOwn()
 end 
 
 function vehicleControlAddon:vcaUIShowvcaLimitSpeed()
+	if     self.vcaTransmission == nil or self.vcaTransmission <= 0 then 
+		return false 
+	end 
 	return onlyMasterUser()
 end 
 
@@ -8525,3 +8538,129 @@ function vehicleControlAddon:vcaUIShowvcaTorqueCurve()
 	return onlyMasterUser()
 end 
 
+function vehicleControlAddon:vcaUIShowvcaLaunchSpeed()
+	if     self.vcaTransmission == nil or self.vcaTransmission <= 0 then 
+		return false 
+	elseif self.vcaTransmission == vehicleControlAddonTransmissionBase.ownTransmission then 
+		return self.vcaOwnAutoGears or self.vcaOwnAutoRange 
+	elseif vehicleControlAddonTransmissionBase.transmissionList[self.vcaTransmission]        == nil
+			or vehicleControlAddonTransmissionBase.transmissionList[self.vcaTransmission].params == nil then
+		return false 
+	elseif vehicleControlAddonTransmissionBase.transmissionList[self.vcaTransmission].params.isIVT then 
+		return not ( self.vcaAutoShift ) 
+	else 
+		return self.vcaAutoShift  
+	end 
+	return false 
+end 
+
+function vehicleControlAddon:vcaUIShowvcaClutchMode()
+	if     self.vcaTransmission == nil or self.vcaTransmission <= 0 then 
+		return false 
+	elseif self.vcaTransmission == vehicleControlAddonTransmissionBase.ownTransmission then 
+		return true 
+	elseif vehicleControlAddonTransmissionBase.transmissionList[self.vcaTransmission]        == nil
+			or vehicleControlAddonTransmissionBase.transmissionList[self.vcaTransmission].params == nil
+			or vehicleControlAddonTransmissionBase.transmissionList[self.vcaTransmission].params.isIVT then 
+		return false 
+	end 
+	return true 
+end 
+
+function vehicleControlAddon:vcaUIShowvcaHiredWorker()
+	if     self.vcaTransmission == nil or self.vcaTransmission <= 0 then 
+		return false 
+	end 
+	return true 
+end 
+
+function vehicleControlAddon:vcaUIShowvcaDiffManual()
+	if     self.vcaDiffHasF 
+			or self.vcaDiffHasM 
+			or self.vcaDiffHasB then
+		return true 
+	end 
+	return false 
+end 
+
+function vehicleControlAddon:vcaUIShowvcaDiffFrontAdv()
+	if self.vcaDiffManual and self.vcaDiffHasM then 
+		return true 
+	end 
+	return false 
+end 
+
+function vehicleControlAddon:vcaUIShowvcaDiffLockSwap()
+	if      self.vcaDiffManual
+			and self.vcaDiffHasF 
+			and self.vcaDiffHasB then
+		return true 
+	end 
+	return false 
+end 
+
+function vehicleControlAddon:vcaUIShowvcaHiredWorker2()
+	if not self.vcaDiffManual then 
+		return false 
+	elseif self.vcaDiffHasF 
+			or self.vcaDiffHasM 
+			or self.vcaDiffHasB then
+		return true 
+	end 
+	return false 
+end 
+
+function vehicleControlAddon:vcaUIShowvcaOwnGearFactor()
+	if self.vcaOwnGears > 1 then 
+		return true 
+	end 
+	return false 
+end 
+
+function vehicleControlAddon:vcaUIShowvcaOwnRangeFactor()
+	if self.vcaOwnRanges > 1 then 
+		return true 
+	end 
+	return false 
+end 
+
+function vehicleControlAddon:vcaUIShowvcaOwnRange1st1st()
+	if self.vcaOwnRanges > 2 then 
+		return true 
+	end 
+	return false 
+end 
+
+function vehicleControlAddon:vcaUIShowvcaGearRatioF()
+	if     self.vcaTransmission == nil or self.vcaTransmission <= 0 then 
+		return false 
+	elseif self.vcaTransmission == vehicleControlAddonTransmissionBase.ownTransmission then 
+		return self.vcaOwnAutoGears or self.vcaOwnAutoRange 
+	end 
+	return true 
+end 
+
+function vehicleControlAddon:vcaUIShowvcaGearRatioT()
+	if     self.vcaTransmission == nil or self.vcaTransmission <= 0 then 
+		return false 
+	elseif self.vcaTransmission == vehicleControlAddonTransmissionBase.ownTransmission then 
+		return self.vcaOwnAutoGears or self.vcaOwnAutoRange 
+	end 
+	return true 
+end 
+
+function vehicleControlAddon:vcaUIShowvcaAutoShift()
+	if     self.vcaTransmission == nil or self.vcaTransmission <= 0 then 
+		return false 
+	elseif self.vcaTransmission == vehicleControlAddonTransmissionBase.ownTransmission then 
+		return self.vcaOwnAutoGears or self.vcaOwnAutoRange 
+	elseif vehicleControlAddonTransmissionBase.transmissionList[self.vcaTransmission]        == nil
+			or vehicleControlAddonTransmissionBase.transmissionList[self.vcaTransmission].params == nil
+			or vehicleControlAddonTransmissionBase.transmissionList[self.vcaTransmission].params.isIVT then 
+	end 
+	return true -- too difficult 
+end 
+
+function vehicleControlAddon:vcaUIShowvcaSingleReverse()
+	return true -- too difficult 
+end 
