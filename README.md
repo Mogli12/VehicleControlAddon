@@ -2,7 +2,7 @@
 
 ## Version 1.1
 
-Version 1.1 on ModHub is the most recent version. (https://www.farming-simulator.com/mods.php?title=fs2019&filter=most&page=63).
+Version 1.1 on ModHub is the most recent official version. 
 
 ## Developer version
 Please be aware you're using a developer version, which may and will contain errors, bugs, mistakes and unfinished code. 
@@ -26,6 +26,10 @@ From today on I will close all new issues without the above information!
 This error happens in MultiPlayer only. It happens if there is another mod with incorrect client-server communication. If the number of information processesd on client and server does not match, then all subsequent mods get shifted and incorrected data. You might ignore this error message if there are no other problems.
 
 It seems that many players have problems with thier inpubBindings. Just look at issues #470, #468, # 464, ... I think this is a general problem in the handling of input bindings in FS19. Please try to delete your inputBinding.xml.
+
+## Some settings are display only in MP
+
+In multiplayer games only the master user (aka administrator) can change certain settings, e.g. rated power or max speed.
 
 ## Status
 The vehicles have now much more inertia. That should make gear changes easier as the vehicle looses less speed during gear shifts. That is why I increased the time to shift gears. The increased inertia seems to work very well with REA mod. The main problem of spinning wheels was in the past that the wheel speed started to oscilate. This got better with the increased inertia and the vehicle is not able to reach 100% motor load even with 20% wheel slip.
