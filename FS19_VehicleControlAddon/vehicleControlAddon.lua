@@ -45,6 +45,20 @@ function vehicleControlAddon.registerOverwrittenFunctions(vehicleType)
 end
 
 
+local function onlyMasterUser()
+	if VCAGlobals.onlyMasterUser ~= nil then 
+		if VCAGlobals.onlyMasterUser == 1 then 
+			return true 
+		else 
+			return false 
+		end 
+	end 
+	if g_vehicleControlAddon.isMP then 
+		return g_currentMission.isMasterUser 
+	end 
+	return g_server ~= nil 
+end 
+
 local function getTransmission( xmlFile, xmlProp, xmlAttr )
 	local text = getXMLString( xmlFile, xmlProp..'#'..xmlAttr )
 	if text == nil then	
@@ -280,7 +294,7 @@ local listOfProperties =
 	{ { func=listOfFunctions.bool , xmlName="steering",      propName="vcaSteeringIsOn"  },
 		{ func=listOfFunctions.bool , xmlName="shuttle",       propName="vcaShuttleCtrl"   },
 		{ func=listOfFunctions.bool , xmlName="peek",          propName="vcaPeekLeftRight" },
-		{ func=listOfFunctions.bool , xmlName="limitSpeed",    propName="vcaLimitSpeed"    },
+		{ func=listOfFunctions.bool , xmlName="limitSpeed",    propName="vcaLimitSpeed"    , onlyMasterUser=true},
 		{ func=listOfFunctions.bool , xmlName="keepSpeed",     propName="vcaKSToggle"      },
 		{ func=listOfFunctions.bool , xmlName="freeSteering",  propName="vcaNoARBToggle"   },
 		{ func=listOfFunctions.camRot,xmlName="camRotInside",  propName="vcaCamRotInside"  },
@@ -341,14 +355,21 @@ local listOfProperties =
 		{ func=listOfFunctions.string,xmlName="ownRevRange",   propName="vcaOwnRevRange"   },
 		{ func=listOfFunctions.float, xmlName="ownRevRatio",   propName="vcaOwnRevRatio"   },
 		{ func=listOfFunctions.bool,  xmlName="ownSplitG27",   propName="vcaOwnSplitG27"   },
-		{ func=listOfFunctions.bool,  xmlName="ownSplitG27",   propName="vcaOwnSplitG27"   },
-		{ func=listOfFunctions.float, xmlName="speedLimitF",   propName="vcaSpeedLimitF"   },
-		{ func=listOfFunctions.float, xmlName="speedLimitB",   propName="vcaSpeedLimitB"   },
-		{ func=listOfFunctions.float, xmlName="ratedPower",    propName="vcaRatedPower"    },
-		{ func=listOfFunctions.int16, xmlName="torqueCurve",   propName="vcaTorqueCurve"   },
+		{ func=listOfFunctions.float, xmlName="speedLimitF",   propName="vcaSpeedLimitF"   , onlyMasterUser=true},
+		{ func=listOfFunctions.float, xmlName="speedLimitB",   propName="vcaSpeedLimitB"   , onlyMasterUser=true},
+		{ func=listOfFunctions.float, xmlName="ratedPower",    propName="vcaRatedPower"    , onlyMasterUser=true},
+		{ func=listOfFunctions.int16, xmlName="torqueCurve",   propName="vcaTorqueCurve"   , onlyMasterUser=true},
 		{ func=listOfFunctions.int16, xmlName="rotAccTime",    propName="vcaRotAccTime"    },
 --	{ func=listOfFunctions.int16, xmlName="gearRangeMode", propName="vcaGearRangeMode" },
 	}
+	
+for _,prop in pairs( listOfProperties ) do 
+	if prop.onlyMasterUser then 
+		vehicleControlAddon["vcaUIShow"..prop.propName] = function( self )
+			return onlyMasterUser()
+		end 
+	end 
+end 
 
 
 vehicleControlAddon.snapAngles = { 1, 5, 15, 22.5, 45, 90 }
@@ -392,6 +413,40 @@ local function debugFormat( ... )
 	end 
 	return ""
 end 
+
+--********************************************************************************************
+-- vcaSetState
+function vehicleControlAddon:vcaSetState(level1, value, noEventSend)
+	if self == nil then
+		print("Error calling vcaSetState: self is NIL")
+		printCallstack()
+		return 
+	end 
+	if not ( noEventSend or self.vcaIsInitialized ) then 
+		noEventSend = false 
+	end 
+	
+	local doit = true  
+	if level1 == "vcaMaxSpeed" and not ( self.vcaLimitSpeed or onlyMasterUser() ) then 
+		doit = false 
+	elseif not ( onlyMasterUser() ) then 
+		for _,prop in pairs( listOfProperties ) do 
+			if level1 == prop.propName then 
+				if prop.onlyMasterUser then 
+					doit = false 
+				end 
+				break 
+			end 
+		end 
+	end
+	
+	if doit then 
+		vehicleControlAddon.mbSetState( self, level1, value, noEventSend )
+	else 
+		vehicleControlAddon.mbSetState( self, "vcaWarningText", "Warning: current user is not allowed to change setting '"..tostring(level1).."'")
+	end 
+end 
+--********************************************************************************************
 
 function vehicleControlAddon:vcaIsValidCam( index )
 	local i = Utils.getNoNil( index, self.spec_enterable.camIndex )
@@ -508,7 +563,7 @@ end
 function vehicleControlAddon:onLoad(savegame)
 	self.vcaIsLoaded            = true 
 													    
-	self.vcaSetState            = vehicleControlAddon.mbSetState
+	self.vcaSetState            = vehicleControlAddon.vcaSetState
 	self.vcaIsValidCam          = vehicleControlAddon.vcaIsValidCam
 	self.vcaIsActive            = vehicleControlAddon.vcaIsActive
 	self.vcaIsNonDefaultProp    = vehicleControlAddon.vcaIsNonDefaultProp
@@ -986,6 +1041,7 @@ function vehicleControlAddon:onPostLoad(savegame)
 		end 
 	end
 	
+	self.vcaIsInitialized = true 				
 end 
 
 function vehicleControlAddon:saveToXMLFile(xmlFile, xmlKey)
@@ -2395,7 +2451,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 	else 
 		self.vcaFarmId = nil 
 	end 
-				
+	
 	if self.vcaIsEntered then
 		self.vcaKeepCamRot     = self.vcaKeepRotPressed 
 		self.vcaKeepRotPressed = false 
@@ -8491,27 +8547,19 @@ function vehicleControlAddon:vcaUIShowvcaTransmission()
 	return true 
 end 
 
-local function onlyMasterUser()
-	if VCAGlobals.onlyMasterUser ~= nil then 
-		if VCAGlobals.onlyMasterUser == 1 then 
-			return true 
-		else 
-			return false 
-		end 
-	end 
-	if g_vehicleControlAddon.isMP then 
-		return g_currentMission.isMasterUser 
-	end 
-	return g_server ~= nil 
-end 
-
 function vehicleControlAddon:vcaUIShowvcaMaxSpeed()
 	if     self.vcaTransmission == nil or self.vcaTransmission <= 0 then 
 		return false 
 	end 
+	if     self.vcaLimitSpeed then 
+		return true 
+	end 
 	return onlyMasterUser()
 end 
 function vehicleControlAddon:vcaUIShowvcaMaxSpeedOwn()
+	if     self.vcaLimitSpeed then 
+		return true 
+	end 
 	return onlyMasterUser()
 end 
 
@@ -8519,22 +8567,6 @@ function vehicleControlAddon:vcaUIShowvcaLimitSpeed()
 	if     self.vcaTransmission == nil or self.vcaTransmission <= 0 then 
 		return false 
 	end 
-	return onlyMasterUser()
-end 
-
-function vehicleControlAddon:vcaUIShowvcaSpeedLimitF()
-	return onlyMasterUser()
-end 
-
-function vehicleControlAddon:vcaUIShowvcaSpeedLimitB()
-	return onlyMasterUser()
-end 
-
-function vehicleControlAddon:vcaUIShowvcaRatedPower()
-	return onlyMasterUser()
-end 
-
-function vehicleControlAddon:vcaUIShowvcaTorqueCurve()
 	return onlyMasterUser()
 end 
 

@@ -35,6 +35,7 @@ Changelog version 1.2.0.0
 - Rework of clutch
 - Rework of automatic gear shifting
 - Load and save of own transmission configurations
+- Only the master user can change some settings
 - Possbiility to overwrite speed limits
 - Possibility to overwrite rated power and torque curve]]></en>
 		<de><![CDATA[Dieses Script variiert abhängig von der gefahrenen Geschwindigkeit die Lenkgeschwindigkeit und dreht die Kamera passend zum Lenkeinschlag und zur Fahrtrichtung. 
@@ -67,15 +68,16 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 - Kupplung überarbeitet
 - Korrekturen an automatischer Gangschaltung
 - Sichern und Laden von eigenen Getriebekonfigurationen
+- Nur der Hauptbenutzer kann bestimmte Einstellungen ändern
 - Möglichkeit zum Überschreiben der maximalen Geschwindigkeit
 - Möglichkeit zum Überschreiben der Nennleistung und des Drehmomentverlaufs]]></de>
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>store.dds</iconFilename>
-	<version>9.3.4.8</version>
+	<version>9.3.4.9</version>
 	<l10n filenamePrefix="modDesc_l10n">
 		<text name="vcaVERSION">          
-			<en>Vehicle Control Addon beta build 348</en>
+			<en>Vehicle Control Addon beta build 349</en>
 		</text>
 	</l10n>
 	
