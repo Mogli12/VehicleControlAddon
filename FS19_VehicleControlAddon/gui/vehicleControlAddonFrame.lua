@@ -90,70 +90,78 @@ function VehicleControlAddonFrame:vcaGetValues( force )
 	if self.vcaState.vcaGetValues then 
 		return 
 	end 
+	if g_currentMission.controlledVehicle == nil or g_currentMission.controlledVehicle.vcaUI == nil then 
+		return 
+	end 
+	local vehicle = g_currentMission.controlledVehicle
+
 	if not ( force or self.vcaIsDirty ) then 
+		for name,s in pairs( self.vcaElements ) do
+			local element = s.element
+			if element.typeName == "textInput" and element.blockTime > 0 and element.isCapturingInput then
+				local getter = vehicleControlAddon["vcaUIGet"..name]
+				if type( getter ) == "function" then
+					element:setText( getter( vehicle, false ) )
+				end 
+			end 
+		end 
 		return 
 	end 
 	
 	self.vcaState.vcaGetValues = true 
 	
---print("VCA frame get values @"..tostring(g_currentMission.time))
-	
-	if g_currentMission.controlledVehicle ~= nil and g_currentMission.controlledVehicle.vcaUI ~= nil then 
-		local vehicle = g_currentMission.controlledVehicle
-		
-		for name,s in pairs( self.vcaElements ) do
+	for name,s in pairs( self.vcaElements ) do
 
-			if     s.parameter == "callback" then
-				local getter = vehicleControlAddon["vcaUIDraw"..name]
-				local texts  = getter( vehicle )
-				s.element:setTexts(texts)
-			elseif s.parameter == "list" or s.parameter == "list0" then
-				if type( vehicle.vcaUI[name] ) == "table" then
-					s.element:setTexts(vehicle.vcaUI[name])
-				else
-					s.element:setTexts({"<empty>"})
-				end
+		if     s.parameter == "callback" then
+			local getter = vehicleControlAddon["vcaUIDraw"..name]
+			local texts  = getter( vehicle )
+			s.element:setTexts(texts)
+		elseif s.parameter == "list" or s.parameter == "list0" then
+			if type( vehicle.vcaUI[name] ) == "table" then
+				s.element:setTexts(vehicle.vcaUI[name])
+			else
+				s.element:setTexts({"<empty>"})
 			end
+		end
 
-			local element = s.element
+		local element = s.element
+		
+		local getter = nil							
+		if     type( vehicleControlAddon["vcaUIGet"..name] ) == "function" then
+			getter = vehicleControlAddon["vcaUIGet"..name]
+		else
+			getter = function( vehicle ) return vehicleControlAddon.mbGetState( vehicle, name ) end
+		end		
 			
-			local getter = nil							
-			if     type( vehicleControlAddon["vcaUIGet"..name] ) == "function" then
-				getter = vehicleControlAddon["vcaUIGet"..name]
-			else
-				getter = function( vehicle ) return vehicleControlAddon.mbGetState( vehicle, name ) end
-			end		
+		if     getter == nil then
+			print("Invalid UI element ID: "..tostring(name))
+		elseif element.typeName == "text" then 
+			element:setText( getter( vehicle, false ) )
+		elseif element.typeName == "textInput" and not ( element.isCapturingInput ) then -- and ( force or self.vcaIsDirty )
+			element:setText( getter( vehicle, true ) )
+		else
+			local value = getter( vehicle )
 			
-			if     getter == nil then
-				print("Invalid UI element ID: "..tostring(name))
-			elseif element.typeName == "text" then 
-				element:setText( getter( vehicle, false ) )
-			elseif element.typeName == "textInput" and not ( element.isCapturingInput ) then -- and ( force or self.vcaIsDirty )
-				element:setText( getter( vehicle ) )
-			else
-				local value = getter( vehicle )
-				
-				if     element.typeName == "checkedOption" then
-					local b = value
-					if s.parameter == "inverted" then
-						b = not b
-					end
-					element:setIsChecked( b )
-				elseif element.typeName == "multiTextOption" then
-					local i = 1
-					if     s.parameter == "percent10" then
-						i = math.floor( value * 10 + 0.5 ) + 1
-					elseif s.parameter == "percent5" then
-						i = math.floor( value * 20 + 0.5 ) + 1
-					elseif s.parameter == "list0" then
-						i = value + 1
-					elseif s.parameter == "bool" then 
-						if value then i = 2 end
-					else
-						i = value 
-					end
-					element:setState( i )
+			if     element.typeName == "checkedOption" then
+				local b = value
+				if s.parameter == "inverted" then
+					b = not b
 				end
+				element:setIsChecked( b )
+			elseif element.typeName == "multiTextOption" then
+				local i = 1
+				if     s.parameter == "percent10" then
+					i = math.floor( value * 10 + 0.5 ) + 1
+				elseif s.parameter == "percent5" then
+					i = math.floor( value * 20 + 0.5 ) + 1
+				elseif s.parameter == "list0" then
+					i = value + 1
+				elseif s.parameter == "bool" then 
+					if value then i = 2 end
+				else
+					i = value 
+				end
+				element:setState( i )
 			end
 		end
 	end 
@@ -281,6 +289,8 @@ function VehicleControlAddonFrame:vcaOnTextChanged( element, text )
 	if self.vcaState.vcaOnTextChanged or self.vcaState.vcaGetValues then
 		return 
 	end 
+	
+	print( "onEnterPressed: "..tostring( element.id ).." isCapturingInput: "..tostring( element.isCapturingInput ) )
 	
 	if element == nil then
 		print("Invalid element: <nil>")

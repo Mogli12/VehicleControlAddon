@@ -316,7 +316,7 @@ local listOfProperties =
 		{ func=listOfFunctions.int16, xmlName="currentRange",  propName="vcaRange",        },
 		{ func=listOfFunctions.bool , xmlName="autoShift",     propName="vcaAutoShift"     },
 		{ func=listOfFunctions.clutch,xmlName="clutchMode",    propName="vcaClutchMode"    },
-		{ func=listOfFunctions.float, xmlName="maxSpeed",      propName="vcaMaxSpeed"      },
+		{ func=listOfFunctions.float, xmlName="maxSpeed",      propName="vcaMaxSpeed"      , onlyMasterUser=true},
 		{ func=listOfFunctions.float, xmlName="ccSpeed2",      propName="vcaCCSpeed2"      },
 		{ func=listOfFunctions.float, xmlName="ccSpeed3",      propName="vcaCCSpeed3"      },
 		{ func=listOfFunctions.float, xmlName="snapDir",       propName="vcaLastSnapAngle" },
@@ -427,8 +427,8 @@ function vehicleControlAddon:vcaSetState(level1, value, noEventSend)
 	end 
 	
 	local doit = true  
-	if level1 == "vcaMaxSpeed" and not ( self.vcaLimitSpeed or onlyMasterUser() ) then 
-		doit = false 
+	if level1 == "vcaMaxSpeed" then 
+		doit = self.vcaLimitSpeed or onlyMasterUser() 
 	elseif not ( onlyMasterUser() ) then 
 		for _,prop in pairs( listOfProperties ) do 
 			if level1 == prop.propName then 
@@ -2574,7 +2574,9 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 		end 
 	-- remember previous user settings 
 		for _,prop in pairs( listOfProperties ) do 
-			self.vcaUserSettings[lastControllerName][prop.propName] = self[prop.propName] 
+			if not ( prop.onlyMasterUser ) then 
+				self.vcaUserSettings[lastControllerName][prop.propName] = self[prop.propName] 
+			end 
 		end 
 	end 
 		
@@ -2584,13 +2586,15 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 			vehicleControlAddon.mpDebugPrint( self,"Creating settings for user "..self.vcaControllerName)
 			self.vcaUserSettings[self.vcaControllerName] = {} 
 			for _,prop in pairs( listOfProperties ) do 
-				self.vcaUserSettings[self.vcaControllerName][prop.propName] = self[prop.propName]
+				if not ( prop.onlyMasterUser ) then 
+					self.vcaUserSettings[self.vcaControllerName][prop.propName] = self[prop.propName]
+				end 
 			end 
 		else
 		-- changed user => restore user settings 
 			vehicleControlAddon.mpDebugPrint( self,"Restoring settings for user "..self.vcaControllerName)
 			for _,prop in pairs( listOfProperties ) do 
-				if self.vcaUserSettings[self.vcaControllerName][prop.propName] ~= nil then 
+				if self.vcaUserSettings[self.vcaControllerName][prop.propName] ~= nil and not ( prop.onlyMasterUser ) then 
 					self:vcaSetState( prop.propName, self.vcaUserSettings[self.vcaControllerName][prop.propName] )
 					vehicleControlAddon.mpDebugPrint( self, prop.propName.." of "..self.vcaControllerName..": "
 																				..tostring( self[prop.propName]) .." ("..tostring(self.vcaUserSettings[	self.vcaControllerName][prop.propName])..")")
@@ -8080,7 +8084,10 @@ function vehicleControlAddon:vcaUISetvcaBrakeForce( value )
 	end
 end
 
-function vehicleControlAddon:vcaUIGetvcaLaunchSpeed()
+function vehicleControlAddon:vcaUIGetvcaLaunchSpeed( formatted )
+	if formatted then 
+		return self:vcaSpeedToString( self.vcaLaunchSpeed )
+	end 
 	return tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaLaunchSpeed ) )
 end 
 function vehicleControlAddon:vcaUISetvcaLaunchSpeed( value )
@@ -8090,7 +8097,10 @@ function vehicleControlAddon:vcaUISetvcaLaunchSpeed( value )
 	end 
 end 
 
-function vehicleControlAddon:vcaUIGetvcaMaxSpeed()
+function vehicleControlAddon:vcaUIGetvcaMaxSpeed( formatted )
+	if formatted then 
+		return self:vcaSpeedToString( self.vcaMaxSpeed )
+	end 
 	return tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed ) )
 end 
 function vehicleControlAddon:vcaUISetvcaMaxSpeed( value )
@@ -8100,7 +8110,10 @@ function vehicleControlAddon:vcaUISetvcaMaxSpeed( value )
 	end 
 end
 
-function vehicleControlAddon:vcaUIGetvcaMaxSpeedOwn()
+function vehicleControlAddon:vcaUIGetvcaMaxSpeedOwn( formatted )
+	if formatted then 
+		return self:vcaSpeedToString( self.vcaMaxSpeed )
+	end 
 	return tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed ) )
 end 
 function vehicleControlAddon:vcaUISetvcaMaxSpeedOwn( value )
@@ -8118,17 +8131,29 @@ function vehicleControlAddon:vcaUISetvcaMaxSpeedOwn( value )
 	end 
 end
 
-function vehicleControlAddon:vcaUIGetvcaSpeedLimitF()
+function vehicleControlAddon:vcaUIGetvcaSpeedLimitF( formatted )
+	local s = 0
 	if self.vcaSpeedLimitF < 1 then 
-		return tostring( vehicleControlAddon.vcaSpeedInt2Ext( Utils.getNoNil( self.vcaMaxForwardSpeed, self.spec_motorized.motor.maxForwardSpeed ) ) )
+		s = Utils.getNoNil( self.vcaMaxForwardSpeed, self.spec_motorized.motor.maxForwardSpeed ) 
+	else 
+		s = self.vcaSpeedLimitF 
 	end 
-	return tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaSpeedLimitF ) )
+	if formatted then 
+		return self:vcaSpeedToString( s )
+	end 
+	return tostring( vehicleControlAddon.vcaSpeedInt2Ext( s ) )
 end 
-function vehicleControlAddon:vcaUIGetvcaSpeedLimitB()
+function vehicleControlAddon:vcaUIGetvcaSpeedLimitB( formatted )
+	local s = 0
 	if self.vcaSpeedLimitB < 1 then 
-		return tostring( vehicleControlAddon.vcaSpeedInt2Ext( Utils.getNoNil( self.vcaMaxBackwardSpeed, self.spec_motorized.motor.maxBackwardSpeed ) ) )
-	end
-	return tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaSpeedLimitB ) )
+		s = Utils.getNoNil( self.vcaMaxBackwardSpeed, self.spec_motorized.motor.maxBackwardSpeed )
+	else 
+		s = self.vcaSpeedLimitB 
+	end 
+	if formatted then 
+		return self:vcaSpeedToString( s )
+	end 
+	return tostring( vehicleControlAddon.vcaSpeedInt2Ext( s ) )
 end 
 
 function vehicleControlAddon:vcaUISetvcaSpeedLimitF( value )
@@ -8183,7 +8208,10 @@ function vehicleControlAddon:vcaUISetvcaRatedPower( value )
 	end 
 end 
 
-function vehicleControlAddon:vcaUIGetvcaOwnGearFactor( isCapturingInput )
+function vehicleControlAddon:vcaUIGetvcaOwnGearFactor( formatted )
+	if formatted then 
+		return self:vcaSpeedToString( self.vcaMaxSpeed * self.vcaOwnGearFactor )
+	end 
 	return tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed * self.vcaOwnGearFactor ) )
 end 
 function vehicleControlAddon:vcaUISetvcaOwnGearFactor( value )
@@ -8196,15 +8224,21 @@ function vehicleControlAddon:vcaUISetvcaOwnGearFactor( value )
 	end 
 end 
 
-function vehicleControlAddon:vcaUIGetvcaOwnRangeFactor()
+function vehicleControlAddon:vcaUIGetvcaOwnRangeFactor( formatted )
+	local s = 0
 	if     self.vcaOwnRanges <= 1 then 
-		return tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed * self.vcaOwnGearFactor ) )
+		s = self.vcaMaxSpeed * self.vcaOwnGearFactor 
 	elseif self.vcaOwnRanges <= 2 then 
-		return tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed * self.vcaOwnGearFactor * self.vcaOwnRangeFactor ) )
+		s = self.vcaMaxSpeed * self.vcaOwnGearFactor * self.vcaOwnRangeFactor 
 	elseif self.vcaOwnRange1st1st <= 0 then 
-		return tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed * self.vcaOwnGearFactor * self.vcaOwnRangeFactor ^ ( self.vcaOwnRanges - 1 ) ) )
+		s = self.vcaMaxSpeed * self.vcaOwnGearFactor * self.vcaOwnRangeFactor ^ ( self.vcaOwnRanges - 1 ) 
+	else
+		s = self.vcaMaxSpeed * self.vcaOwnRange1st1st
 	end 
-	return tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed * self.vcaOwnRange1st1st ) )
+	if formatted then 
+		return self:vcaSpeedToString( s )
+	end 
+	return tostring( vehicleControlAddon.vcaSpeedInt2Ext( s ) )
 end 
 function vehicleControlAddon:vcaUISetvcaOwnRangeFactor( value )
 	local r = vehicleControlAddon.vcaSpeedExt2Int( tonumber( value ) )
@@ -8213,8 +8247,12 @@ function vehicleControlAddon:vcaUISetvcaOwnRangeFactor( value )
 	end 
 end 
 
-function vehicleControlAddon:vcaUIGetvcaOwnRangeFactor2()
-	return tostring( vehicleControlAddon.vcaSpeedInt2Ext( self.vcaMaxSpeed * self.vcaOwnRangeFactor ) )
+function vehicleControlAddon:vcaUIGetvcaOwnRangeFactor2( formatted )
+	local s = self.vcaMaxSpeed * self.vcaOwnRangeFactor
+	if formatted then 
+		return self:vcaSpeedToString( s )
+	end 
+	return tostring( vehicleControlAddon.vcaSpeedInt2Ext( s ) )
 end 
 function vehicleControlAddon:vcaUISetvcaOwnRangeFactor2( value )
 	local r = vehicleControlAddon.vcaSpeedExt2Int( tonumber( value ) )
