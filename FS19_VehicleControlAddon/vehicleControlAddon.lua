@@ -5494,7 +5494,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	if     curBrake > 0.1
 			or autoNeutral
 			or self.gearChangeTimer > 0
-		--or speed                > lastRealSpeedLimit
+			or speed                > lastRealSpeedLimit + 1
 			or wheelSpeed           > expectedMotorSpeed
 			or self.motorRotSpeed   > expectedMotorSpeed 
 			or self.vcaWheelAccS    > self.accelerationLimit
@@ -5509,6 +5509,12 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		if curAcc > 0.9 and self.vehicle.vcaMaxThrottle > 0.9 then 
 			self.vehicle.vcaMaxThrottleT = g_currentMission.time 
 		end 
+	end 
+	
+	if speed >= lastRealSpeedLimit + 1 then 
+		self.vehicle.vcaMaxThrottle = 0
+	elseif speed > lastRealSpeedLimit then 
+		self.vehicle.vcaMaxThrottle = math.min( self.vehicle.vcaMaxThrottle, lastRealSpeedLimit + 1 - speed )
 	end 
 	
 	if fwd then
@@ -5656,7 +5662,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	end 
 	
 	if self.vcaSlipMMA == nil then 
-		self.vcaSlipMMA = maxMovingAverage:new( 1000, 250, 0 )
+		self.vcaSlipMMA = maxMovingAverage:new( 2000, 10, 0 )
 	end 	
 	self.vcaSlipMMA:collect( dt, self.vcaWheelSlip )	
 	self.vcaWheelSlipS = self.vcaSlipMMA:get()
