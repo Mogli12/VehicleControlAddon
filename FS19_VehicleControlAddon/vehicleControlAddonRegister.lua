@@ -225,6 +225,7 @@ function vehicleControlAddonRegister:loadMap(name)
 										"torqueCheatFactor1",
 										"torqueCheatFactor2",
 										"gearShiftSampleVol",
+										"powerShiftSampleVol",
 										"grindingSampleVol",
 										"pitchFactor",
 										"autoHoldTimer",

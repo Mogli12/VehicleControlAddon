@@ -768,6 +768,12 @@ function vehicleControlAddon:onLoad(savegame)
 			loadSample(vehicleControlAddon.gearShiftSample, fileName, false)
 		end 	
 	
+		if vehicleControlAddon.powerShiftSample == nil then 
+			local fileName = Utils.getFilename( "shift2.ogg", vehicleControlAddon.baseDirectory )
+			vehicleControlAddon.powerShiftSample = createSample("vehicleControlAddonPowerShiftSampleSample")
+			loadSample(vehicleControlAddon.powerShiftSample, fileName, false)
+		end 	
+
 		if vehicleControlAddon.ovArrowUpWhite == nil then
 			vehicleControlAddon.ovArrowUpWhite   = createImageOverlay( Utils.getFilename( "arrow_up_white.dds",   vehicleControlAddon.baseDirectory ))
 			vehicleControlAddon.ovArrowUpGray    = createImageOverlay( Utils.getFilename( "arrow_up_gray.dds",    vehicleControlAddon.baseDirectory ))

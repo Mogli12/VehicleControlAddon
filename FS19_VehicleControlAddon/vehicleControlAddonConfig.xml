@@ -25,6 +25,7 @@
 	<torqueCheatFactor1  type="float" value="1"/> <!-- 1.035 --><!-- torque factor IVT -->
 	<torqueCheatFactor2  type="float" value="1"/> <!-- 1.035 --><!-- torque factor fixed gear ratios -->
 	<gearShiftSampleVol  type="float" value="1.0"/>
+	<powerShiftSampleVol type="float" value="1.0"/>
 	<grindingSampleVol   type="float" value="1.0"/>
 	<clutchMinusTorqueM  type="float" value="5"/>  <!-- 5..10;  limit of in torque reduction to compensate gear reduction; keey at least 1/clutchMinusTorqueM of torque -->
 	<clutchMinusTorqueT  type="float" value="3"/>  <!-- 3;      ignore gear reduction up to this factor; turbo clutch = torque amplifier (not really! -->

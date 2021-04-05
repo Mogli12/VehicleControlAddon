@@ -393,8 +393,8 @@ function vehicleControlAddonTransmissionBase:gearShiftSound()
 end
 
 function vehicleControlAddonTransmissionBase:powerShiftSound()
-	if self.vehicle ~= nil and self.vehicle.spec_lights ~= nil and self.vehicle.spec_lights.samples ~= nil and self.vehicle.spec_lights.samples.turnLight then 
-		g_soundManager:playSample(self.vehicle.spec_lights.samples.turnLight)
+	if vehicleControlAddon.powerShiftSample ~= nil and VCAGlobals.powerShiftSampleVol > 0 then 
+		playSample( vehicleControlAddon.powerShiftSample, 1, VCAGlobals.powerShiftSampleVol, 0, 0, 0)
 	end
 end
 
