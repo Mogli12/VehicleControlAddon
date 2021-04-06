@@ -417,7 +417,7 @@ end
 --********************************************************************************************
 -- vcaSetState
 function vehicleControlAddon:vcaSetState(level1, value, noEventSend)
-	if self == nil then
+	if self == nil or value == nil then
 		print("Error calling vcaSetState: self is NIL")
 		printCallstack()
 		return 
@@ -442,8 +442,8 @@ function vehicleControlAddon:vcaSetState(level1, value, noEventSend)
 	
 	if doit then 
 		vehicleControlAddon.mbSetState( self, level1, value, noEventSend )
-	else 
-		vehicleControlAddon.mbSetState( self, "vcaWarningText", "Warning: current user is not allowed to change setting '"..tostring(level1).."'")
+	elseif value ~= vehicleControlAddon.mbGetState( self, level1 ) then
+		vehicleControlAddon.mbSetState( self, "vcaWarningText", "Warning: current user is not allowed to change setting '"..tostring(level1).."'", noEventSend )
 	end 
 end 
 --********************************************************************************************
@@ -485,7 +485,7 @@ function vehicleControlAddon:vcaIsNonDefaultProp( propName, setting )
 		check = self.vcaDefaults 
 	end 
 	if check == nil or setting[propName] == nil or check[propName] == nil then 
-		isEqual = true 
+		return false 
 	end
 	if type( setting[propName] ) == "number" and type( check[propName] ) == "number" then 
 		if math.abs( setting[propName] - check[propName] ) < 1e-4 then 
@@ -2600,7 +2600,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 		-- changed user => restore user settings 
 			vehicleControlAddon.mpDebugPrint( self,"Restoring settings for user "..self.vcaControllerName)
 			for _,prop in pairs( listOfProperties ) do 
-				if self.vcaUserSettings[self.vcaControllerName][prop.propName] ~= nil and not ( prop.onlyMasterUser ) then 
+				if not ( prop.onlyMasterUser ) and self.vcaUserSettings[self.vcaControllerName][prop.propName] ~= nil then 
 					self:vcaSetState( prop.propName, self.vcaUserSettings[self.vcaControllerName][prop.propName] )
 					vehicleControlAddon.mpDebugPrint( self, prop.propName.." of "..self.vcaControllerName..": "
 																				..tostring( self[prop.propName]) .." ("..tostring(self.vcaUserSettings[	self.vcaControllerName][prop.propName])..")")
