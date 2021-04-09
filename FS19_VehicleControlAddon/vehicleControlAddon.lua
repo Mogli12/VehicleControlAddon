@@ -817,7 +817,7 @@ function vehicleControlAddon:onPostLoad(savegame)
 			vehicleControlAddon.debugPrint(tostring(prop.xmlName)..": "..tostring(v))
 			if v ~= nil then 
 				if prop.propName ~= "vcaGear" or prop.propName ~= "vcaRange" or nonDefaultTransmission then 
-					self:vcaSetState( prop.propName, v, true ) 
+					vehicleControlAddon.mbSetState( self, prop.propName, v, true ) 
 				end 
 				if prop.propName == "vcaTransmission" then 
 					nonDefaultTransmission = true   
@@ -2601,7 +2601,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 			vehicleControlAddon.mpDebugPrint( self,"Restoring settings for user "..self.vcaControllerName)
 			for _,prop in pairs( listOfProperties ) do 
 				if not ( prop.onlyMasterUser ) and self.vcaUserSettings[self.vcaControllerName][prop.propName] ~= nil then 
-					self:vcaSetState( prop.propName, self.vcaUserSettings[self.vcaControllerName][prop.propName] )
+					vehicleControlAddon.mbSetState( self, prop.propName, self.vcaUserSettings[self.vcaControllerName][prop.propName] )
 					vehicleControlAddon.mpDebugPrint( self, prop.propName.." of "..self.vcaControllerName..": "
 																				..tostring( self[prop.propName]) .." ("..tostring(self.vcaUserSettings[	self.vcaControllerName][prop.propName])..")")
 				end 
@@ -3703,56 +3703,6 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 		self.getHasGuidanceSystem = vehicleControlAddon.vcaGetHasGuidanceSystem
 		self.getGuidanceData      = vehicleControlAddon.vcaGetGuidanceData
 	end 
-
-
---******************************************************************************************************************************************
--- Simple fix if vcaMaxSpeed was cleared for unknown reasons on Dedi
-	local somethingWentWrong = false 
-	for _,n in pairs({ "vcaSteeringIsOn",
-	                   "vcaShuttleCtrl", 
-	                   "vcaPeekLeftRight",
-	                   "vcaShuttleFwd",  
-	                   "vcaExternalDir", 
-	                   "vcaCamFwd"      ,
-	                   "vcaCamRotInside"  ,
-	                   "vcaCamRotOutside"  ,
-	                   "vcaCamRevInside"  ,
-	                   "vcaCamRevOutside"  ,
-	                   "vcaWarningText" ,
-	                   "vcaLimitThrottle",
-	                   "vcaSnapAngle"   ,
-	                   "vcaSnapIsOn" ,   
-	                   "vcaDrawHud" ,    
-	                   "vcaInchingIsOn" ,
-	                   "vcaNoAutoRotBack",
-	                   "vcaBrakeForce",  
-	                   "vcaTransmission",
-	                   "vcaMaxSpeed",    
-	                   "vcaGear",        
-	                   "vcaRange",       
-	                   "vcaNeutral",     
-	                   "vcaAutoShift",   
-	                   "vcaShifterIndex",
-	                   "vcaShifterUsed",
-	                   "vcaShifterLH",   
-	                   "vcaLimitSpeed",  
-	                   "vcaLaunchSpeed",  
-	                   "vcaBOVVolume",   
-	                   "vcaKSIsOn",      
-	                   "vcaKeepSpeed",   
-	                   "vcaKSToggle",    
-	                   "vcaCCSpeed2",    
-	                   "vcaCCSpeed3" }) do 
-		if self[n] == nil then 
-			print( "Error: someone cleared variable self."..n.."!!! self.isServer = "..tostring(self.isServer)..", self.isClient = "..tostring(self.isClient))
-			if      self.vehicleControlAddonStateHandler ~= nil 
-					and self.vehicleControlAddonStateHandler[n] ~= nil 
-					and self.vehicleControlAddonStateHandler[n].default ~= nil then 
-				self:vcaSetState( n, self.vehicleControlAddonStateHandler[n].default )
-				print("Value was reset to default: '"..tostring(self[n]))
-			end 
-		end 
-	end 
 end  
 
 function vehicleControlAddon:onPostUpdateTick( dt, isActiveForInput, isActiveForInputIgnoreSelection, isSelected )
@@ -4322,7 +4272,7 @@ function vehicleControlAddon:onReadStream(streamId, connection)
 	self.vcaDiffHasB = streamReadBool( streamId )
 		
 	for _,prop in pairs( listOfProperties ) do 
-		self:vcaSetState( prop.propName, prop.func.streamRead( streamId ), true )
+		vehicleControlAddon.mbSetState( self, prop.propName, prop.func.streamRead( streamId ), true )
 	end 
 	
 end
@@ -5781,12 +5731,10 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			minReducedRpm = math.min( math.max( newMinRpm, self.minRpm + 0.4 * rpmRange ), newMaxRpm )
 		end 
 		
+		local f = math.max( self.vcaUsedPowerRatioS, math.min( curAcc, self.speedLimit - speed ) )
+		minReducedRpm = math.max( minReducedRpm + 0.1 * f * rpmRange, newMinRpm )
+
 		local noThrottle = ( curAcc <= 0.1 )
-		if noThrottle then 
-			minReducedRpm = math.max( minReducedRpm - 0.05 * rpmRange, newMinRpm )
-		else 
-			minReducedRpm = math.min( minReducedRpm + 0.05 * rpmRange, newMaxRpm )
-		end 					
 		if speed >= self:getSpeedLimit() - 0.2 then 
 			if self.vehicle.vcaKSIsOn then 
 				noThrottle = self.vehicle.vcaOldAcc <= 0.1
@@ -5799,7 +5747,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			newMinRpm = vehicleControlAddon.mbClamp( minReducedRpm, newMinRpm, newMaxRpm )
 		end		
 		
-		minReducedRpm = math.min( minReducedRpm + 0.2 * rpmRange, newMaxRpm ) 
+	--minReducedRpm = math.min( minReducedRpm + 0.2 * rpmRange, newMaxRpm ) 
 		
 		local m1, m2 = newMinRpm, newMaxRpm 		
 		
