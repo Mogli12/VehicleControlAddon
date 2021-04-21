@@ -31,6 +31,7 @@
 	    <text name="vcaDISTANCE"        text="Larghezza di lavoro"/>
 		<text name="vcaOFFSET1"         text="Scentratura dell'attrezzo"/>
 		<text name="vcaOFFSET2"         text="Scentratura inversa"/>
+		<text name="vcaSNAP90" 			text="Ruota le linee guida a scatti di 90°"/>
 		<text name="vcaDRAWMARKER"      text="Visualizza linee guida"/>
 		<text name="vcaPITCH1"          text="Tonalità suono lineare"/>
 		<text name="vcaPITCH2"          text="Tonalità del suono a RPM medi"/>
@@ -68,6 +69,10 @@
 		<text name="vcaSPEEDLIMITB"		text="Velocità massima retro"/>
 		<text name="vcaRATEDPOWER"		text="Potenza nominale in HP"/>
 		<text name="vcaTORQUECURVE"		text="Cura di coppia più realistica"/>
+		<text name="vcaROTACCTIME"      text="Tempo di accelerazione del motore"/>
+		<text name="vcaGEARRGMODE"      text="Inverti i tasti per il cambio marcia e gamma"/>
+		<text name="vcaSTSPEEDO"        text="Velocità di sterzata"/>
+		<text name="vcaSTSPEEDI"        text="Velocità di sterzata inversa"/>
 
     	<text name="vca_tip_CAMERAI"      text="Ruota automaticamente la telecamera interna in base all'angolo di sterzata"/>
     	<text name="vca_tip_CAMERAO"      text="Ruota automaticamente la telecamera esterna in base all'angolo di sterzata"/>
@@ -94,6 +99,7 @@
 		<text name="vca_tip_DISTANCE"     text="Distanza tra due linee guida"/>
 		<text name="vca_tip_OFFSET1"      text="Offset delle linee guida"/>
 		<text name="vca_tip_OFFSET2"      text="Offset inverso delle linee guida"/>
+		<text name="vca_tip_SNAP90"		  text="Rotazione automatica delle linee guida di 90*"/>
 		<text name="vca_tip_DRAWMARKER"   text="Visualizza linee guida"/>
 		<text name="vca_tip_PITCH1"       text="Modifica della tonalità del suono per renderlo lineare"/>
 		<text name="vca_tip_PITCH2"       text="Tonalità del suono a medi RPM"/>
@@ -131,6 +137,10 @@
 		<text name="vca_tip_SPEEDLIMITB"  text="Massima velocità del veicolo in retromarcia"/>
 		<text name="vca_tip_RATEDPOWER"   text="Potenza nominale del veicolo in cavalli"/>
 		<text name="vca_tip_TORQUECURVE"  text="Curva di coppia del veicolo più realistica"/>
+		<text name="vca_tip_ROTACCTIME"   text="Tempo in ms che il motore impiega dai giri minimi ai giri massimi"/>
+		<text name="vca_tip_GEARRGMODE"   text="Questo settaggio inverte i comandi su/giù delle marce e gamme"/>
+		<text name="vca_tip_STSPEEDO"     text="Velocità di sterzata"/>
+		<text name="vca_tip_STSPEEDI"     text="Velocità di sterzata inversa"/>
 
 		<text name="input_vcaSETTINGS"	text="VCA: impostazioni"/>
 		<text name="input_vcaUP"      	text="VCA: scambia direzione vista / guarda indietro " />
@@ -186,6 +196,10 @@
 		<text name="input_vcaLowerB"    text="VCA: alza/abbassa attrezzo posteriore "/>
 		<text name="input_vcaActivateF" text="VCA: (dis-)attiva attrezzo anteriore "/>
 		<text name="input_vcaActivateB" text="VCA: (dis-)attiva attrezzo posteriore "/>
+		<text name="input_vcaMenuAction1" text="VCA: Pulsante menu S"/>
+		<text name="input_vcaMenuAction2" text="VCA: Pulsante menu L"/>
+		<text name="input_vcaMenuAction3" text="VCA: Pulsante menu D"/>
+		<text name="input_vcaMenuAction4" text="VCA: Pulsante menu X"/>
 
 		<text name="vcaValueOn"         text="on"/>
 		<text name="vcaValueOff"        text="off"/>
@@ -193,25 +207,35 @@
 		<text name="vcaValueAlways"     text="Sempre"/>
 		<text name="vcaValueAlwaysH"    text="Sempre (high)"/>
 		<text name="vcaValueNormal"     text="Normale"/>
+		<text name="vcaValueLight" 		text="leggero"/>
+		<text name="vcaValueStrong" 	text="forte"/>
 		<text name="vcaValueEntered"    text="Se inserito"/>
 		<text name="vcaValueInactive"   text="Se inattivo"/>
 		<text name="vcaValueInactiveH"  text="Se inattivo (high)"/>
 		<text name="vcaValueRPM"        text="RPM"/>
 
-<text name="vcaClutchMode_0" text="Automatico"/>
-<text name="vcaClutchMode_1" text="auto (veloce)"/>
-<text name="vcaClutchMode_2" text="manuale"/>
-<text name="vcaClutchMode_3" text="turbo (veloce)"/>
-<text name="vcaClutchMode_4" text="turbo (lento)"/>
-<text name="vcaClutchMode_5" text="turbo (aperto)"/>
-<text name="vcaClutchMode_6" text="turbo (manuale)"/>
+		<text name="vcaClutchMode_0" text="Automatico"/>
+		<text name="vcaClutchMode_1" text="auto (veloce)"/>
+		<text name="vcaClutchMode_2" text="manuale"/>
+		<text name="vcaClutchMode_3" text="turbo (veloce)"/>
+		<text name="vcaClutchMode_4" text="turbo (lento)"/>
+		<text name="vcaClutchMode_5" text="turbo (aperto)"/>
+		<text name="vcaClutchMode_6" text="turbo (manuale)"/>
 
-<text name="vcaTorqueCurve_0" text="default"/>
-<text name="vcaTorqueCurve_1" text="moderno (aumento 40%)"/>
-<text name="vcaTorqueCurve_2" text="moderno (Aumento 50%)"/>
-<text name="vcaTorqueCurve_3" text="motore camion (Aumento 60%)"/>
-<text name="vcaTorqueCurve_4" text="classico (Aumento 20%)"/>
-<text name="vcaTorqueCurve_5" text="classico (Aumento 30%)"/>
+		<text name="vcaTorqueCurve_0" text="default"/>
+		<text name="vcaTorqueCurve_1" text="moderno (aumento 40%)"/>
+		<text name="vcaTorqueCurve_2" text="moderno (Aumento 50%)"/>
+		<text name="vcaTorqueCurve_3" text="motore camion (Aumento 60%)"/>
+		<text name="vcaTorqueCurve_4" text="classico (Aumento 20%)"/>
+		<text name="vcaTorqueCurve_5" text="classico (Aumento 30%)"/>
+
+		<text name="vcaPowerShift" text="power shift"/>
+
+		<text name="vcaButtonSnapWidth"  text="Rileva larghezza"/>
+		<text name="vcaButtonSnapOffset" text="Alerna Offset"/>
+		<text name="vcaButtonLoadPreset" text="Carica Trasmissione"/>
+		<text name="vcaButtonSavePreset" text="Salva Trasmissione"/>
+		<text name="vcaButtonDelPreset"  text="Cancella Trasmissione"/>
     </texts>
 
 	<longTexts>
