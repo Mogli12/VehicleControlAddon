@@ -1331,8 +1331,9 @@ function vehicleControlAddonTransmissionBase.loadSettings()
 				local baseSpeed = getXMLFloat( xmlFile, key..".gears#baseSpeed" )
 				timeGears       = getXMLInt(   xmlFile, key..".gears#shiftTimeMs" )
 				timeRanges      = getXMLInt(   xmlFile, key..".ranges#shiftTimeMs" )
-				autoGears       = true 
-				autoRanges      = false 
+				autoGears       = getXMLBool( xmlFile, key..".gears#autoShift" )
+				autoRanges      = getXMLBool( xmlFile, key..".ranges#autoShift" )
+				speedMatching   = getXMLBool( xmlFile, key..".gears#speedMatching" )
 				gearRatios      = {}
 				local maxSpeed  = 0
 				
