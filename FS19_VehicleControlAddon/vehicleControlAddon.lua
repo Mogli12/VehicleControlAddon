@@ -1108,6 +1108,7 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
 																"vcaSWAPSPEED",
                                 "vcaSNAP",
                                 "vcaSNAPRESET",
+                                "vcaSNAPDIST",
 																"vcaGearUp",
 																"vcaGearDown",
 																"vcaRangeUp", 
@@ -1454,6 +1455,13 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 		self:vcaSetState( "vcaLastSnapPosX", 0 )
 		self:vcaSetState( "vcaLastSnapPosZ", 0 )
 		self:vcaSetState( "vcaSnapIsOn", false )
+	elseif actionName == "vcaSNAPDIST" then
+		local d, o, p = self:vcaGetSnapDistance()
+		self:vcaSetState( "vcaSnapDistance", d )
+		self:vcaSetState( "vcaSnapOffset1",  o )
+		self:vcaSetState( "vcaSnapOffset2",  p )
+		self:vcaSetState( "vcaWarningText", vehicleControlAddon.getText("vcaDISTANCE", "Width")..": "..vehicleControlAddon.formatNumber( self.vcaSnapDistance ) )
+		self.vcaSnapPosTimer = math.max( Utils.getNoNil( self.vcaSnapPosTimer , 0 ), 3000 )
 	elseif actionName == "vcaSNAP" then
 		self:vcaSetState( "vcaSnapIsOn", not self.vcaSnapIsOn )
 		self:vcaSetSnapFactor()

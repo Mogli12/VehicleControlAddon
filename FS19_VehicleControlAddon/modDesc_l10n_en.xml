@@ -152,6 +152,7 @@
 		<text name="input_vcaREVERSE"   text="VCA: drive backwards"/>
 		<text name="input_vcaSNAP"      text="VCA: snap driving direction"/>
 		<text name="input_vcaSNAPRESET" text="VCA: reset snap driving direction"/>
+		<text name="input_vcaSNAPDIST"  text="VCA: determine working width of snap driving direction"/>
 		<text name="input_vcaSnapUP"    text="VCA: rotate snap direction left"/>
 		<text name="input_vcaSnapDOWN"  text="VCA: rotate snap direction right"/>
 		<text name="input_vcaSnapLEFT"  text="VCA: snap left"/>

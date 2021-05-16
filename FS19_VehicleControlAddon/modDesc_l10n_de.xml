@@ -152,6 +152,7 @@
 		<text name="input_vcaREVERSE"   text="VCA: Fahrtrichtung rückwärts"/>
 		<text name="input_vcaSNAP"      text="VCA: Fahrtrichtung am Raster ausrichten"/>
 		<text name="input_vcaSNAPRESET" text="VCA: Fahrtrichtung nicht am Raster ausrichten"/>
+		<text name="input_vcaSNAPDIST"  text="VCA: Arbeitsbreite für Fahrtrichtung ermitteln"/>
 		<text name="input_vcaSnapUP"    text="VCA: Raster nach links drehen"/>
 		<text name="input_vcaSnapDOWN"  text="VCA: Raster nach rechts drehen"/>
 		<text name="input_vcaSnapLEFT"  text="VCA: Raster links"/>

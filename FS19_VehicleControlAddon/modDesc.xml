@@ -74,10 +74,10 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>store.dds</iconFilename>
-	<version>9.3.5.5</version>
+	<version>9.3.5.6</version>
 	<l10n filenamePrefix="modDesc_l10n">
 		<text name="vcaVERSION">          
-			<en>Vehicle Control Addon beta build 355</en>
+			<en>Vehicle Control Addon beta build 356</en>
 		</text>
 	</l10n>
 	
@@ -96,6 +96,7 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 		<action name="vcaREVERSE"   category="VEHICLE" axisType="HALF"/>
 		<action name="vcaSNAP"      category="VEHICLE" axisType="HALF"/>
 		<action name="vcaSNAPRESET" category="VEHICLE" axisType="HALF"/>
+		<action name="vcaSNAPDIST"  category="VEHICLE" axisType="HALF"/>
 		<action name="vcaNO_ARB"    category="VEHICLE" axisType="HALF"/>
 		<action name="vcaINCHING"   category="VEHICLE" axisType="HALF"/>
 		<action name="vcaKEEPROT"   category="VEHICLE" axisType="HALF"/>
@@ -173,6 +174,9 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 		</actionBinding>	
 		<actionBinding action="vcaSNAPRESET">	
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_lalt KEY_w"/>
+		</actionBinding>	
+		<actionBinding action="vcaSNAPDIST">	
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_lalt KEY_w"/>
 		</actionBinding>	
 		<actionBinding action="vcaINCHING">	
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_lshift"/>
