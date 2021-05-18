@@ -2429,7 +2429,8 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 		self:vcaSetState( "vcaIsEnteredMP", true )
 		
 		local isBlocked = false 
-		if g_gui:getIsGuiVisible() then 
+		if self.spec_drivable.cruiseControl.state ~= Drivable.CRUISECONTROL_STATE_OFF then
+		elseif g_gui:getIsGuiVisible() then 
 			isBlocked = true 
 			if g_gui.currentGuiName ~= nil then 
 				if g_gui.currentGuiName == "ChatDialog" or g_gui.currentGuiName == "ChatWindow" then 
