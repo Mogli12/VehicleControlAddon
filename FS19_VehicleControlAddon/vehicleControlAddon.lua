@@ -638,7 +638,7 @@ function vehicleControlAddon:onLoad(savegame)
 	vehicleControlAddon.registerState( self, "vcaSingleReverse",0 ) 
 	vehicleControlAddon.registerState( self, "vcaGear",         0 ) --, vehicleControlAddon.vcaOnSetGear )
 	vehicleControlAddon.registerState( self, "vcaRange",        0 ) --, vehicleControlAddon.vcaOnSetRange )
-	vehicleControlAddon.registerState( self, "vcaNeutral",      false, vehicleControlAddon.vcaOnSetNeutral )
+	vehicleControlAddon.registerState( self, "vcaNeutral",      false ) --, vehicleControlAddon.vcaOnSetNeutral )
 	vehicleControlAddon.registerState( self, "vcaAutoShift",    true) --, vehicleControlAddon.vcaOnSetAutoShift )
 	vehicleControlAddon.registerState( self, "vcaShifterIndex", 0 )
 	vehicleControlAddon.registerState( self, "vcaShifterUsed",  false )
@@ -4811,7 +4811,7 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 				if self.lastSpeedReal * 3600 > 1 then 
 					brake      = true 
 				end 
-			elseif  self.spec_motorized.motor.vcaAutoStop
+			elseif  self:vcaGetAutoHold()
 					and acceleration < 0.1 then 
 				doHandbrake  = true 
 			end		
