@@ -4779,7 +4779,8 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 		end 
 	
 	
-		if not self:getIsMotorStarted() then 
+		if not self:getIsMotorStarted() 
+				or ( self.spec_motorized.motorStartTime ~= nil and g_currentMission.time <= self.spec_motorized.motorStartTime ) then 
 			acceleration       = 0
 			doHandbrake        = true 
 			self.vcaBrakePedal = 1
@@ -5146,6 +5147,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	local lastShiftWheelRpm   = self.vcaShiftWheelRpm
 	local lastRealSpeedLimit  = Utils.getNoNil( self.vcaRealSpeedLimit, math.huge )  
 	local lastClutchClose     = self.vcaClutchClose 
+	local lastIncreaseRpm     = Utils.getNoNil( self.vcaIncreaseRpm, 0 )
 	
 	self.vcaMinRpm            = nil 
 	self.vcaMaxRpm            = nil 
@@ -5165,6 +5167,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 	self.vcaAccSpeedLimit     = nil 
 	self.vcaShiftWheelRpm     = nil 
 	self.vcaClutchClose       = nil 
+	self.vcaIncreaseRpm       = nil
 	self.vcaRealSpeedLimit    = nil 
 	if self.vcaLastSpeedLimit == nil then 
 		self.vcaLastSpeedLimit  = math.huge 
@@ -5644,7 +5647,6 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		self.vcaNoShiftTimer  = nil
 		self.vcaAutoLowTimer  = nil
 		self.vcaBrakeTimer    = nil
-		self.vcaIncreaseRpm   = nil
 		self.vcaAutoStop      = true 
 		self.vcaAutoStopNoRpm = g_currentMission.time
 
@@ -5727,10 +5729,26 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 		end 
 							
 		if self.vcaAutoStop or self.vehicle:vcaGetNeutral() then 
-		elseif speed > 2 then 
-			self.vcaIncreaseRpm = g_currentMission.time + 2000 
-		else --if self.vcaIncreaseRpm ~= nil and g_currentMission.time < self.vcaIncreaseRpm then 
-			self.vcaIncreaseRpm = g_currentMission.time + 200 
+			-- neutral => do not increase RPM
+		elseif self.vehicle.spec_combine ~= nil then 
+			-- increase RPM for combine
+			if     speed  > 2   then 
+				-- not stopped => increase RPM
+				self.vcaIncreaseRpm = math.max( lastIncreaseRpm, g_currentMission.time + 5000 )
+			elseif curAcc > 0.1 then 
+				-- accelerating => increase RPM for a short time 
+				self.vcaIncreaseRpm = math.max( lastIncreaseRpm, g_currentMission.time + 2000 )
+			elseif lastIncreaseRpm > g_currentMission.time then 
+				self.vcaIncreaseRpm = lastIncreaseRpm
+			end 
+		elseif speed  > 2   then 
+			-- not stopped => increase RPM
+			self.vcaIncreaseRpm = math.max( lastIncreaseRpm, g_currentMission.time + 1000 )
+		elseif curAcc > 0.1 then 
+			-- accelerating => increase RPM 
+			self.vcaIncreaseRpm = math.max( lastIncreaseRpm, g_currentMission.time + 1000 )
+		elseif lastIncreaseRpm > g_currentMission.time then 
+			self.vcaIncreaseRpm = lastIncreaseRpm
 		end 
 		
 		local minReducedRpm = math.min( math.max( newMinRpm, self.minRpm + 0.1 * rpmRange ), newMaxRpm )
