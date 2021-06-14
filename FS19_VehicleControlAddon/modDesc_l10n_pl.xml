@@ -160,6 +160,7 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="input_vcaREVERSE"   text="VCA: Jazda w tył"/>
 		<text name="input_vcaSNAP"      text="VCA: Wyrównanie kierunku jazdy"/>
 		<text name="input_vcaSNAPRESET" text="VCA: Reset wyrównania kierunku jazdy"/>
+		<text name="input_vcaSNAPDIST"  text="VCA: Ustalenie szerokości roboczej wyrównania kierunku jazdy"/>
 		<text name="input_vcaSnapUP"    text="VCA: Przesuń w przód"/>
 		<text name="input_vcaSnapDOWN"  text="VCA: Przesuń w tył"/>
 		<text name="input_vcaSnapLEFT"  text="VCA: Przesuń w lewo"/>
