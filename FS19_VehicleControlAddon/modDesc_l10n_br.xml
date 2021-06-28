@@ -93,7 +93,7 @@ Todas as funções são ajustáveis ​​com as seguintes combinações de tecl
 		<text name="vca_tip_CAMERAO"      text="Gira automaticamente a câmera externa de acordo com o ângulo de direção"/>
 		<text name="vca_tip_EXPONENT"     text="Sensibilidade de direção adaptável com base da velocidade no solo"/>
 		<text name="vca_tip_STEERING"     text="A direção adaptativa ajusta a rotação traseira automática e o ângulo máximo de direção"/>
-		<text name="vca_tip_SHUTTLE"      text="Altere a direção com a & lt; barra de espaço & gt"/>
+		<text name="vca_tip_SHUTTLE"      text="Altere a direção com a &lt; barra de espaço &gt;"/>
 		<text name="vca_tip_REVERSEI"     text="Se o veículo mudar de direção, a câmera interna é girada 180°"/>
 		<text name="vca_tip_REVERSEO"     text="Se o veículo mudar de direção, a câmera externa é girada 180°"/>
 		<text name="vca_tip_LIMIT"        text="Limitador do acelerador sem e com tecla shift esquerda"/>
