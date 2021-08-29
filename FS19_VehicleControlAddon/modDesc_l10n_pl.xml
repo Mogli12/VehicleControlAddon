@@ -6,7 +6,7 @@ Obraca również kamerę, aby dopasować ją do kierunku jazdy.
 Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 
 [Lewy Ctrl + C]: Ustawienia
-[Lewy Shift]: Kotrola prędkości tempomatu
+[Lewy Shift]: Kontrola prędkości tempomatu
 [Prawy Shift + Strzałki]: Widok w przód, tył, prawo, lewo
 [Spacja]: Zmiana kierunku jazdy (rewers)]]>
 	</description>
@@ -39,7 +39,7 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vcaDISTANCE"        text="Szerokość robocza"/>
 		<text name="vcaOFFSET1"         text="Przesunięcie narzędzia"/>
 		<text name="vcaOFFSET2"         text="Odwróć przesunięcie"/>
-		<text name="vcaSNAP90"          text="Zmień wyrówanie kierunku co 90°"/>
+		<text name="vcaSNAP90"          text="Zmień wyrównanie kierunku co 90°"/>
 		<text name="vcaDRAWMARKER"      text="Pokaż linie kierunku jazdy"/>
 		<text name="vcaPITCH1"          text="Liniowa wysokość dźwięku"/>
 		<text name="vcaPITCH2"          text="Wysokość dźwięku przy średnich RPM"/>
@@ -74,7 +74,7 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vcaHIREDWORKER2"    text="Pracownik i dyferencjały"/>
 		
 		<text name="vcaSPEEDLIMITF"     text="Limit prędkości do przodu"/>
-		<text name="vcaSPEEDLIMITB"     text="Limit prędkościć do tyłu"/>
+		<text name="vcaSPEEDLIMITB"     text="Limit prędkości do tyłu"/>
 		<text name="vcaRATEDPOWER"      text="Moc znamionowa w KM"/>
 		<text name="vcaTORQUECURVE"     text="Bardziej realistyczna krzywa momentu obrotowego"/>
 		<text name="vcaROTACCTIME"      text="Czas rozpędzania silnika"/>
@@ -131,10 +131,10 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vca_tip_OWNREVGEARS"  text="Biegi wsteczne, jeśli nieustalone to będą nimi wszystkie"/>
 		<text name="vca_tip_OWNREVRANGE"  text="Zakresy wsteczne, jeśli nieustalone to będą nimi wszystkie"/>
 		<text name="vca_tip_OWNREVRATIO"  text="Mnożnik dla biegów wstecznych"/>
-		<text name="vca_tip_OWNSPLITG27"  text="Dzielenie biegów w Shifterze G27. Jeśli masz 12 biegów wtedy dielnik może przełączać pomiędzy biegami parzystymi i nieparzystymi."/>
+		<text name="vca_tip_OWNSPLITG27"  text="Dzielenie biegów w Shifterze G27. Jeśli masz 12 biegów wtedy dzielnik może przełączać pomiędzy biegami parzystymi i nieparzystymi."/>
 		
 		<text name="vca_tip_AntiSlip"     text="Kontrola trakcji automatycznie blokuje koła obracające się bez oporów"/>
-		<text name="vca_tip_DiffManual"   text="Ręczne przełączanie napędów i blokad dyfernecjałów"/>
+		<text name="vca_tip_DiffManual"   text="Ręczne przełączanie napędów i blokad dyferenecjałów"/>
 		<text name="vca_tip_DiffFrontAdv" text="Zwiększa prędkość przedniej osi, jeśli włączony jest napęd na wszystkie koła"/>
 		<text name="vca_tip_DiffLockSwap" text="Zamienia blokady dyferencjału pomiędzy przednią a tylną osią"/>
 		<text name="vca_tip_HudX"         text="Pozycja HUDa w osi poziomej"/>
@@ -147,8 +147,8 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vca_tip_TORQUECURVE"  text="Bardziej realistyczna krzywa momentu obrotowego"/>
 		<text name="vca_tip_ROTACCTIME"   text="Czas w ms jaki potrzebuje silnik na rozpędzenie się od min RPM do max RPM"/>
 		<text name="vca_tip_GEARRGMODE"   text="Zamienia klawisze pomiędzy biegami a zakresami"/>
-		<text name="vcaSTSPEEDO"        text="Prędkość skrętu"/>
-		<text name="vcaSTSPEEDI"        text="odwraca prędkość skrętu"/>
+		<text name="vca_tip_STSPEEDO"     text="Prędkość skrętu"/>
+		<text name="vca_tip_STSPEEDI"     text="odwraca prędkość skrętu"/>
 		
 		<text name="input_vcaSETTINGS"  text="VCA: Ustawienia"/>
 		<text name="input_vcaUP"        text="VCA: Zmiana widok / Widok w przód"/>
