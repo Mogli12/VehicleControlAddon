@@ -6212,27 +6212,31 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 					launchSpeed = self.speedLimit * self.maxRpm / ( 3.6 * self.minRpm ) 
 				end 
 				
+				local launchGear = gear
 				if self.vehicle.vcaMaxSpeed	<= 0 then 
-					launchRatio   = 0
-					setLaunchGear = false 
+					launchRatio    = 0
+					setLaunchGear  = false 
 				else 
-					launchRatio   = launchSpeed / self.vehicle.vcaMaxSpeed	
+					launchRatio    = ratio 
+					local gearlist = transmission:getAutoShiftIndeces( ratio, 0, true, false )
+					local lr       = launchSpeed / self.vehicle.vcaMaxSpeed	
+					if gearlist ~= nil and #gearlist >= 1 then 
+						local delta = math.abs( ratio - lr )
+						for _,i in pairs( gearlist ) do 
+							local r = transmission:getGearRatio( i )
+							local d = math.abs( r - lr )
+							if d < delta then 
+								launchRatio = lr 
+								launchGear  = i
+								delta       = d
+							end 
+						end 	
+					end 
 				end 
 				
 				if setLaunchGear then
 					if not( lastSetLaunchGear ) then
-						local gearlist = transmission:getAutoShiftIndeces( ratio, 0, true, false )
-						if gearlist ~= nil and #gearlist >= 1 then 
-							local delta = math.abs( ratio - launchRatio )
-							for _,i in pairs( gearlist ) do 
-								local r = transmission:getGearRatio( i )
-								local d = math.abs( r - launchRatio )
-								if d < delta then 
-									newGear = i 
-									delta   = d
-								end 
-							end 	
-						end 
+						newGear = launchGear
 					elseif setLaunchGear2 and self.vcaGearIndex ~= gear then 
 						local gearlist = transmission:getAutoShiftIndeces( ratio, 0, true, true )
 						if gear == gearlist[1]         and ratio * self.vehicle.vcaMaxSpeed > self.vehicle.vcaLaunchSpeed then 
@@ -6627,8 +6631,7 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 					or self.vehicle.vcaClutchMode == listOfClutchModes.turboManu then 
 				clutchDt = dt + dt 
 			end 	
-			if     self.vehicle.vcaClutchMode == listOfClutchModes.turboOpen 
-					or ( self.vehicle:vcaGetTurboClutch() and self.vcaClutchTimer > 0 ) then 
+			if self.vehicle:vcaGetTurboClutch() then 
 				clutchDir = -0.25
 				if curAcc > 0 then 
 					clutchDir = curAcc 
@@ -6640,13 +6643,13 @@ function vehicleControlAddon:vcaUpdateGear( superFunc, acceleratorPedal, dt )
 			clutchOpenRpm = self.minRpm 
 			
 			if     self.vehicle.vcaClutchMode == listOfClutchModes.turboSlow then 
-				clutchOpenRpm = self.minRpm + 0.2 + rpmRange
+				clutchOpenRpm = self.minRpm + 0.2 * rpmRange
 			elseif self.vehicle.vcaClutchMode == listOfClutchModes.turboFast then 
-				clutchOpenRpm = self.minRpm + 0.1 + rpmRange
+				clutchOpenRpm = self.minRpm + 0.1 * rpmRange
 			elseif self.vehicle.vcaClutchMode == listOfClutchModes.turboOpen then 
 				clutchOpenRpm = 0
 			elseif self.vehicle.vcaClutchMode == listOfClutchModes.turboManu then 
-				clutchOpenRpm = self.minRpm + 0.1 + rpmRange
+				clutchOpenRpm = self.minRpm + 0.1 * rpmRange
 			end 
 			
 			if clutchOpenRpm > clutchCloseRpm then 
