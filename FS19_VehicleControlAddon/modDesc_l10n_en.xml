@@ -25,6 +25,7 @@
 		<text name="vcaNO_ARB"          text="Free steering"/>
 		<text name="vcaHANDTHROTTLE"    text="Hand throttle"/>
 		<text name="vcaPITCH"           text="Sound pitch at max. RPM"/>
+		<text name="vcaPITCH2"          text="Sound pitch inside / outside"/>
 		<text name="vcaSETTINGS"        text="Settings"/>
 		<text name="vcaDRAWHUD"         text="Transmission HUD"/>
 		
@@ -94,6 +95,7 @@
 		<text name="vca_tip_NO_ARB"       text="If free steering is enabled then the steering will not automatically rotate back"/>
 		<text name="vca_tip_HANDTHROTTLE" text="The engine automatically accelerates to reach hand throttle RPM"/>
 		<text name="vca_tip_PITCH"        text="Sound pitch at maximum RPM"/>
+		<text name="vca_tip_PITCH2"       text="Sound pitch inside / outside"/>
 		<text name="vca_tip_DRAWHUD"      text="Show or hide transmission HUD"/>
 		
 		<text name="vca_tip_DISTANCE"     text="Distance between two snap driving rows"/>

@@ -78,6 +78,16 @@
 					<GuiElement type="bitmap" profile="vcaMTOBg" />
 				</GuiElement>
 
+				<GuiElement type="multiTextOption" profile="vcaMTOSettings" id="vcaPitchInOut"
+												toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_PITCH2"
+												onCreate="onCreateSubElement" onCreateArgs="list0">
+					<GuiElement type="button" profile="vcaMTOLeft" />
+					<GuiElement type="button" profile="vcaMTORight"/>
+					<GuiElement type="text" profile="vcaMTOText" />
+					<GuiElement type="text" profile="vcaMTOTitle" text="$l10n_vcaPITCH2"/>
+					<GuiElement type="bitmap" profile="vcaMTOBg" />
+				</GuiElement>
+
 				<GuiElement type="multiTextOption" profile="vcaMTOSettings" id="vcaPitchExponent"
 												toolTipElementId="mogliToolTipBoxText" toolTipText="$l10n_vca_tip_PITCH2"
 												onCreate="onCreateSubElement" onCreateArgs="list">

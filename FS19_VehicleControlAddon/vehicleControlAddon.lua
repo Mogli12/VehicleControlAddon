@@ -325,6 +325,7 @@ local listOfProperties =
 		{ func=listOfFunctions.float, xmlName="handthrottle",  propName="vcaHandthrottle"  },
 		{ func=listOfFunctions.bool,  xmlName="handRpmFull",   propName="vcaHandRpmFullAxis"},
 		{ func=listOfFunctions.float, xmlName="pitchFactor",   propName="vcaPitchFactor"   },
+		{ func=listOfFunctions.float, xmlName="pitchInOut",    propName="vcaPitchInOut"   },
 		{ func=listOfFunctions.float, xmlName="pitchExponent", propName="vcaPitchExponent" },
 		{ func=listOfFunctions.float, xmlName="minGearRatio",  propName="vcaGearRatioF"    },
 		{ func=listOfFunctions.float, xmlName="maxGearRatio",  propName="vcaGearRatioT"    },
@@ -663,6 +664,7 @@ function vehicleControlAddon:onLoad(savegame)
 	vehicleControlAddon.registerState( self, "vcaHandthrottle", 0 )
 	vehicleControlAddon.registerState( self, "vcaHandRpmFullAxis", false )
 	vehicleControlAddon.registerState( self, "vcaPitchFactor",  VCAGlobals.pitchFactor )
+	vehicleControlAddon.registerState( self, "vcaPitchInOut",   10 )
 	vehicleControlAddon.registerState( self, "vcaPitchExponent",1 )
 	vehicleControlAddon.registerState( self, "vcaGearRatioH",   0 )
 	vehicleControlAddon.registerState( self, "vcaGearRatioF",   0 )
@@ -2181,7 +2183,8 @@ function vehicleControlAddon:onPreUpdate(dt, isActiveForInput, isActiveForInputI
 -- g_soundManager modifications
 	if vehicleControlAddon.origPitchFunc == nil 
 			and ( ( self.vcaPitchFactor   ~= nil and math.abs( self.vcaPitchFactor   - 1 ) > 0.01 )
-			   or ( self.vcaPitchExponent ~= nil and math.abs( self.vcaPitchExponent - 1 ) > 0.01 ) ) then 
+			   or ( self.vcaPitchExponent ~= nil and math.abs( self.vcaPitchExponent - 1 ) > 0.01 )
+				 or ( self.vcaPitchInOut    ~= nil and self.vcaPitchInOut ~= 10 ) ) then 
 		local m = g_soundManager.modifierTypeNameToIndex.MOTOR_RPM
 		vehicleControlAddon.origPitchFunc = g_soundManager.modifierTypeIndexToDesc[m].func 
 		g_soundManager.modifierTypeIndexToDesc[m].func = function( self )
@@ -2194,7 +2197,17 @@ function vehicleControlAddon:onPreUpdate(dt, isActiveForInput, isActiveForInputI
 			if p < 1 and self.vcaPitchExponent ~= nil and math.abs( self.vcaPitchExponent - 1 ) > 0.01 then 
 				p = p ^ ( math.log( self.vcaPitchExponent * 0.5 ) / math.log( 0.5 ) )
 			end 
+			if self.vcaCamIsInside then 
+				if self.vcaPitchInOut < 10 then 
+					p = p * ( 0.8 + math.max( 0, self.vcaPitchInOut ) * 0.02 )
+				end 
+			else
+				if self.vcaPitchInOut > 10 then 
+					p = p * ( 0.8 + math.max( 0, 20 - self.vcaPitchInOut ) * 0.02 )
+				end 
+			end 
 			if p < 0 then p = 0 elseif p > 1 then p = 1 end 
+				
 			self.vcaLastPitch = p
 			return p 
 		end 
@@ -7962,6 +7975,13 @@ function vehicleControlAddon:vcaShowSettingsUI()
 		local v = 0.8 + ( i - 1 ) * 0.05
 		table.insert( self.vcaUI.vcaPitchFactor, string.format( "%3.0f%%", v*100 ) )
 		table.insert( self.vcaUI.vcaPitchFactor_V, v )
+	end 
+
+	self.vcaUI.vcaPitchInOut   = {}
+	for i=0,20 do 
+		local vi = 0.8 + 0.02 * vehicleControlAddon.mbClamp( i, 0, 10 )
+		local vo = 0.8 + 0.02 * vehicleControlAddon.mbClamp( 20 - i, 0, 10 )
+		table.insert( self.vcaUI.vcaPitchInOut, string.format( "%3.0f%% / %3.0f%%", vi*100, vo*100 ) )
 	end 
 
 	self.vcaUI.vcaPitchExponent   = { "- - - -", "- - -", "- -", "-", vehicleControlAddon.getText( "vcaValueNormal", "NORMAL" ), "+", "+ +" , "+ + +", "+ + + +" }

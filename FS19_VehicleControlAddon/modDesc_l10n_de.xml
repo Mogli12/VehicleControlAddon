@@ -25,6 +25,7 @@
 		<text name="vcaNO_ARB"          text="Freies Lenken"/>
 		<text name="vcaHANDTHROTTLE"    text="Handgas"/>
 		<text name="vcaPITCH"           text="Tonhöhe bei Maximaldrehzahl"/>
+		<text name="vcaPITCH2"          text="Tonhöhe innen / aussen"/>
 		<text name="vcaSETTINGS"        text="Einstellungen"/>
 		<text name="vcaDRAWHUD"         text="Getriebe HUD"/>
 		
@@ -94,6 +95,7 @@
 		<text name="vca_tip_NO_ARB"       text="Falls freies Lenken aktiviert ist, dann lenkt das Fahrzeug nicht selbständig zurück auf Geradeaus"/>
 		<text name="vca_tip_HANDTHROTTLE" text="Der Motor beschleunigt automatisch bis zur gewählten Drehzahl"/>
 		<text name="vca_tip_PITCH"        text="Tonhöhe bei Maximaldrehzahl"/>
+		<text name="vca_tip_PITCH2"       text="Tonhöhe innen / aussen"/>
 		<text name="vca_tip_DRAWHUD"      text="HUD für Getriebe ein-/ausblenden"/>
 		
 		<text name="vca_tip_DISTANCE"     text="Abstand zwischen zwei Rasterbahnen"/>
