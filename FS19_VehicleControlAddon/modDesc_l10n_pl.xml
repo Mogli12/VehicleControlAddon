@@ -33,7 +33,7 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vcaNO_ARB"          text="Brak centrowania"/>
 		<text name="vcaHANDTHROTTLE"    text="Gaz ręczny"/>
 		<text name="vcaPITCH"           text="Wysokość dźwięku przy maks. RPM"/>
-		<text name="vcaPITCH2"          text="Sound pitch inside / outside"/>
+		<text name="vcaPITCH_IO"        text="Wysokość dźwięku wewnątrz/na zewnątrz"/>
 		<text name="vcaSETTINGS"        text="Ustawienia"/>
 		<text name="vcaDRAWHUD"         text="HUD skrzyni"/>
 		
