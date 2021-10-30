@@ -33,6 +33,7 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vcaNO_ARB"          text="Brak centrowania"/>
 		<text name="vcaHANDTHROTTLE"    text="Gaz ręczny"/>
 		<text name="vcaPITCH"           text="Wysokość dźwięku przy maks. RPM"/>
+		<text name="vcaPITCH2"          text="Sound pitch inside / outside"/>
 		<text name="vcaSETTINGS"        text="Ustawienia"/>
 		<text name="vcaDRAWHUD"         text="HUD skrzyni"/>
 		
@@ -102,6 +103,7 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vca_tip_NO_ARB"     text="Jeśli włączone, koła nie będą powracały do pozycji prostej."/>
 		<text name="vca_tip_HANDTHROTTLE" text="Silnik automatycznie osiąga ustalone obroty."/>
 		<text name="vca_tip_PITCH"      text="Wysokość dźwięku przy maksymalnych obrotach silnika"/>
+		<text name="vca_tip_PITCH_IO"   text="Wysokość dźwięku wewnątrz/na zewnątrz"/>
 		<text name="vca_tip_DRAWHUD"    text="Pokazuje lub ukrywa HUD skrzyni"/>
 		
 		<text name="vca_tip_DISTANCE"     text="Odległość pomiędzy kolejnymi ścieżkami"/>
