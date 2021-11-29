@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<GUIProfiles>
+	<Presets>
+		<Preset name="colorTransparent" value="0 0 0 0" />
+
+		<Preset name="colorGlass" value="0.018 0.016 0.015 0.6" />
+		<Preset name="colorGlass_50" value="0.018 0.016 0.015 0.25" />
+
+		<Preset name="colorGlassVeryLight" value="0.718 0.716 0.715 0.04" />
+		<Preset name="colorGlassExtremelyLight" value="0.918 0.916 0.915 0.15" />
+		<Preset name="colorGlassMedium" value="0.118 0.116 0.115 0.20" />
+		<Preset name="colorGlassDark" value="0.018 0.016 0.015 0.65" />
+		<Preset name="colorGlassLight" value="0.718 0.716 0.715 0.25" />
+		<Preset name="colorGlassLight_50" value="0.718 0.716 0.715 0.0625" />
+		<Preset name="colorGlassLight_75" value="0.718 0.716 0.715 0.09375" />
+
+		<Preset name="colorMainUI" value="0.9910 0.3865 0.0100 1" />
+		<Preset name="colorMainUIAlt" value="0.9900 0.4640 0.0010 1" />
+		<Preset name="colorDisabled" value="0.4 0.4 0.4 1" />
+
+		<Preset name="colorWhite" value="1 1 1 1" />
+		<Preset name="colorWhite_50" value="1 1 1 0.5" />
+		<Preset name="colorWhite_25" value="1 1 1 0.25" />
+		<Preset name="colorRed" value="0.8069 0.0097 0.0097 1" />
+		<Preset name="colorDarkRed" value="0.2832 0.0091 0.0091 1" />
+		<Preset name="colorBlue" value="0.0742 0.4341 0.6939 1" />
+		<Preset name="colorGreen" value="0.0781 0.2233 0.0478 1" />
+		<Preset name="colorGreen2" value="0.2122 0.5271 0.0307 1" />
+
+		<Preset name="colorBlack" value="0 0 0 1" />
+		<Preset name="colorBlack2" value="0.0075 0.0075 0.0075 1" />
+		<Preset name="colorBlack3" value="0.013 0.013 0.013 1" />
+		<Preset name="colorBlack3_97" value="0.013 0.013 0.013 0.97" />
+		<Preset name="colorBlack3_70" value="0.013 0.013 0.013 0.7" />
+		<Preset name="colorBlack3_0" value="0.013 0.013 0.013 0" />
+
+		<Preset name="colorDarkGrey" value="0.0284 0.0284 0.0284 1" />
+		<Preset name="colorDarkGrey_0" value="0.0284 0.0284 0.0284 0" />
+		<Preset name="colorDarkGrey2" value="0.0630 0.0630 0.0630 1" />
+		<Preset name="colorDarkGrey2_50" value="0.0630 0.0630 0.0630 0.5" />
+		<Preset name="colorDarkGrey2_70" value="0.0630 0.0630 0.0630 0.7" />
+		<Preset name="colorDarkGrey3" value="0.0194 0.0194 0.0194 1" />
+		<Preset name="colorDarkGrey4" value="0.0723 0.0723 0.0723 1" />
+		<Preset name="colorDarkGrey5" value="0.1356 0.1356 0.1356 1" />
+		<Preset name="colorDarkGrey6" value="0.03 0.03 0.03 1" />
+		<Preset name="colorDarkGrey7" value="0.0212 0.0212 0.0212 1" />
+
+		<Preset name="colorListRowBackground" value="$preset_colorGlassLight_50" />
+
+		<Preset name="colorLightGrey" value="0.0482 0.0482 0.0482 1" />
+		<Preset name="colorDescriptionText" value="0.2918 0.2918 0.2918 1" />
+		<Preset name="colorDescriptionText2" value="0.6 0.6 0.6 1" />
+		<Preset name="colorDescriptionText3" value="0.1845 0.1845 0.1845 1" />
+		<Preset name="colorDescriptionText4" value="0.6307 0.6307 0.6307 1" />
+		<!-- UVs -->
+		<Preset name="colorUVs" value="10px 1010px 4px 4px" />
+	</Presets>
+
+	<Traits>
+		<Trait name="debugging">
+			<Value name="debugEnabled" value="true" />
+		</Trait>
+		<Trait name="anchorTopLeft">
+			<Value name="screenAlign" value="topLeft" />
+			<Value name="positionOrigin" value="topLeft" />
+		</Trait>
+		<Trait name="anchorTopCenter">
+			<Value name="screenAlign" value="topCenter" />
+			<Value name="positionOrigin" value="topCenter" />
+		</Trait>
+	</Traits>
+
+	<Profile name="vcaDialogBg" extends="dialogBg">
+		<Value name="size" value="1280px 720px" />
+	</Profile>
+
+	<Profile name="vcaDialogBgWide" extends="dialogBg">
+		<Value name="size" value="1280px 758px" />
+	</Profile>
+
+	<Profile name="vcaMenuHeader" extends="emptyPanel" with="anchorTopCenter">
+		<Value name="size" value="1280px 112px" />
+		<Value name="alignmentX" value="left" />
+		<Value name="alignmentY" value="bottom" />
+		<Value name="imageColor" value="$preset_colorGlassVeryLight" />
+		<Value name="flowDirection" value="horizontal" />
+		<Value name="wrapAround" value="true" />
+		<Value name="lateralFlowSize" value="112px" />
+		<Value name="fitToElements" value="true" />
+		<Value name="autoValidateLayout" value="true" />
+		<Value name="hasFrame" value="false" />
+	</Profile>
+
+	<Profile name="vcaMenuHeaderWide" extends="vcaMenuHeader">
+		<Value name="size" value="1280px 150px" />
+		<Value name="lateralFlowSize" value="150px" />
+	</Profile>
+
+	<Profile name="vcaHeaderSelector" extends="uiInGameMenuHeaderSelector">
+		<Value name="size" value="1280px 112px" />
+	</Profile>
+
+	<Profile name="vcaHeaderSelectorWide" extends="uiInGameMenuHeaderSelector">
+		<Value name="size" value="960px 112px" />
+	</Profile>
+
+	<Profile name="vcaPagingButtonLeft" extends="uiInGameMenuPagingButtonLeft">
+	</Profile>
+
+	<Profile name="vcaPagingButtonRight" extends="uiInGameMenuPagingButtonRight">
+	</Profile>
+
+	<Profile name="vcaTabButton" extends="uiTabbedMenuPageTabButton">
+	</Profile>
+
+	<Profile name="vcaMenuPageTab" extends="listItem">
+		<Value name="size" value="100px 100px" />
+		<Value name="margin" value="0px 0px 0px 0px" />
+		<Value name="position" value="0px 0px" />
+	</Profile>
+
+	<Profile name="vcaMenuPageTabAlternate" extends="vcaMenuPageTab" with="alternateRow" />
+
+	<Profile name="vcaPagingTabList" extends="list" with="anchorTopLeft">
+		<Value name="size" value="1280px 112px" />
+		<Value name="position" value="0px 0px" />
+		<Value name="itemsPerRow" value="6" />
+		<Value name="listItemHeight" value="112px" />
+		<Value name="listItemWidth" value="100px" />
+		<Value name="listItemPadding" value="0px" />
+		<Value name="listItemSpacing" value="0px" />
+		<Value name="fixedHeight" value="false" />
+		<Value name="fixedWidth" value="false" />
+		<Value name="margin" value="0px 0px 0px 0px" />
+		<Value name="rowBackgroundProfile" value="vcaMenuPageTab" />
+		<Value name="rowBackgroundProfileAlternate" value="vcaMenuPageTabAlternate" />
+	</Profile>
+
+	<Profile name="vcaPagingTabListWide" extends="vcaPagingTabList">
+		<Value name="size" value="1280px 150px" />
+		<Value name="listItemHeight" value="150px" />
+		<Value name="listItemWidth" value="132px" />
+	</Profile>
+
+	<Profile name="vcaButton" extends="ingameMenuSettingsPauseButton">
+		<Value name="screenAlign" value="bottomLeft" />
+		<Value name="positionOrigin" value="bottomLeft" />
+		<Value name="margin" value="30px 15px 30px 15px" />
+		<Value name="iconSize" value="0px 0px" />
+		<Value name="position" value="0px 0px" />
+		<Value name="textBold" value="false" />
+		<Value name="textSize" value="16px" />
+		<Value name="iconColor" value="$preset_colorWhite" />
+		<Value name="iconHighlightedColor" value="$preset_colorMainUI" />
+	</Profile>
+
+	<Profile name="vcaButtonDetail" extends="vcaButton">
+		<Value name="size" value="205px 75px" />
+		<Value name="margin" value="30px 5px 30px 5px" />
+		<Value name="textSize" value="16px" />
+		<Value name="textBold" value="true" />
+		<Value name="position" value="0px 0px" />
+		<Value name="textAlignment" value="center" />
+		<Value name="textVerticalAlignment" value="middle" />
+	</Profile>
+
+	<Profile name="vcaSettingsTextInput" extends="ingameMenuGameSettingsTextInput">
+		<Value name="margin" value="35px 42px 35px 16px" />
+	</Profile>
+
+	<Profile name="vcaSettingsButton" extends="vcaButton">
+		<Value name="margin" value="35px 15px 35px 15px" />
+	</Profile>
+	<Profile name="vcaSettingsMultiTextOptionSettings" extends="vcaButton">
+		<Value name="margin" value="35px 42px 35px 16px" />
+	</Profile>
+
+	<Profile name="vcaSettingsBox" extends="ingameMenuSettingsBox">
+		<Value name="size" value="1660px 800px"/>
+		<Value name="position" value="130px -50px"/>
+	</Profile>
+
+	<Profile name="vcaSettingsLayout" extends="ingameMenuSettingsLayout">
+		<Value name="position" value="50px -50px"/>
+	</Profile>
+		
+	<Profile name="vcaSettingsLayoutLeft" extends="vcaSettingsLayout">
+		<Value name="size" value="426px 700px"/>
+		<Value name="position" value="0px -20px"/>
+	</Profile>
+
+	<Profile name="vcaSettingsLayoutMid" extends="vcaSettingsLayout">
+		<Value name="size" value="426px 700px"/>
+		<Value name="position" value="427px -20px"/>
+	</Profile>
+
+	<Profile name="vcaSettingsLayoutRight" extends="vcaSettingsLayout">
+		<Value name="size" value="426px 700px"/>
+		<Value name="position" value="854px -20px"/>
+	</Profile>
+
+	<Profile name="vcaHelpText" extends="textDefault">
+		<Value name="textAlignment" value="left"/>
+		<Value name="size" value="700px 700px"/>
+		<Value name="position" value="854px 50px"/> 
+		<Value name="positionOrigin" value="bottomLeft"/>
+		<Value name="textWrapWidth" value="700px"/>
+		<Value name="textVerticalAlignment" value="top"/>
+		<Value name="textSize" value="20px"/>
+	</Profile>
+	
+	<Profile name="vcaMTOSettings" extends="multiTextOptionSettings">
+		<Value name="toolTipElementId" value="mogliToolTipBoxText"/> 
+		<Value name="onCreate" value="onCreateSubElement"/>		
+	</Profile>
+
+	<Profile name="vcaMTOLeft" extends="multiTextOptionLeft">
+	</Profile>
+
+	<Profile name="vcaMTORight" extends="multiTextOptionRight">
+	</Profile>
+
+	<Profile name="vcaMTOText" extends="multiTextOptionText">
+	</Profile>
+
+	<Profile name="vcaMTOTitle" extends="multiTextOptionTitle">
+	</Profile>
+
+	<Profile name="vcaMTOBg" extends="multiTextOptionBg">
+	</Profile>
+
+	<Profile name="vcaTextInput" extends="ingameMenuGameSettingsTextInput">
+		<Value name="maxInputTextWidth" value="290px" />
+		<Value name="maxCharacters"     value="20" />
+		<Value name="imeKeyboardType"   value="normal"/>		
+	</Profile>
+</GUIProfiles>

@@ -1,0 +1,290 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<l10n>
+	<!-- Note that 'description' is only here for easier translations. It needs to be manually copied to ModDesc.XML later. -->
+	<description><![CDATA[Adds the specialization for adaptive keyboard steering]]></description>
+
+	<texts>
+		<text name="vcaCAMERAI"         text="Interior Camera Rotation"/>
+		<text name="vcaCAMERAO"         text="Exterior Camera Rotation"/>
+		<text name="vcaEXPONENT"        text="Sensitivity"/>
+		<text name="vcaSTEERING"        text="Adaptive Steering"/>
+		<text name="vcaSHUTTLE"         text="Shuttle"/>
+		<text name="vcaREVERSE"         text="Look Backwards"/>
+		<text name="vcaREVERSEI"        text="Look Backwards (inside)"/>
+		<text name="vcaREVERSEO"        text="Look Backwards (outside)"/>
+		<text name="vcaLIMIT"           text="Throttle Limiter"/>
+		<text name="vcaPEEKLR"          text="Peek Sideways"/>
+		<text name="vcaANGLE"           text="Snap Angle"/>
+		<text name="vcaBRAKE"           text="Low Brake Force"/>
+		<text name="vcaTRANSMISSION"    text="Transmission"/>
+		<text name="vcaMAXSPEED"        text="Axle Speed"/>
+		<text name="vcaLIMSPEED"        text="Speed Limiter"/>
+		<text name="vcaAUTOSHIFT"       text="Automatic"/>
+		<text name="vcaLAUNCH"          text="Launch gear speed"/>
+		<text name="vcaKEEPSPEED"       text="Permanent keep speed"/>
+		<text name="vcaNO_ARB"          text="Free steering"/>
+		<text name="vcaHANDTHROTTLE"    text="Hand throttle"/>
+		<text name="vcaPITCH"           text="Sound pitch at max. RPM"/>
+		<text name="vcaPITCH_IO"          text="Sound pitch inside / outside"/>
+		<text name="vcaSETTINGS"        text="Settings"/>
+		<text name="vcaDRAWHUD"         text="Transmission HUD"/>
+		
+		<text name="vcaDISTANCE"        text="Working width"/>
+		<text name="vcaOFFSET1"         text="Offset of tool"/>
+		<text name="vcaOFFSET2"         text="Inverse offset"/>
+		<text name="vcaSNAP90"          text="Snap driving every 90°"/>
+		<text name="vcaDRAWMARKER"      text="Draw marker of snap driving"/>
+		<text name="vcaPITCH1"          text="Linear sound pitch"/>
+		<text name="vcaPITCH2"          text="Sound pitch at medium RPM"/>
+		<text name="vcaBLOWOFFVOL"      text="Turbo wastegate volume"/>
+		<text name="vcaSINGLEREV"       text="Single Reverse Gear"/>
+		<text name="vcaAUTOCLUTCH"      text="Automatic clutch"/>
+		<text name="vcaTURBOCLUTCH"     text="Turbo clutch"/>
+		<text name="vcaGEARRATIOF"      text="Min. gear speed limit"/>
+		<text name="vcaGEARRATIOT"      text="Max. gear speed limit"/>
+		<text name="vcaG27MODE"         text="G27/G29 shifter mode"/>
+		<text name="vcaHIREDWORKER"     text="Transmission and hired worker"/>
+		<text name="vcaOWNMINSPEED"     text="Gear speed of 1st gear"/>
+		<text name="vcaOWNMINRANGE"     text="Gear speed of 1st gear and 1st range -"/>
+		<text name="vcaOWNMAXRANGE"     text="Gear speed of 2nd highest range -"/>
+		<text name="vcaOWNGEARS"        text="Number of gears"/>
+		<text name="vcaOWNRANGES"       text="Number of ranges"/>
+		<text name="vcaOWNGEARTIME"     text="Time to shift gears"/>
+		<text name="vcaOWNRANGETIME"    text="Time to shift ranges"/>
+		<text name="vcaOWNAUTOGEARS"    text="Automatic gears"/>
+		<text name="vcaOWNAUTORANGE"    text="Automatic ranges"/>
+		<text name="vcaOWNREVGEARS"     text="Reverse gears"/>
+		<text name="vcaOWNREVRANGE"     text="Reverse ranges"/>
+		<text name="vcaOWNREVRATIO"     text="Reverse ratio"/>
+		<text name="vcaOWNSPLITG27"     text="Split G27 shifter gears"/>
+
+		<text name="vcaAntiSlip"        text="Traction control"/>
+		<text name="vcaDiffManual"      text="Manual AWD and differentials"/>
+		<text name="vcaDiffFrontAdv"    text="Advance speed of front axle"/>
+		<text name="vcaDiffLockSwap"    text="Swap front and rear axle"/>
+		<text name="vcaHudX"            text="Hud position x"/>
+		<text name="vcaHudY"            text="Hud position y"/>
+		<text name="vcaHIREDWORKER2"    text="Differentials and hired worker"/>
+		
+		<text name="vcaSPEEDLIMITF"     text="Speed limit"/>
+		<text name="vcaSPEEDLIMITB"     text="Maximum reverse speed"/>
+		<text name="vcaRATEDPOWER"      text="Rated power in HP"/>
+		<text name="vcaTORQUECURVE"     text="More realistic torque curve"/>
+		<text name="vcaROTACCTIME"      text="Motor acceleration time"/>
+		<text name="vcaGEARRGMODE"      text="Swap gear and range keys"/>
+		<text name="vcaSTSPEEDO"        text="Steering speed"/>
+		<text name="vcaSTSPEEDI"        text="Inverse steering speed"/>
+		
+		<text name="vca_tip_CAMERAI"      text="The interior camera rotates automatically according to the steering angle"/>
+		<text name="vca_tip_CAMERAO"      text="The exterior camera rotates automatically according to the steering angle"/>
+		<text name="vca_tip_EXPONENT"     text="Sensitivity of the adaptive steering with respect to ground speed"/>
+		<text name="vca_tip_STEERING"     text="The adaptive steering adjusts the automatic back rotation and the maximum steering angle"/>
+		<text name="vca_tip_SHUTTLE"      text="Change driving direction with &lt;space&gt; key"/>
+		<text name="vca_tip_REVERSEI"     text="If the vehicle changes direction the interior camera is rotated by 180°"/>
+		<text name="vca_tip_REVERSEO"     text="If the vehicle changes direction the exterior camera is rotated by 180°"/>
+		<text name="vca_tip_LIMIT"        text="Limiter of the throttle without and with left shift key"/>
+		<text name="vca_tip_PEEKLR"       text="Take a quick look with Shift-Right and the left/right arrow keys"/>
+		<text name="vca_tip_ANGLE"        text="Steer automatically to follow snap angle"/>
+		<text name="vca_tip_BRAKE"        text="Low brake force percentage, aka rolling resistance"/>
+		<text name="vca_tip_TRANSMISSION" text="Type of the transmission; IVT variable transmission, all other transmissions have 12 differnt gears, 2x6 is best for trucks"/>
+		<text name="vca_tip_MAXSPEED"     text="Maximum speed of highest gear, can be faster than the maximum speed of the vehicle"/>
+		<text name="vca_tip_LIMSPEED"     text="Limits the maximum speed of the vehicle to its default value"/>
+		<text name="vca_tip_AUTOSHIFT"    text="Automatic shifting of gears and ranges"/>
+		<text name="vca_tip_LAUNCH"       text="Rated speed of the launch gear"/>
+		<text name="vca_tip_KEEPSPEED"    text="If permanent keep speed is enabled then the acceleration pedal behaves like a joystick. This is like driving with cruise control."/>
+		<text name="vca_tip_NO_ARB"       text="If free steering is enabled then the steering will not automatically rotate back"/>
+		<text name="vca_tip_HANDTHROTTLE" text="The engine automatically accelerates to reach hand throttle RPM"/>
+		<text name="vca_tip_PITCH"        text="Sound pitch at maximum RPM"/>
+		<text name="vca_tip_PITCH_IO"       text="Sound pitch inside / outside"/>
+		<text name="vca_tip_DRAWHUD"      text="Show or hide transmission HUD"/>
+		
+		<text name="vca_tip_DISTANCE"     text="Distance between two snap driving rows"/>
+		<text name="vca_tip_OFFSET1"      text="Offset of snap driving rows"/>
+		<text name="vca_tip_OFFSET2"      text="Inverse offset of snap driving rows"/>
+		<text name="vca_tip_SNAP90"       text="Automatic rotation of snap driving direction by 90°"/>
+		<text name="vca_tip_DRAWMARKER"   text="Draw marker of snap driving"/>
+		<text name="vca_tip_PITCH1"       text="Modification of sound pitch to make it linear"/>
+		<text name="vca_tip_PITCH2"       text="Sound pitch at medium RPM"/>
+		<text name="vca_tip_BLOWOFFVOL"   text="Volume of the turbo wastegate"/>
+		<text name="vca_tip_SINGLEREV"    text="With single reverse the transmission uses a single reverse gear or reverse range instead of shuttle control"/>
+		<text name="vca_tip_AUTOCLUTCH"   text="Automatic clutch"/>
+		<text name="vca_tip_TURBOCLUTCH"  text="Additional turbo clutch"/>
+		<text name="vca_tip_GEARRATIOF"   text="Min. gear speed limit"/>
+		<text name="vca_tip_GEARRATIOT"   text="Max. gear speed limit"/>
+		<text name="vca_tip_G27MODE"      text="G27/G29 shifter mode"/>
+		<text name="vca_tip_HIREDWORKER"  text="Controls if the hired worked operates the vehicle with vanilla or modified transmission"/>
+		<text name="vca_tip_OWNMINSPEED"  text="Gear speed of 1st gear in highest range"/>
+		<text name="vca_tip_OWNMINRANGE"  text="Gear speed of 1st gear in 1st range"/>
+		<text name="vca_tip_OWNMAXRANGE"  text="Gear speed of highest gear in 2nd highest range"/>
+		<text name="vca_tip_OWNGEARS"     text="Number of gears"/>
+		<text name="vca_tip_OWNRANGES"    text="Number of ranges"/>
+		<text name="vca_tip_OWNGEARTIME"  text="Time to shift gears"/>
+		<text name="vca_tip_OWNRANGETIME" text="Time to shift ranges"/>
+		<text name="vca_tip_OWNAUTOGEARS" text="Automatic gears and speed matching"/>
+		<text name="vca_tip_OWNAUTORANGE" text="Automatic ranges and speed matching"/>
+		<text name="vca_tip_OWNREVGEARS"  text="Reverse gears; all if empty"/>
+		<text name="vca_tip_OWNREVRANGE"  text="Reverse ranges; all if empty"/>
+		<text name="vca_tip_OWNREVRATIO"  text="Reverse ratio"/>
+		<text name="vca_tip_OWNSPLITG27"  text="G27 shifter splits gears. If you have 12 gears than the splitter will switch between even and odd gears."/>
+		
+		<text name="vca_tip_AntiSlip"     text="Traction control brakes individual wheels in case of slip"/>
+		<text name="vca_tip_DiffManual"   text="Manual control of all wheel drive and front and back differentials"/>
+		<text name="vca_tip_DiffFrontAdv" text="Advance speed of front axle if all wheel drive is engaged"/>
+		<text name="vca_tip_DiffLockSwap" text="Swap front and rear axle"/>
+		<text name="vca_tip_HudX"         text="Hud position x"/>
+		<text name="vca_tip_HudY"         text="Hud position y"/>
+		<text name="vca_tip_HIREDWORKER2" text="Controls if the hired worked operates the vehicle with vanilla or modified differentials"/>
+	
+		<text name="vca_tip_SPEEDLIMITF"  text="Speed limit of the vehicle"/>
+		<text name="vca_tip_SPEEDLIMITB"  text="Maximum speed limit of the vehicle if reverse driving"/>
+		<text name="vca_tip_RATEDPOWER"   text="Horse power of the vehicle at rated RPM"/>
+		<text name="vca_tip_TORQUECURVE"  text="More realistic torque curve of the vehicle"/>
+		<text name="vca_tip_ROTACCTIME"   text="Time in ms that the motor needs to rev up from min RPM to max RPM"/>
+		<text name="vca_tip_GEARRGMODE"   text="This settings swaps the up/down inputs of gears and ranges"/>
+		<text name="vca_tip_STSPEEDO"     text="Steering speed"/>
+		<text name="vca_tip_STSPEEDI"     text="Inverse steering speed"/>
+		                               
+		<text name="input_vcaSETTINGS"  text="VCA: settings"/>
+		<text name="input_vcaUP"        text="VCA: toggle view direction / lock forwards"/>
+		<text name="input_vcaDOWN"      text="VCA: peek into other view direction / lock backwards"/>
+		<text name="input_vcaLEFT"      text="VCA: look left"/>
+		<text name="input_vcaRIGHT"     text="VCA: look right"/>
+		<text name="input_vcaDIRECTION" text="VCA: toggle driving direction"/>
+		<text name="input_vcaFORWARD"   text="VCA: drive forwards"/>
+		<text name="input_vcaREVERSE"   text="VCA: drive backwards"/>
+		<text name="input_vcaSNAP"      text="VCA: snap driving direction"/>
+		<text name="input_vcaSNAPRESET" text="VCA: reset snap driving direction"/>
+		<text name="input_vcaSNAPDIST"  text="VCA: determine working width of snap driving direction"/>
+		<text name="input_vcaSnapUP"    text="VCA: rotate snap direction left"/>
+		<text name="input_vcaSnapDOWN"  text="VCA: rotate snap direction right"/>
+		<text name="input_vcaSnapLEFT"  text="VCA: snap left"/>
+		<text name="input_vcaSnapRIGHT" text="VCA: snap right"/>
+		<text name="input_vcaNO_ARB"    text="VCA: no auto rotate back"/>
+		<text name="input_vcaINCHING"   text="VCA: inching"/>
+		<text name="input_vcaKEEPROT"   text="VCA: keep global camera direction"/>
+		<text name="input_vcaKEEPROT2"  text="VCA: permanent keep camera direction"/>
+		<text name="input_vcaKEEPSPEED" text="VCA: keep speed"/>
+		<text name="input_vcaKEEPSPEED2" text="VCA: permanent keep speed"/>
+		<text name="input_vcaSWAPSPEED" text="VCA: swap speed"/>
+		<text name="input_vcaGearUp"    text="VCA: gear up"/>
+		<text name="input_vcaGearDown"  text="VCA: gear down"/>
+		<text name="input_vcaRangeUp"   text="VCA: range up"/>
+		<text name="input_vcaRangeDown" text="VCA: range down"/>
+		<text name="input_vcaNeutral"   text="VCA: neutral on/off"/>
+		<text name="input_vcaNeutral0"  text="VCA: neutral off"/>
+		<text name="input_vcaNeutral1"  text="VCA: neutral on"/>
+		<text name="input_vcaClutch"    text="VCA: clutch axis"/> 
+		<text name="input_vcaShifter1"  text="VCA: G27/G29 gear 1"/>
+		<text name="input_vcaShifter2"  text="VCA: G27/G29 gear 2"/>
+		<text name="input_vcaShifter3"  text="VCA: G27/G29 gear 3"/>
+		<text name="input_vcaShifter4"  text="VCA: G27/G29 gear 4"/>
+		<text name="input_vcaShifter5"  text="VCA: G27/G29 gear 5 / range down"/>
+		<text name="input_vcaShifter6"  text="VCA: G27/G29 gear 6 / range up"/>
+		<text name="input_vcaShifter7"  text="VCA: G27/G29 gear 7 / reverse gear"/>
+		<text name="input_vcaShifter8"  text="VCA: G27/G29 gear 8"/>
+		<text name="input_vcaShifter9"  text="VCA: G27/G29 gear 9 / reverse gear"/>
+		<text name="input_vcaShifterLH" text="VCA: G27/G29 gear splitter"/>
+		<text name="input_vcaHandRpm"   text="VCA: hand throttle RPM"/>
+		<text name="input_vcaHandRpm_1" text="VCA: more hand throttle"/>
+		<text name="input_vcaHandRpm_2" text="VCA: less hand throttle"/>
+		<text name="input_vcaHandMode"  text="VCA: hand throttle mode"/>
+		<text name="input_vcaManRatio"   text="VCA: manual Vario"/>
+		<text name="input_vcaManRatio_1" text="VCA: Vario faster"/>
+		<text name="input_vcaManRatio_2" text="VCA: Vario slower"/>
+		<text name="input_vcaAutoShift" text="VCA: automatic shifting on/off"/>
+		<text name="input_vcaDiffLockF" text="VCA: front differential (un)lock"/>
+		<text name="input_vcaDiffLockM" text="VCA: all/front wheel drive"/>
+		<text name="input_vcaDiffLockB" text="VCA: back differential (un)lock"/>
+		<text name="input_vcaLowerF"    text="VCA: lower/raise front tools "/>
+		<text name="input_vcaLowerB"    text="VCA: lower/raise back tools "/>
+		<text name="input_vcaActivateF" text="VCA: (de-)activate front tools "/>
+		<text name="input_vcaActivateB" text="VCA: (de-)activate back tools "/>
+		<text name="input_vcaMenuAction1" text="VCA: Menu Button S"/>
+		<text name="input_vcaMenuAction2" text="VCA: Menu Button L"/>
+		<text name="input_vcaMenuAction3" text="VCA: Menu Button D"/>
+		<text name="input_vcaMenuAction4" text="VCA: Menu Button X"/>
+		
+		<text name="vcaValueOn"         text="on"/>
+		<text name="vcaValueOff"        text="off"/>
+		<text name="vcaValueNever"      text="never"/>
+		<text name="vcaValueAlways"     text="always"/>
+		<text name="vcaValueAlwaysH"    text="always (high)"/>
+		<text name="vcaValueNormal"     text="normal"/>
+		<text name="vcaValueLight"      text="light"/> 
+		<text name="vcaValueStrong"     text="strong"/>
+		<text name="vcaValueEntered"    text="if entered"/>
+		<text name="vcaValueInactive"   text="if inactive"/>
+		<text name="vcaValueInactiveH"  text="if inactive (high)"/>
+		<text name="vcaValueRPM"        text="RPM"/>
+
+		<text name="vcaClutchMode_0"    text="automatic"/>
+		<text name="vcaClutchMode_1"    text="auto (fast)"/>
+		<text name="vcaClutchMode_2"    text="manual"/>
+		<text name="vcaClutchMode_3"    text="turbo (fast)"/>
+		<text name="vcaClutchMode_4"    text="turbo (slow)"/>
+		<text name="vcaClutchMode_5"    text="turbo (open)"/>
+		<text name="vcaClutchMode_6"    text="turbo (manual)"/>
+
+		<text name="vcaTorqueCurve_0"   text="default"/>
+		<text name="vcaTorqueCurve_1"   text="modern (40% increase)"/>
+		<text name="vcaTorqueCurve_2"   text="modern (50% increase)"/>
+		<text name="vcaTorqueCurve_3"   text="truck engine (60% increase)"/>
+		<text name="vcaTorqueCurve_4"   text="classic (20% increase)"/>
+		<text name="vcaTorqueCurve_5"   text="classic (30% increase)"/>
+		
+		<text name="vcaPowerShift"      text="power shift"/>
+		
+		<text name="vcaButtonSnapWidth"  text="Detect width"/>
+		<text name="vcaButtonSnapOffset" text="Swap offset"/>
+		<text name="vcaButtonLoadPreset" text="Load transmission"/>
+		<text name="vcaButtonSavePreset" text="Save transmission"/>
+		<text name="vcaButtonDelPreset"  text="Delete transmission"/>
+	</texts>
+
+	<longTexts>
+		<longText name="vca_Help_1"><![CDATA[Steering and Camera
+
+This script varies the steering speed depending on the speed you are driving, and it rotates the camera to match the steering angle and direction.
+With Shift-right and the cursor keys you can peek in the corresponding direction.
+If you press Ctrl left together with W then the driving direction snaps to fixed directions.
+If you press Ctrl left together with W then the driving direction snaps to fixed directions.
+All functions can be switched off.]]></longText>
+		<longText name="vca_Help_2"><![CDATA[Throttle and Snap Driving Direction
+
+Shift-Left limits throttle, cruise control and maximum rounds per minute to 75%. 
+If you press delete then the vehicle will keep its speed. Acceleration and brake pedal increase and descrease the speed. The vehicle drives like a modern tractor with joystick.
+The linear pitch modification makes it easier to hear the RPM.]]></longText>
+		<longText name="vca_Help_3"><![CDATA[Transmission
+
+off: the standard gearbox without customization
+IVT: Still the standard gearbox but with little adjustments to the allowed RPM range. More to come...
+4X4: An old fashioned transmissoin with 4 gears in 4 groups and shuttle control. Shifting gears takes time and you might lose momentum.
+4PS: The same transmissoin as above but with power shift for the gears
+2X6: Two groups with 6 gears. This transmission is useful for G27/G29 gear shifters. There is a low and a high range. The 6 gears in each range do not overlap with the 6 gears in the other range
+FPS: Full Power Shift: The transmission has 12 gears and shifts without interuption. 
+6PS: A John Deer AutoQuad. This transmission has 6 gears. Each gear can be reduced by about 80%
+PKW: A 6 speed transmission for cars with low range 
+VARIO: A Fendt Vario transmission. It is very similar to IVT but it has a low an a high range
+46A: A Class HexaShift transmission. It has 4 manual ranges and 6 automatic power shift gears
+OWN: Build your own transmission]]></longText>
+		<longText name="vca_Help_4"><![CDATA[Global Settings
+
+Changes to the global settings have no effect on the current vehicle. They are saved to file modsSettings/FS19_VehicleControlAddon/config.xml.]]></longText>
+		<longText name="vca_Help_5"><![CDATA[Build your own transmission
+
+Here you can configure your own transmission. Gears may be switched automatically.. 
+The maximum speed in highest gear may be theoretical only. You can reach it only without speed limiter. The ratios between gears is calculated from the maximum speed of 1st gear. 
+The two maximum speeds of 2nd highest range are redundant. If you enter one value, the other one is changed accordingly.]]></longText>
+		<longText name="vca_Help_6"><![CDATA[Differentials and all wheel drive
+
+If VCA can identify the differentials, then you have the possibility to operate them manually.
+Can you overwrite the speed limits for forwards and reverse driving.
+If the power and torque curve are not accurate enought, then you can overwrite them here.
+- default uses the torque curve of the vehicle
+- modern with 40% torque increase and more 7% peak than rated power
+- modern with 50% torque increase and more 8% peak than rated power
+- truck engine, 55% torque increase and peak power from max torque to rated RPM
+- classic, only 20% torque increase, peak power and rated RPM
+- classic, but 30% torque increase, peak power 2% over rated power]]></longText>		
+	</longTexts>
+</l10n>

@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<l10n>
+	<!-- Note that 'description' is only here for easier translations. It needs to be manually copied to ModDesc.XML later. -->
+	<description><![CDATA[Ajoute la spécialisation pour la conduite adaptative au clavier]]></description>
+
+	<texts>
+		<text name="vcaCAMERAI"         text="Mouvements de caméra interne"/>
+		<text name="vcaCAMERAO"         text="Mouvements de caméra externe"/>
+		<text name="vcaEXPONENT"        text="Adaptation à la vitesse"/>
+		<text name="vcaSTEERING"        text="Direction adaptative"/>
+		<text name="vcaSHUTTLE"         text="Inverseur"/>
+		<text name="vcaREVERSE"         text="Caméra de recul"/>
+		<text name="vcaREVERSEI"        text="Caméra de recul intérieure"/>
+		<text name="vcaREVERSEO"        text="Caméra de recul extérieure"/>
+		<text name="vcaLIMIT"           text="Limiteur de vitesse"/>
+		<text name="vcaPEEKLR"          text="Coup d'oeil rapide"/>
+		<text name="vcaANGLE"           text="Pas de verrouillage de la direction"/>
+		<text name="vcaBRAKE"           text="Freinage en décélération"/>
+		<text name="vcaTRANSMISSION"    text="Transmission"/>
+		<text name="vcaMAXSPEED"        text="Vitesse d'avancement maximale"/>
+		<text name="vcaLIMSPEED"        text="Limiter la vitesse maximale"/>
+		<text name="vcaAUTOSHIFT"       text="Automatique"/>
+		<text name="vcaLAUNCH"          text="Vitesse de départ"/>
+		<text name="vcaKEEPSPEED" 		text="Conserver la vitesse d'avancement"/>
+		<text name="vcaNO_ARB"          text="Direction libre"/>
+		<text name="vcaHANDTHROTTLE"    text="Accélérateur à main"/>
+		<text name="vcaPITCH"           text="Volume au max RPM"/>
+		<text name="vcaSETTINGS"        text="Paramétrage"/>
+		<text name="vcaDRAWHUD"         text="transmission HUD"/>
+		
+		<text name="vcaDISTANCE"        text="Largeur de travail"/>
+		<text name="vcaOFFSET1"         text="Décalage de l'outil"/>
+		<text name="vcaOFFSET2"         text="Inversion du décalage"/>
+		<text name="vcaSNAP90"          text="Direction auto tous les 90°"/>
+		<text name="vcaDRAWMARKER"      text="Affichage des lignes GPS"/>
+		<text name="vcaPITCH1"          text="Volume linéaire"/>
+		<text name="vcaPITCH2"          text="Volume au RPM moyen"/>
+		<text name="vcaBLOWOFFVOL"      text="Volume des wastegates-Turbo"/>
+		<text name="vcaSINGLEREV"       text="Marche arrière simple"/>
+		<text name="vcaAUTOCLUTCH"      text="Embrayage automatique"/>
+		<text name="vcaTURBOCLUTCH"     text="Couplage fluide"/>
+		<text name="vcaGEARRATIOF"      text="Min. vitesse de marche"/>
+		<text name="vcaGEARRATIOT"      text="Max. vitesse de marche"/>
+		<text name="vcaG27MODE"         text="Schéma G27/G29"/>
+		<text name="vcaHIREDWORKER"     text="Ouvriers engagés"/>
+		<text name="vcaOWNMINSPEED"     text="Vitesse minimale personalisé"/>
+		<text name="vcaOWNMINRANGE"     text="Démultiplication min. du groupe personalisé"/>
+		<text name="vcaOWNMAXRANGE"     text="Démultiplication max. du groupe personalisé"/>
+		<text name="vcaOWNGEARS"        text="Nombre de vitesses personalisé"/>
+		<text name="vcaOWNRANGES"       text="Nombre de groupes personalisé"/>
+		<text name="vcaOWNGEARTIME"     text="Rapidité des changement de vitesse personalisé"/>
+		<text name="vcaOWNRANGETIME"    text="Rapidité des changement de groupes personalisé"/>
+		<text name="vcaOWNAUTOGEARS"    text="Vitesses automatiques personalisé"/>
+		<text name="vcaOWNAUTORANGE"    text="Groupes automatiques personalisé"/>
+		<text name="vcaOWNREVGEARS"     text="Nombre de vitesses AR personalisé"/>
+		<text name="vcaOWNREVRANGE"     text="Nombre de groupes AR personalisé"/>
+		<text name="vcaOWNREVRATIO"     text="Rapport marche AR"/>
+		<text name="vcaOWNSPLITG27"     text="Splitter G27/G29"/>
+
+		<text name="vcaAntiSlip"        text="Contrôle de traction"/>
+		<text name="vcaDiffManual"      text="Quatre roues motrices manuelles et blocage de différentiel"/>
+		<text name="vcaDiffFrontAdv"    text="Vitesse d'avancement de l'essieu avant"/>
+		<text name="vcaDiffLockSwap"    text="Basculement des différentiels"/>
+		<text name="vcaHudX"            text="Position x Hud "/>
+		<text name="vcaHudY"            text="Position y Hud"/>
+		<text name="vcaHIREDWORKER2"    text="Différentiels et ouvriers engagés"/>
+
+		<text name="vcaSPEEDLIMITF"     text="Vitesse limite"/>
+		<text name="vcaSPEEDLIMITB"     text="Vitesse max en marche AR"/>
+		<text name="vcaRATEDPOWER"      text="Puissance en CV"/>
+		<text name="vcaTORQUECURVE"     text="Courbe de couple plus réaliste"/>
+		<text name="vcaROTACCTIME"      text="Temps d'accélaration du moteur"/>
+		<text name="vcaGEARRGMODE"      text="Echange des touches vitesse/groupe"/>
+		<text name="vcaSTSPEEDO"        text="Vitesse de la direction"/>
+		<text name="vcaSTSPEEDI"        text="Vitesse de retour de la direction"/>		
+
+		<text name="vca_tip_CAMERAI"    text="La caméra intérieure tourne automatiquement en fonction de l'angle de direction."/>
+		<text name="vca_tip_CAMERAO"    text="La caméra extérieure tourne automatiquement en fonction de l'angle de direction."/>
+		<text name="vca_tip_EXPONENT"   text="Adaptation de la direction en fonction de la vitesse."/>
+		<text name="vca_tip_STEERING"   text="La direction adaptative modifie l'angle et la vitesse de retour de la direction en fonction de la vitesse d'avancement."/>
+		<text name="vca_tip_SHUTTLE"    text="Modifier le sens d'avancement avec la touche 'Espace'."/>
+		<text name="vca_tip_REVERSEI"   text="La caméra intérieure tourne automatiquement en fonction du sens d'avancement."/>
+		<text name="vca_tip_REVERSEO"   text="La caméra extérieure tourne automatiquement en fonction du sens d'avancement."/>
+		<text name="vca_tip_LIMIT"      text="Limiteur de vitesse d'avancement avec la touche 'Shift' gauche."/>
+		<text name="vca_tip_PEEKLR"     text="'Shift' droit et les flèches de direction permettent de jeter un coup d'oeil dans la direction choisie."/>
+		<text name="vca_tip_ANGLE"      text="Verrouille la direction dans la position actuelle (en fonction du pas sélectionné)."/>
+		<text name="vca_tip_BRAKE"      text="Freinage en décélération en % / Résistance au roulement"/>
+		<text name="vca_tip_TRANSMISSION" text="Type de transmission ; IVT en une transmission variation continue, les autres transmissions ont 12 vitesses, 2x6 est la plus appropriée pour les camions"/>
+		<text name="vca_tip_MAXSPEED"   text="Vitesse d'avancement maximale pouvant être atteinte avec la plus grande vitesse"/>
+		<text name="vca_tip_LIMSPEED"   text="Limitation de la vitesse d'avancement maximale à la valeur standard du véhicule"/>
+		<text name="vca_tip_AUTOSHIFT"  text="Passage automatique des vitesses et des groupes"/>
+		<text name="vca_tip_LAUNCH"     text="Vitesse d'avancement de la vitesse utilisée pour démarrer"/>
+		<text name="vca_tip_KEEPSPEED"	text="La pédale d'accélérateur se comporte comme un joystick, comme avec un régulateur de vitesse"/>
+		<text name="vca_tip_NO_ARB"       text="Si activée, le volant ne reviendra pas à son point milieu"/>
+		<text name="vca_tip_HANDTHROTTLE" text="Le moteur accélère automatiquement pour atteindre les RPM demandés par le joystick"/>
+		<text name="vca_tip_PITCH"        text="Volume sonore à vitesse maximale"/>
+		<text name="vca_tip_DRAWHUD"      text="Afficher/masquer le HUD de la transmission"/>
+		
+		<text name="vca_tip_DISTANCE"     text="Distance entre deux lignes du GPS"/>
+		<text name="vca_tip_OFFSET1"      text="Décalage latéral des lignes du GPS"/>
+		<text name="vca_tip_OFFSET2"      text="Décalage inverse des lignes du GPS"/>
+		<text name="vca_tip_SNAP90"       text="Direction automatique par GPS par pas de 90°"/>
+		<text name="vca_tip_DRAWMARKER"   text="Affichage des lignes du GPS"/>
+		<text name="vca_tip_PITCH1"       text="Modification du son du moteur pour le rendre linéaire aux RPM"/>
+		<text name="vca_tip_PITCH2"       text="Volume sonore au RPM moyen"/>
+		<text name="vca_tip_BLOWOFFVOL"   text="Volume de la wastegate des turbos avec les moteurs en charge"/>
+		<text name="vca_tip_SINGLEREV"    text="En marche arrière, un seul rapport ou groupe est utilisé à la place de l'inverseur"/>
+		<text name="vca_tip_AUTOCLUTCH"   text="Commande de l'embrayage automatique"/>
+		<text name="vca_tip_TURBOCLUTCH"  text="Couplage de l'embrayage supplémentaire"/>
+		<text name="vca_tip_GEARRATIOF"   text="Vitesse max en petite vitesse"/>
+		<text name="vca_tip_GEARRATIOT"   text="Vitesse max en grande vitesse"/>
+		<text name="vca_tip_G27MODE"      text="Schéma pour les périphériques G27/G29 évidement..."/>
+		<text name="vca_tip_HIREDWORKER"  text="Contrôle si la transmission est activée ou désactivée lorsque le véhicule est contrôlé par l'assistant"/>
+		<text name="vca_tip_OWNMINSPEED"  text="Vitesse maximale pouvant être atteinte en première vitesse"/>
+		<text name="vca_tip_OWNMINRANGE"  text="Vitesse maximale pouvant être atteinte dans le deuxième groupe le plus élevé en première vitesse"/>
+		<text name="vca_tip_OWNMAXRANGE"  text="Vitesse maximale pouvant être atteinte dans le deuxième groupe le plus élevé dans le rapport le plus élevé"/>
+		<text name="vca_tip_OWNGEARS"     text="Nombre de vitesses personalisé"/>
+		<text name="vca_tip_OWNRANGES"    text="Nombre de groupes personalisé"/>
+		<text name="vca_tip_OWNGEARTIME"  text="Rapidité des changement de vitesses personalisé"/>
+		<text name="vca_tip_OWNRANGETIME" text= "Rapidité des changement de groupes personalisé"/>
+		<text name="vca_tip_OWNAUTOGEARS" text="Changement de vitesse automatique et adaptation de la vitesse"/>
+		<text name="vca_tip_OWNAUTORANGE" text="Changement de groupe automatique et adaptation de vitesse"/>
+		<text name="vca_tip_OWNREVGEARS"  text="Vitesses AR; toutes si vides"/>
+		<text name="vca_tip_OWNREVRANGE"  text="Groupes AR; tous si vides"/>
+		<text name="vca_tip_OWNREVRATIO"  text="Rapport AR"/>
+		<text name="vca_tip_OWNSPLITG27"  text="Shifter du G27. Si vous avez 12 vitesses, le shifter vous permet de basculer entre vitesses paires et impaires"/>
+	
+		<text name="vca_tip_AntiSlip"     text="Le contrôle de traction freine les roues individuelles lorsqu'elles patinent"/>
+		<text name="vca_tip_DiffManual"   text="Commande manuelle de la transmission intégrale et des blocages de différentiel avant et arrière"/>
+		<text name="vca_tip_DiffFrontAdv" text="Avance de l'essieu avant avec la transmission intégrale activée"/>
+		<text name="vca_tip_DiffLockSwap" text="Basculement du blocage de différentiel avant et arrière"/>
+		<text name="vca_tip_HudX"         text="Position X Hud"/>
+		<text name="vca_tip_HudY"         text="Position Y Hud"/>
+		<text name="vca_tip_HIREDWORKER2" text="Contrôle si les différentiels sont modifiés lorsque le véhicule est contrôlé par l'ouvrier"/>
+		
+		<text name="vca_tip_SPEEDLIMITF"  text="Vitesse max du véhicule"/>
+		<text name="vca_tip_SPEEDLIMITB"  text="Vitesse max en marche AR"/>
+		<text name="vca_tip_RATEDPOWER"   text="CV du véhicule au RPM max"/>
+		<text name="vca_tip_TORQUECURVE"  text="Courbe de couple plus réaliste"/>
+		<text name="vca_tip_ROTACCTIME"   text="Temps en ms nécessaire au moteur pour la montée en charge du min RPM au max RPM"/>
+		<text name="vca_tip_GEARRGMODE"   text="Permet d'inverser la commande de montée/descente des vitesses/groupes"/>
+		<text name="vca_tip_STSPEEDO"     text="Vitesse de la direction"/>
+		<text name="vca_tip_STSPEEDI"     text="Vitesse de retour de la direction"/>	
+		
+		<text name="input_vcaSETTINGS"  text="VCA: Paramétrage"/>
+		<text name="input_vcaUP"        text="VCA: Basculer entre vue avant et arrière"/>
+		<text name="input_vcaDOWN"      text="VCA: Regarder vers l'arrière"/>
+		<text name="input_vcaLEFT"      text="VCA: Regarder vers la gauche"/>
+		<text name="input_vcaRIGHT"     text="VCA: Regarder vers la droite"/>
+		<text name="input_vcaDIRECTION" text="VCA: Modifier le sens d'avancement"/>
+		<text name="input_vcaFORWARD"   text="VCA: Marche avant"/>
+		<text name="input_vcaREVERSE"   text="VCA: Marche arrière"/>
+		<text name="input_vcaSNAP"      text="VCA: Verrouiller la direction"/>
+		<text name="input_vcaSNAPRESET" text="VCA: Ne pas verrouiller la direction"/>
+		<text name="input_vcaSnapUP"    text="VCA: Faire pivoter les lignes GPS vers la gauche"/>
+		<text name="input_vcaSnapDOWN"  text="VCA: Faire pivoter les lignes GPS vers la droite"/>
+		<text name="input_vcaSnapLEFT"  text="VCA: Lignes GPS à gauche"/>
+		<text name="input_vcaSnapRIGHT" text="VCA: Lignes GPS à droite"/>
+		<text name="input_vcaNO_ARB"    text="VCA: Pas de retour de la direction"/>
+		<text name="input_vcaINCHING"   text="VCA: Limiteur de vitesse"/>
+		<text name="input_vcaKEEPROT"   text="VCA: Fixer la direction de la caméra globalement"/>
+		<text name="input_vcaKEEPROT2"  text="VCA: Fixer définitivement la direction de la caméra"/>
+		<text name="input_vcaKEEPSPEED" text="VCA: Régulateur de vitesse"/>
+		<text name="input_vcaKEEPSPEED2" text="VCA: Maintenir la vitesse en permanence"/>
+		<text name="input_vcaSWAPSPEED" text="VCA: Modifier vitesse du régulateur"/>
+		<text name="input_vcaGearUp"    text="VCA: Vitesse supérieure"/>
+		<text name="input_vcaGearDown"  text="VCA: Vitesse inférieure"/>
+		<text name="input_vcaRangeUp"   text="VCA: Groupe supérieur"/>
+		<text name="input_vcaRangeDown" text="VCA: Groupe inférieur"/>
+		<text name="input_vcaNeutral"   text="VCA: Point mort"/>
+		<text name="input_vcaNeutral0"  text="VCA: Point mort off"/>
+		<text name="input_vcaNeutral1"  text="VCA: Point mort on"/>
+		<text name="input_vcaClutch"    text="VCA: Embrayage"/>
+		<text name="input_vcaShifter1"  text="VCA: G27/G29 Vitesse 1"/>
+		<text name="input_vcaShifter2"  text="VCA: G27/G29 Vitesse 2"/>
+		<text name="input_vcaShifter3"  text="VCA: G27/G29 Vitesse 3"/>
+		<text name="input_vcaShifter4"  text="VCA: G27/G29 Vitesse 4"/>
+		<text name="input_vcaShifter5"  text="VCA: G27/G29 Vitesse 5 / Groupe inférieur"/>
+		<text name="input_vcaShifter6"  text="VCA: G27/G29 Vitesse 6 / Groupe supérieur"/>
+		<text name="input_vcaShifter7"  text="VCA: G27/G29 Vitesse 7 / Marche arrière"/>
+		<text name="input_vcaShifter8"  text="VCA: G27/G29 Vitesse 8"/>
+		<text name="input_vcaShifter9"  text="VCA: G27/G29 Vitesse 9 / Marche arrière"/>
+		<text name="input_vcaShifterLH" text="VCA: G27/G29 Vitesses séparés"/>
+		<text name="input_vcaHandRpm"   text="VCA: Accélérateur manuel RPM"/>
+		<text name="input_vcaHandRpm_1" text="VCA: + d'accélérateur manuel"/>
+		<text name="input_vcaHandRpm_2" text="VCA: - d'accélérateur manuel"/>
+		<text name="input_vcaHandMode"  text="VCA: Mode accélérateur manuel"/>
+		<text name="input_vcaManRatio"   text="VCA: Vario manuelles"/>
+		<text name="input_vcaManRatio_1" text="VCA: Vario + vite"/>
+		<text name="input_vcaManRatio_2" text="VCA: Vario + lent"/>
+		<text name="input_vcaAutoShift" text="VCA: Vitesses automatique on/off "/>
+		<text name="input_vcaDiffLockF" text="VCA: Blocage différentiel avant on/off"/>
+		<text name="input_vcaDiffLockM" text="VCA: Transmission intégrale on/off"/>
+		<text name="input_vcaDiffLockB" text="VCA: Blocage différentiel arrière on/off"/>
+		<text name="input_vcaLowerF"    text="VCA: Lever/baisser les outils avant"/>
+		<text name="input_vcaLowerB"    text="VCA: Lever/baisser les outils arrière"/>
+		<text name="input_vcaActivateF" text="VCA: (Dés-)activer les outils avant"/>
+		<text name="input_vcaActivateB" text="VCA: (Dés-)activer les outils arrière"/>
+		<text name="input_vcaMenuAction1" text="VCA: Menu Touche S"/>
+		<text name="input_vcaMenuAction2" text="VCA: Menu Touche L"/>
+		<text name="input_vcaMenuAction3" text="VCA: Menu Touche D"/>
+		<text name="input_vcaMenuAction4" text="VCA: Menu Touche X"/>
+
+		<text name="vcaValueOn"         text="on"/>
+		<text name="vcaValueOff"        text="off"/>
+		<text name="vcaValueNever"      text="jamais"/>
+		<text name="vcaValueAlways"     text="toujours"/>
+		<text name="vcaValueAlwaysH"    text="toujours (haut)"/>
+		<text name="vcaValueNormal"     text="normal"/>
+		<text name="vcaValueLight"      text="léger"/> 
+		<text name="vcaValueStrong"     text="fort"/>														
+		<text name="vcaValueEntered"    text="si embarqué"/>
+		<text name="vcaValueInactive"   text="si inactif"/>
+		<text name="vcaValueInactiveH"  text="si inactif (haut)"/>
+		<text name="vcaValueRPM"        text="RPM"/>
+		
+		<text name="vcaClutchMode_0"    text="automatique"/>
+		<text name="vcaClutchMode_1"    text="auto (rapide)"/>
+		<text name="vcaClutchMode_2"    text="manuel"/>
+		<text name="vcaClutchMode_3"    text="turbo (rapide)"/>
+		<text name="vcaClutchMode_4"    text="turbo (lent)"/>
+		<text name="vcaClutchMode_5"    text="turbo (ouvert)"/>
+		<text name="vcaClutchMode_6"    text="turbo (manuel)"/>
+		
+		<text name="vcaTorqueCurve_0"   text="par défaut"/>
+		<text name="vcaTorqueCurve_1"   text="moderne (40% d'augmentation)"/>
+		<text name="vcaTorqueCurve_2"   text="moderne (50% d'augmentation)"/>
+		<text name="vcaTorqueCurve_3"   text="moteur de camion (60% d'augmentation)"/>
+		<text name="vcaTorqueCurve_4"   text="classique (20% d'augmentation)"/>
+		<text name="vcaTorqueCurve_5"   text="classique (30% d'augmentation)"/>
+		
+		<text name="vcaPowerShift"      text="powershift"/>
+		
+		<text name="vcaButtonSnapWidth"  text="Détection de la largeur de travail"/>
+		<text name="vcaButtonSnapOffset" text="Décalage de l'outil"/>
+		<text name="vcaButtonLoadPreset" text="Chargement transmission"/>
+		<text name="vcaButtonSavePreset" text="Sauvegarde transmission"/>
+		<text name="vcaButtonDelPreset"  text="Suppression transmission"/>		
+	</texts> 
+	
+	<longTexts>
+		<longText name="vca_Help_1"><![CDATA[Direction et caméra
+		
+Ce script fait varier la vitesse de direction en fonction de la vitesse de conduite et fait pivoter la caméra en fonction de l'angle de braquage et du sens de la marche.
+Avec Shift-Right et les touches fléchées, vous pouvez regarder dans la direction correspondante.
+Si vous appuyez sur Ctrl gauche avec W, la direction du déplacement est basée sur des directions fixes.
+Toutes les fonctions peuvent également être désactivées à nouveau.]]></longText>
+
+		<longText name="vca_Help_2"><![CDATA[Accélérateur et commande du GPS
+
+Avec Shift-Llinks, la pédale d'accélérateur, le régulateur de vitesse et le régime moteur sont limités à 75%.
+Si vous appuyez sur la touche DEL, le véhicule conserve la vitesse actuelle. Le véhicule se conduit comme un tracteur avec accélérateur à main. Cette fonction peut également être activée en permanence, puis désactivée temporairement à l'aide de la touche DEL.
+Le contrôle du volume sonore permet d'entendre plus facilement le régime moteur.]]></longText>
+		<longText name="vca_Help_3"><![CDATA[Transmission
+
+off: La vitesse standard
+IVT: La vitesse standard avec de petits ajustements à la vitesse
+4X4: Une vitesse à l'ancienne avec 4 vitesses dans 4 gammes et marche arrière. Le changement de vitesse prend du temps et vous risquez de perdre votre élan.
+4PS: La même transmission que le 4X4, mais avec powershift pour les rapports
+2X6: 2 gammes de 6 vitesses chacune. Ce rapport est utile pour les manettes G27 / G29. Les 6 vitesses de la gamme L ne se chevauchent pas avec les 6 vitesses de la H.
+FPS: Full Power Shift: Cette transmission a 12 vitesses et changements de vitesse sans interruption de la puissance de traction.
+6PS: John Deer AutoQuad: 6 zones à déplacement manuel avec 4 niveaux de transmission automatique chacune.
+PKW: 6 vitesses, graduées pour véhicules de tourisme avec réduction pour une utilisation tout-terrain
+VARIO: Fendt Vario: transmission à variation continue avec 2 zones "lente'' et "rapide''
+46A: Claas HexaShift: 4 Zones à déplacer manuellement, chacune avec 6 étapes de changement de vitesse automatique
+PERSONALISÉE: Construisez votre propre boîte de vitesses]]></longText>
+		<longText name="vca_Help_4"><![CDATA[Paramètres globaux
+
+Les modifications des paramètres globaux n'ont aucun effet sur le véhicule actuel. Ils sont enregistrés dans le fichier modsSettings/FS19_VehicleControlAddon/config.xml]]></longText>
+		<longText name="vca_Help_5"><![CDATA[Construisez votre propre transmission
+
+Ici, vous pouvez configurer votre propre boîte de vitesses. Les vitesses peuvent être commutées automatiquement.
+Par conséquent, les vitesses Powershift sont toujours les meilleures. Le rapport du rapport le plus élevé est la vitesse maximale théorique avec le limiteur désactivé. La vitesse maximale en 1ère vitesse du groupe le plus élevé détermine le rapport entre les rapports.
+Les vitesses maximales de l'avant-dernier groupe sont redondantes.Il vous suffit de saisir l'une des deux valeurs. L'autre sera ajusté automatiquement.]]></longText>
+		<longText name="vca_Help_6"><![CDATA[Différentiels et quatre roues motrices
+		
+Si le VCA détecte la présence des différentiels, vous pouvez les utilisez manuellement.
+Vous pouvez également modifier la vitesse max en marche AV et AR.
+Si la puissance et le couple du véhicule ne vous conviennent pas, vous pouvez modifier la courbe de couple ici :
+- par défaut utilise la courbe de couple du véhicule
+- moderne 40% augmente le couple de 40% et ponctuellement les CV de 7% (surpuissance)
+- moderne 40% augmente le couple de 50% et ponctuellement les CV de 8% (surpuissance)
+- moteur de camion, augmente le couple de 55% et la puissance disponible pour atteindre le couple max au RPM désiré
+- classique 20% augmente le couple de 20%
+- classic, 30% augmente le couple de 30% et ponctuellement les CV de 2% (surpuissance)]]></longText>
+	</longTexts>
+</l10n>

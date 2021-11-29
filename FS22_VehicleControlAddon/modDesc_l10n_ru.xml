@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<l10n>
+	<!-- Note that 'description' is only here for easier translations. It needs to be manually copied to ModDesc.XML later. -->
+	<description><![CDATA[Добавляет специализацию для адаптивного рулевого управления с клавиатуры]]></description>
+
+	<texts>
+		<text name="vcaCAMERAI"             text="Подруливание внутренней камеры"/>
+		<text name="vcaCAMERAO"             text="Подруливание внешней камеры"/>
+		<text name="vcaEXPONENT"            text="Чувствительность к скорости"/>
+		<text name="vcaSTEERING"            text="Адаптивное рулевое управление"/>
+		<text name="vcaSHUTTLE"             text="Изменение направления"/>
+		<text name="vcaREVERSE"             text="Автооборачивание"/>
+		<text name="vcaREVERSEI"            text="Автооборачивание (внутренняя)"/>
+		<text name="vcaREVERSEO"            text="Автооборачивание (внешняя)"/>
+		<text name="vcaLIMIT"               text="Ограничитель газа"/>
+		<text name="vcaPEEKLR"              text="Быстрый взгляд в сторону"/>
+		<text name="vcaANGLE"               text="Привязка к сетке"/>
+		<text name="vcaBRAKE"               text="Малое сопротивление качению"/>
+		<text name="vcaTRANSMISSION"        text="Трансмиссия"/>
+		<text name="vcaMAXSPEED"            text="Максимальная скорость"/>
+		<text name="vcaLIMSPEED"            text="Ограничение скорости"/>
+		<text name="vcaAUTOSHIFT"           text="Автомат"/>
+		<text name="vcaLAUNCH"              text="Трогаться с передачи"/>
+		<text name="vcaKEEPSPEED"           text="Удерживать скорость"/>
+		<text name="vcaNO_ARB"              text="Свободное руление"/>
+		<text name="vcaHANDTHROTTLE"        text="Ручной дроссель"/>
+		<text name="vcaPITCH"               text="Высота звука при макс. оборотах"/>
+		<text name="vcaSETTINGS"            text="Настройки"/>
+		<text name="vcaDRAWHUD"             text="HUD трансмиссии"/>
+
+		<text name="vcaDISTANCE"            text="Рабочая ширина"/>
+		<text name="vcaOFFSET1"             text="Смещение оборудования"/>
+		<text name="vcaOFFSET2"             text="Инвертировать смещение"/>
+		<text name="vcaSNAP90"				text="Вращать направления на 90°"/>
+		<text name="vcaDRAWMARKER"          text="Маркеры удержания направления"/>
+		<text name="vcaPITCH1"              text="Линейная высота звука"/>
+		<text name="vcaPITCH2"              text="Звук на средних оборотах"/>
+		<text name="vcaBLOWOFFVOL"          text="Звук турбины"/> <!-- Turbo wastegate volume -->
+		<text name="vcaSINGLEREV"           text="Одиночная передача ЗХ"/>
+		<text name="vcaAUTOCLUTCH"          text="Автосцепление"/>
+		<text name="vcaTURBOCLUTCH"         text="Турбосцепление"/>
+		<text name="vcaGEARRATIOF"          text="Мин.огр. скорости передачи"/>
+		<text name="vcaGEARRATIOT"          text="Макс.огр. скорости передачи"/>
+		<text name="vcaG27MODE"             text="Режим переключения G27/G29"/>
+		<text name="vcaHIREDWORKER"         text="Трансмиссия и наёмный работник"/>
+		<text name="vcaOWNMINSPEED"         text="Скорость на 1-й передаче"/>
+		<text name="vcaOWNMINRANGE"         text="Скорость на 1-й передаче на 1 диапазоне -"/>
+		<text name="vcaOWNMAXRANGE"         text="Макс. скорость на 2 высшем диапазоне -"/>
+		<text name="vcaOWNGEARS"            text="К-во передач"/>
+		<text name="vcaOWNRANGES"           text="К-во диапазонов"/>
+		<text name="vcaOWNGEARTIME"         text="Время переключения передач"/>
+		<text name="vcaOWNRANGETIME"        text="Время переключения диапазонов"/>
+		<text name="vcaOWNAUTOGEARS"        text="Автоматические передачи"/>
+		<text name="vcaOWNAUTORANGE"        text="Автоматические диапазоны"/>
+		<text name="vcaOWNREVGEARS"         text="Передачи ЗХ"/>
+		<text name="vcaOWNREVRANGE"         text="Диапазоны ЗХ"/>
+		<text name="vcaOWNREVRATIO"         text="Передат.соотн.ЗХ"/>
+		<text name="vcaOWNSPLITG27"         text="G27 разделяет передачи"/>
+
+		<text name="vcaAntiSlip"            text="Контроль тяги"/>
+		<text name="vcaDiffManual"          text="Ручной AWD и дифференциалы"/>
+		<text name="vcaDiffFrontAdv"        text="Ведущий передний мост"/>
+		<text name="vcaDiffLockSwap"        text="Поменять перед и зад"/>
+		<text name="vcaHudX"                text="Координата 'х' HUD"/>
+		<text name="vcaHudY"                text="Координата 'y' HUD"/>
+		<text name="vcaHIREDWORKER2"        text="Дифференциалы и наёмный рабочий"/>
+		
+		<text name="vcaSPEEDLIMITF"         text="Макс. скорость вперёд"/>
+		<text name="vcaSPEEDLIMITB"         text="Макс. скорость назад"/>
+		<text name="vcaRATEDPOWER"          text="Номинальная мощность в л.с."/>
+		<text name="vcaTORQUECURVE"			text="Более реалистичная кривая крутящего момента"/>
+		<text name="vcaROTACCTIME"			text="Время разгона двигателя"/>
+		<text name="vcaGEARRGMODE"			text="Сменить клавиши переключения передач и диапазонов"/>
+		<text name="vcaSTSPEEDO"			text="Скорость руления"/>
+		<text name="vcaSTSPEEDI"			text="Скорость автовозврата"/>
+
+		<text name="vca_tip_CAMERAI"        text="Внутренняя камера автоматически поворачивается в соответствии с углом поворота рулевого колеса."/>
+		<text name="vca_tip_CAMERAO"        text="Внешняя камера автоматически поворачивается в соответствии с углом поворота рулевого колеса."/>
+		<text name="vca_tip_EXPONENT"       text="Зависимость скорости рулевого управления от скорости движения."/>
+		<text name="vca_tip_STEERING"       text="Адаптивное рулевое управление изменяет скорость возврата колёс и максимальный угол поворота в зависимости от скорости."/>
+		<text name="vca_tip_SHUTTLE"        text="Изменять направление вперёд/назад при помощи клавиши Пробел."/>
+		<text name="vca_tip_REVERSEI"       text="При изменении направления движения вперёд/назад внутренняя камера автоматически разворачивается на 180°."/>
+		<text name="vca_tip_REVERSEO"       text="При изменении направления движения вперёд/назад внешняя камера автоматически разворачивается на 180°."/>
+		<text name="vca_tip_LIMIT"          text="Ограничивает педаль газа при нажатии Left-Shift."/>
+		<text name="vca_tip_PEEKLR"         text="Взглянуть по клавише Right-Shift + стрелка в сторону."/>
+		<text name="vca_tip_ANGLE"          text="Выравнивание направления движения техники по заданному направлению."/>
+		<text name="vca_tip_BRAKE"          text="Уменьшение уровня сопротивления качению (%)."/>
+		<text name="vca_tip_TRANSMISSION"   text="Тип коробки передач: IVT - бесступенчатая коробка передач, остальные передачи имеют 12 передач, 2x6 лучше всего подходит для грузовых автомобилей."/>
+		<text name="vca_tip_MAXSPEED"       text="Максимальная скорость, которую можно достичь (теоретически) на высшей передаче."/>
+		<text name="vca_tip_LIMSPEED"       text="Ограничивает максимальную скорость автомобиля до значения по умолчанию."/>
+		<text name="vca_tip_AUTOSHIFT"      text="Автоматическое переключение передач и диапазонов."/>
+		<text name="vca_tip_LAUNCH"         text="Передача (для диапазона скорости) используемая для трогания с места."/>
+		<text name="vca_tip_KEEPSPEED"      text="Если активировано удержание постоянной скорости, то автомобиль почти всегда движется на круиз-контроле. Это соответствует приводному рычагу в современных тракторах."/>
+		<text name="vca_tip_NO_ARB"         text="Если включается свободное руление, тогда отключается автовозврат руля."/>
+		<text name="vca_tip_HANDTHROTTLE"   text="Двигатель автоматически ускоряется, чтобы достичь оборотов ручного дросселя."/>
+		<text name="vca_tip_PITCH"          text="Высота звука при максимальных оборотах."/>
+		<text name="vca_tip_DRAWHUD"        text="Отобразить или скрыть HUD трансмиссии."/>
+
+		<text name="vca_tip_DISTANCE"       text="Расстояние между двумя рядами удержания направлений."/>
+		<text name="vca_tip_OFFSET1"        text="Смещение полос удержания направлений."/>
+		<text name="vca_tip_OFFSET2"        text="Инвертировать смещение полос удержания направлений."/>
+		<text name="vca_tip_SNAP90"			text="Автоматическое вращение удержанного направления движения на 90°."/>
+		<text name="vca_tip_DRAWMARKER"     text="Отрисовка маркеров полос удержания направлений."/>
+		<text name="vca_tip_PITCH1"         text="Изменение высоты звука, чтобы сделать его линейным."/>
+		<text name="vca_tip_PITCH2"         text="Высота звука на средних оборотах."/>
+		<text name="vca_tip_BLOWOFFVOL"     text="Высота звука турбины."/>
+		<text name="vca_tip_SINGLEREV"      text="При движении задним ходом вместо челнока используется одна передача или группа."/>
+		<text name="vca_tip_AUTOCLUTCH"     text="Автоматическое срабатывание сцепления."/>
+		<text name="vca_tip_TURBOCLUTCH"    text="Дополнительное турбосцепление."/>
+		<text name="vca_tip_GEARRATIOF"     text="Мин. ограничение скорости передачи. Автоматически не переключается на более низшую передачу."/>
+		<text name="vca_tip_GEARRATIOT"     text="Макс. ограничение скорости передачи. Автоматически не переключается на более высшую передачу."/>
+		<text name="vca_tip_G27MODE"        text="Режим переключения G27/G29."/>
+		<text name="vca_tip_HIREDWORKER"    text="Когда наёмный работник управляет техникой, какую трансмиссию он будет использовать: ванильную или модифицированную."/>
+		<text name="vca_tip_OWNMINSPEED"    text="Макс. скорость которая может быть достигнута на 1й передаче высшего диапазона"/>
+		<text name="vca_tip_OWNMINRANGE"    text="Макс. скорость которая может быть достигнута на 1й передаче 1го диапазона"/>
+		<text name="vca_tip_OWNMAXRANGE"    text="Макс. скорость которая может быть достигнута на высшей передаче во 2м высшем диапазоне"/>
+		<text name="vca_tip_OWNGEARS"       text="Число передач"/>
+		<text name="vca_tip_OWNRANGES"      text="Число диапазонов"/>
+		<text name="vca_tip_OWNGEARTIME"    text="Время переключения передач"/>
+		<text name="vca_tip_OWNRANGETIME"   text="Время переключения диапазонов"/>
+		<text name="vca_tip_OWNAUTOGEARS"   text="Автоматическое согласование передач и скорости."/>
+		<text name="vca_tip_OWNAUTORANGE"   text="Автоматическое согласование диапазонов и скорости."/>
+		<text name="vca_tip_OWNREVGEARS"    text="Передачи ЗХ; все если пусто"/>
+		<text name="vca_tip_OWNREVRANGE"    text="Диапазоны ЗХ; все если пусто"/>
+		<text name="vca_tip_OWNREVRATIO"    text="Соотношение ЗХ"/>
+		<text name="vca_tip_OWNSPLITG27"    text="Переключатель G27 разделяет передачи. Если у вас 12 передач, то делитель будет переключаться между четной и нечетной передачами."/>
+		
+		<text name="vca_tip_AntiSlip"       text="Антипробуксовочная система притормаживает отдельные колеса в случае их пробуксовки."/>
+		<text name="vca_tip_DiffManual"     text="Ручное управление полным приводом и передним и задним дифференциалом."/>
+		<text name="vca_tip_DiffFrontAdv"   text="Ведущий передний мост, когда полный привод включен."/>
+		<text name="vca_tip_DiffLockSwap"   text="Поменять местами передний и задний дифференциал."/>
+		<text name="vca_tip_HudX"           text="Координата 'х' HUD"/>
+		<text name="vca_tip_HudY"           text="Координата 'y' HUD"/>
+		<text name="vca_tip_HIREDWORKER2"   text="Если техникой управляет наёмный работник, использовать ванильный или модифицированный дифференциал."/>
+		
+		<text name="vca_tip_SPEEDLIMITF"    text="Ограничение скорости автомобиля."/>
+		<text name="vca_tip_SPEEDLIMITB"    text="Ограничение максимальной скорости автомобиля при движении задним ходом."/>
+		<text name="vca_tip_RATEDPOWER"     text="Мощность транспортного средства в лошадиных силах при номинальных оборотах."/>
+		<text name="vca_tip_TORQUECURVE"    text="Более реалистичная кривая крутящего момента автомобиля."/>
+		<text name="vca_tip_ROTACCTIME"     text="Время в мс, которое двигателю необходимо для увеличения оборотов с минимального до максимального значения."/>
+		<text name="vca_tip_GEARRGMODE"		text="Эта настройка меняет местами клавиши для передач вверх / вниз и диапазонов."/>
+		<text name="vca_tip_STSPEEDO"		text="Скорость рулевого управления."/>
+		<text name="vca_tip_STSPEEDI"		text="Скорость автоматического возврата руля."/>
+		
+		<text name="input_vcaSETTINGS"      text="VCA: Настройки"/>
+		<text name="input_vcaUP"            text="VCA: Посмотреть вперед"/>
+		<text name="input_vcaDOWN"          text="VCA: Посмотреть назад"/>
+		<text name="input_vcaLEFT"          text="VCA: Посмотреть налево"/>
+		<text name="input_vcaRIGHT"         text="VCA: Посмотреть направо"/>
+		<text name="input_vcaDIRECTION"     text="VCA: Изменить направление движения"/>
+		<text name="input_vcaFORWARD"       text="VCA: Направление движения вперед"/>
+		<text name="input_vcaREVERSE"       text="VCA: Направление движения назад"/>
+		<text name="input_vcaSNAP"          text="VCA: Выровнять направление по сетке"/>
+		<text name="input_vcaSNAPRESET"     text="VCA: Отменить выравнивание направления по сетке"/>
+		<text name="input_vcaSnapUP"        text="VCA: Повернуть фиксированное направление левее"/> <!-- snap direction: направления привязки, фиксированное направление-->
+		<text name="input_vcaSnapDOWN"      text="VCA: Повернуть фиксированное направление правее"/>
+		<text name="input_vcaSnapLEFT"      text="VCA: Сместить фиксированное направление левее"/>
+		<text name="input_vcaSnapRIGHT"     text="VCA: Сместить фиксированное направление правее"/>
+		<text name="input_vcaNO_ARB"        text="VCA: Без автоповорота камеры назад"/>
+		<text name="input_vcaINCHING"       text="VCA: Сцепление"/>
+		<text name="input_vcaKEEPROT"       text="VCA: Сохранить глобальное напр. камеры"/>
+		<text name="input_vcaKEEPROT2"      text="VCA: Постоянно держать направление камеры"/>
+		<text name="input_vcaKEEPSPEED"     text="VCA: Удерживать скорость"/>
+		<text name="input_vcaKEEPSPEED2"    text="VCA: Удерживать постоянную скорость"/>
+		<text name="input_vcaSWAPSPEED"     text="VCA: Изменить скорость круиз-контроля"/>
+		<text name="input_vcaGearUp"        text="VCA: Передача вверх"/>
+		<text name="input_vcaGearDown"      text="VCA: Передача вниз"/>
+		<text name="input_vcaRangeUp"       text="VCA: Диапазон вверх"/>
+		<text name="input_vcaRangeDown"     text="VCA: Диапазон вниз"/>
+		<text name="input_vcaNeutral"       text="VCA: Нейтральная Вкл/Выкл"/>
+		<text name="input_vcaNeutral0"      text="VCA: Нейтральная ВЫКЛ"/>
+		<text name="input_vcaNeutral1"      text="VCA: Нейтральная ВКЛ"/>
+		<text name="input_vcaClutch"        text="VCA: Одинарный выжим"/>
+		<text name="input_vcaShifter1"      text="VCA: G27/G29 Передача 1"/>
+		<text name="input_vcaShifter2"      text="VCA: G27/G29 Передача 2"/>
+		<text name="input_vcaShifter3"      text="VCA: G27/G29 Передача 3"/>
+		<text name="input_vcaShifter4"      text="VCA: G27/G29 Передача 4"/>
+		<text name="input_vcaShifter5"      text="VCA: G27/G29 Передача 5 / Диапазон вверх"/>
+		<text name="input_vcaShifter6"      text="VCA: G27/G29 Передача 6 / Диапазон вниз"/>
+		<text name="input_vcaShifter7"      text="VCA: G27/G29 ЗХ"/>
+		<text name="input_vcaShifter8"      text="VCA: G27/G29 Передача 8"/>
+		<text name="input_vcaShifter9"      text="VCA: G27/G29 Передача 9 / ЗХ"/>
+		<text name="input_vcaShifterLH"     text="VCA: G27/G29 делитель"/>
+		<text name="input_vcaHandRpm"       text="VCA: Обороты ручного дросселя"/>
+		<text name="input_vcaHandRpm_1"     text="VCA: Увеличить ручной дроссель"/>
+		<text name="input_vcaHandRpm_2"     text="VCA: Уменьшить ручной дроссель"/>
+		<text name="input_vcaHandMode"      text="VCA: Режим ручного дросселя"/>
+		<text name="input_vcaManRatio"      text="VCA: ручной Vario"/>
+		<text name="input_vcaManRatio_1"    text="VCA: Vario быстрее"/>
+		<text name="input_vcaManRatio_2"    text="VCA: Vario медленнее"/>
+		<text name="input_vcaAutoShift"     text="VCA: Автоматическое переключение Вкл/Выкл"/>
+		<text name="input_vcaDiffLockF"     text="VCA: Передний дифф. блок/разблок"/>
+		<text name="input_vcaDiffLockM"     text="VCA: Полный привод"/>
+		<text name="input_vcaDiffLockB"     text="VCA: Задний дифф. блок/разблок"/>
+		<text name="input_vcaLowerF"        text="VCA: Опустить/поднять переднее оборудование"/>
+		<text name="input_vcaLowerB"        text="VCA: Опустить/поднять заднее оборудование"/>
+		<text name="input_vcaActivateF"     text="VCA: (Де-)активировать переднее оборудование"/>
+		<text name="input_vcaActivateB"     text="VCA: (Де-)активировать заднее оборудование"/>
+		<text name="input_vcaMenuAction1"   text="VCA: Клавиша меню S"/>
+		<text name="input_vcaMenuAction2"   text="VCA: Клавиша меню L"/>
+		<text name="input_vcaMenuAction3"   text="VCA: Клавиша меню D"/>
+		<text name="input_vcaMenuAction4"   text="VCA: Клавиша меню X"/>
+		
+		<text name="vcaValueOn"             text="Вкл"/>
+		<text name="vcaValueOff"            text="Выкл"/>
+		<text name="vcaValueNever"          text="никогда"/>
+		<text name="vcaValueAlways"         text="всегда"/>
+		<text name="vcaValueAlwaysH"        text="всегда (вверху)"/>
+		<text name="vcaValueNormal"         text="обычное"/>
+		<text name="vcaValueLight"			text="слабое"/> 
+		<text name="vcaValueStrong"			text="сильное"/>
+		<text name="vcaValueEntered"        text="если внутри"/>
+		<text name="vcaValueInactive"       text="если неактивен"/>
+		<text name="vcaValueInactiveH"      text="если неактивен (вверху)"/>
+		<text name="vcaValueRPM"            text="RPM"/>
+		
+		<text name="vcaClutchMode_0"		text="автоматически"/>
+		<text name="vcaClutchMode_1"		text="авто (быстро)"/>
+		<text name="vcaClutchMode_2"		text="вручную"/>
+		<text name="vcaClutchMode_3"		text="Turbo (быстро)"/>
+		<text name="vcaClutchMode_4"		text="Turbo (медленно)"/>
+		<text name="vcaClutchMode_5"		text="Turbo (открыто)"/>
+		<text name="vcaClutchMode_6"		text="Turbo (вручную)"/>
+		
+		<text name="vcaTorqueCurve_0" 		text="по умолчанию"/>
+		<text name="vcaTorqueCurve_1" 		text="современный (40% увеличения)"/>
+		<text name="vcaTorqueCurve_2" 		text="современный (50% увеличения)"/>
+		<text name="vcaTorqueCurve_3" 		text="грузовик (60% увеличения)"/>
+		<text name="vcaTorqueCurve_4" 		text="классика (20% увеличения)"/>
+		<text name="vcaTorqueCurve_5" 		text="классика (30% увеличения)"/>
+
+		<text name="vcaPowerShift"			text="power shift"/>
+		
+		<text name="vcaButtonSnapWidth"		text="Определить ширину"/>
+		<text name="vcaButtonSnapOffset"	text="Сменить смещение"/>
+		<text name="vcaButtonLoadPreset"	text="Загрузить трансмиссию"/>
+		<text name="vcaButtonSavePreset"	text="Сохранить трансмиссию"/>
+		<text name="vcaButtonDelPreset"		text="Удалить трансмиссию"/>
+	</texts>
+	
+	<longTexts>
+		<longText name="vca_Help_1"><![CDATA[Руление и камера
+
+Этот скрипт изменяет скорость поворота колёс в зависимости от скорости движения, и может поворачивать камеру в соответствии с углом и направлением поворота рулевого колеса.
+С Right Shift и клавишами курсора, вы можете быстро посмотреть в соответствующее направление.
+Нажатие Left Ctrl + W, позволяет зафиксировать угол направление движения.
+Все функции могут быть отключены.]]></longText>
+		<longText name="vca_Help_2"><![CDATA[Дроссельная заслонка и смена направления движения
+
+Зажатый Left Shift ограничивает уровень открытия дроссельной заслонки, скорость круиз-контроля и максимальное количество оборотов двигателя до уровня 75%.
+Если вы нажмете Delete, тогда автомобиль будет поддерживать свою текущую скорость. Педали акселератора и тормоза увеличивают и уменьшают скорость. Техника едет как современный трактор с джойстиком.
+Модификация линейного шага облегчает восприятие частоты вращения.]]></longText>
+		<longText name="vca_Help_3"><![CDATA[Трансмиссия
+
+off: Стандартная коробка передач без настройки
+IVT: Всё ещё та же стандартная коробка передач, но с небольшими изменениями допустимого диапазона оборотов
+4X4: Старая трансмиссия с 4 передачами в 4 группах и управлением рычагом. Переключение передач требует времени, и вы можете потерять скорость
+4PS: Та же трансмиссия, что и выше, но с переключением передач PowerShift (без разрыва потока мощности)
+2X6: Две группы по 6 передач. Эта трансмиссия полезна для переключателей передач G27/G29. Присутствует пониженный и повышенный диапазоны. 6 передач в каждом из диапазонов не перекрываются друг с другом
+FPS: Full Power Shift: Коробка передач имеет 12 передач и переключается без разрыва потока мощности. 
+6PS: John Deer AutoQuad. Эта трансмиссия имеет 6 передач. Каждую передачу можно уменьшить примерно на 80%
+PKW: 6-ступенчатая коробка передач для автомобилей с пониженным диапазоном для бездорожья
+VARIO: Коробка передач Fendt Vario. Это очень похоже на IVT, но имеет пониженный и повышенный диапазон
+46A: Коробка передач Claas HexaShift. Имеет 4 ручных диапазона и 6 автоматических передач
+OWN: Созданная вами собственная трансмиссия]]></longText>
+		<longText name="vca_Help_4"><![CDATA[Глобальные настройки
+
+Изменения глобальных настроек не влияют на текущий автомобиль. 
+Они сохраняются в файл modsSettings/FS19_VehicleControlAddon/config.xml.]]>	</longText>
+		<longText name="vca_Help_5"><![CDATA[Создайте свою собственную трансмиссию
+
+Здесь вы можете настроить свою собственную трансмиссию. Передачи могут переключаться автоматически ...
+Максимальная скорость на высшей передаче может быть только теоретической. Вы можете достичь этого только без ограничителя скорости. Соотношения между передачами рассчитываются исходя из максимальной скорости 1-й передаче.
+Две максимальные скорости второго по величине диапазона избыточны. Если вы введете одно значение, другое изменилось соответственно.]]>	</longText>
+		<longText name="vca_Help_6"><![CDATA[Дифференциалы, полный привод, мощность
+
+Если VCA сможет определить дифференциалы, у вас появится возможность управлять ими вручную.
+Вы можете определять ограничения скорости для движения вперед и назад.
+Если кривые мощности и крутящего момента недостаточно точны, вы можете определить их здесь.
+Есть 4 различных кривых крутящего момента:
+- по умолчанию используется кривая крутящего момента автомобиля
+- современная с увеличением крутящего момента на 40% и максимальной мощностью более 4%, чем номинальная
+- современная с увеличением крутящего момента на 50% и максимальной мощностью более 5%, чем номинальная
+- двигатель грузовика, увеличение крутящего момента на 55% и максимальная мощность от максимального крутящего момента до номинальных оборотов в минуту
+- классическая, увеличение крутящего момента всего на 20%, максимальная мощность при номинальных оборотах
+- классическая, но увеличение крутящего момента на 30%, максимальная мощность при номинальных оборотах]]></longText>	
+	</longTexts>
+</l10n>

@@ -56,11 +56,21 @@ function vehicleControlAddonTransmissionBase:new( params, mt )
 		end 
 		table.insert( self.gearRatios, r )
 	end 
+	
+	local defaultTexts  = {"A","B","C","D","E","F","G","H"}
+	local numberedGears = true
+	if      params.gearTexts    == nil
+			and params.rangeTexts   == nil
+			and self.changeTimeGears < 100 
+			and self.numberOfRanges  > 1 then 
+		numberedGears = false 
+	end 
 
 	if params.gearTexts == nil then 
 		if     self.numberOfGears <= 1 then 
 			self.gearTexts = { "" } 
-		elseif self.numberOfRanges <= 4 or self.numberOfGears > 4 then 
+		elseif numberedGears or self.numberOfGears > #defaultTexts then  
+			numberedGears  = true 
 			self.gearTexts = {} 
 			for i=1,self.numberOfGears do 
 				self.gearTexts[i] = tostring(i) 
@@ -69,8 +79,13 @@ function vehicleControlAddonTransmissionBase:new( params, mt )
 			self.gearTexts = { "L", "H" }
 		elseif self.numberOfGears == 3 then 
 			self.gearTexts = { "L", "M", "H" }
-		else 
+		elseif self.numberOfGears == 4 and self.changeTimeGears > 100 then 
 			self.gearTexts = { "LL", "L", "M", "H" }
+		else
+			self.gearTexts = {} 
+			for i=1,self.numberOfGears do 
+				self.gearTexts[i] = defaultTexts[i] 
+			end 
 		end 
 	else 
 		self.gearTexts = params.gearTexts 
@@ -79,7 +94,7 @@ function vehicleControlAddonTransmissionBase:new( params, mt )
 	if params.rangeTexts == nil then 
 		if     self.numberOfRanges <= 1 then 
 			self.rangeTexts = { "" } 
-		elseif self.numberOfRanges > 4 then 
+		elseif not numberedGears or self.numberOfRanges > #defaultTexts then 
 			self.rangeTexts = {} 
 			for i=1,self.numberOfRanges do 
 				self.rangeTexts[i] = tostring(i) 
@@ -88,8 +103,13 @@ function vehicleControlAddonTransmissionBase:new( params, mt )
 			self.rangeTexts = { "L", "H" }
 		elseif self.numberOfRanges == 3 then 
 			self.rangeTexts = { "L", "M", "H" }
-		else 
+		elseif self.numberOfRanges == 4 and self.changeTimeRanges > 100 then  
 			self.rangeTexts = { "LL", "L", "M", "H" }
+		else
+			self.rangeTexts = {} 
+			for i=1,self.numberOfRanges do 
+				self.rangeTexts[i] = defaultTexts[i]
+			end 
 		end 
 	else 
 		self.rangeTexts = params.rangeTexts 

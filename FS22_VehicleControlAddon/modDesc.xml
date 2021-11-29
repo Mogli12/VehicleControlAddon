@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="no" ?>
-<modDesc descVersion="53">
+<modDesc descVersion="61">
 	<author>mogli</author>
 	<title>
 		<en>Vehicle Control Addon</en>
@@ -74,10 +74,10 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>store.dds</iconFilename>
-	<version>9.4.0.3</version>
+	<version>9.0.0.1</version>
 	<l10n filenamePrefix="modDesc_l10n">
 		<text name="vcaVERSION">          
-			<en>Vehicle Control Addon build 403</en>
+			<en>Vehicle Control Addon build 1</en>
 		</text>
 	</l10n>
 	
@@ -166,9 +166,6 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 		<actionBinding action="vcaSnapRIGHT">	
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_right"/>
 		</actionBinding>	
-		<actionBinding action="vcaDIRECTION">	
-			<binding device="KB_MOUSE_DEFAULT" input="KEY_space"/>
-		</actionBinding>	
 		<actionBinding action="vcaSNAP">	
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_w"/>
 		</actionBinding>	
@@ -180,24 +177,6 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 		</actionBinding>	
 		<actionBinding action="vcaINCHING">	
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_lshift"/>
-		</actionBinding>	
-		<actionBinding action="vcaGearUp">
-			<binding device="KB_MOUSE_DEFAULT" input="KEY_leftbracket"/>
-		</actionBinding>	
-		<actionBinding action="vcaGearDown">
-			<binding device="KB_MOUSE_DEFAULT" input="KEY_quote"/>
-		</actionBinding>	
-		<actionBinding action="vcaRangeUp">
-			<binding device="KB_MOUSE_DEFAULT" input="KEY_rightbracket"/>
-		</actionBinding>	
-		<actionBinding action="vcaRangeDown">
-			<binding device="KB_MOUSE_DEFAULT" input="KEY_backslash"/>
-		</actionBinding>	
-		<actionBinding action="vcaNeutral">
-			<binding device="KB_MOUSE_DEFAULT" input="KEY_semicolon"/>
-		</actionBinding>	
-		<actionBinding action="vcaClutch">
-			<binding device="KB_MOUSE_DEFAULT" input="KEY_period"/>
 		</actionBinding>	
 		<actionBinding action="vcaKEEPROT">
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_insert"/>
@@ -213,20 +192,6 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 		</actionBinding>	
 		<actionBinding action="vcaSWAPSPEED">
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_4"/>
-		</actionBinding>	
-		<actionBinding action="vcaHandRpm">
-			<binding device="KB_MOUSE_DEFAULT" input="KEY_equals" axisComponent="+"/>
-			<binding device="KB_MOUSE_DEFAULT" input="KEY_minus"  axisComponent="-"/>
-		</actionBinding>	
-		<actionBinding action="vcaManRatio">
-			<binding device="KB_MOUSE_DEFAULT" input="KEY_lshift KEY_equals" axisComponent="+"/>
-			<binding device="KB_MOUSE_DEFAULT" input="KEY_lshift KEY_minus"  axisComponent="-"/>
-		</actionBinding>	
-		<actionBinding action="vcaHandMode">
-			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_equals"/>
-		</actionBinding>	
-		<actionBinding action="vcaAutoShift">
-			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_leftbracket"/>
 		</actionBinding>	
 		<actionBinding action="vcaDiffLockF">
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_rightbracket"/>
@@ -265,16 +230,8 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 	
 	<extraSourceFiles>
 		<sourceFile filename="vehicleControlAddon.lua"/>
-		<sourceFile filename="gui/vehicleControlAddonFrame.lua"/>
-		<sourceFile filename="gui/vehicleControlAddonFrame1.lua"/>
-		<sourceFile filename="gui/vehicleControlAddonFrame2.lua"/>
-		<sourceFile filename="gui/vehicleControlAddonFrame3.lua"/>
-		<sourceFile filename="gui/vehicleControlAddonFrame4.lua"/>
-		<sourceFile filename="gui/vehicleControlAddonFrame5.lua"/>
-		<sourceFile filename="gui/vehicleControlAddonFrame6.lua"/>
+		<sourceFile filename="vehicleControlAddonEvent.lua"/>
 		<sourceFile filename="gui/vehicleControlAddonMenu.lua"/>
-		<sourceFile filename="gui/vehicleControlAddonDialog1.lua"/>
-		<sourceFile filename="gui/vehicleControlAddonDialog2.lua"/>
 		<sourceFile filename="vehicleControlAddonRegister.lua"/>
 	</extraSourceFiles>    
 </modDesc>

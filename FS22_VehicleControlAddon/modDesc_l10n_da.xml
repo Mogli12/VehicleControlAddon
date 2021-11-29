@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<l10n>
+	<!-- Note that 'description' is only here for easier translations. It needs to be manually copied to ModDesc.XML later. -->
+	<description><![CDATA[Tilføjer specialisering til adaptiv styring]]></description>
+
+	<texts>
+		<text name="ksmCAMERA"          text="Kamera Rotation"/>
+		<text name="ksmEXPONENT"        text="Følsomhed"/>
+		<text name="ksmSTEERING"        text="Adaptiv Styring"/>
+		<text name="ksmSHUTTLE"         text="Transport"/>
+		<text name="ksmREVERSE"         text="Kig Bagud"/>
+		<text name="ksmLIMIT"           text="Speeder Begrænsning"/>
+		<text name="ksmPEEKLR"          text="Kig Sidelæns"/>
+		<text name="ksmANGLE"           text="Lås Vinkel"/>
+		<text name="ksmBRAKE"           text="Lav Bremse Kraft"/>
+		<text name="ksmSETTINGS"        text="Indstillinger"/>
+
+		<text name="ksm_tip_CAMERA"     text="Kameraet roterer automatisk i forhold den låste vinkel"/>
+		<text name="ksm_tip_EXPONENT"   text="Følsomhed af den apdaptive styring i forhold til hastighed"/>
+		<text name="ksm_tip_STEERING"   text="Den apdaptive styring justerer den automatiske rotation bagud og den maksimale styre vinkel"/>
+		<text name="ksm_tip_SHUTTLE"    text="Ændrer køre retning med &lt;mellemrum&gt;"/>
+		<text name="ksm_tip_REVERSE"    text="Hvis køretøjet ændrer retning så roterer kameraet 180°"/>
+		<text name="ksm_tip_LIMIT"      text="Begrænsning af speeder med og uden venstre shift tast"/>
+		<text name="ksm_tip_PEEKLR"     text="Kig hurtigt med højre shift key og højre/venstre tast"/>
+		<text name="ksm_tip_ANGLE"      text="Styr automatisk for at følge den låste retning"/>
+		<text name="ksm_tip_BRAKE"      text="Procent for lav bremse kraft, aka rullende modstand"/>
+
+		<text name="input_ksmSETTINGS"  text="KeyboardSteer: indstillinger"/>
+		<text name="input_ksmUP"        text="KeyboardSteer: skift syns retning / lås fremad"/>
+		<text name="input_ksmDOWN"      text="KeyboardSteer: smugkig i anden retning / lås bagud"/>
+		<text name="input_ksmLEFT"      text="KeyboardSteer: kig venstre"/>
+		<text name="input_ksmRIGHT"     text="KeyboardSteer: kig højre"/>
+		<text name="input_ksmDIRECTION" text="KeyboardSteer: skift køre retning"/>
+		<text name="input_ksmFORWARD"   text="KeyboardSteer: fremad"/>
+		<text name="input_ksmREVERSE"   text="KeyboardSteer: bak"/>
+		<text name="input_ksmSNAP"      text="KeyboardSteer: lås køre retning"/>
+		<text name="input_ksmNO_ARB"    text="KeyboardSteer: ingen auto rotering tilbage"/>
+		<text name="input_ksmINCHING"   text="KeyboardSteer: krybning"/>
+	</texts>
+
+	<longTexts>
+		<longText name="ksm_Help_1">
+<![CDATA[
+Dette script varierer styre hastighed afhængigt af den hastighed du kører med, og roterer kameraet til at matche styre vinkel og retning.
+SHift-Venstre begrænser speeder, fart pilot og maskimalt omdrejninger til 75%. Med Shift-Højre og venstre/højre tast kan du smugkigge i den valgte retning.
+Hvis du trykker på venstre Ctrl sammed med W så skifter køre retning til en låst retning.
+Alle funktioner kan slåes fra]]>
+		</longText>
+	</longTexts>
+</l10n>
