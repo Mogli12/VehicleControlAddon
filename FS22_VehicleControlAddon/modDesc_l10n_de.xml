@@ -155,11 +155,14 @@
 		
 		<text name="vcaPowerShift"      text="Lastschaltung"/>
 		
-		<text name="vcaButtonSnapWidth"  text="Breite ermitteln"/>
-		<text name="vcaButtonSnapOffset" text="Offset tauschen"/>
-		<text name="vcaButtonLoadPreset" text="Getriebe laden"/>
-		<text name="vcaButtonSavePreset" text="Getriebe speichern"/>
-		<text name="vcaButtonDelPreset"  text="Getriebe löschen"/>
+		<text name="vcaButtonSnapWidth" text="Breite ermitteln"/>
+		<text name="vcaButtonSnapOffset" text="Offset tauschen"/>		
+		
+		<text name="vcaTitleCam"        text="Kamera"/>
+		<text name="vcaTitleSteering"   text="Lenkung"/>
+		<text name="vcaTitleGPS"        text="Spurführung"/>
+		<text name="vcaTitleThrottle"   text="Gaspedal, Bremse, Getriebe"/>
+		<text name="vcaTitleDiff"       text="Allrad und Differentialsperren"/>
 	</texts>   
 
 	<longTexts>

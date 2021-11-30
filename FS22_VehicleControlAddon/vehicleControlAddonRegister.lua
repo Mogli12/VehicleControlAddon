@@ -7,49 +7,25 @@ VCAGlobals  = {
 	cameraRotFactor     = 0.5,
 	cameraRotFactorRev  = 0.3,
 	cameraRotTime       = 0.001,
-	timer4Reverse       = 500,     
 	limitThrottle       = 15, -- 9 => 90%/100% 15 => 100%/75% -->
-	snapAngle           = 5,  -- 45° -->
-	brakeForceFactor    = 0.15,
+	snapAngle           = 4,  -- 45° -->
+	brakeForceFactor    = 0.25,
 	snapAngleHudX       = -1, -- any value >= 0 => position of bottom left corner / -1 above HUD -->
 	snapAngleHudY       = -1, -- any value >= 0 => position of bottom left corner / -1 above HUD -->
 	drawHud             = true,
-	transmission        = 1,  -- 0 = Giants, 1 = IVT, 2 = 4x4, 3 = 4x4 PowerShift, 4 = 2x6, 5 = FullPowerShift -->
-	clutchTimer         = 6000, -- ms -->
-	autoHoldTimer       = 1000, -- ms; 0 = no auto hold -->
-	rotInertiaFactor    = 1.5,  -- rot. inertia is more than just the flywheel, it includes the transmission and the wheels as well -->
-	rotInertiaFactorInc = 0.04, -- gear ratio factor -->
-	rotInertiaFactorMax = 4.0,  -- maximum inertia -->
-	rotInertiaFactorLow = 1.0,  -- neutral -->
-	rotInertiaFactorIVT = 1.5,  -- IVT transmission -->
-	modifyPitch         = true,
 	mouseAutoRotateBack = false,
 	turnOffAWDSpeed     = 30,-- km/h -->
-	minAuthShiftWait    = 500, -- ms minimum time between automatic shifting -->
-	torqueCheatFactor1  = 1, -- 1.035 -->-- torque factor IVT -->
-	torqueCheatFactor2  = 1, -- 1.035 -->-- torque factor fixed gear ratios -->
-	gearShiftSampleVol  = 1.0,
-	powerShiftSampleVol = 1.0,
-	grindingSampleVol   = 1.0,
-	clutchMinusTorqueM  = 5,  -- 5..10;  limit of in torque reduction to compensate gear reduction; keey at least 1/clutchMinusTorqueM of torque -->
-	clutchMinusTorqueT  = 3,  -- 3;      ignore gear reduction up to this factor; turbo clutch = torque amplifier (not really! -->
-	clutchMinusTorqueA  = 25, -- 0..100; addtional minus torque based on acceleration-->
 	
 	-- defaults -->
-	adaptiveSteering    = true,
+	adaptiveSteering    = false,
 	camOutsideRotation  = 0,
-	camInsideRotation   = 2,
-	camReverseRotation  = true,
+	camInsideRotation   = 0,
+	camReverseRotation  = false,
 	camRevOutRotation   = false,
-	shuttleControl      = true,
 	peekLeftRight       = true,
-	hiredWorker         = 1, -- transmission for hired worker: 0 off, 1 only if entered, 2 always on -->
 	hiredWorker2        = false, -- differential for hired worker -->
-	g27Mode             =0, 
-	blowOffVolume       =0.1, 
-	rotSpeedOut         =0.5, 
-	rotSpeedIn          =0.5, 
-	pitchFactor         =1.1, 
+	rotSpeedOut         = 0.5, 
+	rotSpeedIn          = 0.5, 
 }
 
 VCADefaults = {}
@@ -160,13 +136,13 @@ function vehicleControlAddonRegister:postLoadMission(mission)
 	if g_client ~= nil then 
 		local function loadTextElement( self, xmlFile, key )		
 			local id = getXMLString(xmlFile, key .. "#vcaTextID")
-			if id ~= nil and g_i18n:hasText( id ) then 
+			if id ~= nil and g_i18n:hasText( id ) and type( self.setText ) == "function" then 
 				self:setText( g_i18n:getText( id ) )
 			end 
 		end
 		local function loadGuiElement( self, xmlFile, key )		
 			local id = getXMLString(xmlFile, key .. "#vcaTextID")
-			if id ~= nil and g_i18n:hasText( id ) then 
+			if id ~= nil and g_i18n:hasText( id ) and type( self.setText ) == "function" then 
 				self:setText( g_i18n:getText( id ) )
 			end 
 		end

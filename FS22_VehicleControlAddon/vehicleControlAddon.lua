@@ -2475,19 +2475,19 @@ function vehicleControlAddon:onDraw()
 			local a = 0
 			local t = "|"
 			for x=-xMax,xMax do 
-				for zi=-2,3,0.1 do
+				for zi=-1,2,0.1 do
 					local z = 10 
 					if self.spec_reverseDriving  ~= nil and self.spec_reverseDriving.isReverseDriving then			
 						if zi > 0 then 
-							z = z - 10 * zi 
+							z = z - 20 * zi 
 						else 
-							z = z - 10 * zi * zi 
+							z = z - 10 * zi * zi * zi
 						end 
 					else 
 						if zi < 0 then 
-							z = z + 10 * zi 
+							z = z + 20 * zi 
 						else 
-							z = z + 10 * zi * zi 
+							z = z + 10 * zi * zi * zi
 						end 
 					end 
 					local fx = 0
@@ -2649,6 +2649,10 @@ function vehicleControlAddon:vcaSetCruiseSpeed( speed )
 end 
 
 function vehicleControlAddon:getDefaultReverseInside()
+	if not ( VCAGlobals.camReverseRotation ) then 
+		return false 
+	end 
+	
 	if self.attacherJoints ~= nil then
 		for _,a in pairs( self.attacherJoints ) do
 			if a.jointType == JOINTTYPE_SEMITRAILER then
@@ -2661,7 +2665,7 @@ function vehicleControlAddon:getDefaultReverseInside()
 		return false
 	end 
 	
-	return VCAGlobals.camReverseRotation 
+	return true 
 end
 
 
@@ -2898,6 +2902,45 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 end 
 WheelsUtil.updateWheelsPhysics = Utils.overwrittenFunction( WheelsUtil.updateWheelsPhysics, vehicleControlAddon.vcaUpdateWheelsPhysics )
 --******************************************************************************************************************************************
+
+--******************************************************************************************************************************************
+-- getSmoothedAcceleratorAndBrakePedals
+function vehicleControlAddon:vcaGetSmoothedAcceleratorAndBrakePedals( superFunc, acceleratorPedal, brakePedal, dt )
+	-- WheelsUtil.getSmoothedAcceleratorAndBrakePedals is is called AFTER WheelsUtil.updateGear 
+	-- just smooth brake pedal here
+	if self.spec_vca ~= nil and self.spec_vca.isInitialized and self:vcaIsVehicleControlledByPlayer() and self.spec_vca.oldAcc ~= nil then 
+		if     self.vcaBrakePedal ~= nil and self.vcaBrakePedal >= 0.001 then  
+		-- shuttle control and braking 
+			brakePedal = self.vcaBrakePedal
+		elseif math.abs( self.spec_vca.oldAcc ) < 0.001 then
+		-- neither accelerating nor braking 
+			if brakePedal <= 0 then 
+			-- neutral 
+				brakePedal = 0
+			else  
+				brakePedal = brakePedal * self.spec_vca.brakeForce 
+			end 
+		end 
+		
+		if     self.spec_vca.doHandbrake then 
+			self.spec_vca.maxBrakePedal = 1 
+		elseif self.spec_vca.maxBrakePedal == nil then 
+			self.spec_vca.maxBrakePedal = 0.001 * dt
+		else 
+			self.spec_vca.maxBrakePedal = vehicleControlAddon.mbClamp( brakePedal, self.spec_vca.maxBrakePedal - 0.001 * dt, self.spec_vca.maxBrakePedal + 0.001 * dt )
+		end 
+		
+		return acceleratorPedal, math.min( brakePedal, self.spec_vca.maxBrakePedal )
+	end 
+	
+	self.spec_vca.maxBrakePedal = nil
+	
+	return superFunc( self, acceleratorPedal, brakePedal, dt )
+end 
+
+WheelsUtil.getSmoothedAcceleratorAndBrakePedals = Utils.overwrittenFunction( WheelsUtil.getSmoothedAcceleratorAndBrakePedals, vehicleControlAddon.vcaGetSmoothedAcceleratorAndBrakePedals )
+--******************************************************************************************************************************************
+
 
 vehicleControlAddon.vcaVehicleMotorGetUseAutomaticGearShifting = VehicleMotor.getUseAutomaticGearShifting
 VehicleMotor.getUseAutomaticGearShifting = function( self, ... )

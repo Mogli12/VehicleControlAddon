@@ -51,26 +51,10 @@ function VehicleControlAddonMenu:onOpen()
 end 
 
 function VehicleControlAddonMenu:onClickBack()
-	print("onClickBack")
 	self:vcaSetValues( true )
 	self.vcaInputEnabled = false  
 	self:changeScreen(nil)
-end 
-
-function VehicleControlAddonMenu:vcaMakeCallback( func )
-	if type( func) ~= "function" then 
-		print("Warning [VehicleControlAddonMenu.vcaMakeCallback]: invalid function")
-		return NO_CALLBACK
-	end 
-	
-	return function()
-		if g_currentMission.controlledVehicle ~= nil and g_currentMission.controlledVehicle.spec_vcaUI ~= nil then 
-			func( self, g_currentMission.controlledVehicle )
-		else 
-			print("Warning [VehicleControlAddonMenu.vcaMakeCallback]: invalid vehicle")
-		end 
-	end 
-end 
+end  
 	
 function VehicleControlAddonMenu:vcaGetValues( force )
 	if self.vcaState.vcaGetValues then 

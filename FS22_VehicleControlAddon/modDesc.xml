@@ -27,10 +27,10 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>store.dds</iconFilename>
-	<version>9.0.0.2</version>
+	<version>9.0.0.3</version>
 	<l10n filenamePrefix="modDesc_l10n">
 		<text name="vcaVERSION">          
-			<en>Vehicle Control Addon build 2</en>
+			<en>Vehicle Control Addon build 3</en>
 		</text>
 	</l10n>
 	
@@ -104,7 +104,7 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_lalt KEY_w"/>
 		</actionBinding>	
 		<actionBinding action="vcaINCHING">	
-			<binding device="KB_MOUSE_DEFAULT" input="KEY_lshift"/>
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_lalt"/>
 		</actionBinding>	
 		<actionBinding action="vcaKEEPROT">
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_insert"/>

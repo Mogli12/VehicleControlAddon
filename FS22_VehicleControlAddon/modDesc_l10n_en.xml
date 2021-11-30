@@ -236,9 +236,12 @@
 		
 		<text name="vcaButtonSnapWidth"  text="Detect width"/>
 		<text name="vcaButtonSnapOffset" text="Swap offset"/>
-		<text name="vcaButtonLoadPreset" text="Load transmission"/>
-		<text name="vcaButtonSavePreset" text="Save transmission"/>
-		<text name="vcaButtonDelPreset"  text="Delete transmission"/>
+
+		<text name="vcaTitleCam"        text="Camera"/>
+		<text name="vcaTitleSteering"   text="Steering"/>
+		<text name="vcaTitleGPS"        text="Track Guiding"/>
+		<text name="vcaTitleThrottle"   text="Throttle, Brakes, Transmission"/>
+		<text name="vcaTitleDiff"       text="AWD und Differentials"/>
 	</texts>
 
 	<longTexts>

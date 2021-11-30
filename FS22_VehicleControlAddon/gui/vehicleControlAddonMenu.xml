@@ -11,7 +11,7 @@
 
 			<GuiElement type="scrollingLayout" profile="ingameMenuSettingsLayout" id="boxLayout" topClipperElementName="topClipper" bottomClipperElementName="bottomClipper">
 
-				<GuiElement type="text" profile="settingsMenuSubtitle" text="Camera"/> <!--vcaTextID="vcaSETTINGS" text="settings" /> -->
+				<GuiElement type="text" profile="settingsMenuSubtitle" vcaTextID="vcaTitleCam" text="Camera"/>
 
 				<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="camRotInside" onCreate="onCreateSubElement" onCreateArgs="list0">
 					<GuiElement type="button" profile="multiTextOptionSettingsLeft" />
@@ -61,7 +61,7 @@
 				
 
 
-				<GuiElement type="text" profile="settingsMenuSubtitle" text="Steering"/> <!--vcaTextID="vcaSETTINGS" text="settings" /> -->
+				<GuiElement type="text" profile="settingsMenuSubtitle" vcaTextID="vcaTitleSteering" text="Steering"/> 
 
 				<GuiElement type="checkedOption" profile="vcaMTOSettings" id="steeringIsOn" onCreate="onCreateSubElement">
 					<GuiElement type="button" profile="multiTextOptionSettingsLeft" />
@@ -102,7 +102,7 @@
 
 
 			
-				<GuiElement type="text" profile="settingsMenuSubtitle" text="GPS"/> <!--vcaTextID="vcaSETTINGS" text="settings" /> -->
+				<GuiElement type="text" profile="settingsMenuSubtitle" vcaTextID="vcaTitleGPS" text="GPS"/>
 
 				<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="snapEvery90" onCreate="onCreateSubElement">
 					<GuiElement type="button" profile="multiTextOptionSettingsLeft" />
@@ -132,30 +132,31 @@
 					<GuiElement type="text"   profile="multiTextOptionSettingsTooltip" vcaTextID="vca_tip_ANGLE" text="snapAngle"/>
 				</GuiElement>	
 
-				<GuiElement type="textInput" profile="ingameMenuGameSettingsTextInput" id="snapDistance" onCreate="onCreateSubElement" 
-										maxCharacters="20" imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed"
-										position="558px 0">
-					<!--GuiElement type="text"   profile="multiTextOptionSettingsTitle" vcaTextID="vcaDISTANCE" text="snapDistance"/-->
-					<GuiElement type="text"   profile="multiTextOptionSettingsTooltip" vcaTextID="vca_tip_DISTANCE" text="snapDistance (tt)"/>
+
+				<GuiElement type="empty" profile="ingameMenuGameSettingsTextInputWrapper">
+					<GuiElement type="textInput" profile="ingameMenuGameSettingsTextInput" id="snapDistance" onCreate="onCreateSubElement" 
+											imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed" />
+					<GuiElement type="text" profile="multiTextOptionSettingsTitle" vcaTextID="vcaDISTANCE" text="snapDistance"/>
+					<GuiElement type="text" profile="multiTextOptionSettingsTooltip" vcaTextID="vca_tip_DISTANCE" text="snapDistance (tt)"/>
+				</GuiElement>
+
+				<GuiElement type="empty" profile="ingameMenuGameSettingsTextInputWrapper">
+					<GuiElement type="textInput" profile="ingameMenuGameSettingsTextInput" id="snapOffset1" onCreate="onCreateSubElement" 
+											imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed" />
+					<GuiElement type="text" profile="multiTextOptionSettingsTitle" vcaTextID="vcaOFFSET1" text="snapOffset1"/>
+					<GuiElement type="text" profile="multiTextOptionSettingsTooltip" vcaTextID="vca_tip_OFFSET1" text="snapOffset1 (tt)"/>
 				</GuiElement>
 				
-				<GuiElement type="textInput" profile="ingameMenuGameSettingsTextInput" id="snapOffset1" onCreate="onCreateSubElement" 
-										maxCharacters="20" imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed">
-					<GuiElement type="text"   profile="multiTextOptionSettingsTooltip" vcaTextID="vcaOFFSET1" text="snapOffset1"/>
-				</GuiElement>
-				
-				<GuiElement type="textInput" profile="ingameMenuGameSettingsTextInput" id="snapOffset2" onCreate="onCreateSubElement" 
-										maxCharacters="20" imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed">
-					<GuiElement type="text"   profile="multiTextOptionSettingsTooltip" vcaTextID="vcaOFFSET2" text="snapOffset2"/>
+				<GuiElement type="empty" profile="ingameMenuGameSettingsTextInputWrapper">
+					<GuiElement type="textInput" profile="ingameMenuGameSettingsTextInput" id="snapOffset2" onCreate="onCreateSubElement" 
+											imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed" />
+					<GuiElement type="text" profile="multiTextOptionSettingsTitle" vcaTextID="vcaOFFSET2" text="snapOffset2"/>
+					<GuiElement type="text" profile="multiTextOptionSettingsTooltip" vcaTextID="vca_tip_OFFSET2" text="snapOffset2 (tt)"/>
 				</GuiElement>
 
 
 
-
-
-
-
-				<GuiElement type="text" profile="settingsMenuSubtitle" text="Throttle / Brakes"/> <!--vcaTextID="vcaSETTINGS" text="settings" /> -->
+				<GuiElement type="text" profile="settingsMenuSubtitle" vcaTextID="vcaTitleThrottle" text="Throttle / Brakes"/> <!--vcaTextID="vcaSETTINGS" text="settings" /> -->
 
 
 				<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="limitThrottle" onCreate="onCreateSubElement" onCreateArgs="list">
@@ -195,7 +196,7 @@
 				</GuiElement>
 
 
-				<GuiElement type="text" profile="settingsMenuSubtitle" text="Differentials"/> <!--vcaTextID="vcaSETTINGS" text="settings" /> -->
+				<GuiElement type="text" profile="settingsMenuSubtitle" vcaTextID="vcaTitleDiff" text="Differentials"/> <!--vcaTextID="vcaSETTINGS" text="settings" /> -->
 
 
 
