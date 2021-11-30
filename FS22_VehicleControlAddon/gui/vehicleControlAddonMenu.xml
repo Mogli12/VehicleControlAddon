@@ -185,6 +185,14 @@
 					<GuiElement type="text"   profile="multiTextOptionSettingsTooltip" vcaTextID="vca_tip_KEEPSPEED" text="ksToggle"/>
 				</GuiElement>
 
+				<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="autoShift" onCreate="onCreateSubElement">
+					<GuiElement type="button" profile="multiTextOptionSettingsLeft" />
+					<GuiElement type="button" profile="multiTextOptionSettingsRight" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsText" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsTitle" vcaTextID="vcaAUTOSHIFT" text="autoShift"/>
+					<GuiElement type="bitmap" profile="multiTextOptionSettingsBg" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsTooltip" vcaTextID="vca_tip_AUTOSHIFT" text="autoShift"/>
+				</GuiElement>
 
 
 				<GuiElement type="text" profile="settingsMenuSubtitle" text="Differentials"/> <!--vcaTextID="vcaSETTINGS" text="settings" /> -->
@@ -240,7 +248,9 @@
 			</GuiElement>
 
 		<GuiElement type="flowLayout" profile="buttonBoxDialog" id="buttonsPC" >
-			<GuiElement type="button" profile="buttonBack" text="$l10n_button_back" onClick="onClickBack" id="backButton" />
+			<GuiElement type="button" profile="buttonBack"   text="$l10n_button_back"   onClick="onClickBack"  id="backButton" />
+			<GuiElement type="button" profile="buttonExtra1" text="$l10n_button_extra1" onClick="onClickMagic" id="magicButton" vcaTextID="vcaButtonSnapWidth"/>
+			<GuiElement type="button" profile="buttonExtra2" text="$l10n_button_extra2" onClick="onClickSwap"  id="swapButton"  vcaTextID="vcaButtonSnapOffset"/>
 		</GuiElement>
 	</GuiElement>
 </GUI>

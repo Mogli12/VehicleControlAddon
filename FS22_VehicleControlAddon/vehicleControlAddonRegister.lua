@@ -164,10 +164,18 @@ function vehicleControlAddonRegister:postLoadMission(mission)
 				self:setText( g_i18n:getText( id ) )
 			end 
 		end
+		local function loadGuiElement( self, xmlFile, key )		
+			local id = getXMLString(xmlFile, key .. "#vcaTextID")
+			if id ~= nil and g_i18n:hasText( id ) then 
+				self:setText( g_i18n:getText( id ) )
+			end 
+		end
 		
 		local origTextElementLoadFromXML = TextElement.loadFromXML
+		local origGuiElementLoadFromXML  = GuiElement.loadFromXML
 		
 		TextElement.loadFromXML = Utils.appendedFunction( origTextElementLoadFromXML, loadTextElement )
+		GuiElement.loadFromXML  = Utils.appendedFunction( origGuiElementLoadFromXML, loadTextElement )
 		
 		local function loadVCAMenu()
 			-- settings screen
@@ -182,6 +190,7 @@ function vehicleControlAddonRegister:postLoadMission(mission)
 		end 
 		
 		TextElement.loadFromXML = origTextElementLoadFromXML
+		GuiElement.loadFromXML  = origGuiElementLoadFromXML
 	end 
 end;
 

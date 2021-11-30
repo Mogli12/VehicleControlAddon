@@ -2,8 +2,9 @@
 VehicleControlAddonMenu = {}
 
 VehicleControlAddonMenu.CONTROLS = {
-    "title",
-    "presets",
+    "backButton",
+    "magicButton",
+    "swapButton",
 }
 
 local VehicleControlAddonMenu_mt = Class(VehicleControlAddonMenu, ScreenElement)
@@ -355,6 +356,38 @@ function VehicleControlAddonMenu:onCreateSubElement( element, parameter )
 		print("Error inserting UI element with ID: "..tostring(element.id))
 	end			
 end
+
+
+function VehicleControlAddonMenu:onClickMagic( )
+	if      g_currentMission.controlledVehicle ~= nil
+			and g_currentMission.controlledVehicle.spec_vca ~= nil
+			and g_currentMission.controlledVehicle.spec_vca.isInitialized then 
+		local vehicle = g_currentMission.controlledVehicle
+		local d, o, p = vehicle:vcaGetSnapDistance()
+		vehicle:vcaSetState( "snapDistance", d )
+		vehicle:vcaSetState( "snapOffset1", o )
+		vehicle:vcaSetState( "snapOffset2", p )
+		
+		self.vcaElements.snapDistance.element:setText( vehicleControlAddon.vcaUIGetsnapDistance( vehicle ) )
+		self.vcaElements.snapOffset1.element:setText(  vehicleControlAddon.vcaUIGetsnapOffset1(  vehicle ) ) 
+		self.vcaElements.snapOffset2.element:setText(  vehicleControlAddon.vcaUIGetsnapOffset2(  vehicle ) )
+	end 
+end 
+
+function VehicleControlAddonMenu:onClickSwap( )
+	if      g_currentMission.controlledVehicle ~= nil
+			and g_currentMission.controlledVehicle.spec_vca ~= nil
+			and g_currentMission.controlledVehicle.spec_vca.isInitialized then 
+		local vehicle = g_currentMission.controlledVehicle
+		local o, p = vehicle.spec_vca.snapOffset2, vehicle.spec_vca.snapOffset1
+		vehicle:vcaSetState( "snapOffset1", o )
+		vehicle:vcaSetState( "snapOffset2", p )
+
+		self.vcaElements.snapDistance.element:setText( vehicleControlAddon.vcaUIGetsnapDistance( vehicle ) )
+		self.vcaElements.snapOffset1.element:setText(  vehicleControlAddon.vcaUIGetsnapOffset1(  vehicle ) ) 
+		self.vcaElements.snapOffset2.element:setText(  vehicleControlAddon.vcaUIGetsnapOffset2(  vehicle ) )
+	end 
+end 
 
 
 

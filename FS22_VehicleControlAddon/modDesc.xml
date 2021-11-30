@@ -14,70 +14,23 @@ All functions are switchable with the following default key combinations:
 [Ctrl Left + W]: Snap Angle (continue)
 [Alt Left + W]: Snap Angle (restart)
 [Shift Left]: Throttle limiter / reduced cruise control speed
-[Shift Right + Cursor]: look forward, backwards, left right
-[Space]: Change direction (aka shuttle control)
-[[]: Gear up 
-[']: Gear down 
-[]]: Range up 
-[#]: Range down 
-[;]: Neutral and handbrake 
-
-Changelog version 1.1.0.0:
-- Differentials, all wheel drive and real two wheel drive
-- Raise, lower and turn on/off tools in the front or back
-- Many small fixes, adjustments and improvements
-Changelog version 1.1.1.0:
-- Bug fix loading clutch mode from savegame
-- Improved automatic clutch
-- Display of handthrottle in speed meter
-- warnings in info box
-Changelog version 1.2.0.0
-- Rework of clutch
-- Rework of automatic gear shifting
-- Load and save of own transmission configurations
-- Only the master user can change some settings
-- Possibility to overwrite speed limits
-- Possibility to overwrite rated power and torque curve]]></en>
+[Shift Right + Cursor]: look forward, backwards, left right]]></en>
 		<de><![CDATA[Dieses Script variiert abhängig von der gefahrenen Geschwindigkeit die Lenkgeschwindigkeit und dreht die Kamera passend zum Lenkeinschlag und zur Fahrtrichtung. 
-Mit Umschalt-Llinks wird das Gaspedal, der Tempomat und die maximale Drehzahl auf 75% begrenzt. Mit Umschalt-Rechts und den Pfeiltasten kann man in die entsprechende Richtung blicken. 
-Drückt man Strg Links zusammen mit W, dann richtet sich die Fahrtrichtung an festen Richtungen aus.
+Mit Umschalt-Llinks wird das Gaspedal, der Tempomat und die maximale Drehzahl auf 75% begrenzt. Drückt man Strg Links zusammen mit W, dann richtet sich die Fahrtrichtung an festen Richtungen aus.
 
 Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tasten:
 [Strg Links + C]: Einstellungen
 [Strg Links + W]: Rastersteuerung fortsetzen
 [Alt Links + W]: Rastersteuerung neu starten
 [Umschalt Links]: Gaspedalbegrenzer / verringerter Tempomatgeschwindigkeit
-[Umschalt Rechts + Pfeiltaste]: Nach vorne, hinten, links, rechts blicken
-[Leertaste]: Fahrtrichtung wechseln
-[Ü]: Gang hochschalten
-[Ä]: Gang herunterschalten
-[+]: Gruppe hochschalten 
-[#]: Gruppe herunterschalten 
-[ö]: Neutral / Parkbremse
-
-Änderungsliste Versoin 1.1.0.0:
-- Differentials, Allradantriebe und echter Einachsantrieb
-- Heben, Senken und Aktivieren der vorderen und hinteren Geräte
-- Viele kleine Korrekturen, Anpassungen und Verbesserungen
-Änderungsliste Versoin 1.1.1.0:
-- Korrektur Kupplungsmodus wird nicht aus Savegame geladen
-- Verbesserung der automatischen Kupplung
-- Handgas-Anzeige im SpeedMeter
-- Warnungen in InfoBox
-Änderungsliste Versoin 1.2.0.0:
-- Kupplung überarbeitet
-- Korrekturen an automatischer Gangschaltung
-- Sichern und Laden von eigenen Getriebekonfigurationen
-- Nur der Hauptbenutzer kann bestimmte Einstellungen ändern
-- Möglichkeit zum Überschreiben der maximalen Geschwindigkeit
-- Möglichkeit zum Überschreiben der Nennleistung und des Drehmomentverlaufs]]></de>
+[Umschalt Rechts + Pfeiltaste]: Nach vorne, hinten, links, rechts blicken]]></de>
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>store.dds</iconFilename>
-	<version>9.0.0.1</version>
+	<version>9.0.0.2</version>
 	<l10n filenamePrefix="modDesc_l10n">
 		<text name="vcaVERSION">          
-			<en>Vehicle Control Addon build 1</en>
+			<en>Vehicle Control Addon build 2</en>
 		</text>
 	</l10n>
 	
@@ -104,27 +57,6 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 		<action name="vcaKEEPSPEED" category="VEHICLE" axisType="HALF"/>
 		<action name="vcaKEEPSPEED2" category="VEHICLE" axisType="HALF"/>
 		<action name="vcaSWAPSPEED" category="VEHICLE" axisType="HALF"/>
-		<action name="vcaGearUp"    category="VEHICLE" axisType="HALF"/>
-		<action name="vcaGearDown"  category="VEHICLE" axisType="HALF"/>
-		<action name="vcaRangeUp"   category="VEHICLE" axisType="HALF"/>
-		<action name="vcaRangeDown" category="VEHICLE" axisType="HALF"/>
-		<action name="vcaNeutral"   category="VEHICLE" axisType="HALF"/>
-		<action name="vcaNeutral0"  category="VEHICLE" axisType="HALF"/>
-		<action name="vcaNeutral1"  category="VEHICLE" axisType="HALF"/>
-		<action name="vcaShifter1"  category="VEHICLE" axisType="HALF"/>
-		<action name="vcaShifter2"  category="VEHICLE" axisType="HALF"/>
-		<action name="vcaShifter3"  category="VEHICLE" axisType="HALF"/>
-		<action name="vcaShifter4"  category="VEHICLE" axisType="HALF"/>
-		<action name="vcaShifter5"  category="VEHICLE" axisType="HALF"/>
-		<action name="vcaShifter6"  category="VEHICLE" axisType="HALF"/>
-		<action name="vcaShifter7"  category="VEHICLE" axisType="HALF"/>
-		<action name="vcaShifter8"  category="VEHICLE" axisType="HALF"/>
-		<action name="vcaShifter9"  category="VEHICLE" axisType="HALF"/>
-		<action name="vcaShifterLH" category="VEHICLE" axisType="HALF"/>
-		<action name="vcaClutch"    category="VEHICLE" axisType="HALF"/>
-		<action name="vcaHandRpm"   category="VEHICLE" axisType="FULL"/>
-		<action name="vcaManRatio"  category="VEHICLE" axisType="FULL"/>
-		<action name="vcaHandMode"  category="VEHICLE" axisType="HALF"/>
 		<action name="vcaAutoShift" category="VEHICLE" axisType="HALF"/>
 		<action name="vcaDiffLockF" category="VEHICLE" axisType="HALF"/>
 		<action name="vcaDiffLockM" category="VEHICLE" axisType="HALF"/>
@@ -133,10 +65,6 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 		<action name="vcaLowerB"    category="VEHICLE" axisType="HALF"/>
 		<action name="vcaActivateF" category="VEHICLE" axisType="HALF"/>
 		<action name="vcaActivateB" category="VEHICLE" axisType="HALF"/>
-		<action name="vcaMenuAction1" axisType="HALF"/>
-		<action name="vcaMenuAction2" axisType="HALF"/>
-		<action name="vcaMenuAction3" axisType="HALF"/>
-		<action name="vcaMenuAction4" axisType="HALF"/>
 	</actions>
 	<inputBinding>
 		<actionBinding action="vcaSETTINGS">	
@@ -202,6 +130,9 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 		<actionBinding action="vcaDiffLockB">
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_backslash"/>
 		</actionBinding>	
+		<actionBinding action="vcaAutoShift">
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_leftbracket"/>
+		</actionBinding>	
 		<actionBinding action="vcaLowerF">
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_lshift KEY_v"/>
 		</actionBinding>	
@@ -213,18 +144,6 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 		</actionBinding>	
 		<actionBinding action="vcaActivateB">
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_rshift KEY_b"/>
-		</actionBinding>	
-		<actionBinding action="vcaMenuAction1">
-			<binding device="KB_MOUSE_DEFAULT" input="KEY_s"/>
-		</actionBinding>	
-		<actionBinding action="vcaMenuAction2">
-			<binding device="KB_MOUSE_DEFAULT" input="KEY_l"/>
-		</actionBinding>	
-		<actionBinding action="vcaMenuAction3">
-			<binding device="KB_MOUSE_DEFAULT" input="KEY_d"/>
-		</actionBinding>	
-		<actionBinding action="vcaMenuAction4">
-			<binding device="KB_MOUSE_DEFAULT" input="KEY_x"/>
 		</actionBinding>	
 	</inputBinding>
 	

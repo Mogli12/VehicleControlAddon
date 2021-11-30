@@ -16,47 +16,19 @@
 		<text name="vcaPEEKLR"          text="Nur ein kurzer Blick"/>
 		<text name="vcaANGLE"           text="Rastersteuerung"/>
 		<text name="vcaBRAKE"           text="Niedrige Bremskraft"/>
-		<text name="vcaTRANSMISSION"    text="Getriebe"/>
-		<text name="vcaMAXSPEED"        text="Übersetzung höchster Gang"/>
-		<text name="vcaLIMSPEED"        text="Geschwindigkeitsbegrenzer"/>
-		<text name="vcaAUTOSHIFT"       text="Automatik"/>
+		<text name="vcaAUTOSHIFTG"      text="Automatische Gänge"/>
+		<text name="vcaAUTOSHIFTR"      text="Automatische Gruppen"/>
 		<text name="vcaLAUNCH"          text="Geschwindigkeit Startgang"/>
 		<text name="vcaKEEPSPEED"       text="Geschwindigkeit permanent halten"/>
 		<text name="vcaNO_ARB"          text="Freies Lenken"/>
-		<text name="vcaHANDTHROTTLE"    text="Handgas"/>
-		<text name="vcaPITCH"           text="Tonhöhe bei Maximaldrehzahl"/>
-		<text name="vcaPITCH_IO"          text="Tonhöhe innen / aussen"/>
 		<text name="vcaSETTINGS"        text="Einstellungen"/>
-		<text name="vcaDRAWHUD"         text="Getriebe HUD"/>
+		<text name="vcaDRAWHUD"         text="VCA HUD"/>
 		
 		<text name="vcaDISTANCE"        text="Arbeitsbreite"/>
 		<text name="vcaOFFSET1"         text="Versatz des Geräts"/>
 		<text name="vcaOFFSET2"         text="Inverser Versatz"/>
 		<text name="vcaSNAP90"          text="Rasterbahn alle 90°"/>
 		<text name="vcaDRAWMARKER"      text="Anzeige der Rasterbahn"/>
-		<text name="vcaPITCH1"          text="Lineare Tonhöhe"/>
-		<text name="vcaPITCH2"          text="Tonhöhe bei mittlerer Drehzahl"/>
-		<text name="vcaBLOWOFFVOL"      text="Lautstärke des Trubo-Wastegates"/>
-		<text name="vcaSINGLEREV"       text="Einzelner Rückwärtsgang"/>
-		<text name="vcaAUTOCLUTCH"      text="Automatische Kupplung"/>
-		<text name="vcaTURBOCLUTCH"     text="Strömungskupplung"/>
-		<text name="vcaGEARRATIOF"      text="Min. Ganggeschwindigkeit"/>
-		<text name="vcaGEARRATIOT"      text="Max. Ganggeschwindigkeit"/>
-		<text name="vcaG27MODE"         text="G27/G29 Schaltschema"/>
-		<text name="vcaHIREDWORKER"     text="Getriebe und Helfer"/>
-		<text name="vcaOWNMINSPEED"     text="Übersetzung 1. Gang"/>
-		<text name="vcaOWNMINRANGE"     text="Übersetzung 1. Gang in 1. Gruppe"/>
-		<text name="vcaOWNMAXRANGE"     text="Übersetzung vorletzer Gruppe"/>
-		<text name="vcaOWNGEARS"        text="Anzahl Gänge"/>
-		<text name="vcaOWNRANGES"       text="Anzahl Gruppen"/>
-		<text name="vcaOWNGEARTIME"     text="Schaltgeschwindigkeit Gänge"/>
-		<text name="vcaOWNRANGETIME"    text="Schaltgeschwindigkeit Gruppen"/>
-		<text name="vcaOWNAUTOGEARS"    text="Automatische Gänge"/>
-		<text name="vcaOWNAUTORANGE"    text="Automatische Gruppen"/>
-		<text name="vcaOWNREVGEARS"     text="Liste der Rückwärtsgänge"/>
-		<text name="vcaOWNREVRANGE"     text="Liste der Rückwärtsgruppen"/>
-		<text name="vcaOWNREVRATIO"     text="Übersetzung der Rückwärtsgänge"/>
-		<text name="vcaOWNSPLITG27"     text="G27 Splitter gerade/ungerade"/>
 
 		<text name="vcaAntiSlip"        text="Traktionskontrolle"/>
 		<text name="vcaDiffManual"      text="Manueller Allradantrieb und Differentialsperren"/>
@@ -89,7 +61,8 @@
 		<text name="vca_tip_TRANSMISSION" text="Typ des Getriebes; IVT ist ein stufenloses Getriebe, die anderen Getriebe haben 12 verschiedene Gänge, 2x6 eignet sich am besten für LKWs"/>
 		<text name="vca_tip_MAXSPEED"     text="Maximale Geschwindigkeit, die im höchsten Gang (theoretisch) erreicht werdern kann"/>
 		<text name="vca_tip_LIMSPEED"     text="Begrenzung der Höchtstgeschwindigkeit auf den Standardwert des Fahrzeugs"/>
-		<text name="vca_tip_AUTOSHIFT"    text="Automatische Schaltung von Gängen und Gruppen"/>
+		<text name="vca_tip_AUTOSHIFTG"   text="Automatische Schaltung von Gängen"/>
+		<text name="vca_tip_AUTOSHIFTR"   text="Automatische Schaltung von Gruppen"/>
 		<text name="vca_tip_LAUNCH"       text="Geschwindigkeit des Ganges, der zum Anfahren benutzt wird"/>
 		<text name="vca_tip_KEEPSPEED"    text="Falls ständiges Halten der Geschwindigkeit aktiviert ist, dann fährt das Fahrzeug quasi immer mit Tempomat. Das entspricht dem Fahrhebel in modernen Traktoren."/>
 		<text name="vca_tip_NO_ARB"       text="Falls freies Lenken aktiviert ist, dann lenkt das Fahrzeug nicht selbständig zurück auf Geradeaus"/>
@@ -103,29 +76,6 @@
 		<text name="vca_tip_OFFSET2"      text="Inverser Versatz der Rasterbahnen"/>
 		<text name="vca_tip_SNAP90"       text="Automatisches Drehen des Rasterbahn um 90°"/>
 		<text name="vca_tip_DRAWMARKER"   text="Anzeige der aktuellen Rasterbahn"/>
-		<text name="vca_tip_PITCH1"       text="Neuberechnung der Tonhöhe, damit sie linear verläuft"/>
-		<text name="vca_tip_PITCH2"       text="Tonhöhe bei mittlerer Drehzahl"/>
-		<text name="vca_tip_BLOWOFFVOL"   text="Lautstärke des Turbo-Wastegates bei aufgeladenen Motoren"/>
-		<text name="vca_tip_SINGLEREV"    text="Beim Rückwärtsfahren wird ein einzelner Gang oder eine einzelne Gruppe anstelle der Wendeschaltung verwendet"/>
-		<text name="vca_tip_AUTOCLUTCH"   text="Automatische Betätigung der Kupplung"/>
-		<text name="vca_tip_TURBOCLUTCH"  text="Zusätzliche Strömungskupplung"/>
-		<text name="vca_tip_GEARRATIOF"   text="Begrenzung der Ganggeschwindigkeit. Es wird kein kleiner Gang automatisch ausgewählt"/>
-		<text name="vca_tip_GEARRATIOT"   text="Begrenzung der Ganggeschwindigkeit. Es wird kein größerer Gang automatisch ausgewählt"/>
-		<text name="vca_tip_G27MODE"      text="G27/G29 Schaltschema"/>
-		<text name="vca_tip_HIREDWORKER"  text="Steuert, ob das Getriebe ein- oder ausgeschaltet wird, wenn das Fahrzeug vom Helfer kontrolliert wird"/>
-		<text name="vca_tip_OWNMINSPEED"  text="Maximale Geschwindigkeit, die im ersten Gang erreicht werdern kann"/>
-		<text name="vca_tip_OWNMINRANGE"  text="Maximale Geschwindigkeit, die in der ersten Gruppe im ersten Gang erreicht werdern kann"/>
-		<text name="vca_tip_OWNMAXRANGE"  text="Maximale Geschwindigkeit, die in der zweithöchsten Gruppe im höchsten Gang erreicht werdern kann"/>
-		<text name="vca_tip_OWNGEARS"     text="Anzahl Gänge"/>
-		<text name="vca_tip_OWNRANGES"    text="Anzahl Gruppen"/>
-		<text name="vca_tip_OWNGEARTIME"  text="Schaltgeschwindigkeit Gänge"/>
-		<text name="vca_tip_OWNRANGETIME" text="Schaltgeschwindigkeit Gruppen"/>
-		<text name="vca_tip_OWNAUTOGEARS" text="Automatische Schaltung von Gängen und Speedmatching"/>
-		<text name="vca_tip_OWNAUTORANGE" text="Automatische Schaltung von Gruppen und Speedmatching"/>
-		<text name="vca_tip_OWNREVGEARS"  text="Liste der Rückwärtsgänge. Wenn die Liste leer ist, dann sind es alle Gänge"/>
-		<text name="vca_tip_OWNREVRANGE"  text="Liste der Rückwärtsgruppen. Wenn die Liste leer ist, dann sind es alle Gruppen"/>
-		<text name="vca_tip_OWNREVRATIO"  text="Übersetzung der Rückwärtsgänge"/>
-		<text name="vca_tip_OWNSPLITG27"  text="Der Splitter des G27 Ganghebels unterteilt die Gänge und wechselt zwischen geraden und ungeraden Gängen."/>
 		
 		<text name="vca_tip_AntiSlip"     text="Traktionskontrolle bremst einzelne Räder, wenn sie durchdrehen"/>
 		<text name="vca_tip_DiffManual"   text="Manuelle Steuerung des Allradantriebs und der vorderen und hinteren Differentialsperre"/>
@@ -135,11 +85,6 @@
 		<text name="vca_tip_HudY"         text="Hud Position Y"/>
 		<text name="vca_tip_HIREDWORKER2" text="Steuert, ob die Differentiale modifiziert werden, wenn das Fahrzeug vom Helfer kontrolliert wird"/>
 
-		<text name="vca_tip_SPEEDLIMITF"  text="Abgeregelte Höchstgeschwindigkeit des Fahrzeugs"/>
-		<text name="vca_tip_SPEEDLIMITB"  text="Höchstgeschwindigkeit beim Rückwärtsfahren"/>
-		<text name="vca_tip_RATEDPOWER"   text="Nennleistung in PS bei Nenndrehzahl"/>
-		<text name="vca_tip_TORQUECURVE"  text="Alternative, realistischere Drehmomentkurve"/>
-		<text name="vca_tip_ROTACCTIME"   text="Zeit, die der Motor zum Beschleunigen von Leerlauf bis zur Maximaldrehzahl benötigt"/>
 		<text name="vca_tip_GEARRGMODE"   text="Diese Einstellunge vertauscht die hoch/runter Tasten für Gänge und Gruppen"/>
 		<text name="vca_tip_STSPEEDO"     text="Geschwindigkeit der Lenkung"/>
 		<text name="vca_tip_STSPEEDI"     text="Geschwindigkeit der Lenkung beim Zurücklenken"/>
@@ -166,32 +111,8 @@
 		<text name="input_vcaKEEPSPEED" text="VCA: Geschwindigkeit halten"/>
 		<text name="input_vcaKEEPSPEED2" text="VCA: Geschwindigkeit permanent halten"/>
 		<text name="input_vcaSWAPSPEED" text="VCA: Tempomatgeschwindigkeit wechseln"/>
-		<text name="input_vcaGearUp"    text="VCA: Gang hoch"/>
-		<text name="input_vcaGearDown"  text="VCA: Gang runter"/>
-		<text name="input_vcaRangeUp"   text="VCA: Gruppe hoch"/>
-		<text name="input_vcaRangeDown" text="VCA: Gruppe runter"/>
-		<text name="input_vcaNeutral"   text="VCA: Leerlauf an/aus"/>
-		<text name="input_vcaNeutral0"  text="VCA: Leerlauf aus"/>
-		<text name="input_vcaNeutral1"  text="VCA: Leerlauf an"/>
-		<text name="input_vcaClutch"    text="VCA: Kupplungsachse"/>
-		<text name="input_vcaShifter1"  text="VCA: G27/G29 Gang 1"/>
-		<text name="input_vcaShifter2"  text="VCA: G27/G29 Gang 2"/>
-		<text name="input_vcaShifter3"  text="VCA: G27/G29 Gang 3"/>
-		<text name="input_vcaShifter4"  text="VCA: G27/G29 Gang 4"/>
-		<text name="input_vcaShifter5"  text="VCA: G27/G29 Gang 5 / Gruppe runter"/>
-		<text name="input_vcaShifter6"  text="VCA: G27/G29 Gang 6 / Gruppe hoch"/>
-		<text name="input_vcaShifter7"  text="VCA: G27/G29 Gang 7 / Rückwärtsgang"/>
-		<text name="input_vcaShifter8"  text="VCA: G27/G29 Gang 8"/>
-		<text name="input_vcaShifter9"  text="VCA: G27/G29 Gang 9 / Rückwärtsgang"/>
-		<text name="input_vcaShifterLH" text="VCA: G27/G29 Gang Splitter"/>
-		<text name="input_vcaHandRpm"   text="VCA: Handgas Drehzahl"/>
-		<text name="input_vcaHandRpm_1" text="VCA: mehr Handgas"/>
-		<text name="input_vcaHandRpm_2" text="VCA: weniger Handgas"/>
-		<text name="input_vcaHandMode"  text="VCA: Handgas Modus"/>
-		<text name="input_vcaManRatio"   text="VCA: manuelles Vario"/>
-		<text name="input_vcaManRatio_1" text="VCA: Vario schneller"/>
-		<text name="input_vcaManRatio_2" text="VCA: Vario langsamer"/>
-		<text name="input_vcaAutoShift" text="VCA: Automatische Schaltung an/aus"/>
+		<text name="input_vcaAutoGears" text="VCA: Automatische Schaltung Gänge an/aus"/>
+		<text name="input_vcaAutoRange" text="VCA: Automatische Schaltung Gruppen an/aus"/>
 		<text name="input_vcaDiffLockF" text="VCA: Differentialsperre vorne an/aus"/>
 		<text name="input_vcaDiffLockM" text="VCA: Allrad an/aus"/>
 		<text name="input_vcaDiffLockB" text="VCA: Differentialsperre hinten an/aus"/>

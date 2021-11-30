@@ -5,7 +5,7 @@ vehicleControlAddonEvent = {}
 vehicleControlAddonEvent_mt = Class(vehicleControlAddonEvent, Event)
 InitEventClass(vehicleControlAddonEvent, "vehicleControlAddonEvent")
 function vehicleControlAddonEvent.emptyNew()
-  local self = Event:new(vehicleControlAddonEvent_mt)
+  local self = Event.new(vehicleControlAddonEvent_mt)
   return self
 end
 function vehicleControlAddonEvent.new(object,name,value)
