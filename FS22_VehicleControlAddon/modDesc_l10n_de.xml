@@ -90,6 +90,7 @@
 		<text name="vca_tip_STSPEEDI"     text="Geschwindigkeit der Lenkung beim Zurücklenken"/>
 		
 		<text name="input_vcaSETTINGS"  text="VCA: Einstellungen"/>
+		<text name="input_vcaGLOBALS"   text="VCA: Globale Einstellungen"/>
 		<text name="input_vcaUP"        text="VCA: Blickrichtung wechseln oder nach vorne schauen"/>
 		<text name="input_vcaDOWN"      text="VCA: In die andere Richtung blicken / nach hinten schauen"/>
 		<text name="input_vcaLEFT"      text="VCA: Nach links schauen"/>

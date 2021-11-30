@@ -145,6 +145,7 @@
 		<text name="vca_tip_STSPEEDI"     text="Inverse steering speed"/>
 		                               
 		<text name="input_vcaSETTINGS"  text="VCA: settings"/>
+		<text name="input_vcaGLOBALS"   text="VCA: global settings"/>
 		<text name="input_vcaUP"        text="VCA: toggle view direction / lock forwards"/>
 		<text name="input_vcaDOWN"      text="VCA: peek into other view direction / lock backwards"/>
 		<text name="input_vcaLEFT"      text="VCA: look left"/>

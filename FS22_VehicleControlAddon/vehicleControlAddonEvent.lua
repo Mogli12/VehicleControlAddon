@@ -35,6 +35,6 @@ end
 function vehicleControlAddonEvent:run(connection)
   vehicleControlAddon.vcaSetState( self.object, self.name, self.value, true )
   if not connection:getIsServer() then
-    g_server:broadcastEvent(vehicleControlAddonEvent:new(self.object,self.name,self.value), nil, connection, self.object)
+    g_server:broadcastEvent(vehicleControlAddonEvent.new(self.object,self.name,self.value), nil, connection, self.object)
   end
 end

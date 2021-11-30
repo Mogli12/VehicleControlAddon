@@ -3,38 +3,11 @@ local directory = g_currentModDirectory
 local modName = g_currentModName
 local specName = "zzzVehicleControlAddon"
 
-VCAGlobals  = {
-	cameraRotFactor     = 0.5,
-	cameraRotFactorRev  = 0.3,
-	cameraRotTime       = 0.001,
-	limitThrottle       = 15, -- 9 => 90%/100% 15 => 100%/75% -->
-	snapAngle           = 4,  -- 45° -->
-	brakeForceFactor    = 0.25,
-	snapAngleHudX       = -1, -- any value >= 0 => position of bottom left corner / -1 above HUD -->
-	snapAngleHudY       = -1, -- any value >= 0 => position of bottom left corner / -1 above HUD -->
-	drawHud             = true,
-	mouseAutoRotateBack = false,
-	turnOffAWDSpeed     = 30,-- km/h -->
-	
-	-- defaults -->
-	adaptiveSteering    = false,
-	camOutsideRotation  = 0,
-	camInsideRotation   = 0,
-	camReverseRotation  = false,
-	camRevOutRotation   = false,
-	peekLeftRight       = true,
-	hiredWorker2        = false, -- differential for hired worker -->
-	rotSpeedOut         = 0.5, 
-	rotSpeedIn          = 0.5, 
-}
-
-VCADefaults = {}
-
 vehicleControlAddonRegister = {}
 
 local vehicleControlAddonRegister_mt = Class(vehicleControlAddonRegister)
 
-function vehicleControlAddonRegister:new( i18n )
+function vehicleControlAddonRegister.new( i18n )
 	self = {}
 	setmetatable(self, vehicleControlAddonRegister_mt)
 	self.vcaDirectory = directory
@@ -105,7 +78,7 @@ local vcaGetText
 function vehicleControlAddonRegister:postLoadMission(mission)
 
 	print("--- loading "..self.i18n:getText("vcaVERSION").." by mogli ---")
-	vehicleControlAddon.initSpecialization()
+	--vehicleControlAddon.initSpecialization()
 
 	self.mogliTexts = {}
 	
@@ -156,8 +129,10 @@ function vehicleControlAddonRegister:postLoadMission(mission)
 		local function loadVCAMenu()
 			-- settings screen
 			g_gui:loadProfiles(Utils.getFilename("gui/guiProfiles.xml", self.vcaDirectory))
-			g_vehicleControlAddonMenu = VehicleControlAddonMenu:new()
-			g_gui:loadGui(Utils.getFilename("gui/vehicleControlAddonMenu.xml",   self.vcaDirectory), "vehicleControlAddonMenu", g_vehicleControlAddonMenu)
+			g_vehicleControlAddonMenu   = VehicleControlAddonMenu.new()
+			g_vehicleControlAddonConfig = VehicleControlAddonConfig.new()
+			g_gui:loadGui(Utils.getFilename("gui/vehicleControlAddonMenu.xml",   self.vcaDirectory), "vehicleControlAddonMenu",   g_vehicleControlAddonMenu)
+			g_gui:loadGui(Utils.getFilename("gui/vehicleControlAddonConfig.xml", self.vcaDirectory), "vehicleControlAddonConfig", g_vehicleControlAddonConfig)
 		end 
 
 		local state, result = pcall( loadVCAMenu )
@@ -171,8 +146,6 @@ function vehicleControlAddonRegister:postLoadMission(mission)
 end;
 
 function vehicleControlAddonRegister:loadMap(name)
-	local configDir, configFile
-	
 	if g_server ~= nil then 
 		self.isDedi = g_dedicatedServerInfo ~= nil  
 		if self.isDedi then 
@@ -185,6 +158,15 @@ function vehicleControlAddonRegister:loadMap(name)
 	else 
 		self.isMP   = true 
 	end 
+	
+	if g_careerScreen and g_careerScreen.currentSavegame ~= nil and g_careerScreen.currentSavegame.savegameDirectory ~= nil then 
+		local configFile   = g_careerScreen.currentSavegame.savegameDirectory .. "/vehicleControlAddon.xml"
+		self.configuration = vehicleControlAddonConfig.new( configFile )
+		if g_server ~= nil then 
+			self.configuration:load()
+		end
+	end 
+	vehicleControlAddon.initSpecialization()
 end;
 
 function vehicleControlAddonRegister:deleteMap()
@@ -209,14 +191,21 @@ end;
 
 local function beforeLoadMission(mission)
 	assert( g_vehicleControlAddon == nil )
-	local base = vehicleControlAddonRegister:new( g_i18n )
+	local base = vehicleControlAddonRegister.new( g_i18n )
 	getfenv(0)["g_vehicleControlAddon"] = base
 	addModEventListener(base);
+end 
+
+local function afterConnectionFinishedLoading(mission, connection, x,y,z, viewDistanceCoeff)
+-- call on server after a client connected to the server 
+-- send event with settings from server to new client 
+  connection:sendEvent(vehicleControlAddonConfigEvent.new(false))
 end 
 
 local function init()
 	Mission00.load = Utils.prependedFunction(Mission00.load, beforeLoadMission)
 	Mission00.loadMission00Finished = Utils.appendedFunction(Mission00.loadMission00Finished, postLoadMissionFinished)
+	FSBaseMission.onConnectionFinishedLoading = Utils.appendedFunction( FSBaseMission.onConnectionFinishedLoading, afterConnectionFinishedLoading )
 	TypeManager.finalizeTypes = Utils.prependedFunction(TypeManager.finalizeTypes, beforeFinalizeTypes)
 end 
 

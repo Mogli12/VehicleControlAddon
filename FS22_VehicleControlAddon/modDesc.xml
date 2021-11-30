@@ -27,15 +27,16 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>store.dds</iconFilename>
-	<version>9.0.0.3</version>
+	<version>9.0.0.4</version>
 	<l10n filenamePrefix="modDesc_l10n">
 		<text name="vcaVERSION">          
-			<en>Vehicle Control Addon build 3</en>
+			<en>Vehicle Control Addon build 4</en>
 		</text>
 	</l10n>
 	
 	<actions>
 		<action name="vcaSETTINGS"  category="VEHICLE" axisType="HALF"/>
+		<action name="vcaGLOBALS"   category="VEHICLE" axisType="HALF"/>
 		<action name="vcaUP"        category="VEHICLE" axisType="HALF"/>
 		<action name="vcaDOWN"      category="VEHICLE" axisType="HALF"/>
 		<action name="vcaLEFT"      category="VEHICLE" axisType="HALF"/>
@@ -69,6 +70,9 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 	<inputBinding>
 		<actionBinding action="vcaSETTINGS">	
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_c"/>
+		</actionBinding>	
+		<actionBinding action="vcaGLOBALS">	
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_lalt KEY_c"/>
 		</actionBinding>	
 		<actionBinding action="vcaUP">	
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_rshift KEY_up"/>
@@ -148,9 +152,11 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 	</inputBinding>
 	
 	<extraSourceFiles>
+		<sourceFile filename="vehicleControlAddonConfig.lua"/>
 		<sourceFile filename="vehicleControlAddon.lua"/>
 		<sourceFile filename="vehicleControlAddonEvent.lua"/>
 		<sourceFile filename="gui/vehicleControlAddonMenu.lua"/>
+		<sourceFile filename="gui/vehicleControlAddonConfig.lua"/>
 		<sourceFile filename="vehicleControlAddonRegister.lua"/>
 	</extraSourceFiles>    
 </modDesc>

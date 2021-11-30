@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<GUI onOpen="onOpen" onClose="onClose" onCreate="onCreate">
+	<GuiElement type="empty" profile="newLayer" />
+	<GuiElement type="bitmap" profile="dialogFullscreenBg" />
+	<GuiElement type="bitmap" profile="bgVignette"/>
+	<GuiElement type="bitmap" profile="bgGlowDialog" />
+
+		<GuiElement type="empty" profile="ingameMenuCenterBox" id="settingsContainer">
+			<GuiElement type="bitmap" profile="topScrollClipper" name="topClipper" />
+			<GuiElement type="bitmap" profile="bottomScrollClipper" name="bottomClipper" />
+
+			<GuiElement type="scrollingLayout" profile="ingameMenuSettingsLayout" id="boxLayout" topClipperElementName="topClipper" bottomClipperElementName="bottomClipper">
+
+				<GuiElement type="text" profile="settingsMenuSubtitle" vcaTextID="vcaSETTINGS" text="Settings"/>
+
+				<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="brakeForceFactor" onCreate="onCreateSubElement" onCreateArgs="percent5">
+					<GuiElement type="button" profile="multiTextOptionSettingsLeft" />
+					<GuiElement type="button" profile="multiTextOptionSettingsRight" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsText" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsTitle" vcaTextID="vcaBRAKE" text="brakeForceFactor"/>
+					<GuiElement type="bitmap" profile="multiTextOptionSettingsBg" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsTooltip" vcaTextID="vca_tip_BRAKE" text="brakeForceFactor"/>
+				</GuiElement>
+
+				<GuiElement type="checkedOption" profile="vcaMTOSettings" id="adaptiveSteering" onCreate="onCreateSubElement">
+					<GuiElement type="button" profile="multiTextOptionSettingsLeft" />
+					<GuiElement type="button" profile="multiTextOptionSettingsRight" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsText" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsTitle" vcaTextID="vcaSTEERING" text="adaptiveSteering"/>
+					<GuiElement type="bitmap" profile="multiTextOptionSettingsBg" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsTooltip" vcaTextID="vca_tip_STEERING" text="adaptiveSteering"/>
+				</GuiElement>
+
+				<GuiElement type="multiTextOption" profile="vcaMTOSettings" id="camOutsideRotation" onCreate="onCreateSubElement" onCreateArgs="camRotation">
+					<GuiElement type="button" profile="multiTextOptionSettingsLeft" />
+					<GuiElement type="button" profile="multiTextOptionSettingsRight" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsText" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsTitle" vcaTextID="vcaCAMERAO" text="camOutsideRotation"/>
+					<GuiElement type="bitmap" profile="multiTextOptionSettingsBg" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsTooltip" vcaTextID="vca_tip_CAMERAO" text="camOutsideRotation"/>
+				</GuiElement>
+
+				<GuiElement type="multiTextOption" profile="vcaMTOSettings" id="camInsideRotation" onCreate="onCreateSubElement" onCreateArgs="camRotation">
+					<GuiElement type="button" profile="multiTextOptionSettingsLeft" />
+					<GuiElement type="button" profile="multiTextOptionSettingsRight" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsText" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsTitle" vcaTextID="vcaCAMERAI" text="camInsideRotation"/>
+					<GuiElement type="bitmap" profile="multiTextOptionSettingsBg" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsTooltip" vcaTextID="vca_tip_CAMERAI" text="camInsideRotation"/>
+				</GuiElement>
+
+				<GuiElement type="checkedOption" profile="vcaMTOSettings" id="camReverseRotation" onCreate="onCreateSubElement">
+					<GuiElement type="button" profile="multiTextOptionSettingsLeft" />
+					<GuiElement type="button" profile="multiTextOptionSettingsRight" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsText" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsTitle" vcaTextID="vcaREVERSEI" text="camReverseRotation"/>
+					<GuiElement type="bitmap" profile="multiTextOptionSettingsBg" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsTooltip" vcaTextID="vca_tip_REVERSEI" text="camReverseRotation"/>
+				</GuiElement>
+
+				<GuiElement type="checkedOption" profile="vcaMTOSettings" id="camRevOutRotation" onCreate="onCreateSubElement">
+					<GuiElement type="button" profile="multiTextOptionSettingsLeft" />
+					<GuiElement type="button" profile="multiTextOptionSettingsRight" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsText" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsTitle" vcaTextID="vcaREVERSEO" text="camRevOutRotation"/>
+					<GuiElement type="bitmap" profile="multiTextOptionSettingsBg" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsTooltip" vcaTextID="vca_tip_REVERSEO" text="camRevOutRotation"/>
+				</GuiElement>
+
+				<GuiElement type="checkedOption" profile="vcaMTOSettings" id="peekLeftRight" onCreate="onCreateSubElement">
+					<GuiElement type="button" profile="multiTextOptionSettingsLeft" />
+					<GuiElement type="button" profile="multiTextOptionSettingsRight" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsText" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsTitle" vcaTextID="vcaPEEKLR" text="peekLeftRight"/>
+					<GuiElement type="bitmap" profile="multiTextOptionSettingsBg" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsTooltip" vcaTextID="_vca_tip_PEEKLR" text="peekLeftRight"/>
+				</GuiElement>
+
+
+				<GuiElement type="empty" profile="ingameMenuGameSettingsTextInputWrapper">
+					<GuiElement type="textInput" profile="ingameMenuGameSettingsTextInput" id="snapAngleHudX" onCreate="onCreateSubElement" 
+											imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed" />
+					<GuiElement type="text" profile="multiTextOptionSettingsTitle" vcaTextID="vcaHudX" text="snapAngleHudX"/>
+					<GuiElement type="text" profile="multiTextOptionSettingsTooltip" vcaTextID="vca_tip_HudX" text="snapAngleHudX (tt)"/>
+				</GuiElement>
+
+				<GuiElement type="empty" profile="ingameMenuGameSettingsTextInputWrapper">
+					<GuiElement type="textInput" profile="ingameMenuGameSettingsTextInput" id="snapAngleHudY" onCreate="onCreateSubElement" 
+											imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed" />
+					<GuiElement type="text" profile="multiTextOptionSettingsTitle" vcaTextID="vcaHudY" text="snapAngleHudY"/>
+					<GuiElement type="text" profile="multiTextOptionSettingsTooltip" vcaTextID="vca_tip_HudY" text="snapAngleHudY (tt)"/>
+				</GuiElement>				
+				
+				
+			</GuiElement>
+
+		<GuiElement type="flowLayout" profile="buttonBoxDialog" id="buttonsPC" >
+			<GuiElement type="button" profile="buttonSave"   text="$l10n_button_save"   onClick="onClickSave"  id="saveButton" />
+			<GuiElement type="button" profile="buttonBack"   text="$l10n_button_back"   onClick="onClickBack"  id="backButton" />
+		</GuiElement>
+	</GuiElement>
+</GUI>
