@@ -255,8 +255,8 @@ function vehicleControlAddon.initSpecialization()
 	vehicleControlAddon.createState( "lastSnapPosZ", 0                                          , VCAValueType.float )
 	vehicleControlAddon.createState( "isEnteredMP",  false                                      , VCAValueType.bool, nil, false  )
 	vehicleControlAddon.createState( "isBlocked",    false                                      , VCAValueType.bool, nil, false  )
-	vehicleControlAddon.createState( "snapDraw",     1                                          , VCAValueType.float )
-	vehicleControlAddon.createState( "snapFactor",   0                                          , VCAValueType.float )
+	vehicleControlAddon.createState( "snapDraw",     1                                          , VCAValueType.int16 )
+	vehicleControlAddon.createState( "snapFactor",   0                                          , VCAValueType.float, nil, false )
 	vehicleControlAddon.createState( "hiredWorker2", VCAGlobals.hiredWorker2                    , VCAValueType.bool  )
 	vehicleControlAddon.createState( "rotSpeedOut",  VCAGlobals.rotSpeedOut                     , VCAValueType.float )
 	vehicleControlAddon.createState( "rotSpeedIn",   VCAGlobals.rotSpeedIn                      , VCAValueType.float )
@@ -346,13 +346,13 @@ function vehicleControlAddon:vcaIsNonDefaultProp( name )
 	local d = self:vcaGetDefault( name )
 	if     d == nil then 
 		return false 
-	elseif type( self.spec_vca[name] ) == "number" and type( d ) == "number" then 
-		if math.abs( self.spec_vca[name] - d ) < 1e-4 then 
-			return false 
-		end 
-		return true 
-	elseif self.spec_vca[name] == d then 
-		return false 
+--elseif type( self.spec_vca[name] ) == "number" and type( d ) == "number" then 
+--	if math.abs( self.spec_vca[name] - d ) < 1e-4 then 
+--		return false 
+--	end 
+--	return true 
+--elseif self.spec_vca[name] == d then 
+--	return false 
 	end 
 	return true  
 end 
@@ -675,6 +675,13 @@ function vehicleControlAddon:saveToXMLFile(xmlFile, key, usedModNames)
 	end 
 end 
 
+function vehicleControlAddon.isMPMaster()
+	if g_vehicleControlAddon.isMP then 
+		return g_currentMission.isMasterUser 
+	end 
+	return g_server ~= nil 
+end 
+
 function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicle)
 	if self.spec_vca == nil then return end 
 	
@@ -686,7 +693,7 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
 		end 
 		
 		for _,actionName in pairs({ "vcaSETTINGS",  
-                                "vcaGLOBALS",  
+																"vcaGLOBALS",  
                                 "vcaUP",        
                                 "vcaDOWN",      
                                 "vcaLEFT",      
@@ -716,6 +723,11 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
 															}) do
 																
 			local addThis = InputAction[actionName] ~= nil   
+			
+			if actionName == "vcaGLOBALS" then 
+				addThis = vehicleControlAddon.isMPMaster()
+			end 
+			
 --		if      actionName == "vcaGearUp"
 --				or  actionName == "vcaGearDown"
 --				or  actionName == "vcaRangeUp"
@@ -1463,7 +1475,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 		if self.spec_vca.kSToggle then 
 			isPressed = not isPressed
 		end 
-		if isPressed and not self.spec_vca.kSIsOn then 
+		if isPressed and not self.spec_vca.ksIsOn then 
 			self:vcaSetState( "keepSpeed", self.lastSpeed * 3600 )
 		end 
 		self:vcaSetState( "ksIsOn", isPressed )
@@ -1552,7 +1564,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 
 	--*******************************************************************
 	-- Keep Speed 
-	if self.spec_vca.kSIsOn and self.spec_vca.isEntered then	
+	if self.spec_vca.ksIsOn and self.spec_vca.isEntered then	
 		local ksBrake = false 
 	
 		local m
@@ -2322,7 +2334,7 @@ function vehicleControlAddon:onDraw()
 				y = y + l * 1.2	
 			end
 			
-			if self.spec_vca.kSIsOn and self.spec_drivable.cruiseControl.state == 0 then 
+			if self.spec_vca.ksIsOn and self.spec_drivable.cruiseControl.state == 0 then 
 				renderText(x, y, l, self:vcaSpeedToString( self.spec_vca.keepSpeed / 3.6, "%5.1f" ))
 				y = y + l * 1.2	
 			end
@@ -2362,7 +2374,7 @@ function vehicleControlAddon:onDraw()
 				if text ~= "" then text = text ..", " end 
 				text = text .. "keep rot."
 			end 
-			if self.spec_vca.kSIsOn then 
+			if self.spec_vca.ksIsOn then 
 				if text ~= "" then text = text ..", " end 
 				text = text .. "keep speed"
 			end 
@@ -2821,7 +2833,7 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 	self.spec_vca.ksBrakeTime   = nil 
 
 	if self:vcaIsVehicleControlledByPlayer() then
-		if self.spec_vca.kSIsOn then 
+		if self.spec_vca.ksIsOn then 
 			if self:vcaGetShuttleCtrl() or self.spec_vca.keepSpeed > 0 then 
 				if acceleration < -0.1 then 
 					if lastKSBrakeTime == nil then 
@@ -2842,7 +2854,7 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 		end 
 	
 		if     self.spec_drivable.cruiseControl.state > 0 then 
-		elseif self.spec_vca.kSIsOn and ( self.spec_vca.ksBrakeTime == nil or g_currentMission.time < self.spec_vca.ksBrakeTime + 1000 ) then 
+		elseif self.spec_vca.ksIsOn and ( self.spec_vca.ksBrakeTime == nil or g_currentMission.time < self.spec_vca.ksBrakeTime + 1000 ) then 
 			if math.abs( self.spec_vca.keepSpeed ) < 0.5 then 
 				acceleration = 0
 				doHandbrake  = true 
@@ -3002,7 +3014,7 @@ function vehicleControlAddon:vcaOnSetSnapIsOn( old, new, noEventSend )
 end 
 
 function vehicleControlAddon:vcaOnSetKSIsOn( old, new, noEventSend )
-	self.spec_vca.kSIsOn = new 
+	self.spec_vca.ksIsOn = new 
 end 
 
 function vehicleControlAddon:vcaOnSetLastSnapAngle( old, new, noEventSend )
@@ -3089,7 +3101,9 @@ end
 
 
 function vehicleControlAddon:vcaShowGlobalsUI()
-
+	if not vehicleControlAddon.isMPMaster() then 
+		return 
+	end 
 	if g_gui:getIsGuiVisible() then
 		return 
 	end

@@ -202,11 +202,18 @@ local function afterConnectionFinishedLoading(mission, connection, x,y,z, viewDi
   connection:sendEvent(vehicleControlAddonConfigEvent.new(false))
 end 
 
+local function afterMissionInfoSaveToXMLFile()
+	if g_server ~= nil then 
+		g_vehicleControlAddon.configuration:save() 
+	end 
+end 
+
 local function init()
 	Mission00.load = Utils.prependedFunction(Mission00.load, beforeLoadMission)
 	Mission00.loadMission00Finished = Utils.appendedFunction(Mission00.loadMission00Finished, postLoadMissionFinished)
 	FSBaseMission.onConnectionFinishedLoading = Utils.appendedFunction( FSBaseMission.onConnectionFinishedLoading, afterConnectionFinishedLoading )
 	TypeManager.finalizeTypes = Utils.prependedFunction(TypeManager.finalizeTypes, beforeFinalizeTypes)
+	FSCareerMissionInfo.saveToXMLFile = Utils.appendedFunction( FSCareerMissionInfo.saveToXMLFile, afterMissionInfoSaveToXMLFile )
 end 
 
 init()

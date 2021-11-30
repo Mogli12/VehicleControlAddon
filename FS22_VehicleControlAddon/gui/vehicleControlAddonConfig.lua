@@ -56,23 +56,23 @@ end
 function VehicleControlAddonConfig:onClickBack()
 	self:vcaSetValues( true )
 	self.vcaInputEnabled = false  
-	self:changeScreen(nil)
-end  
-
-function VehicleControlAddonConfig:onClickSave()
 	self:vcaSetValues( true )
 	self.vcaInputEnabled = false  
 
+	local isDirty = false 
 	for n,v in pairs( self.vcaBackup ) do 
-		if v ~= nil then 
+		if v ~= nil and v ~= VCAGlobals[n] then 
+			isDirty = true 
 			VCAGlobals[n] = v
 		end 
 	end 
-
-	if g_server ~= nil then 
-		g_vehicleControlAddon.configuration:save()
-	else 
-		g_client:getServerConnection():sendEvent( vehicleControlAddonConfigEvent.new(true) )
+	
+	if isDirty then 
+		if g_server ~= nil then 
+			g_server:broadcastEvent( vehicleControlAddonConfigEvent.new(false) )
+		else 
+			g_client:getServerConnection():sendEvent( vehicleControlAddonConfigEvent.new(false) )
+		end 
 	end 
 
 	self:changeScreen(nil)
@@ -114,7 +114,6 @@ function VehicleControlAddonConfig:vcaGetValues( force )
 		local element = s.element
 		if self.vcaBackup[n] ~= nil then 
 			local v = self.vcaBackup[n]
-			print("get: '"..tostring(n).."' = '"..tostring(v).."'")
 			if     s.parameter == "camRotation" then 
 				element:setState( v + 1 )
 			elseif s.parameter == "percent5" then 
@@ -156,7 +155,6 @@ function VehicleControlAddonConfig:vcaSetValues( force )
 			elseif element.typeName == "checkedOption" then 
 				v = element:getIsChecked()
 			end 
-			print("set: '"..tostring(n).."' = '"..tostring(v).."'")
 			if v ~= nil and v ~= self.vcaBackup[n] then  
 				self.vcaBackup[n] = v 
 				isDirty = true 

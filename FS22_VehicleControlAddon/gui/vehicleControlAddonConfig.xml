@@ -95,7 +95,6 @@
 			</GuiElement>
 
 		<GuiElement type="flowLayout" profile="buttonBoxDialog" id="buttonsPC" >
-			<GuiElement type="button" profile="buttonSave"   text="$l10n_button_save"   onClick="onClickSave"  id="saveButton" />
 			<GuiElement type="button" profile="buttonBack"   text="$l10n_button_back"   onClick="onClickBack"  id="backButton" />
 		</GuiElement>
 	</GuiElement>
