@@ -1534,7 +1534,25 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 	-- overwrite or reset some values 
 	--*******************************************************************
 	
-
+	-- reduce automatic brake force above 1 m/s^2
+	if self.spec_motorized ~= nil and self.spec_motorized.motor ~= nil and self.spec_motorized.motor.lowBrakeForceScale ~= nil then
+		if self:getIsVehicleControlledByPlayer() then     
+			if self.spec_vca.origLowBrakeForceScale == nil then 
+				self.spec_vca.origLowBrakeForceScale      = self.spec_motorized.motor.lowBrakeForceScale
+				self.spec_vca.origLowBrakeForceSpeedLimit = self.spec_motorized.motor.lowBrakeForceSpeedLimit
+			end 			
+			self.spec_motorized.motor.lowBrakeForceScale      = self.spec_vca.origLowBrakeForceScale * self.spec_vca.brakeForce
+			self.spec_motorized.motor.lowBrakeForceSpeedLimit = math.min( 1, self.spec_vca.origLowBrakeForceSpeedLimit )
+		elseif self.spec_vca.origLowBrakeForceScale ~= nil then 
+			self.spec_motorized.motor.lowBrakeForceScale      = self.spec_vca.origLowBrakeForceScale
+			self.spec_motorized.motor.lowBrakeForceSpeedLimit = self.spec_vca.origLowBrakeForceSpeedLimit
+			self.spec_vca.origLowBrakeForceScale              = nil 
+			self.spec_vca.origLowBrakeForceSpeedLimit         = nil 
+		end 
+	end 
+	
+	--*******************************************************************
+	-- moving direction
 	if self:getIsActive()and self.isServer then
 		if     self.spec_motorized ~= nil and self.spec_motorized.motor ~= nil and self.spec_motorized.motor.currentDirection ~= nil then  
 			self.spec_vca.movingDir = self.spec_motorized.motor.currentDirection * self.spec_drivable.reverserDirection
@@ -2940,42 +2958,6 @@ end
 WheelsUtil.updateWheelsPhysics = Utils.overwrittenFunction( WheelsUtil.updateWheelsPhysics, vehicleControlAddon.vcaUpdateWheelsPhysics )
 --******************************************************************************************************************************************
 
---******************************************************************************************************************************************
--- getSmoothedAcceleratorAndBrakePedals
-function vehicleControlAddon:vcaGetSmoothedAcceleratorAndBrakePedals( superFunc, acceleratorPedal, brakePedal, dt )
-	-- WheelsUtil.getSmoothedAcceleratorAndBrakePedals is is called AFTER WheelsUtil.updateGear 
-	-- just smooth brake pedal here
-	if self.spec_vca ~= nil and self.spec_vca.isInitialized and self:vcaIsVehicleControlledByPlayer() and self.spec_vca.oldAcc ~= nil then 
-		if     self.vcaBrakePedal ~= nil and self.vcaBrakePedal >= 0.001 then  
-		-- shuttle control and braking 
-			brakePedal = self.vcaBrakePedal
-		elseif math.abs( self.spec_vca.oldAcc ) < 0.001 then
-		-- neither accelerating nor braking 
-			if brakePedal <= 0 then 
-			-- neutral 
-				brakePedal = 0
-			else  
-				brakePedal = brakePedal * self.spec_vca.brakeForce 
-			end 
-		end 
-		
-		if     self.spec_vca.doHandbrake then 
-			self.spec_vca.maxBrakePedal = 1 
-		elseif self.spec_vca.maxBrakePedal == nil then 
-			self.spec_vca.maxBrakePedal = 0.001 * dt
-		else 
-			self.spec_vca.maxBrakePedal = vehicleControlAddon.mbClamp( brakePedal, self.spec_vca.maxBrakePedal - 0.001 * dt, self.spec_vca.maxBrakePedal + 0.001 * dt )
-		end 
-		
-		return acceleratorPedal, math.min( brakePedal, self.spec_vca.maxBrakePedal )
-	end 
-	
-	self.spec_vca.maxBrakePedal = nil
-	
-	return superFunc( self, acceleratorPedal, brakePedal, dt )
-end 
-
-WheelsUtil.getSmoothedAcceleratorAndBrakePedals = Utils.overwrittenFunction( WheelsUtil.getSmoothedAcceleratorAndBrakePedals, vehicleControlAddon.vcaGetSmoothedAcceleratorAndBrakePedals )
 --******************************************************************************************************************************************
 
 
