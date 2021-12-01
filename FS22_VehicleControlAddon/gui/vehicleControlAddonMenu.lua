@@ -185,7 +185,6 @@ function VehicleControlAddonMenu:vcaSetValues( force )
 				setter = function( vehicle, value ) 
 					local v = getter( vehicle ) 
 					if v == nil or value ~= v then 
-					--print("VCA is dirty: "..tostring(name).." @"..tostring(g_currentMission.time))
 						self.vcaIsDirty = true 
 						realSetter( vehicle, value )
 					end 
@@ -199,7 +198,6 @@ function VehicleControlAddonMenu:vcaSetValues( force )
 				if s.parameter == "inverted" then
 					b = not b
 				end
-			--print("SET: "..tostring(name)..": '"..tostring(b).."'")
 				setter( vehicle, b )
 			elseif element.typeName == "multiTextOption" then
 				local i = element:getState()
@@ -213,7 +211,6 @@ function VehicleControlAddonMenu:vcaSetValues( force )
 				elseif s.parameter == "bool" then 
 					value = ( i > 1 )
 				end
-			--print("SET: "..tostring(name)..": '"..tostring(value).."'")
 				
 				setter( vehicle, value )
 			elseif element.typeName == "textInput" and force then 
@@ -257,7 +254,7 @@ function VehicleControlAddonMenu:vcaOnTextChanged( element, text )
 		return 
 	end 
 	
-	print( "onEnterPressed: "..tostring( element.id ).." isCapturingInput: "..tostring( element.isCapturingInput ) )
+	vcaDebugPrint( "onEnterPressed: "..tostring( element.id ).." isCapturingInput: "..tostring( element.isCapturingInput ) )
 	
 	if element == nil then
 		print("Invalid element: <nil>")

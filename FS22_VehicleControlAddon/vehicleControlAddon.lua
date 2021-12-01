@@ -112,12 +112,6 @@ function vehicleControlAddon.stringToList( text, fct )
 		table.insert(list, fct( string.sub(text, start )))
 	end
 	
---print("===============================================================")
---for i,l in pairs( list ) do 
---	print(tostring(i)..": "..tostring(l).." ("..type(l)..")")
---end 
---print("---------------------------------------------------------------")
-	
 	return list;
 end 		
 
@@ -216,12 +210,14 @@ function vehicleControlAddon.createState( name, default, propFunc, callback, sav
 																					callback = callback }
 	if savegame then 
 		local schemaSavegame = Vehicle.xmlSchemaSavegame
-		schemaSavegame:register(propFunc.valueType, "vehicles.vehicle(?)." .. g_vehicleControlAddon.vcaSpecName .. "#"..name, "VehicleControlAddon: "..name)
+		if schemaSavegame then 
+			schemaSavegame:register(propFunc.valueType, "vehicles.vehicle(?)." .. g_vehicleControlAddon.vcaSpecName .. "#"..name, "VehicleControlAddon: "..name)
+		end 
 	end 
 end 
 
 function vehicleControlAddon.initSpecialization()
-		
+	vehicleControlAddon.initSpecializationDone = true 
 
 	vehicleControlAddon.createState( "steeringIsOn", VCAGlobals.adaptiveSteering                , VCAValueType.bool  )
 	vehicleControlAddon.createState( "peekLeftRight",VCAGlobals.peekLeftRight                   , VCAValueType.bool  )
@@ -288,14 +284,6 @@ function vehicleControlAddon.registerEventListeners(vehicleType)
 end 
 
 function vehicleControlAddon.registerOverwrittenFunctions(vehicleType)
-end
-
-
-
-function vehicleControlAddon.debugPrint( ... )
-	if VCAGlobals.debugPrint then
-		print( ... )
-	end
 end
 
 function vehicleControlAddon:mpDebugPrint( ... )
@@ -409,6 +397,10 @@ function vehicleControlAddon:vcaGetState( name, default )
 end
 	
 function vehicleControlAddon:onLoad(savegame)
+	if not ( vehicleControlAddon.initSpecializationDone ) then 
+		vehicleControlAddon.initSpecialization()
+	end 
+	
 	self.spec_vca               = {}
 	
 	self.vcaNewState            = vehicleControlAddon.vcaNewState	
@@ -493,7 +485,7 @@ function vehicleControlAddon:onPostLoad(savegame)
 		end 
 	end
 	
-	self.spec_vca.shuttleFwd = false 
+	self.spec_vca.isForward = false 
 	
 	self.spec_vca.diffHasF = false 
 	self.spec_vca.diffHasM = false 
@@ -564,20 +556,20 @@ function vehicleControlAddon:onPostLoad(savegame)
 			local c1, c2, all = checkWheelsOfDiff( rootNode1, rootNode2, k-1, false )
 			if all and ( c1 or c2 ) then  
 				if c1 and c2 then 
-					vehicleControlAddon.debugPrint("Diff. "..tostring(k-1).." is in the middle")
+					vcaDebugPrint("Diff. "..tostring(k-1).." is in the middle")
 					differential.vcaMode = 'M' 
 					self.spec_vca.diffHasM     = true 
 				elseif c1 then 
-					vehicleControlAddon.debugPrint("Diff. "..tostring(k-1).." is at the front")
+					vcaDebugPrint("Diff. "..tostring(k-1).." is at the front")
 					differential.vcaMode = 'F' 
 					self.spec_vca.diffHasF     = true 
 				else --if c2 then; is always true 
-					vehicleControlAddon.debugPrint("Diff. "..tostring(k-1).." is at the back")
+					vcaDebugPrint("Diff. "..tostring(k-1).." is at the back")
 					differential.vcaMode = 'B' 
 					self.spec_vca.diffHasB     = true 
 				end 
 			else 
-				vehicleControlAddon.debugPrint("Diff. "..tostring(k-1).." is mixed: "..tostring(c1)..", "..tostring(c2)..", "..tostring(all))
+				vcaDebugPrint("Diff. "..tostring(k-1).." is mixed: "..tostring(c1)..", "..tostring(c2)..", "..tostring(all))
 				noPattern = true 
 			end 
 			differential.vcaTorqueRatio   = differential.torqueRatio
@@ -800,7 +792,7 @@ end
 
 function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState, isAnalog, isMouse, deviceCategory)
 	
---print(actionName..", "..tostring(keyStatus))
+	vcaDebugPrint(actionName..", "..tostring(keyStatus))
 	
 	if     actionName == "vcaSnapDOWN"
 			or actionName == "vcaSnapUP"
@@ -1025,7 +1017,7 @@ function vehicleControlAddon.setToolStateRec( self, lowered, active, front, back
 	local recursive = true 
 
 	if self.spec_attacherJoints ~= nil then 
-		vehicleControlAddon.debugPrint(tostring(self.configFileName)..": "..tostring(lowered)..", "..tostring(active)..", "..tostring(front)..", "..tostring(back)..", "..tostring(forceState))
+		vcaDebugPrint(tostring(self.configFileName)..": "..tostring(lowered)..", "..tostring(active)..", "..tostring(front)..", "..tostring(back)..", "..tostring(forceState))
 	
 		local spec = self.spec_attacherJoints
 		for _,attachedImplement in pairs( spec.attachedImplements ) do 
@@ -1183,12 +1175,18 @@ function vehicleControlAddon:vcaIsActive()
 end 
 
 function vehicleControlAddon:vcaGetShuttleCtrl()
+	if			self.spec_motorized ~= nil 
+			and self.spec_motorized.motor ~= nil 
+			and self.spec_motorized.motor.directionChangeMode == VehicleMotor.DIRECTION_CHANGE_MODE_MANUAL
+			then 
+		return true 
+	end 
 	return false  
 end 
 
 function vehicleControlAddon:vcaGetIsReverse()
 	if self:vcaGetShuttleCtrl() then 
-		return not self.spec_vca.shuttleFwd
+		return not self.spec_vca.isForward
 	elseif g_currentMission.missionInfo.stopAndGoBraking then
 		local movingDirection = self.movingDirection * self.spec_drivable.reverserDirection
 		if math.abs( self.lastSpeed ) < 0.000278 then
@@ -1569,7 +1567,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 	
 		local m
 		if self:vcaGetShuttleCtrl() then
-			if self.spec_vca.shuttleFwd then 
+			if self.spec_vca.isForward then 
 				m = 1 
 			else 
 				m = -1 
@@ -1606,7 +1604,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 			
 			-- joystick
 			if     self:vcaGetShuttleCtrl() then 
-				if not self.spec_vca.shuttleFwd then 
+				if not self.spec_vca.isForward then 
 					a = -a 
 				end 
 			-- w/o shuttle control
@@ -1709,7 +1707,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 			end 
 		end 
 		
-	--vehicleControlAddon.debugPrint( "Cam: "..tostring(rotIsOn)..", "..tostring(revIsOn)..", "..tostring(self.spec_vca.lastCamIndex)..", "..tostring(self.spec_vca.lastCamFwd))
+	--vcaDebugPrint( "Cam: "..tostring(rotIsOn)..", "..tostring(revIsOn)..", "..tostring(self.spec_vca.lastCamIndex)..", "..tostring(self.spec_vca.lastCamFwd))
 
 		if     self.spec_vca.lastCamIndex == nil 
 				or self.spec_vca.lastCamIndex ~= i then
@@ -2002,7 +2000,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 		
 		local function disableDiff( index, isWheel )
 			if not isWheel then
-			--vehicleControlAddon.debugPrint( "Disabling diff(3) "..tostring(index) )
+			--vcaDebugPrint( "Disabling diff(3) "..tostring(index) )
 				local diff = spec.differentials[index+1]
 				diff.vcaEnabled = 0
 				disableDiff( diff.diffIndex1, diff.diffIndex1IsWheel ) 
@@ -2202,10 +2200,10 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 			
 			j = 0
 			for i, differential in pairs(spec.differentials) do
-print("Diff "..tostring(i-1).." s: "..tostring(differential.vcaEnabled)
-																														..", v: "..tostring(differential.vcaMode)
-																														..", t: "..tostring(differential.torqueRatio)
-																														..", m: "..tostring(differential.maxSpeedRatio))
+				vcaDebugPrint("Diff "..tostring(i-1).." s: "..tostring(differential.vcaEnabled)
+										..", v: "..tostring(differential.vcaMode)
+										..", t: "..tostring(differential.torqueRatio)
+										..", m: "..tostring(differential.maxSpeedRatio))
 				if differential.vcaEnabled == 3 then 
 					local diffIndex1 = differential.diffIndex1
 					local diffIndex2 = differential.diffIndex2
@@ -2213,14 +2211,14 @@ print("Diff "..tostring(i-1).." s: "..tostring(differential.vcaEnabled)
 						local wheel = self:getWheelFromWheelIndex(diffIndex1)
 						diffIndex1 = wheel.wheelShape
 					else 
-						vehicleControlAddon.debugPrint("1: New index of "..tostring(diffIndex1).." is "..tostring(diffMap[diffIndex1]))
+						vcaDebugPrint("1: New index of "..tostring(diffIndex1).." is "..tostring(diffMap[diffIndex1]))
 						diffIndex1 = diffMap[diffIndex1]
 					end
 					if differential.diffIndex2IsWheel then
 						local wheel = self:getWheelFromWheelIndex(diffIndex2)
 						diffIndex2 = wheel.wheelShape
 					else 
-						vehicleControlAddon.debugPrint("2: New index of "..tostring(diffIndex2).." is "..tostring(diffMap[diffIndex2]))
+						vcaDebugPrint("2: New index of "..tostring(diffIndex2).." is "..tostring(diffMap[diffIndex2]))
 						diffIndex2 = diffMap[diffIndex2]
 					end
 					if diffIndex1 == nil or diffIndex2 == nil then 
@@ -2601,7 +2599,7 @@ end
 function vehicleControlAddon.getDistance( refNode, leftMarker, rightMarker, iMinX, iMaxX )
 	local lx, ly, lz = vehicleControlAddon.getRelativeTranslation( refNode, leftMarker )
 	local rx, ry, rz = vehicleControlAddon.getRelativeTranslation( refNode, rightMarker )
-	vehicleControlAddon.debugPrint(string.format( "(%5.2f, %5.2f, %5.2f) / (%5.2f, %5.2f, %5.2f)", lx, ly, lz, rx, ry, rz ))
+	vcaDebugPrint(string.format( "(%5.2f, %5.2f, %5.2f) / (%5.2f, %5.2f, %5.2f)", lx, ly, lz, rx, ry, rz ))
 	
 	if iMinX ~= nil and iMaxX ~= nil then 
 		return math.min( lx, rx, iMinX ), math.max( lx, rx, iMaxX )
@@ -2790,7 +2788,7 @@ function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, ax
 			
 		self.spec_vca.snapAngleTimer = lastSnapAngleTimer - dt 
 		self.spec_vca.axisSideLast   = axisSideLast
-	end 
+	end 				
 	
 	local ccState = nil
 	local spec = self.spec_drivable
@@ -2823,9 +2821,6 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 		return superFunc( self, dt, currentSpeed, acceleration, doHandbrake, stopAndGoBraking )
 	end 
 
-	local lightsBackup   = self.spec_lights
-	local brake          = ( acceleration < -0.1 )
-	
 	self.spec_vca.oldAcc       = acceleration
 	self.spec_vca.oldHandbrake = doHandbrake
 	
@@ -2852,18 +2847,24 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 				end 
 			end 
 		end 
+
+		local motor = self.spec_motorized.motor 
 	
 		if     self.spec_drivable.cruiseControl.state > 0 then 
+
+		elseif self:vcaGetShuttleCtrl()
+				and self:getLastSpeed() > 1
+				and ( ( motor.currentDirection > 0 and self.movingDirection < 0 )
+					 or ( motor.currentDirection < 0 and self.movingDirection > 0 ) ) then 
+			acceleration = -1
 		elseif self.spec_vca.ksIsOn and ( self.spec_vca.ksBrakeTime == nil or g_currentMission.time < self.spec_vca.ksBrakeTime + 1000 ) then 
 			if math.abs( self.spec_vca.keepSpeed ) < 0.5 then 
 				acceleration = 0
 				doHandbrake  = true 
-				brake = self:getIsMotorStarted()  
 			else 
 				self.spec_motorized.motor:setSpeedLimit( math.min( self:getSpeedLimit(true), math.abs(self.spec_vca.keepSpeed) ) )
 				if self:vcaGetShuttleCtrl() then 
 					acceleration = 1
-					brake        = false 
 				elseif self.spec_vca.keepSpeed > 0 then 
 					acceleration = self.spec_drivable.reverserDirection
 					self.nextMovingDirection = 1
@@ -2873,10 +2874,9 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 				end 
 			end 
 			self.spec_vca.oldAcc = acceleration
-		elseif self.spec_vca.isBlocked and self.spec_vca.isEnteredMP then
-			acceleration = 0
-			doHandbrake  = true 
-			brake = true 
+	--elseif self.spec_vca.isBlocked and self.spec_vca.isEnteredMP then
+	--	acceleration = 0
+	--	doHandbrake  = true 
 		end 
 			
 		if self.spec_drivable.cruiseControl.state == 0 and self.spec_vca.limitThrottle ~= nil and self.spec_vca.inchingIsOn ~= nil and math.abs( acceleration ) > 0.01 then 
@@ -2903,7 +2903,7 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 	local state, result = pcall( superFunc, self, dt, currentSpeed, acceleration, doHandbrake, stopAndGoBraking ) 
 	if not ( state ) then
 		print("Error in updateWheelsPhysics :"..tostring(result))
-		self.spec_lights     = lightsBackup
+		return 
 	end
 	
 	return result 

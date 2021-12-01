@@ -9,6 +9,8 @@ VCAValueType.float  = { valueType = XMLValueType.FLOAT,  streamRead=streamReadFl
 VCAValueType.string = { valueType = XMLValueType.STRING, streamRead=streamReadString , streamWrite=streamWriteString , getXML=getXMLString, setXML=setXMLString }
 
 local ConfigItems = {}
+ConfigItems.debugPrint          = { configType = VCAValueType.bool  , value = false }
+
 ConfigItems.cameraRotFactor     = { configType = VCAValueType.float , value = 0.5   }
 ConfigItems.cameraRotFactorRev  = { configType = VCAValueType.float , value = 0.3   }
 ConfigItems.cameraRotTime       = { configType = VCAValueType.float , value = 0.001 }
@@ -40,24 +42,27 @@ end
 
 init()
 
-
+function vcaDebugPrint( ... )
+	if VCAGlobals.debugPrint then
+		print( ... )
+	end
+end 
 
 vehicleControlAddonConfig = {}
 local vehicleControlAddonConfig_mt = Class(vehicleControlAddonConfig)
 
-function vehicleControlAddonConfig.new( fileName )
+function vehicleControlAddonConfig.new()
 	self = {}
 	setmetatable(self, vehicleControlAddonConfig_mt)
-	self.fileName = fileName 
-	print("vehicleControlAddonConfig: "..tostring(fileName))
 	return self 
 end 
 
-function vehicleControlAddonConfig:load() 
-	if not fileExists(self.fileName) then
-		return 
+local function loadConfig( fileName )
+	if fileName == nil or fileName == "" or not fileExists(fileName) then
+		return false 
 	end 
-	local xmlFile = loadXMLFile( "vehicleControlAddon", self.fileName, "vehicleControlAddon" )
+	vcaDebugPrint("VCA config: "..tostring(fileName))
+	local xmlFile = loadXMLFile( "vehicleControlAddon", fileName, "vehicleControlAddon" )
 	local i = 0
 	while true do
 		local xmlKey = string.format("vehicleControlAddon.configuration(%d)", i)
@@ -70,19 +75,24 @@ function vehicleControlAddonConfig:load()
 		if item ~= nil then 
 			local value = item.configType.getXML( xmlFile, xmlKey.."#value" )
 			if value ~= nil then 
-				print("VCAGlobals."..tostring(name).." = "..tostring(value))
+				vcaDebugPrint("VCAGlobals."..tostring(name).." = "..tostring(value))
 				VCAGlobals[name] = value 
 			end 
 		end 
 	end 
 	delete( xmlFile )
+	return true 
 end 
 
-function vehicleControlAddonConfig:save()
---if fileExists(self.fileName) then
---	getfenv(0).deleteFile(self.fileName)
+local function saveConfig( fileName )
+	if fileName == nil or fileName == "" then 
+		return false 
+	end 
+	vcaDebugPrint("VCA config: "..tostring(fileName))
+--if fileExists(fileName) then
+--	getfenv(0).deleteFile(fileName)
 --end 
-	local xmlFile = createXMLFile( "vehicleControlAddon", self.fileName, "vehicleControlAddon" )
+	local xmlFile = createXMLFile( "vehicleControlAddon", fileName, "vehicleControlAddon" )
 	local i = 0
   for name,item in pairs(ConfigItems) do 	
 		local isNonDefault = false 
@@ -92,6 +102,7 @@ function vehicleControlAddonConfig:save()
 			isNonDefault = true 
 		end 
 		if isNonDefault then 
+			vcaDebugPrint("VCAGlobals."..tostring(name).." = "..tostring(VCAGlobals[name]))
 			local xmlKey = string.format("vehicleControlAddon.configuration(%d)", i)
 			i = i + 1
 			setXMLString( xmlFile, xmlKey.."#name", name )
@@ -100,6 +111,38 @@ function vehicleControlAddonConfig:save()
 	end 
 	saveXMLFile(xmlFile)
 	delete( xmlFile )
+	if fileExists(fileName) then
+		vcaDebugPrint("VCA config saved")
+		return true 
+	end 
+	return false 
+end 
+
+function vehicleControlAddonConfig:getSavegameFileName()
+	if g_careerScreen and g_careerScreen.currentSavegame ~= nil and g_careerScreen.currentSavegame.savegameDirectory ~= nil then 
+		return g_careerScreen.currentSavegame.savegameDirectory .. "/vehicleControlAddon.xml"
+	end 
+end 
+
+function vehicleControlAddonConfig:getModSettingsFileName()
+	return getUserProfileAppPath().. "modSettings/vehicleControlAddon.xml"
+end 
+
+function vehicleControlAddonConfig:load() 
+	if not loadConfig( self:getSavegameFileName() ) and g_dedicatedServerInfo == nil then 
+		loadConfig( self:getModSettingsFileName() )
+	end 
+end
+
+function vehicleControlAddonConfig:save()
+	if g_server == nil then 
+		return 
+	end 
+	
+	saveConfig( self:getSavegameFileName() )
+	if g_dedicatedServerInfo == nil then 
+		saveConfig( self:getModSettingsFileName() )
+	end 
 end 
 
 
@@ -110,29 +153,34 @@ function vehicleControlAddonConfigEvent.emptyNew()
   local self = Event.new(vehicleControlAddonConfigEvent_mt)
   return self
 end
-function vehicleControlAddonConfigEvent.new(save)
+function vehicleControlAddonConfigEvent.new(init)
   local self = vehicleControlAddonConfigEvent.emptyNew()
-  self.save = save 
+	if init then 
+		self.init = true 
+	else 
+		self.init = false 
+	end 
   return self
 end
 function vehicleControlAddonConfigEvent:readStream(streamId, connection)
-	self.save = streamReadBool( streamId )
+	self.init = streamReadBool( streamId )
   for name,item in pairs(ConfigItems) do 	
 		VCAGlobals[name] = item.configType.streamRead( streamId )
 	end
   self:run(connection)
 end
 function vehicleControlAddonConfigEvent:writeStream(streamId, connection)
-	streamWriteBool( streamId, self.save )
+	streamWriteBool( streamId, self.init )
   for name,item in pairs(ConfigItems) do 	
 		item.configType.streamWrite( streamId, VCAGlobals[name] )
 	end
 end
 function vehicleControlAddonConfigEvent:run(connection)
-  if self.save then 
-		g_vehicleControlAddon.configuration:save()
+  if self.init then 
+		if not ( vehicleControlAddon.initSpecializationDone ) then 
+			vehicleControlAddon.initSpecialization()
+		end 
 	end 
-	
   if not connection:getIsServer() then
     g_server:broadcastEvent( vehicleControlAddonConfigEvent.new(self.save), nil, connection, nil )
   end

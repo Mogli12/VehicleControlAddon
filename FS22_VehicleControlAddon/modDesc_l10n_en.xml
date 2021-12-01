@@ -26,7 +26,7 @@
 		<text name="vcaHANDTHROTTLE"    text="Hand throttle"/>
 		<text name="vcaPITCH"           text="Sound pitch at max. RPM"/>
 		<text name="vcaPITCH_IO"          text="Sound pitch inside / outside"/>
-		<text name="vcaSETTINGS"        text="Settings"/>
+		<text name="vcaSETTINGS"        text="Global Settings"/>
 		<text name="vcaDRAWHUD"         text="Transmission HUD"/>
 		
 		<text name="vcaDISTANCE"        text="Working width"/>
@@ -205,17 +205,17 @@
 		<text name="input_vcaMenuAction3" text="VCA: Menu Button D"/>
 		<text name="input_vcaMenuAction4" text="VCA: Menu Button X"/>
 		
-		<text name="vcaValueOn"         text="on"/>
-		<text name="vcaValueOff"        text="off"/>
-		<text name="vcaValueNever"      text="never"/>
-		<text name="vcaValueAlways"     text="always"/>
-		<text name="vcaValueAlwaysH"    text="always (high)"/>
-		<text name="vcaValueNormal"     text="normal"/>
-		<text name="vcaValueLight"      text="light"/> 
-		<text name="vcaValueStrong"     text="strong"/>
-		<text name="vcaValueEntered"    text="if entered"/>
-		<text name="vcaValueInactive"   text="if inactive"/>
-		<text name="vcaValueInactiveH"  text="if inactive (high)"/>
+		<text name="vcaValueOn"         text="On"/>
+		<text name="vcaValueOff"        text="Off"/>
+		<text name="vcaValueNever"      text="Never"/>
+		<text name="vcaValueAlways"     text="Always"/>
+		<text name="vcaValueAlwaysH"    text="Always (high)"/>
+		<text name="vcaValueNormal"     text="Normal"/>
+		<text name="vcaValueLight"      text="Light"/> 
+		<text name="vcaValueStrong"     text="Strong"/>
+		<text name="vcaValueEntered"    text="If entered"/>
+		<text name="vcaValueInactive"   text="If inactive"/>
+		<text name="vcaValueInactiveH"  text="If inactive (high)"/>
 		<text name="vcaValueRPM"        text="RPM"/>
 
 		<text name="vcaClutchMode_0"    text="automatic"/>

@@ -78,7 +78,6 @@ local vcaGetText
 function vehicleControlAddonRegister:postLoadMission(mission)
 
 	print("--- loading "..self.i18n:getText("vcaVERSION").." by mogli ---")
-	--vehicleControlAddon.initSpecialization()
 
 	self.mogliTexts = {}
 	
@@ -159,12 +158,9 @@ function vehicleControlAddonRegister:loadMap(name)
 		self.isMP   = true 
 	end 
 	
-	if g_careerScreen and g_careerScreen.currentSavegame ~= nil and g_careerScreen.currentSavegame.savegameDirectory ~= nil then 
-		local configFile   = g_careerScreen.currentSavegame.savegameDirectory .. "/vehicleControlAddon.xml"
-		self.configuration = vehicleControlAddonConfig.new( configFile )
-		if g_server ~= nil then 
-			self.configuration:load()
-		end
+	self.configuration = vehicleControlAddonConfig.new()
+	if g_server ~= nil then 
+		self.configuration:load()
 	end 
 	vehicleControlAddon.initSpecialization()
 end;
@@ -199,7 +195,7 @@ end
 local function afterConnectionFinishedLoading(mission, connection, x,y,z, viewDistanceCoeff)
 -- call on server after a client connected to the server 
 -- send event with settings from server to new client 
-  connection:sendEvent(vehicleControlAddonConfigEvent.new(false))
+  connection:sendEvent(vehicleControlAddonConfigEvent.new(true))
 end 
 
 local function afterMissionInfoSaveToXMLFile()
