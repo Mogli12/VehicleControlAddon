@@ -3,10 +3,10 @@
 --
 
 VCAValueType = {}
-VCAValueType.bool   = { valueType = XMLValueType.BOOL,   streamRead=streamReadBool   , streamWrite=streamWriteBool   , getXML=getXMLBool  , setXML=setXMLBool   }
-VCAValueType.int16  = { valueType = XMLValueType.INT,    streamRead=streamReadInt16  , streamWrite=streamWriteInt16  , getXML=getXMLInt   , setXML=setXMLInt    }
-VCAValueType.float  = { valueType = XMLValueType.FLOAT,  streamRead=streamReadFloat32, streamWrite=streamWriteFloat32, getXML=getXMLFloat , setXML=setXMLFloat  }
-VCAValueType.string = { valueType = XMLValueType.STRING, streamRead=streamReadString , streamWrite=streamWriteString , getXML=getXMLString, setXML=setXMLString }
+VCAValueType.bool   = { valueType = XMLValueType.BOOL,   emptyValue = false,streamRead=streamReadBool   , streamWrite=streamWriteBool   , getXML=getXMLBool  , setXML=setXMLBool   }
+VCAValueType.int16  = { valueType = XMLValueType.INT,    emptyValue = 0    ,streamRead=streamReadInt16  , streamWrite=streamWriteInt16  , getXML=getXMLInt   , setXML=setXMLInt    }
+VCAValueType.float  = { valueType = XMLValueType.FLOAT,  emptyValue = 0.0  ,streamRead=streamReadFloat32, streamWrite=streamWriteFloat32, getXML=getXMLFloat , setXML=setXMLFloat  }
+VCAValueType.string = { valueType = XMLValueType.STRING, emptyValue = ""   ,streamRead=streamReadString , streamWrite=streamWriteString , getXML=getXMLString, setXML=setXMLString }
 
 local ConfigItems = {}
 ConfigItems.debugPrint          = { configType = VCAValueType.bool  , value = false }

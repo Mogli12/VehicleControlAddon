@@ -19,7 +19,7 @@ function vehicleControlAddonEvent:readStream(streamId, connection)
   self.object = NetworkUtil.readNodeObject( streamId )
 	self.name   = streamReadString(streamId)
 	if vehicleControlAddon.properties ~= nil and vehicleControlAddon.properties[self.name] ~= nil then 
-		local prop = vehicleControlAddon.properties[name]
+		local prop = vehicleControlAddon.properties[self.name]
 		self.value 	= prop.func.streamRead(streamId)
 	end 
   self:run(connection)
@@ -28,8 +28,8 @@ function vehicleControlAddonEvent:writeStream(streamId, connection)
   NetworkUtil.writeNodeObject( streamId, self.object )
   streamWriteString(streamId,self.name)
 	if vehicleControlAddon.properties ~= nil and vehicleControlAddon.properties[self.name] ~= nil then 
-		local prop = vehicleControlAddon.properties[name]
-    prop.func.streamWrite(streamId, self.value)
+		local prop = vehicleControlAddon.properties[self.name]
+    prop.func.streamWrite(streamId, Utils.getNoNil( self.value, prop.emptyValue ))
 	end 
 end
 function vehicleControlAddonEvent:run(connection)

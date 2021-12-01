@@ -243,7 +243,6 @@ function vehicleControlAddon.initSpecialization()
 	vehicleControlAddon.createState( "ksIsOn",       false                                      , VCAValueType.bool, nil, false  ) --, vehicleControlAddon.vcaOnSetKSIsOn )
 	vehicleControlAddon.createState( "keepSpeed",    0                                          , VCAValueType.float, nil, false )
 	vehicleControlAddon.createState( "ksToggle",     false                                      , VCAValueType.bool  )
-	vehicleControlAddon.createState( "kSBrake",      false                                      , VCAValueType.bool, nil, false  )
 	vehicleControlAddon.createState( "ccSpeed2",     10                                         , VCAValueType.float )
 	vehicleControlAddon.createState( "ccSpeed3",     15                                         , VCAValueType.float )
 	vehicleControlAddon.createState( "lastSnapAngle",10                                         , VCAValueType.float ) --, vehicleControlAddon.vcaOnSetLastSnapAngle ) -- value should be between -pi and pi !!!
@@ -364,10 +363,13 @@ function vehicleControlAddon:vcaSetState( name, value, noEventSend )
 		self.spec_vca[name] = value
 	end 
 	
-	if     not ( self.spec_vca.isInitialized )
-		--or not ( g_vehicleControlAddon.isMP )
-			or noEventSend 
-			or vehicleControlAddon.properties[name] == nil then 
+	if     noEventSend then 
+	elseif not ( self.spec_vca.isInitialized )
+			or not ( vehicleControlAddon.initSpecializationDone )
+			or vehicleControlAddon.properties[name] == nil
+			or value == nil then 
+	-- nothing 
+		print("VCA MP error, name: "..tostring(name)..", value: "..tostring(value))
 	elseif g_server ~= nil then
 		g_server:broadcastEvent(vehicleControlAddonEvent.new(self,name,self.spec_vca[name]), nil, nil, self)
 	else
@@ -831,8 +833,8 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 	elseif actionName == "vcaKEEPSPEED" then 
 		self.spec_vca.keepSpeedPressed = keyStatus >= 0.5 		
 	elseif actionName == "vcaKEEPSPEED2" then 
-		self:vcaSetState( "ksToggle", not self.spec_vca.kSToggle )
-		if self.spec_vca.kSToggle then 
+		self:vcaSetState( "ksToggle", not self.spec_vca.ksToggle )
+		if self.spec_vca.ksToggle then 
 			self:vcaSetState( "keepSpeed", self.lastSpeed * 3600 )
 			self:vcaSetState( "ksIsOn", true )
 		else 
@@ -1120,7 +1122,7 @@ end
 function vehicleControlAddon:onEnterVehicle( isControlling )
 	self:vcaSetState( "isEnteredMP", true )
 	self:vcaSetState( "isBlocked", false )
-	self:vcaSetState( "ksIsOn", self.spec_vca.kSToggle )
+	self:vcaSetState( "ksIsOn", self.spec_vca.ksToggle )
 end 
 
 function vehicleControlAddon:onLeaveVehicle()
@@ -1470,7 +1472,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 		self:vcaSetState( "inchingIsOn", self.spec_vca.inchingPressed )
 
 		local isPressed = self.spec_vca.keepSpeedPressed
-		if self.spec_vca.kSToggle then 
+		if self.spec_vca.ksToggle then 
 			isPressed = not isPressed
 		end 
 		if isPressed and not self.spec_vca.ksIsOn then 
@@ -1594,7 +1596,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 			local s = self.lastSpeedReal * 1000 					
 			local f = 3.6 *  math.min( -self.spec_motorized.motor.maxBackwardSpeed, s * self.movingDirection )
 			local t = 3.6 *  math.max(  self.spec_motorized.motor.maxForwardSpeed , s * self.movingDirection )
-			if not self.spec_vca.kSToggle then 
+			if not self.spec_vca.ksToggle then 
 				f = math.max( f, 3.6 * s * self.movingDirection - 1 )
 				t = math.min( t, 3.6 * s * self.movingDirection + 1 )
 			end 
@@ -1652,8 +1654,6 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 		else 
 			self:vcaSetState( "keepSpeed", vehicleControlAddon.mbClamp( self.spec_vca.keepSpeed, -sl, sl ) )
 		end 
-		
-		self:vcaSetState( "vcaKSBrake", ksBrake )
 	end 
 	
 	--*******************************************************************
