@@ -164,14 +164,19 @@ function vehicleControlAddonConfigEvent.new(init)
 end
 function vehicleControlAddonConfigEvent:readStream(streamId, connection)
 	self.init = streamReadBool( streamId )
-  for name,item in pairs(ConfigItems) do 	
+	local count = streamReadInt16( streamId )
+  for i=1,count do 
+		local name = streamReadString( streamId )
+		local item = ConfigItems[name]
 		VCAGlobals[name] = item.configType.streamRead( streamId )
 	end
   self:run(connection)
 end
 function vehicleControlAddonConfigEvent:writeStream(streamId, connection)
 	streamWriteBool( streamId, self.init )
+	streamWriteInt16( streamId, #ConfigItems )
   for name,item in pairs(ConfigItems) do 	
+		streamWriteString( streamId, name )
 		item.configType.streamWrite( streamId, VCAGlobals[name] )
 	end
 end

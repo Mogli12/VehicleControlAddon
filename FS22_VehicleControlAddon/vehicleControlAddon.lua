@@ -794,7 +794,7 @@ end
 
 function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState, isAnalog, isMouse, deviceCategory)
 	
-	vcaDebugPrint(actionName..", "..tostring(keyStatus))
+--vcaDebugPrint(actionName..", "..tostring(keyStatus))
 	
 	if     actionName == "vcaSnapDOWN"
 			or actionName == "vcaSnapUP"
@@ -2615,8 +2615,37 @@ function vehicleControlAddon:vcaGetSnapDistance()
 		for _, implement in ipairs(self:getAttachedAIImplements()) do
 			local leftMarker, rightMarker, backMarker, _ = implement.object:getAIMarkers()
 			if implement.object.steeringAxleNode ~= nil and leftMarker ~= nil and rightMarker  ~= nil then 
-			--minX, maxX = vehicleControlAddon.getDistance( implement.object.steeringAxleNode, leftMarker, rightMarker, minX, maxX )
-				minX, maxX = vehicleControlAddon.getDistance( self.steeringAxleNode, leftMarker, rightMarker, minX, maxX )
+				minX, maxX = vehicleControlAddon.getDistance( implement.object.steeringAxleNode, leftMarker, rightMarker, minX, maxX )
+				local object = implement.object
+				
+				while true do 
+					if object == nil or type( object.getAttacherVehicle ) ~= "function" then 
+						break 
+					end 
+					local parent = object:getAttacherVehicle()
+					if parent == nil or type( parent.getAttacherJointDescFromObject ) ~= "function" then 
+						break 
+					end 
+					local jointDesc = parent:getAttacherJointDescFromObject( implement.object )
+					if jointDesc == nil then  
+						break 
+					end 
+					
+					local vx, vy, vz = vehicleControlAddon.getRelativeTranslation( self.steeringAxleNode, jointDesc.jointTransform )
+					local ix, iy, iz = vehicleControlAddon.getRelativeTranslation( implement.object.steeringAxleNode, jointDesc.jointTransform )
+				--vcaDebugPrint( string.format("SnapDistance: (%5.2f, %5.2f); %5.2f; %5.2f", minX, maxX, vx, ix))
+					minX = minX + vx - ix 
+					maxX = maxX + vx - ix 
+
+				--local m1, m2 = vehicleControlAddon.getDistance( self.steeringAxleNode, leftMarker, rightMarker, minX, maxX )
+				--vcaDebugPrint( string.format("SnapDistance: (%5.2f, %5.2f); (%5.2f, %5.2f)", minX, maxX, m1, m2))
+					
+					if self == parent then 
+						break 
+					end 
+					
+					object = parent 
+				end 
 			end
 		end
 	end 
@@ -2631,7 +2660,7 @@ function vehicleControlAddon:vcaGetSnapDistance()
 	if minX ~= nil and maxX ~= nil then 
 		local d = 0.1 * math.floor( 10 * ( maxX - minX ) + 0.5 )
 		local o = 0.1 * math.floor(  5 * ( maxX + minX ) + 0.5 )
-		return d, o, -o
+		return d, -o, o
 	end 
 	
 	return 0, 0, 0
