@@ -202,6 +202,15 @@
 					<GuiElement type="text"   profile="multiTextOptionSettingsTooltip" vcaTextID="vca_tip_AUTOSHIFT" text="autoShift"/>
 				</GuiElement>
 
+				<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="idleThrottle" onCreate="onCreateSubElement">
+					<GuiElement type="button" profile="multiTextOptionSettingsLeft" />
+					<GuiElement type="button" profile="multiTextOptionSettingsRight" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsText" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsTitle" vcaTextID="vcaIDLETHROTTLE" text="idleThrottle"/>
+					<GuiElement type="bitmap" profile="multiTextOptionSettingsBg" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsTooltip" vcaTextID="vca_tip_IDLETHROTTLE" text="idleThrottle"/>
+				</GuiElement>
+
 
 				<GuiElement type="text" profile="settingsMenuSubtitle" vcaTextID="vcaTitleDiff" text="Differentials"/> <!--vcaTextID="vcaSETTINGS" text="settings" /> -->
 

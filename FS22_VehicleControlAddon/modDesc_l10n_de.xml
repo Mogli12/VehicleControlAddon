@@ -46,6 +46,7 @@
 		<text name="vcaGEARRGMODE"      text="Tasten für Gänge und Gruppen tauschen"/>
 		<text name="vcaSTSPEEDO"        text="Lenkgeschwindigkeit"/>
 		<text name="vcaSTSPEEDI"        text="Inverse Lenkgeschwindigkeit"/>
+		<text name="vcaIDLETHROTTLE"    text="Leerlaufanreicherung"/>
 		
 		<text name="vca_tip_CAMERAI"      text="Die innere Kamera dreht sich passend zum Lenkeinschlag automatisch mit."/>
 		<text name="vca_tip_CAMERAO"      text="Die äußere Kamera dreht sich passend zum Lenkeinschlag automatisch mit."/>
@@ -88,6 +89,7 @@
 		<text name="vca_tip_GEARRGMODE"   text="Diese Einstellunge vertauscht die hoch/runter Tasten für Gänge und Gruppen"/>
 		<text name="vca_tip_STSPEEDO"     text="Geschwindigkeit der Lenkung"/>
 		<text name="vca_tip_STSPEEDI"     text="Geschwindigkeit der Lenkung beim Zurücklenken"/>
+		<text name="vca_tip_IDLETHROTTLE" text="Motor gibt selbständig Gas zum Halten der Leerlaufdrehzahl"/>
 		
 		<text name="input_vcaSETTINGS"  text="VCA: Einstellungen"/>
 		<text name="input_vcaGLOBALS"   text="VCA: Globale Einstellungen"/>
@@ -137,21 +139,6 @@
 		<text name="vcaValueInactive"   text="Falls inaktiv"/>
 		<text name="vcaValueInactiveH"  text="Falls inaktiv (hoch)"/>
 		<text name="vcaValueRPM"        text="U/min"/>
-		
-		<text name="vcaClutchMode_0"    text="automatisch"/>
-		<text name="vcaClutchMode_1"    text="auto (schnell)"/>
-		<text name="vcaClutchMode_2"    text="manuell"/>
-		<text name="vcaClutchMode_3"    text="Turbo (schnell)"/>
-		<text name="vcaClutchMode_4"    text="Turbo (langsam)"/>
-		<text name="vcaClutchMode_5"    text="Turbo (offen)"/>
-		<text name="vcaClutchMode_6"    text="Turbo (manuell)"/>
-
-		<text name="vcaTorqueCurve_0"   text="Default"/>
-		<text name="vcaTorqueCurve_1"   text="modern (40% Anstieg)"/>
-		<text name="vcaTorqueCurve_2"   text="modern (50% Anstieg)"/>
-		<text name="vcaTorqueCurve_3"   text="LKW Motor (60% Anstieg)"/>
-		<text name="vcaTorqueCurve_4"   text="klassisch (20% Anstieg)"/>
-		<text name="vcaTorqueCurve_5"   text="klassisch (30% Anstieg)"/>
 		
 		<text name="vcaPowerShift"      text="Lastschaltung"/>
 		

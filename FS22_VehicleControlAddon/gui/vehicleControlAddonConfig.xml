@@ -29,6 +29,15 @@
 					<GuiElement type="text"   profile="multiTextOptionSettingsTooltip" vcaTextID="vca_tip_BRAKE" text="brakeForceFactor"/>
 				</GuiElement>
 
+				<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="idleThrottle" onCreate="onCreateSubElement">
+					<GuiElement type="button" profile="multiTextOptionSettingsLeft" />
+					<GuiElement type="button" profile="multiTextOptionSettingsRight" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsText" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsTitle" vcaTextID="vcaIDLETHROTTLE" text="idleThrottle"/>
+					<GuiElement type="bitmap" profile="multiTextOptionSettingsBg" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsTooltip" vcaTextID="vca_tip_IDLETHROTTLE" text="idleThrottle"/>
+				</GuiElement>
+
 				<GuiElement type="checkedOption" profile="vcaMTOSettings" id="adaptiveSteering" onCreate="onCreateSubElement">
 					<GuiElement type="button" profile="multiTextOptionSettingsLeft" />
 					<GuiElement type="button" profile="multiTextOptionSettingsRight" />

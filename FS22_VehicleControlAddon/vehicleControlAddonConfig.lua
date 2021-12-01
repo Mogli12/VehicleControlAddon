@@ -32,6 +32,7 @@ ConfigItems.peekLeftRight       = { configType = VCAValueType.bool  , value = tr
 ConfigItems.hiredWorker2        = { configType = VCAValueType.bool  , value = false } -- differential for hired worker -->
 ConfigItems.rotSpeedOut         = { configType = VCAValueType.float , value = 0.5   } 
 ConfigItems.rotSpeedIn          = { configType = VCAValueType.float , value = 0.5   } 
+ConfigItems.idleThrottle        = { configType = VCAValueType.bool  , value = false } 
 
 VCAGlobals  = {}
 local function init()

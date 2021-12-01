@@ -74,6 +74,7 @@
 		<text name="vcaGEARRGMODE"      text="Swap gear and range keys"/>
 		<text name="vcaSTSPEEDO"        text="Steering speed"/>
 		<text name="vcaSTSPEEDI"        text="Inverse steering speed"/>
+		<text name="vcaIDLETHROTTLE"    text="Idle enrichment"/>
 		
 		<text name="vca_tip_CAMERAI"      text="The interior camera rotates automatically according to the steering angle"/>
 		<text name="vca_tip_CAMERAO"      text="The exterior camera rotates automatically according to the steering angle"/>
@@ -143,6 +144,7 @@
 		<text name="vca_tip_GEARRGMODE"   text="This settings swaps the up/down inputs of gears and ranges"/>
 		<text name="vca_tip_STSPEEDO"     text="Steering speed"/>
 		<text name="vca_tip_STSPEEDI"     text="Inverse steering speed"/>
+		<text name="vca_tip_IDLETHROTTLE" text="The engine independently accelerates to maintain idle speed"/>
 		                               
 		<text name="input_vcaSETTINGS"  text="VCA: settings"/>
 		<text name="input_vcaGLOBALS"   text="VCA: global settings"/>

@@ -262,6 +262,7 @@ function vehicleControlAddon.initSpecialization()
 	vehicleControlAddon.createState( "diffManual",   false                                      , VCAValueType.bool  )
 	vehicleControlAddon.createState( "diffLockSwap", false                                      , VCAValueType.bool  )
 	vehicleControlAddon.createState( "diffFrontAdv", false                                      , VCAValueType.bool  )
+	vehicleControlAddon.createState( "idleThrottle", VCAGlobals.idleThrottle                    , VCAValueType.bool  )
 end 
 
 function vehicleControlAddon.registerEventListeners(vehicleType)
@@ -1541,8 +1542,10 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 				self.spec_vca.origLowBrakeForceScale      = self.spec_motorized.motor.lowBrakeForceScale
 				self.spec_vca.origLowBrakeForceSpeedLimit = self.spec_motorized.motor.lowBrakeForceSpeedLimit
 			end 			
-			self.spec_motorized.motor.lowBrakeForceScale      = self.spec_vca.origLowBrakeForceScale * self.spec_vca.brakeForce
-			self.spec_motorized.motor.lowBrakeForceSpeedLimit = math.min( 1, self.spec_vca.origLowBrakeForceSpeedLimit )
+			self.spec_motorized.motor.lowBrakeForceScale = self.spec_vca.origLowBrakeForceScale * self.spec_vca.brakeForce
+			if self.spec_vca.brakeForce < 1 then 
+				self.spec_motorized.motor.lowBrakeForceSpeedLimit = math.min( 1, self.spec_vca.origLowBrakeForceSpeedLimit )
+			end 
 		elseif self.spec_vca.origLowBrakeForceScale ~= nil then 
 			self.spec_motorized.motor.lowBrakeForceScale      = self.spec_vca.origLowBrakeForceScale
 			self.spec_motorized.motor.lowBrakeForceSpeedLimit = self.spec_vca.origLowBrakeForceSpeedLimit
@@ -2385,6 +2388,19 @@ function vehicleControlAddon:onDraw()
 				renderOverlay( vehicleControlAddon.ovDiffLockBack , x, y, w, h )
 			end 
 			
+			if      self.spec_motorized       ~= nil 
+					and self.spec_motorized.motor ~= nil 	
+					and self.spec_motorized.motorizedNode ~= nil
+					and next(self.spec_motorized.differentials) ~= nil
+					then 
+				local motor = self.spec_motorized.motor 
+				if (motor.backwardGears or motor.forwardGears) and motor.minGearRatio ~= 0 then
+					local factor = math.pi / ( math.abs( motor.minGearRatio ) * 30 ) 
+					renderText(x, y, l, self:vcaSpeedToString( motor.minRpm * factor, "%5.1f" ).." .. "..self:vcaSpeedToString( motor.maxRpm * factor, "%5.1f" ))
+					y = y + l * 1.2	
+				end 
+			end 
+			
 			local text = ""
 			if self.spec_vca.keepCamRot then 
 				if text ~= "" then text = text ..", " end 
@@ -2745,10 +2761,10 @@ function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, ax
 	if self.spec_vca.snapIsOn then 
 		local lx, lz 
 
-		if self.spec_vca.isForward then 
-			lx,_,lz = localDirectionToWorld( self:vcaGetSteeringNode(), 0, 0, 1 )		
-		else 
+		if self.movingDirection < 0 then  
 			lx,_,lz = localDirectionToWorld( self:vcaGetSteeringNode(), 0, 0, -1 )	
+		else 
+			lx,_,lz = localDirectionToWorld( self:vcaGetSteeringNode(), 0, 0, 1 )		
 		end 
 		local wx,_,wz = getWorldTranslation( self:vcaGetSteeringNode() )
 		if lx*lx+lz*lz > 1e-6 then 
@@ -2798,7 +2814,7 @@ function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, ax
 			end 
 	
 			local f = self.spec_vca.snapFactor
-			if not ( self.spec_vca.isForward ) then 
+			if self.movingDirection < 0 then 
 				f = -f 
 			end 
 			do
@@ -2811,7 +2827,7 @@ function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, ax
 				diffR = diffR + alpha
 			end 
 			local a = vehicleControlAddon.mbClamp( diffR / 0.174, -1, 1 ) 
-			if not ( self.spec_vca.isForward ) then 
+			if self.movingDirection < 0 then
 				a = -a 
 			end
 			if self.spec_reverseDriving  ~= nil and self.spec_reverseDriving.isReverseDriving then
@@ -2941,6 +2957,45 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 				acceleration   = acceleration   * limitThrottleRatio
 				self.spec_vca.oldAcc = self.spec_vca.oldAcc * limitThrottleRatio
 			end
+		end
+		
+		
+		if      self.spec_vca.idleThrottle 
+				and self.spec_motorized       ~= nil 
+				and self.spec_motorized.motor ~= nil 	
+				and self.spec_motorized.motorizedNode ~= nil
+				and next(self.spec_motorized.differentials) ~= nil
+				then 
+			local motor = self.spec_motorized.motor 
+			local m = motor.currentDirection * self.spec_drivable.reverserDirection
+			if self:vcaGetShuttleCtrl() then 
+				m = 1 
+			end 
+			
+			if      self:getIsMotorStarted()
+					and ( ( m > 0 and acceleration > -0.01 ) or ( m < 0 and acceleration < 0.01 ) )
+					and motor.gearShiftMode ~= VehicleMotor.SHIFT_MODE_MANUAL_CLUTCH 
+					and (motor.backwardGears or motor.forwardGears) 
+					and motor.gearRatio ~= 0 
+					and motor.maxGearRatio ~= 0 
+					then
+				local minDifferentialSpeed = motor.minRpm / math.abs(motor.maxGearRatio) * math.pi / 30
+
+				if     math.abs(motor.differentialRotSpeed) >= minDifferentialSpeed then
+					-- close clutch now
+					motor.clutchSlippingTimer = 0
+				elseif math.abs(motor.differentialRotSpeed) <= minDifferentialSpeed * 0.75 then
+					-- clutch will open automatically
+				elseif motor.clutchSlippingTimer > 0 then 
+					-- clutch was already opened
+				elseif math.abs(motor.differentialRotSpeed) <= minDifferentialSpeed * 0.9 then
+					-- full thorttle
+					acceleration = m 
+				elseif math.abs(motor.differentialRotSpeed) < minDifferentialSpeed then 
+					-- accelerate
+					acceleration = m * math.max( math.abs( acceleration ), 10 * ( 1 - math.abs(motor.differentialRotSpeed) / minDifferentialSpeed ) )
+				end 
+			end 
 		end
 	end 
 	
@@ -3291,13 +3346,31 @@ end
 
 function vehicleControlAddon:vcaUIShowautoShift()
 	if      self.spec_motorized       ~= nil 
-			and self.spec_motorized.motor ~= nil then 	
-		if      vehicleControlAddon.vcaVehicleMotorGetUseAutomaticGearShifting( self.spec_motorized.motor )
-				and vehicleControlAddon.vcaVehicleMotorGetUseAutomaticGroupShifting( self.spec_motorized.motor )
-				then 
+			and self.spec_motorized.motor ~= nil 	
+			and self.spec_motorized.motorizedNode ~= nil
+			and next(self.spec_motorized.differentials) ~= nil
+			then 
+		local motor = self.spec_motorized.motor 
+		if not (motor.backwardGears or motor.forwardGears) then 
+			return false 
+		elseif vehicleControlAddon.vcaVehicleMotorGetUseAutomaticGearShifting( motor ) and vehicleControlAddon.vcaVehicleMotorGetUseAutomaticGroupShifting( motor ) then 
 			return false 
 		end 
 		return true
+	end 
+	return false
+end 
+
+function vehicleControlAddon:vcaUIShowidleThrottle()
+	if      self.spec_motorized       ~= nil 
+			and self.spec_motorized.motor ~= nil 	
+			and self.spec_motorized.motorizedNode ~= nil
+			and next(self.spec_motorized.differentials) ~= nil
+			then 
+		local motor = self.spec_motorized.motor 
+		if motor.gearShiftMode ~= VehicleMotor.SHIFT_MODE_MANUAL_CLUTCH and (motor.backwardGears or motor.forwardGears) then
+			return true 
+		end 
 	end 
 	return false
 end 

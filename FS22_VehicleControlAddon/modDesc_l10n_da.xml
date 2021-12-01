@@ -1,50 +1,294 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <l10n>
 	<!-- Note that 'description' is only here for easier translations. It needs to be manually copied to ModDesc.XML later. -->
-	<description><![CDATA[Tilføjer specialisering til adaptiv styring]]></description>
+	<description><![CDATA[Tilføjer specialiseringen til adaptiv tastaturstyring]]></description> <!-- DK oversættelse:Michaelbjerg21978(Mb-mods) -->
 
 	<texts>
-		<text name="ksmCAMERA"          text="Kamera Rotation"/>
-		<text name="ksmEXPONENT"        text="Følsomhed"/>
-		<text name="ksmSTEERING"        text="Adaptiv Styring"/>
-		<text name="ksmSHUTTLE"         text="Transport"/>
-		<text name="ksmREVERSE"         text="Kig Bagud"/>
-		<text name="ksmLIMIT"           text="Speeder Begrænsning"/>
-		<text name="ksmPEEKLR"          text="Kig Sidelæns"/>
-		<text name="ksmANGLE"           text="Lås Vinkel"/>
-		<text name="ksmBRAKE"           text="Lav Bremse Kraft"/>
-		<text name="ksmSETTINGS"        text="Indstillinger"/>
+		<text name="vcaCAMERAI"         text="Kamera Rotation Indenfor"/>
+		<text name="vcaCAMERAO"         text="Kamera Rotation Udenfor"/>
+		<text name="vcaEXPONENT"        text="Følsomhed"/>
+		<text name="vcaSTEERING"        text="Adaptiv Styring"/>
+		<text name="vcaSHUTTLE"         text="Vendegear"/>
+		<text name="vcaREVERSE"         text="Kig Bagud"/>
+		<text name="vcaREVERSEI"        text="Kig bagud (indenfor)"/>
+		<text name="vcaREVERSEO"        text="Kig bagud (udenfor)"/>
+		<text name="vcaLIMIT"           text="Speeder Begrænsning"/>
+		<text name="vcaPEEKLR"          text="Kig Sidelæns"/>
+		<text name="vcaANGLE"           text="Lås Vinkel"/>
+		<text name="vcaBRAKE"           text="Lav Bremse Kraft"/>
+		<text name="vcaTRANSMISSION"    text="Gearkasse"/>
+		<text name="vcaMAXSPEED"        text="MAX Fart"/>
+		<text name="vcaLIMSPEED"        text="Fart Begrænsning"/>
+		<text name="vcaAUTOSHIFT"       text="Automatisk"/>
+		<text name="vcaLAUNCH"          text="Start Gear"/>
+		<text name="vcaKEEPSPEED"       text="Hold farten Permanent"/>
+		<text name="vcaNO_ARB"          text="Fri styring"/>
+		<text name="vcaHANDTHROTTLE"    text="HåndGas"/>
+		<text name="vcaPITCH"           text="Lydhøjde ved maks. RPM"/>
+		<text name="vcaPITCH_IO"          text="Sound pitch inside / outside"/>
+		<text name="vcaSETTINGS"        text="Globale Indstillinger"/>
+		<text name="vcaDRAWHUD"         text="Gearkasse HUD"/>
+		
+		<text name="vcaDISTANCE"        text="Arb. Bredde"/>
+		<text name="vcaOFFSET1"         text="CenterForskydning af redskab"/>
+		<text name="vcaOFFSET2"         text="Vend CenterForskydning"/>
+		<text name="vcaSNAP90"          text="Vend linier ved hver 90°"/>
+		<text name="vcaDRAWMARKER"      text="Linie Visning"/>
+		<text name="vcaPITCH1"          text="Lineær lydhøjde"/>
+		<text name="vcaPITCH2"          text="Lydhøjde ved medium OMDR."/>
+		<text name="vcaBLOWOFFVOL"      text="Turbo volume"/>
+		<text name="vcaSINGLEREV"       text="Enkelt Bak Gear"/>
+		<text name="vcaAUTOCLUTCH"      text="Automatisk kobling"/>
+		<text name="vcaTURBOCLUTCH"     text="Turbo kobling"/>
+		<text name="vcaGEARRATIOF"      text="Min. gear fart grænse"/>
+		<text name="vcaGEARRATIOT"      text="Max. gear fart grænse"/>
+		<text name="vcaG27MODE"         text="G27/G29 skifter mode"/>
+		<text name="vcaHIREDWORKER"     text="Gearkasse og hyret kører"/>
+		<text name="vcaOWNMINSPEED"     text="Gear fart i 1st gear"/>
+		<text name="vcaOWNMINRANGE"     text="Gear fart i 1st gear og gruppe -"/>
+		<text name="vcaOWNMAXRANGE"     text="Max. gear fart i gruppe -"/>
+		<text name="vcaOWNGEARS"        text="Antal af gear"/>
+		<text name="vcaOWNRANGES"       text="Antal af grupper"/>
+		<text name="vcaOWNGEARTIME"     text="Tid til og skifte gear"/>
+		<text name="vcaOWNRANGETIME"    text="Tid til og skifte grupper"/>
+		<text name="vcaOWNAUTOGEARS"    text="Automatisk gear"/>
+		<text name="vcaOWNAUTORANGE"    text="Automatisk gruppe"/>
+		<text name="vcaOWNREVGEARS"     text="Bak gear"/>
+		<text name="vcaOWNREVRANGE"     text="Bak grupper"/>
+		<text name="vcaOWNREVRATIO"     text="Bak ratio"/>
+		<text name="vcaOWNSPLITG27"     text="Opdelte G27 gearskifter"/>
 
-		<text name="ksm_tip_CAMERA"     text="Kameraet roterer automatisk i forhold den låste vinkel"/>
-		<text name="ksm_tip_EXPONENT"   text="Følsomhed af den apdaptive styring i forhold til hastighed"/>
-		<text name="ksm_tip_STEERING"   text="Den apdaptive styring justerer den automatiske rotation bagud og den maksimale styre vinkel"/>
-		<text name="ksm_tip_SHUTTLE"    text="Ændrer køre retning med &lt;mellemrum&gt;"/>
-		<text name="ksm_tip_REVERSE"    text="Hvis køretøjet ændrer retning så roterer kameraet 180°"/>
-		<text name="ksm_tip_LIMIT"      text="Begrænsning af speeder med og uden venstre shift tast"/>
-		<text name="ksm_tip_PEEKLR"     text="Kig hurtigt med højre shift key og højre/venstre tast"/>
-		<text name="ksm_tip_ANGLE"      text="Styr automatisk for at følge den låste retning"/>
-		<text name="ksm_tip_BRAKE"      text="Procent for lav bremse kraft, aka rullende modstand"/>
+		<text name="vcaAntiSlip"        text="Traction control"/>
+		<text name="vcaDiffManual"      text="Manual AWD and differentials"/>
+		<text name="vcaDiffFrontAdv"    text="Advance speed of front axle"/>
+		<text name="vcaDiffLockSwap"    text="Swap front and rear axle"/>
+		<text name="vcaHudX"            text="Hud position x"/>
+		<text name="vcaHudY"            text="Hud position y"/>
+		<text name="vcaHIREDWORKER2"    text="Differentials and hired worker"/>
+		
+		<text name="vcaSPEEDLIMITF"     text="Speed limit"/>
+		<text name="vcaSPEEDLIMITB"     text="Maximum reverse speed"/>
+		<text name="vcaRATEDPOWER"      text="Rated power in HP"/>
+		<text name="vcaTORQUECURVE"     text="More realistic torque curve"/>
+		<text name="vcaROTACCTIME"      text="Motor acceleration time"/>
+		<text name="vcaGEARRGMODE"      text="Swap gear and range keys"/>
+		<text name="vcaSTSPEEDO"        text="Steering speed"/>
+		<text name="vcaSTSPEEDI"        text="Inverse steering speed"/>
+		
+		<text name="vca_tip_CAMERAI"      text="The interior camera rotates automatically according to the steering angle"/>
+		<text name="vca_tip_CAMERAO"      text="The exterior camera rotates automatically according to the steering angle"/>
+		<text name="vca_tip_EXPONENT"     text="Sensitivity of the adaptive steering with respect to ground speed"/>
+		<text name="vca_tip_STEERING"     text="The adaptive steering adjusts the automatic back rotation and the maximum steering angle"/>
+		<text name="vca_tip_SHUTTLE"      text="Change driving direction with &lt;space&gt; key"/>
+		<text name="vca_tip_REVERSEI"     text="If the vehicle changes direction the interior camera is rotated by 180°"/>
+		<text name="vca_tip_REVERSEO"     text="If the vehicle changes direction the exterior camera is rotated by 180°"/>
+		<text name="vca_tip_LIMIT"        text="Limiter of the throttle without and with left shift key"/>
+		<text name="vca_tip_PEEKLR"       text="Take a quick look with Shift-Right and the left/right arrow keys"/>
+		<text name="vca_tip_ANGLE"        text="Steer automatically to follow snap angle"/>
+		<text name="vca_tip_BRAKE"        text="Low brake force percentage, aka rolling resistance"/>
+		<text name="vca_tip_TRANSMISSION" text="Type of the transmission; IVT variable transmission, all other transmissions have 12 differnt gears, 2x6 is best for trucks"/>
+		<text name="vca_tip_MAXSPEED"     text="Maximum speed of highest gear, can be faster than the maximum speed of the vehicle"/>
+		<text name="vca_tip_LIMSPEED"     text="Limits the maximum speed of the vehicle to its default value"/>
+		<text name="vca_tip_AUTOSHIFT"    text="Automatic shifting of gears and ranges"/>
+		<text name="vca_tip_LAUNCH"       text="Rated speed of the launch gear"/>
+		<text name="vca_tip_KEEPSPEED"    text="If permanent keep speed is enabled then the acceleration pedal behaves like a joystick. This is like driving with cruise control."/>
+		<text name="vca_tip_NO_ARB"       text="If free steering is enabled then the steering will not automatically rotate back"/>
+		<text name="vca_tip_HANDTHROTTLE" text="The engine automatically accelerates to reach hand throttle RPM"/>
+		<text name="vca_tip_PITCH"        text="Sound pitch at maximum RPM"/>
+		<text name="vca_tip_PITCH_IO"       text="Sound pitch inside / outside"/>
+		<text name="vca_tip_DRAWHUD"      text="Show or hide transmission HUD"/>
+		
+		<text name="vca_tip_DISTANCE"     text="Afstand mellem to køre spor"/>
+		<text name="vca_tip_OFFSET1"      text="CenterForskydning på spor"/>
+		<text name="vca_tip_OFFSET2"      text="Vend CenterForskydning på spor"/>
+		<text name="vca_tip_SNAP90"       text="Automatic rotation of snap driving direction by 90°"/>
+		<text name="vca_tip_DRAWMARKER"   text="Viser markør ved lås vinkel"/>
+		<text name="vca_tip_PITCH1"       text="Modifikation af lyd tonehøjde for at gøre det lineært"/>
+		<text name="vca_tip_PITCH2"       text="Lydhøjde ved medium RPM"/>
+		<text name="vca_tip_BLOWOFFVOL"   text="Volume af turbo lyd"/>
+		<text name="vca_tip_SINGLEREV"    text="Ved enkelt bagud anvender transmissionen et enkelt bagudgående gear eller bagudgående gruppe i stedet for vendegear"/>
+		<text name="vca_tip_AUTOCLUTCH"   text="Automatisk kobling"/>
+		<text name="vca_tip_TURBOCLUTCH"  text="Alternativ turbo kobling"/>
+		<text name="vca_tip_GEARRATIOF"   text="Min. gear fart grænse"/>
+		<text name="vca_tip_GEARRATIOT"   text="Max. gear fart grænse"/>
+		<text name="vca_tip_G27MODE"      text="G27/G29 skifter mode"/>
+		<text name="vca_tip_HIREDWORKER"  text="Kontrollere, hvis den ansatte arbejder, kører køretøjet med standard eller modificerede differentialer"/>
+		<text name="vca_tip_OWNMINSPEED"  text="Gear fart ved 1st gear i højeste gruppe"/>
+		<text name="vca_tip_OWNMINRANGE"  text="Gear fart ved 1st gear i 2. højeste gruppe"/>
+		<text name="vca_tip_OWNMAXRANGE"  text="Gear fart ved højeste gear i 2. højeste gruppe"/>
+		<text name="vca_tip_OWNGEARS"     text="Antal af gear"/>
+		<text name="vca_tip_OWNRANGES"    text="Antal af grupper"/>
+		<text name="vca_tip_OWNGEARTIME"  text="Tid til og skifte gear"/>
+		<text name="vca_tip_OWNRANGETIME" text="Tid til og skifte gruppe"/>
+		<text name="vca_tip_OWNAUTOGEARS" text="Automatisk tilpas gear og fart"/>
+		<text name="vca_tip_OWNAUTORANGE" text="Automatisk tilpas gruppe og fart"/>
+		<text name="vca_tip_OWNREVGEARS"  text="Bak gear; alt, hvis det er tomt"/>
+		<text name="vca_tip_OWNREVRANGE"  text="Bak grupper; alt, hvis det er tomt"/>
+		<text name="vca_tip_OWNREVRATIO"  text="Bak ratio"/>
+		<text name="vca_tip_OWNSPLITG27"  text="G27-skifteren deler gear. Hvis du har 12 gear, skifter splitteren mellem lige og ulige gear."/>
+		
+		<text name="vca_tip_AntiSlip"     text="Trækkontrol bremser individuelle hjul i tilfælde af slip"/>
+		<text name="vca_tip_DiffManual"   text="Manuel kontrol af 4WD og front og bag differentialer"/>
+		<text name="vca_tip_DiffFrontAdv" text="Fremdrift på forakslen, hvis 4WD er aktiveret"/>
+		<text name="vca_tip_DiffLockSwap" text="Skift om på front og bag aksel"/>
+		<text name="vca_tip_HudX"         text="Bestem selv Hud position x"/>
+		<text name="vca_tip_HudY"         text="Bestem selv Hud position y"/>
+		<text name="vca_tip_HIREDWORKER2" text="Kontrollere, hvis den ansatte arbejder, kører køretøjet med standard eller modificerede differentialer"/>
+	
+		<text name="vca_tip_SPEEDLIMITF"  text="Køretøjets hastighedsgrænse"/>
+		<text name="vca_tip_SPEEDLIMITB"  text="Køretøjets maksimale hastighedsgrænse, hvis du kører baglæns"/>
+		<text name="vca_tip_RATEDPOWER"   text="Køretøjets hestekraft ved nominel omdrejningstal"/>
+		<text name="vca_tip_TORQUECURVE"  text="Mere realistisk momentkurve for køretøjet"/>
+		<text name="vca_tip_ROTACCTIME"   text="Tid i ms, som motoren har brug for at komme op fra min OMDR til max OMDR"/>
+		<text name="vca_tip_GEARRGMODE"   text="This settings swaps the up/down inputs of gears and ranges"/>
+		<text name="vca_tip_STSPEEDO"     text="Steering speed"/>
+		<text name="vca_tip_STSPEEDI"     text="Inverse steering speed"/>
+		                               
+		<text name="input_vcaSETTINGS"  text="VCA: settings"/>
+		<text name="input_vcaGLOBALS"   text="VCA: global settings"/>
+		<text name="input_vcaUP"        text="VCA: toggle view direction / lock forwards"/>
+		<text name="input_vcaDOWN"      text="VCA: peek into other view direction / lock backwards"/>
+		<text name="input_vcaLEFT"      text="VCA: look left"/>
+		<text name="input_vcaRIGHT"     text="VCA: look right"/>
+		<text name="input_vcaDIRECTION" text="VCA: toggle driving direction"/>
+		<text name="input_vcaFORWARD"   text="VCA: drive forwards"/>
+		<text name="input_vcaREVERSE"   text="VCA: drive backwards"/>
+		<text name="input_vcaSNAP"      text="VCA: snap driving direction"/>
+		<text name="input_vcaSNAPRESET" text="VCA: reset snap driving direction"/>
+		<text name="input_vcaSNAPDIST"  text="VCA: determine working width of snap driving direction"/>
+		<text name="input_vcaSnapUP"    text="VCA: rotate snap direction left"/>
+		<text name="input_vcaSnapDOWN"  text="VCA: rotate snap direction right"/>
+		<text name="input_vcaSnapLEFT"  text="VCA: snap left"/>
+		<text name="input_vcaSnapRIGHT" text="VCA: snap right"/>
+		<text name="input_vcaNO_ARB"    text="VCA: no auto rotate back"/>
+		<text name="input_vcaINCHING"   text="VCA: inching"/>
+		<text name="input_vcaKEEPROT"   text="VCA: keep global camera direction"/>
+		<text name="input_vcaKEEPROT2"  text="VCA: permanent keep camera direction"/>
+		<text name="input_vcaKEEPSPEED" text="VCA: keep speed"/>
+		<text name="input_vcaKEEPSPEED2" text="VCA: permanent keep speed"/>
+		<text name="input_vcaSWAPSPEED" text="VCA: swap speed"/>
+		<text name="input_vcaGearUp"    text="VCA: gear up"/>
+		<text name="input_vcaGearDown"  text="VCA: gear down"/>
+		<text name="input_vcaRangeUp"   text="VCA: range up"/>
+		<text name="input_vcaRangeDown" text="VCA: range down"/>
+		<text name="input_vcaNeutral"   text="VCA: neutral on/off"/>
+		<text name="input_vcaNeutral0"  text="VCA: neutral off"/>
+		<text name="input_vcaNeutral1"  text="VCA: neutral on"/>
+		<text name="input_vcaClutch"    text="VCA: clutch axis"/> 
+		<text name="input_vcaShifter1"  text="VCA: G27/G29 gear 1"/>
+		<text name="input_vcaShifter2"  text="VCA: G27/G29 gear 2"/>
+		<text name="input_vcaShifter3"  text="VCA: G27/G29 gear 3"/>
+		<text name="input_vcaShifter4"  text="VCA: G27/G29 gear 4"/>
+		<text name="input_vcaShifter5"  text="VCA: G27/G29 gear 5 / range down"/>
+		<text name="input_vcaShifter6"  text="VCA: G27/G29 gear 6 / range up"/>
+		<text name="input_vcaShifter7"  text="VCA: G27/G29 gear 7 / reverse gear"/>
+		<text name="input_vcaShifter8"  text="VCA: G27/G29 gear 8"/>
+		<text name="input_vcaShifter9"  text="VCA: G27/G29 gear 9 / reverse gear"/>
+		<text name="input_vcaShifterLH" text="VCA: G27/G29 gear splitter"/>
+		<text name="input_vcaHandRpm"   text="VCA: hand throttle RPM"/>
+		<text name="input_vcaHandRpm_1" text="VCA: more hand throttle"/>
+		<text name="input_vcaHandRpm_2" text="VCA: less hand throttle"/>
+		<text name="input_vcaHandMode"  text="VCA: hand throttle mode"/>
+		<text name="input_vcaManRatio"   text="VCA: manual Vario"/>
+		<text name="input_vcaManRatio_1" text="VCA: Vario faster"/>
+		<text name="input_vcaManRatio_2" text="VCA: Vario slower"/>
+		<text name="input_vcaAutoShift" text="VCA: automatic shifting on/off"/>
+		<text name="input_vcaDiffLockF" text="VCA: front differential (un)lock"/>
+		<text name="input_vcaDiffLockM" text="VCA: all/front wheel drive"/>
+		<text name="input_vcaDiffLockB" text="VCA: back differential (un)lock"/>
+		<text name="input_vcaLowerF"    text="VCA: lower/raise front tools "/>
+		<text name="input_vcaLowerB"    text="VCA: lower/raise back tools "/>
+		<text name="input_vcaActivateF" text="VCA: (de-)activate front tools "/>
+		<text name="input_vcaActivateB" text="VCA: (de-)activate back tools "/>
+		<text name="input_vcaMenuAction1" text="VCA: Menu Button S"/>
+		<text name="input_vcaMenuAction2" text="VCA: Menu Button L"/>
+		<text name="input_vcaMenuAction3" text="VCA: Menu Button D"/>
+		<text name="input_vcaMenuAction4" text="VCA: Menu Button X"/>
+		
+		<text name="vcaValueOn"         text="til"/>
+		<text name="vcaValueOff"        text="fra"/>
+		<text name="vcaValueNever"      text="aldrig"/>
+		<text name="vcaValueAlways"     text="altid"/>
+		<text name="vcaValueAlwaysH"    text="altid (høj)"/>
+		<text name="vcaValueNormal"     text="normal"/>
+		<text name="vcaValueLight"      text="let"/> 
+		<text name="vcaValueStrong"     text="stærk"/>
+		<text name="vcaValueEntered"    text="med mig"/>
+		<text name="vcaValueInactive"   text="hvis inaktiv"/>
+		<text name="vcaValueInactiveH"  text="hvis inaktiv (høj)"/>
+		<text name="vcaValueRPM"        text="OMDR"/>
 
-		<text name="input_ksmSETTINGS"  text="KeyboardSteer: indstillinger"/>
-		<text name="input_ksmUP"        text="KeyboardSteer: skift syns retning / lås fremad"/>
-		<text name="input_ksmDOWN"      text="KeyboardSteer: smugkig i anden retning / lås bagud"/>
-		<text name="input_ksmLEFT"      text="KeyboardSteer: kig venstre"/>
-		<text name="input_ksmRIGHT"     text="KeyboardSteer: kig højre"/>
-		<text name="input_ksmDIRECTION" text="KeyboardSteer: skift køre retning"/>
-		<text name="input_ksmFORWARD"   text="KeyboardSteer: fremad"/>
-		<text name="input_ksmREVERSE"   text="KeyboardSteer: bak"/>
-		<text name="input_ksmSNAP"      text="KeyboardSteer: lås køre retning"/>
-		<text name="input_ksmNO_ARB"    text="KeyboardSteer: ingen auto rotering tilbage"/>
-		<text name="input_ksmINCHING"   text="KeyboardSteer: krybning"/>
+		<text name="vcaClutchMode_0"    text="automatisk"/>
+		<text name="vcaClutchMode_1"    text="auto (fast)"/>
+		<text name="vcaClutchMode_2"    text="manual"/>
+		<text name="vcaClutchMode_3"    text="turbo (fast)"/>
+		<text name="vcaClutchMode_4"    text="turbo (slow)"/>
+		<text name="vcaClutchMode_5"    text="turbo (open)"/>
+		<text name="vcaClutchMode_6"    text="turbo (manual)"/>
+
+		<text name="vcaTorqueCurve_0"   text="default"/>
+		<text name="vcaTorqueCurve_1"   text="modern (40% increase)"/>
+		<text name="vcaTorqueCurve_2"   text="modern (50% increase)"/>
+		<text name="vcaTorqueCurve_3"   text="truck engine (60% increase)"/>
+		<text name="vcaTorqueCurve_4"   text="classic (20% increase)"/>
+		<text name="vcaTorqueCurve_5"   text="classic (30% increase)"/>
+		
+		<text name="vcaPowerShift"      text="power shift"/>
+		
+		<text name="vcaButtonSnapWidth"  text="Registrer bredde"/>
+		<text name="vcaButtonSnapOffset" text="Skift CenterForskydning"/>
+
+		<text name="vcaTitleCam"        text="Kamera"/>
+		<text name="vcaTitleSteering"   text="Styring"/>
+		<text name="vcaTitleGPS"        text="Track Guiding"/>
+		<text name="vcaTitleThrottle"   text="Speeder, Bremser, Gearkasser"/>
+		<text name="vcaTitleDiff"       text="AWD og Differentialer"/>
 	</texts>
 
 	<longTexts>
-		<longText name="ksm_Help_1">
-<![CDATA[
-Dette script varierer styre hastighed afhængigt af den hastighed du kører med, og roterer kameraet til at matche styre vinkel og retning.
-SHift-Venstre begrænser speeder, fart pilot og maskimalt omdrejninger til 75%. Med Shift-Højre og venstre/højre tast kan du smugkigge i den valgte retning.
-Hvis du trykker på venstre Ctrl sammed med W så skifter køre retning til en låst retning.
-Alle funktioner kan slåes fra]]>
-		</longText>
+		<longText name="vca_Help_1"><![CDATA[Styring og kamera
+
+Dette script varierer styrehastigheden afhængigt af den hastighed, du kører, og det roterer kameraet, så det matcher styrevinklen og retningen.
+Med Shift-højre og markørtasterne kan du kigge i den tilsvarende retning.
+Hvis du trykker på Ctrl til venstre sammen med W, klikker kørselsretningen til faste retninger.
+Alle funktioner kan slukkes.]]>
+</longText>
+		<longText name="vca_Help_2"><![CDATA[Gashåndtag og snap køreretning
+
+Shift-Left begrænser gashåndtaget, cruise control og maksimale runder per minut til 75%.
+Hvis du trykker på slet, holder køretøjet sin hastighed. Acceleration og bremsepedal øger og mindsker hastigheden. Køretøjet kører som en moderne traktor med joystick.
+Den lineære tonehøjdeændring gør det lettere at høre omdrejningstallet.]]></longText>
+		<longText name="vca_Help_3"><![CDATA[Gearkasse
+
+slukket: Standard gearkasse
+IVT: Standard gearkasse med små justeringer af hastigheden
+4X4: En gammeldags gearkasse med 4 gear i 4 intervaller og bagudstyr. At skifte gear tager tid, og du kan miste fart.
+4PS: Samme gearkasse som 4X4, men med gearskift til gearene
+2X6: 2 områder med 6 gear hver. Denne gearkasse er nyttig til G27 / G29-skiftere. De 6 gear i område L overlapper ikke de 6 gear i område H.
+FPS: Full Power Shift: Denne gearkasse har 12 gear og skifter uden afbrydelse i trækkraften.
+6PS: John Deere AutoQuad: 6 områder, der skal skiftes manuelt, hver med 4 automatiske kraftforsyningstrin
+bil: 6 gear klassificeret til biler med reduktion for terrænet
+VARIO: Fendt Vario: Kontinuerligt variabel transmission med 2 intervaller "I" og "II"
+46A: Claas HexaShift: 4 manuelt skiftbare områder, hver med 6 automatiske kraftforsyningstrin
+EGEN: Byg din egen gearkasse.]]></longText>
+		<longText name="vca_Help_4"><![CDATA[Globale indstillinger
+
+Ændringer i de globale indstillinger har ingen indflydelse på det aktuelle køretøj. De gemmes i fil: modsSettings/FS19_VehicleControlAddon/config.xml]]></longText>
+		<longText name="vca_Help_5"><![CDATA[Byg din egen gearkasse
+
+Her kan du konfigurere din egen gearkasse. Gear kan skiftes automatisk ..
+Den maksimale hastighed i højeste gear må kun være teoretisk. Du kan kun nå det uden hastighedsbegrænser. Forholdet mellem gear beregnes ud fra den maksimale hastighed på 1. gear.
+De to maksimale hastigheder på det 2. højeste område er overflødige. Hvis du indtaster en værdi, ændres den anden i overensstemmelse hermed.]]></longText>
+		<longText name="vca_Help_6"><![CDATA[Differentiale og 4WD Indstillinger
+
+Hvis VCA kan identificere forskellene, har du muligheden for at betjene dem manuelt.
+Kan du overskrive hastighedsgrænserne for kørsel fremad og bagud.
+Hvis effekt- og momentkurven ikke er nøjagtig nok, kan du overskrive dem her.
+- standard bruger køretøjets momentkurve
+- moderne med 40% momentforøgelse og 7% mere end nominel effekt
+- moderne med 50% momentforøgelse og 8% mere end nominel effekt
+- lastbilmotor, 55% momentforøgelse og maksimal effekt fra maksimalt drejningsmoment til nominelt omdrejningstal
+- klassisk, kun 20% momentforøgelse, spidseffekt og nominel omdrejningstal
+- klassisk, men 30% drejningsmomentforøgelse, spidseffekt 2% i forhold til nominel effekt]]></longText>		
 	</longTexts>
 </l10n>
