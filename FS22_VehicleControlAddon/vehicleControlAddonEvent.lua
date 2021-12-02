@@ -24,6 +24,7 @@ function vehicleControlAddonEvent:readStream(streamId, connection)
 	if vehicleControlAddon.properties ~= nil and vehicleControlAddon.properties[self.name] ~= nil then 
 		local prop = vehicleControlAddon.properties[self.name]
 		self.value 	= prop.func.streamRead(streamId)
+		vcaDebugPrint("Info: vehicleControlAddonEvent received value "..tostring(self.value).." for state "..tostring(self.name))
 	else 
 		print("Error in vehicleControlAddonEvent: invalid property '"..tostring(self.name).."'")
 	end 
