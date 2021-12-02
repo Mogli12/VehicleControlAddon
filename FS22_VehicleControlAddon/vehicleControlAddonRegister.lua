@@ -87,20 +87,6 @@ function vehicleControlAddonRegister:postLoadMission(mission)
 		local l10nFilename = l10nFilenamePrefixFull.."_"..lang..".xml";
 		if fileExists(l10nFilename) then
 			local l10nXmlFile = loadXMLFile("TempConfig", l10nFilename);
-			local textI = 0;
-			while true do
-				local key = string.format("l10n.longTexts.longText(%d)", textI);
-				if not hasXMLProperty(l10nXmlFile, key) then
-					break;
-				end;
-				local name = getXMLString(l10nXmlFile, key.."#name");
-				local text = getXMLString(l10nXmlFile, key);
-				if name ~= nil and text ~= nil then
-				--self.mogliTexts[name] = text:gsub("\r\n", "\n")
-					self.i18n:setText( name, text:gsub("\r\n", "\n") )
-				end;
-				textI = textI+1;
-			end;
 			delete(l10nXmlFile);
 		end
 	end 
@@ -178,7 +164,16 @@ function vehicleControlAddonRegister:mouseEvent(posX, posY, isDown, isUp, button
 end;
 
 function vehicleControlAddonRegister:update(dt)
-	
+	if g_client ~= nil and not ( self.helpLoaded ) then 
+		self.helpLoaded = true 
+		local filename = self.vcaDirectory.."l10n/helpLine_" .. g_languageShort .. ".xml"
+		if not fileExists( filename ) then 
+			filename = self.vcaDirectory.."l10n/helpLine_en.xml"
+		end 
+		if fileExists( filename ) then 
+			g_helpLineManager:loadFromXML( filename, g_currentMission)
+		end 
+	end 
 end;
 
 function vehicleControlAddonRegister:draw()

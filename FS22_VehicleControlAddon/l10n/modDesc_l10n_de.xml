@@ -187,7 +187,7 @@ OWN: Bau Dir Dein eigenes Getriebe]]></longText>
 		<longText name="vca_Help_4"><![CDATA[Globale Einstellungen
 
 Änderungen an den globale Einstellungen haben keinen Einfluss auf das aktuelle Fahrzeug.
-Sie werden in der Datei modsSettings/FS19_VehicleControlAddon/config.xml gespeichert]]></longText>
+Sie werden in der Datei modSettings/vehicleControlAddon.xml gespeichert]]></longText>
 		<longText name="vca_Help_5"><![CDATA[Bau Dir Dein eigenes Getriebe
 
 Hier kann man sich sein eigenes Getriebe konfigurieren. Gänge können automatisch geschaltet werden. Daher sind Lastschaltstufen am besten immer Gänge. 
