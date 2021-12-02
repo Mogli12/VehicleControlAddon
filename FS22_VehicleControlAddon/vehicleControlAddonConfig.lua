@@ -152,7 +152,9 @@ vehicleControlAddonConfigEvent_mt = Class(vehicleControlAddonConfigEvent, Event)
 InitEventClass(vehicleControlAddonConfigEvent, "vehicleControlAddonConfigEvent")
 function vehicleControlAddonConfigEvent.emptyNew()
   local self = Event.new(vehicleControlAddonConfigEvent_mt)
-  return self
+ 	self.check1 = 244
+	self.check2 = 108
+	return self
 end
 function vehicleControlAddonConfigEvent.new(init)
   local self = vehicleControlAddonConfigEvent.emptyNew()
@@ -164,24 +166,38 @@ function vehicleControlAddonConfigEvent.new(init)
   return self
 end
 function vehicleControlAddonConfigEvent:readStream(streamId, connection)
+	local check1 = streamReadUInt8(streamId)
 	self.init = streamReadBool( streamId )
+	self.globals = {}
 	local count = streamReadInt16( streamId )
   for i=1,count do 
 		local name = streamReadString( streamId )
 		local item = ConfigItems[name]
-		VCAGlobals[name] = item.configType.streamRead( streamId )
+		table.insert( self.globals, { n = name, v = item.configType.streamRead( streamId ) })
 	end
-  self:run(connection)
+	local check2 = streamReadUInt8(streamId)
+	if check1 == self.check1 and check2 == self.check2 then 
+		self:run(connection)
+	else 
+		print("Error in vehicleControlAddonConfigEvent: check messages are corrupt.")
+	end 
 end
 function vehicleControlAddonConfigEvent:writeStream(streamId, connection)
+	streamWriteUInt8(streamId, self.check1 )
 	streamWriteBool( streamId, self.init )
 	streamWriteInt16( streamId, #ConfigItems )
   for name,item in pairs(ConfigItems) do 	
 		streamWriteString( streamId, name )
 		item.configType.streamWrite( streamId, VCAGlobals[name] )
 	end
+	streamWriteUInt8(streamId, self.check2 )
 end
 function vehicleControlAddonConfigEvent:run(connection)
+	if type( self.globals ) == "table" then 
+		for _,p in pairs( self.globals ) do
+			VCAGlobals[p.n] = p.v 
+		end 
+	end 
   if self.init then 
 		if not ( vehicleControlAddon.initSpecializationDone ) then 
 			vehicleControlAddon.initSpecialization()
