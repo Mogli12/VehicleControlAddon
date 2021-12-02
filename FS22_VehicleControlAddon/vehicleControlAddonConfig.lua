@@ -158,22 +158,16 @@ function vehicleControlAddonConfigEvent.emptyNew()
 end
 function vehicleControlAddonConfigEvent.new(init)
   local self = vehicleControlAddonConfigEvent.emptyNew()
-	if init then 
-		self.init = true 
-	else 
-		self.init = false 
-	end 
   return self
 end
 function vehicleControlAddonConfigEvent:readStream(streamId, connection)
 	local check1 = streamReadUInt8(streamId)
-	self.init = streamReadBool( streamId )
 	self.globals = {}
-	local count = streamReadInt16( streamId )
-  for i=1,count do 
-		local name = streamReadString( streamId )
-		local item = ConfigItems[name]
-		table.insert( self.globals, { n = name, v = item.configType.streamRead( streamId ) })
+  for _,_ in pairs(ConfigItems) do 	
+		local name  = streamReadString( streamId )
+		local item  = ConfigItems[name]
+		local value = item.configType.streamRead( streamId )
+		table.insert( self.globals, { n = name, v = value })
 	end
 	local check2 = streamReadUInt8(streamId)
 	
@@ -187,8 +181,6 @@ function vehicleControlAddonConfigEvent:readStream(streamId, connection)
 end
 function vehicleControlAddonConfigEvent:writeStream(streamId, connection)
 	streamWriteUInt8(streamId, self.check1 )
-	streamWriteBool( streamId, self.init )
-	streamWriteInt16( streamId, #ConfigItems )
   for name,item in pairs(ConfigItems) do 	
 		streamWriteString( streamId, name )
 		item.configType.streamWrite( streamId, VCAGlobals[name] )

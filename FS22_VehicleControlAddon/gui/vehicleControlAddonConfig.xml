@@ -116,6 +116,15 @@
 					<GuiElement type="text" profile="multiTextOptionSettingsTooltip" vcaTextID="vca_tip_HudY" text="snapAngleHudY (tt)"/>
 				</GuiElement>				
 				
+				<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="debugPrint" onCreate="onCreateSubElement">
+					<GuiElement type="button" profile="multiTextOptionSettingsLeft" />
+					<GuiElement type="button" profile="multiTextOptionSettingsRight" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsText" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsTitle" vcaTextID="vcaDEBUG" text="debugPrint"/>
+					<GuiElement type="bitmap" profile="multiTextOptionSettingsBg" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsTooltip" vcaTextID="vca_tip_DEBUG" text="debugPrint"/>
+				</GuiElement>
+
 				
 			</GuiElement>
 

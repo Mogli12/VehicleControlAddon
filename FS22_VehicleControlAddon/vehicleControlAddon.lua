@@ -196,6 +196,7 @@ vehicleControlAddon.distributeTorqueOpen = false
 vehicleControlAddon.minTorqueRatio       = 0.3
 
 vehicleControlAddon.properties = {}
+vehicleControlAddon.propertiesIndex = {}
 
 function vehicleControlAddon.initStates()
 	vehicleControlAddon.createState( "steeringIsOn",  "adaptiveSteering", nil               , VCAValueType.bool  )
@@ -259,7 +260,8 @@ function vehicleControlAddon.createState( name, global, default, propFunc, callb
 		end 
 	end 
 	
-	vehicleControlAddon.properties[name] = { id       = #vehicleControlAddon.properties, 
+	table.insert( vehicleControlAddon.propertiesIndex, name )
+	vehicleControlAddon.properties[name] = { id       = table.getn(vehicleControlAddon.propertiesIndex),
 																					 global   = global,
 																					 default  = default,
 																					 func     = propFunc,
@@ -313,6 +315,8 @@ function vehicleControlAddon.createStates()
 	vehicleControlAddon.createState( "diffFrontAdv" , nil, false                            , VCAValueType.bool  )
 	vehicleControlAddon.createState( "idleThrottle" , "idleThrottle", nil                   , VCAValueType.bool  )
 	vehicleControlAddon.createState( "handThrottle" , nil, 0                                , VCAValueType.float,nil, false )
+	vehicleControlAddon.createState( "hasGearsIdle" , nil, false                            , VCAValueType.bool ,nil, false )
+	vehicleControlAddon.createState( "hasGearsAuto" , nil, false                            , VCAValueType.bool ,nil, false )
 end 
 vehicleControlAddon.createStates()
 
@@ -1558,6 +1562,12 @@ function vehicleControlAddon:onPreUpdate(dt, isActiveForInput, isActiveForInputI
 		end 
 	end 
 --******************************************************************************************************************************************
+
+	if self.isServer then 
+		self:vcaSetState( "hasGearsAuto", vehicleControlAddon.vcaUIShowautoShift( self ))
+		self:vcaSetState( "hasGearsIdle", vehicleControlAddon.vcaUIShowidleThrottle( self ))
+	end 
+--******************************************************************************************************************************************
 end
 
 function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
@@ -2689,8 +2699,9 @@ function vehicleControlAddon:onReadStream(streamId, connection)
 	self.spec_vca.diffHasF = streamReadBool( streamId )
 	self.spec_vca.diffHasM = streamReadBool( streamId )
 	self.spec_vca.diffHasB = streamReadBool( streamId )
-		
-	for name,prop in pairs( vehicleControlAddon.properties ) do 
+	
+	for i,name in pairs( vehicleControlAddon.propertiesIndex ) do 
+		local prop = vehicleControlAddon.properties[name]
 		self:vcaSetState( name, prop.func.streamRead( streamId ), true )
 	end 
 	
@@ -2702,7 +2713,8 @@ function vehicleControlAddon:onWriteStream(streamId, connection)
 	streamWriteBool( streamId, self.spec_vca.diffHasM )
 	streamWriteBool( streamId, self.spec_vca.diffHasB )
 
-	for name,prop in pairs( vehicleControlAddon.properties ) do 
+	for i,name in pairs( vehicleControlAddon.propertiesIndex ) do 
+		local prop = vehicleControlAddon.properties[name]
 		prop.func.streamWrite( streamId , self:vcaGetState( name, true ) )
 	end 
 
@@ -3490,6 +3502,9 @@ function vehicleControlAddon:vcaUIShowhiredWorker2()
 end 
 
 function vehicleControlAddon:vcaUIShowautoShift()
+	if not self.isServer then 
+		return self.spec_vca.hasGearsAuto
+	end 
 	if      self.spec_motorized       ~= nil 
 			and self.spec_motorized.motor ~= nil 	
 			and self.spec_motorized.motorizedNode ~= nil
@@ -3507,6 +3522,9 @@ function vehicleControlAddon:vcaUIShowautoShift()
 end 
 
 function vehicleControlAddon:vcaUIShowidleThrottle()
+	if not self.isServer then 
+		return self.spec_vca.hasGearsIdle
+	end 
 	if      self.spec_motorized       ~= nil 
 			and self.spec_motorized.motor ~= nil 	
 			and self.spec_motorized.motorizedNode ~= nil

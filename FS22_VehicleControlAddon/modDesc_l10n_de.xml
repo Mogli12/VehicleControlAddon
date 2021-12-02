@@ -48,6 +48,7 @@
 		<text name="vcaSTSPEEDO"        text="Lenkgeschwindigkeit"/>
 		<text name="vcaSTSPEEDI"        text="Inverse Lenkgeschwindigkeit"/>
 		<text name="vcaIDLETHROTTLE"    text="Leerlaufanreicherung"/>
+		<text name="vcaDEBUG"           text="Debug"/>
 		
 		<text name="vca_tip_CAMERAI"      text="Die innere Kamera dreht sich passend zum Lenkeinschlag automatisch mit."/>
 		<text name="vca_tip_CAMERAO"      text="Die äußere Kamera dreht sich passend zum Lenkeinschlag automatisch mit."/>
@@ -91,45 +92,46 @@
 		<text name="vca_tip_STSPEEDO"     text="Geschwindigkeit der Lenkung"/>
 		<text name="vca_tip_STSPEEDI"     text="Geschwindigkeit der Lenkung beim Zurücklenken"/>
 		<text name="vca_tip_IDLETHROTTLE" text="Motor gibt selbständig Gas zum Halten der Leerlaufdrehzahl"/>
+		<text name="vca_tip_DEBUG"        text="Er werden zusätzliche Meldungen ins Log geschrieben"/>
 		
-		<text name="input_vcaSETTINGS"  text="VCA: Einstellungen"/>
-		<text name="input_vcaGLOBALS"   text="VCA: Globale Einstellungen"/>
-		<text name="input_vcaUP"        text="VCA: Blickrichtung wechseln oder nach vorne schauen"/>
-		<text name="input_vcaDOWN"      text="VCA: In die andere Richtung blicken / nach hinten schauen"/>
-		<text name="input_vcaLEFT"      text="VCA: Nach links schauen"/>
-		<text name="input_vcaRIGHT"     text="VCA: Nach rechts schauen"/>
-		<text name="input_vcaDIRECTION" text="VCA: Fahrtrichtung wechseln"/>
-		<text name="input_vcaFORWARD"   text="VCA: Fahrtrichtung vorwärts"/>
-		<text name="input_vcaREVERSE"   text="VCA: Fahrtrichtung rückwärts"/>
-		<text name="input_vcaSNAP"      text="VCA: Fahrtrichtung am Raster ausrichten"/>
-		<text name="input_vcaSNAPRESET" text="VCA: Fahrtrichtung nicht am Raster ausrichten"/>
-		<text name="input_vcaSNAPDIST"  text="VCA: Arbeitsbreite für Fahrtrichtung ermitteln"/>
-		<text name="input_vcaSnapUP"    text="VCA: Raster nach links drehen"/>
-		<text name="input_vcaSnapDOWN"  text="VCA: Raster nach rechts drehen"/>
-		<text name="input_vcaSnapLEFT"  text="VCA: Raster links"/>
-		<text name="input_vcaSnapRIGHT" text="VCA: Raster rechts"/>
-		<text name="input_vcaNO_ARB"    text="VCA: Kein zurück Lenken"/>
-		<text name="input_vcaINCHING"   text="VCA: Langsamer"/>
-		<text name="input_vcaKEEPROT"   text="VCA: Kamerarichtung global fixieren"/>
-		<text name="input_vcaKEEPROT2"  text="VCA: Kamerarichtung permanent fixieren"/>
-		<text name="input_vcaKEEPSPEED" text="VCA: Geschwindigkeit halten"/>
-		<text name="input_vcaKEEPSPEED2" text="VCA: Geschwindigkeit permanent halten"/>
-		<text name="input_vcaSWAPSPEED" text="VCA: Tempomatgeschwindigkeit wechseln"/>
-		<text name="input_vcaHandRpm"   text="VCA: Handgas Drehzahl"/>
-		<text name="input_vcaHandRpm_1" text="VCA: mehr Handgas"/>
-		<text name="input_vcaHandRpm_2" text="VCA: weniger Handgas"/>
-		<text name="input_vcaAutoShift" text="VCA: Automatische Schaltung an/aus"/>
-		<text name="input_vcaDiffLockF" text="VCA: Differentialsperre vorne an/aus"/>
-		<text name="input_vcaDiffLockM" text="VCA: Allrad an/aus"/>
-		<text name="input_vcaDiffLockB" text="VCA: Differentialsperre hinten an/aus"/>
-		<text name="input_vcaLowerF"    text="VCA: vordere Geräte heben/senken"/>
-		<text name="input_vcaLowerB"    text="VCA: hintere Geräte heben/senken"/>
-		<text name="input_vcaActivateF" text="VCA: vordere Geräte (de-)aktivieren"/>
-		<text name="input_vcaActivateB" text="VCA: hintere Geräte (de-)aktivieren"/>
-		<text name="input_vcaMenuAction1" text="VCA: Menu Button S"/>
-		<text name="input_vcaMenuAction2" text="VCA: Menu Button L"/>
-		<text name="input_vcaMenuAction3" text="VCA: Menu Button D"/>
-		<text name="input_vcaMenuAction4" text="VCA: Menu Button X"/>
+		<text name="input_vcaSETTINGS"    text="Einstellungen"/>
+		<text name="input_vcaGLOBALS"     text="Globale Einstellungen"/>
+		<text name="input_vcaUP"          text="Blickrichtung wechseln oder nach vorne schauen"/>
+		<text name="input_vcaDOWN"        text="In die andere Richtung blicken / nach hinten schauen"/>
+		<text name="input_vcaLEFT"        text="Nach links schauen"/>
+		<text name="input_vcaRIGHT"       text="Nach rechts schauen"/>
+		<text name="input_vcaDIRECTION"   text="Fahrtrichtung wechseln"/>
+		<text name="input_vcaFORWARD"     text="Fahrtrichtung vorwärts"/>
+		<text name="input_vcaREVERSE"     text="Fahrtrichtung rückwärts"/>
+		<text name="input_vcaSNAP"        text="Fahrtrichtung am Raster ausrichten"/>
+		<text name="input_vcaSNAPRESET"   text="Fahrtrichtung nicht am Raster ausrichten"/>
+		<text name="input_vcaSNAPDIST"    text="Arbeitsbreite für Fahrtrichtung ermitteln"/>
+		<text name="input_vcaSnapUP"      text="Raster nach links drehen"/>
+		<text name="input_vcaSnapDOWN"    text="Raster nach rechts drehen"/>
+		<text name="input_vcaSnapLEFT"    text="Raster links"/>
+		<text name="input_vcaSnapRIGHT"   text="Raster rechts"/>
+		<text name="input_vcaNO_ARB"      text="Kein zurück Lenken"/>
+		<text name="input_vcaINCHING"     text="Langsamer"/>
+		<text name="input_vcaKEEPROT"     text="Kamerarichtung global fixieren"/>
+		<text name="input_vcaKEEPROT2"    text="Kamerarichtung permanent fixieren"/>
+		<text name="input_vcaKEEPSPEED"   text="Geschwindigkeit halten"/>
+		<text name="input_vcaKEEPSPEED2"  text="Geschwindigkeit permanent halten"/>
+		<text name="input_vcaSWAPSPEED"   text="Tempomatgeschwindigkeit wechseln"/>
+		<text name="input_vcaHandRpm"     text="Handgas Drehzahl"/>
+		<text name="input_vcaHandRpm_1"   text="mehr Handgas"/>
+		<text name="input_vcaHandRpm_2"   text="weniger Handgas"/>
+		<text name="input_vcaAutoShift"   text="Automatische Schaltung an/aus"/>
+		<text name="input_vcaDiffLockF"   text="Differentialsperre vorne an/aus"/>
+		<text name="input_vcaDiffLockM"   text="Allrad an/aus"/>
+		<text name="input_vcaDiffLockB"   text="Differentialsperre hinten an/aus"/>
+		<text name="input_vcaLowerF"      text="vordere Geräte heben/senken"/>
+		<text name="input_vcaLowerB"      text="hintere Geräte heben/senken"/>
+		<text name="input_vcaActivateF"   text="vordere Geräte (de-)aktivieren"/>
+		<text name="input_vcaActivateB"   text="hintere Geräte (de-)aktivieren"/>
+		<text name="input_vcaMenuAction1" text="Menu Button S"/>
+		<text name="input_vcaMenuAction2" text="Menu Button L"/>
+		<text name="input_vcaMenuAction3" text="Menu Button D"/>
+		<text name="input_vcaMenuAction4" text="Menu Button X"/>
 		
 		<text name="vcaValueOn"         text="An"/>
 		<text name="vcaValueOff"        text="Aus"/>
