@@ -21,6 +21,7 @@
 		<text name="vcaLAUNCH"          text="Geschwindigkeit Startgang"/>
 		<text name="vcaKEEPSPEED"       text="Geschwindigkeit permanent halten"/>
 		<text name="vcaNO_ARB"          text="Freies Lenken"/>
+		<text name="vcaHANDTHROTTLE"    text="Handgas"/>
 		<text name="vcaSETTINGS"        text="Globale Einstellungen"/>
 		<text name="vcaDRAWHUD"         text="VCA HUD"/>
 		
@@ -114,6 +115,9 @@
 		<text name="input_vcaKEEPSPEED" text="VCA: Geschwindigkeit halten"/>
 		<text name="input_vcaKEEPSPEED2" text="VCA: Geschwindigkeit permanent halten"/>
 		<text name="input_vcaSWAPSPEED" text="VCA: Tempomatgeschwindigkeit wechseln"/>
+		<text name="input_vcaHandRpm"   text="VCA: Handgas Drehzahl"/>
+		<text name="input_vcaHandRpm_1" text="VCA: mehr Handgas"/>
+		<text name="input_vcaHandRpm_2" text="VCA: weniger Handgas"/>
 		<text name="input_vcaAutoShift" text="VCA: Automatische Schaltung an/aus"/>
 		<text name="input_vcaDiffLockF" text="VCA: Differentialsperre vorne an/aus"/>
 		<text name="input_vcaDiffLockM" text="VCA: Allrad an/aus"/>

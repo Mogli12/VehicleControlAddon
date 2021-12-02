@@ -263,6 +263,7 @@ function vehicleControlAddon.initSpecialization()
 	vehicleControlAddon.createState( "diffLockSwap", false                                      , VCAValueType.bool  )
 	vehicleControlAddon.createState( "diffFrontAdv", false                                      , VCAValueType.bool  )
 	vehicleControlAddon.createState( "idleThrottle", VCAGlobals.idleThrottle                    , VCAValueType.bool  )
+	vehicleControlAddon.createState( "handThrottle", 0                                          , VCAValueType.float, nil, false )
 end 
 
 function vehicleControlAddon.registerEventListeners(vehicleType)
@@ -334,13 +335,13 @@ function vehicleControlAddon:vcaIsNonDefaultProp( name )
 	local d = self:vcaGetDefault( name )
 	if     d == nil then 
 		return false 
---elseif type( self.spec_vca[name] ) == "number" and type( d ) == "number" then 
---	if math.abs( self.spec_vca[name] - d ) < 1e-4 then 
---		return false 
---	end 
---	return true 
---elseif self.spec_vca[name] == d then 
---	return false 
+	elseif type( self.spec_vca[name] ) == "number" and type( d ) == "number" then 
+		if math.abs( self.spec_vca[name] - d ) < 1e-4 then 
+			return false 
+		end 
+		return true 
+	elseif self.spec_vca[name] == d then 
+		return false 
 	end 
 	return true  
 end 
@@ -710,6 +711,7 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
 																"vcaDiffLockF",
 																"vcaDiffLockM",
 																"vcaDiffLockB",
+																"vcaHandRpm",
 																"vcaLowerF",
 																"vcaLowerB",
 																"vcaActivateF",
@@ -772,6 +774,9 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
 						then 
 					triggerKeyUp   = true 
 					triggerKeyDown = false 
+					triggerAlways  = true 
+				elseif actionName == "vcaHandRpm" 
+						then 
 					triggerAlways  = true 
 				end 
 				
@@ -997,6 +1002,40 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 		if self:vcaIsVehicleControlledByPlayer() and self:vcaHasDiffBack() then
 			self:vcaSetState( "diffLockBack", not self.spec_vca.diffLockBack )
 		end 
+	elseif actionName == "vcaHandRpm" then 
+		local h = 0
+		if self.spec_vca.handThrottle ~= nil and self.spec_vca.handThrottle > 0 then 
+			h = self.spec_vca.handThrottle
+		end 
+		
+		if     isAnalog then 
+			if keyStatus > 0.5 then 
+				self.spec_vca.handRpmFullAxis = true 
+			end 
+			if self.spec_vca.handRpmFullAxis then 
+				h = 0.5 * ( 1 + keyStatus ) 
+			else 
+				h = 1 + keyStatus
+			end 
+		elseif keyStatus > 0.5 then 
+			h = math.min( 1, h + 0.0005 * self.spec_vca.tickDt )
+		elseif keyStatus < 0.5 then 
+			h = math.max( 0, h - 0.0005 * self.spec_vca.tickDt )
+		end 
+		
+		self:vcaSetState( "handThrottle", vehicleControlAddon.mbClamp( h, 0, 1 ) )
+
+		if not isAnalog then 
+			if h <= 0 then 
+				self:vcaSetState( "warningText", vehicleControlAddon.getText( "vcaHANDTHROTTLE", "" )..": off" )
+			elseif  self.spec_motorized ~= nil 
+					and self.spec_motorized.motor ~= nil 
+					and self.spec_motorized.motor.maxRpm ~= nil 
+					and self.spec_motorized.motor.maxRpm > 0 then 
+				local r = self.spec_motorized.motor.minRpm + h * ( self.spec_motorized.motor.maxRpm - self.spec_motorized.motor.minRpm )
+				self:vcaSetState( "warningText", string.format("%s: %4.0f %s", vehicleControlAddon.getText( "vcaHANDTHROTTLE", "" ), r, vehicleControlAddon.getText( "vcaValueRPM", "RPM"  ) ) )
+			end 
+		end 
   elseif actionName == "vcaLowerF" then 
 		vehicleControlAddon.setToolStateRec( self, true, false, true, false )
   elseif actionName == "vcaLowerB" then 
@@ -1137,6 +1176,7 @@ function vehicleControlAddon:onLeaveVehicle()
 		self:vcaSetState( "isEnteredMP", false )
 		self:vcaSetState( "isBlocked", false )
 		self:vcaSetState( "isForward", true )
+		self:vcaSetState( "handThrottle", 0 )
 		self.spec_vca.movingDir     = 1
 		self.spec_vca.keepCamRot    = false 
 	end 
@@ -2674,9 +2714,9 @@ function vehicleControlAddon:vcaGetSnapDistance()
 				--local m1, m2 = vehicleControlAddon.getDistance( self.steeringAxleNode, leftMarker, rightMarker, minX, maxX )
 				--vcaDebugPrint( string.format("SnapDistance: (%5.2f, %5.2f); (%5.2f, %5.2f)", minX, maxX, m1, m2))
 					
-					if self == parent then 
-						break 
-					end 
+				--if self == parent then 
+				--	break 
+				--end 
 					
 					object = parent 
 				end 
@@ -2737,6 +2777,26 @@ function vehicleControlAddon:getDefaultReverseInside()
 	return true 
 end
 
+
+--******************************************************************************************************************************************
+-- hand RPM via PowerConsumer.getMaxPtoRpm 
+function vehicleControlAddon:vcaGetMaxPtoRpm( superFunc, ... )
+	if     self.spec_vca              == nil
+			or self.spec_vca.handThrottle == nil  
+			or self.spec_vca.handThrottle <= 0
+			or self.spec_motorized        == nil 
+			or self.spec_motorized.motor  == nil 
+			or self.spec_motorized.motor.ptoMotorRpmRatio == nil
+			or self.spec_motorized.motor.ptoMotorRpmRatio <= 0
+			then 
+		return superFunc( self, ... )
+	end 
+	local motor = self.spec_motorized.motor
+	local r0 = superFunc( self, ... )
+	local r1 = ( motor.minRpm + vehicleControlAddon.mbClamp( self.spec_vca.handThrottle, 0, 1 ) * ( motor.maxRpm - motor.minRpm ) ) / motor.ptoMotorRpmRatio
+	return math.max( r0, r1 )
+end 
+PowerConsumer.getMaxPtoRpm = Utils.overwrittenFunction( PowerConsumer.getMaxPtoRpm, vehicleControlAddon.vcaGetMaxPtoRpm )
 
 --******************************************************************************************************************************************
 function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, axisSide, doHandbrake, dt )
@@ -2880,7 +2940,7 @@ Drivable.updateVehiclePhysics = Utils.overwrittenFunction( Drivable.updateVehicl
 -- shuttle control and inching
 function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed, acceleration, doHandbrake, stopAndGoBraking )
 
-	if not ( self.spec_vca ~= nil ) then 
+	if self.spec_vca == nil then 
 		return superFunc( self, dt, currentSpeed, acceleration, doHandbrake, stopAndGoBraking )
 	end 
 

@@ -27,10 +27,10 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>store.dds</iconFilename>
-	<version>9.0.1.1</version>
+	<version>9.0.1.2</version>
 	<l10n filenamePrefix="modDesc_l10n">
 		<text name="vcaVERSION">          
-			<en>Vehicle Control Addon dev.build 11</en>
+			<en>Vehicle Control Addon dev.build 12</en>
 		</text>
 	</l10n>
 	
@@ -62,6 +62,7 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 		<action name="vcaDiffLockF" category="VEHICLE" axisType="HALF"/>
 		<action name="vcaDiffLockM" category="VEHICLE" axisType="HALF"/>
 		<action name="vcaDiffLockB" category="VEHICLE" axisType="HALF"/>
+		<action name="vcaHandRpm"   category="VEHICLE" axisType="FULL"/>
 		<action name="vcaLowerF"    category="VEHICLE" axisType="HALF"/>
 		<action name="vcaLowerB"    category="VEHICLE" axisType="HALF"/>
 		<action name="vcaActivateF" category="VEHICLE" axisType="HALF"/>
@@ -136,6 +137,10 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 		</actionBinding>	
 		<actionBinding action="vcaAutoShift">
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_leftbracket"/>
+		</actionBinding>	
+		<actionBinding action="vcaHandRpm">
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_equals" axisComponent="+"/>
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_minus"  axisComponent="-"/>
 		</actionBinding>	
 		<actionBinding action="vcaLowerF">
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_lshift KEY_v"/>
