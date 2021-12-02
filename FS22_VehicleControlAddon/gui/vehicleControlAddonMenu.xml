@@ -260,6 +260,19 @@
 					<GuiElement type="bitmap" profile="multiTextOptionSettingsBg" />
 					<GuiElement type="text"   profile="multiTextOptionSettingsTooltip" vcaTextID="vca_tip_HIREDWORKER2" text="hiredWorker2"/>
 				</GuiElement>
+				
+				
+				
+				<GuiElement type="text" profile="settingsMenuSubtitle" vcaTextID="vcaTitleMisc" text="Misc"/> 
+				
+				<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="drawHud" onCreate="onCreateSubElement">
+					<GuiElement type="button" profile="multiTextOptionSettingsLeft" />
+					<GuiElement type="button" profile="multiTextOptionSettingsRight" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsText" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsTitle" vcaTextID="vcaDRAWHUD" text="drawHud"/>
+					<GuiElement type="bitmap" profile="multiTextOptionSettingsBg" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsTooltip" vcaTextID="vca_tip_DRAWHUD" text="drawHud"/>
+				</GuiElement>
 
 
 			</GuiElement>

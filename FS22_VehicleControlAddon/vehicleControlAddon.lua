@@ -197,73 +197,137 @@ vehicleControlAddon.minTorqueRatio       = 0.3
 
 vehicleControlAddon.properties = {}
 
+function vehicleControlAddon.initStates()
+	vehicleControlAddon.createState( "steeringIsOn",  "adaptiveSteering", nil               , VCAValueType.bool  )
+	vehicleControlAddon.createState( "peekLeftRight", "peekLeftRight", nil                  , VCAValueType.bool  )
+	vehicleControlAddon.createState( "isForward"    , nil, true                             , VCAValueType.bool, nil, false  )
+	vehicleControlAddon.createState( "camRotInside" , "camInsideRotation", nil              , VCAValueType.int16 )
+	vehicleControlAddon.createState( "camRotOutside", "camOutsideRotation", nil             , VCAValueType.int16 )
+	vehicleControlAddon.createState( "camRevInside" , nil, vehicleControlAddon.vcaGetDefRevI, VCAValueType.bool  )
+	vehicleControlAddon.createState( "camRevOutside", "camRevOutRotation", nil              , VCAValueType.bool  )
+	vehicleControlAddon.createState( "warningText"  , nil, ""                               , VCAValueType.string, vehicleControlAddon.vcaOnSetWarningText, false )
+	vehicleControlAddon.createState( "limitThrottle", "limitThrottle", nil                  , VCAValueType.int16 )
+	vehicleControlAddon.createState( "snapAngle"    , "snapAngle", nil                      , VCAValueType.int16 , vehicleControlAddon.vcaOnSetSnapAngle )
+	vehicleControlAddon.createState( "snapDistance" , nil, 0                                , VCAValueType.float )
+	vehicleControlAddon.createState( "snapOffset1"  , nil, 0                                , VCAValueType.float )
+	vehicleControlAddon.createState( "snapOffset2"  , nil, 0                                , VCAValueType.float )
+	vehicleControlAddon.createState( "snapEvery90"  , nil, false                            , VCAValueType.bool  )
+	vehicleControlAddon.createState( "snapIsOn"     , nil, false                            , VCAValueType.bool  , vehicleControlAddon.vcaOnSetSnapIsOn, false )
+	vehicleControlAddon.createState( "drawHud"      , "drawHud", nil                        , VCAValueType.bool  )
+	vehicleControlAddon.createState( "inchingIsOn"  , nil, false                            , VCAValueType.bool, nil, false  )
+	vehicleControlAddon.createState( "noAutoRotBack", nil, false                            , VCAValueType.bool, nil, false  )
+	vehicleControlAddon.createState( "noARBToggle"  , nil, false                            , VCAValueType.bool  )
+	vehicleControlAddon.createState( "brakeForce"   , "brakeForceFactor", nil               , VCAValueType.float )
+	vehicleControlAddon.createState( "autoShift"    , nil, false                            , VCAValueType.bool  ) --, vehicleControlAddon.vcaOnSetAutoShift )
+	vehicleControlAddon.createState( "ksIsOn"       , nil, false                            , VCAValueType.bool, nil, false  ) --, vehicleControlAddon.vcaOnSetKSIsOn )
+	vehicleControlAddon.createState( "keepSpeed"    , nil, 0                                , VCAValueType.float,nil, false )
+	vehicleControlAddon.createState( "ksToggle"     , nil, false                            , VCAValueType.bool  )
+	vehicleControlAddon.createState( "ccSpeed2"     , nil, 10                               , VCAValueType.float )
+	vehicleControlAddon.createState( "ccSpeed3"     , nil, 15                               , VCAValueType.float )
+	vehicleControlAddon.createState( "lastSnapAngle", nil, 10                               , VCAValueType.float ) --, vehicleControlAddon.vcaOnSetLastSnapAngle ) -- value should be between -pi and pi !!!
+	vehicleControlAddon.createState( "lastSnapPosX" , nil, 0                                , VCAValueType.float )
+	vehicleControlAddon.createState( "lastSnapPosZ" , nil, 0                                , VCAValueType.float )
+	vehicleControlAddon.createState( "isEnteredMP"  , nil, false                            , VCAValueType.bool, nil, false  )
+	vehicleControlAddon.createState( "isBlocked"    , nil, false                            , VCAValueType.bool, nil, false  )
+	vehicleControlAddon.createState( "snapDraw"     , nil, 1                                , VCAValueType.int16 )
+	vehicleControlAddon.createState( "snapFactor"   , nil, 0                                , VCAValueType.float,nil, false )
+	vehicleControlAddon.createState( "hiredWorker2" , "hiredWorker2", nil                   , VCAValueType.bool  )
+	vehicleControlAddon.createState( "rotSpeedOut"  , "rotSpeedOut", nil                    , VCAValueType.float )
+	vehicleControlAddon.createState( "rotSpeedIn"   , "rotSpeedIn", nil                     , VCAValueType.float )
+	vehicleControlAddon.createState( "antiSlip"     , nil, false                            , VCAValueType.bool  )
+	vehicleControlAddon.createState( "diffLockFront", nil, false                            , VCAValueType.bool  )
+	vehicleControlAddon.createState( "diffLockAWD"  , nil, false                            , VCAValueType.bool  )
+	vehicleControlAddon.createState( "diffLockBack" , nil, false                            , VCAValueType.bool  )
+	vehicleControlAddon.createState( "diffManual"   , nil, false                            , VCAValueType.bool  )
+	vehicleControlAddon.createState( "diffLockSwap" , nil, false                            , VCAValueType.bool  )
+	vehicleControlAddon.createState( "diffFrontAdv" , nil, false                            , VCAValueType.bool  )
+	vehicleControlAddon.createState( "idleThrottle" , "idleThrottle", nil                   , VCAValueType.bool  )
+	vehicleControlAddon.createState( "handThrottle" , nil, 0                                , VCAValueType.float,nil, false )
+end 
+
 function vehicleControlAddon.prerequisitesPresent(specializations)
 	return true
 end
 
-function vehicleControlAddon.createState( name, default, propFunc, callback, savegame )
+function vehicleControlAddon.createState( name, global, default, propFunc, callback, savegame )
 	if savegame == nil then savegame = true end 
-	vehicleControlAddon.properties[name] = { id      = #vehicleControlAddon.properties, 
-																					default  = default,
-																					func     = propFunc,
-																					savegame = savegame,
-																					callback = callback }
-	if savegame then 
-		local schemaSavegame = Vehicle.xmlSchemaSavegame
-		if schemaSavegame then 
-			schemaSavegame:register(propFunc.valueType, "vehicles.vehicle(?)." .. g_vehicleControlAddon.vcaSpecName .. "#"..name, "VehicleControlAddon: "..name)
+	if default  == nil then
+		if global ~= nil and VCAGlobals[global] ~= nil then 
+			default = VCAGlobals[global]
+		else 
+			default = propFunc.emptyValue
 		end 
 	end 
+	
+	vehicleControlAddon.properties[name] = { id       = #vehicleControlAddon.properties, 
+																					 global   = global,
+																					 default  = default,
+																					 func     = propFunc,
+																					 savegame = savegame,
+																					 callback = callback }
 end 
+
+function vehicleControlAddon.createStates()
+	vehicleControlAddon.createState( "steeringIsOn",  "adaptiveSteering", nil               , VCAValueType.bool  )
+	vehicleControlAddon.createState( "peekLeftRight", "peekLeftRight", nil                  , VCAValueType.bool  )
+	vehicleControlAddon.createState( "isForward"    , nil, true                             , VCAValueType.bool, nil, false  )
+	vehicleControlAddon.createState( "camRotInside" , "camInsideRotation", nil              , VCAValueType.int16 )
+	vehicleControlAddon.createState( "camRotOutside", "camOutsideRotation", nil             , VCAValueType.int16 )
+	vehicleControlAddon.createState( "camRevInside" , nil, vehicleControlAddon.vcaGetDefRevI, VCAValueType.bool  )
+	vehicleControlAddon.createState( "camRevOutside", "camRevOutRotation", nil              , VCAValueType.bool  )
+	vehicleControlAddon.createState( "warningText"  , nil, ""                               , VCAValueType.string, vehicleControlAddon.vcaOnSetWarningText, false )
+	vehicleControlAddon.createState( "limitThrottle", "limitThrottle", nil                  , VCAValueType.int16 )
+	vehicleControlAddon.createState( "snapAngle"    , "snapAngle", nil                      , VCAValueType.int16 , vehicleControlAddon.vcaOnSetSnapAngle )
+	vehicleControlAddon.createState( "snapDistance" , nil, 0                                , VCAValueType.float )
+	vehicleControlAddon.createState( "snapOffset1"  , nil, 0                                , VCAValueType.float )
+	vehicleControlAddon.createState( "snapOffset2"  , nil, 0                                , VCAValueType.float )
+	vehicleControlAddon.createState( "snapEvery90"  , nil, false                            , VCAValueType.bool  )
+	vehicleControlAddon.createState( "snapIsOn"     , nil, false                            , VCAValueType.bool  , vehicleControlAddon.vcaOnSetSnapIsOn, false )
+	vehicleControlAddon.createState( "drawHud"      , "drawHud", nil                        , VCAValueType.bool  )
+	vehicleControlAddon.createState( "inchingIsOn"  , nil, false                            , VCAValueType.bool, nil, false  )
+	vehicleControlAddon.createState( "noAutoRotBack", nil, false                            , VCAValueType.bool, nil, false  )
+	vehicleControlAddon.createState( "noARBToggle"  , nil, false                            , VCAValueType.bool  )
+	vehicleControlAddon.createState( "brakeForce"   , "brakeForceFactor", nil               , VCAValueType.float )
+	vehicleControlAddon.createState( "autoShift"    , nil, false                            , VCAValueType.bool  ) --, vehicleControlAddon.vcaOnSetAutoShift )
+	vehicleControlAddon.createState( "ksIsOn"       , nil, false                            , VCAValueType.bool, nil, false  ) --, vehicleControlAddon.vcaOnSetKSIsOn )
+	vehicleControlAddon.createState( "keepSpeed"    , nil, 0                                , VCAValueType.float,nil, false )
+	vehicleControlAddon.createState( "ksToggle"     , nil, false                            , VCAValueType.bool  )
+	vehicleControlAddon.createState( "ccSpeed2"     , nil, 10                               , VCAValueType.float )
+	vehicleControlAddon.createState( "ccSpeed3"     , nil, 15                               , VCAValueType.float )
+	vehicleControlAddon.createState( "lastSnapAngle", nil, 10                               , VCAValueType.float ) --, vehicleControlAddon.vcaOnSetLastSnapAngle ) -- value should be between -pi and pi !!!
+	vehicleControlAddon.createState( "lastSnapPosX" , nil, 0                                , VCAValueType.float )
+	vehicleControlAddon.createState( "lastSnapPosZ" , nil, 0                                , VCAValueType.float )
+	vehicleControlAddon.createState( "isEnteredMP"  , nil, false                            , VCAValueType.bool, nil, false  )
+	vehicleControlAddon.createState( "isBlocked"    , nil, false                            , VCAValueType.bool, nil, false  )
+	vehicleControlAddon.createState( "snapDraw"     , nil, 1                                , VCAValueType.int16 )
+	vehicleControlAddon.createState( "snapFactor"   , nil, 0                                , VCAValueType.float,nil, false )
+	vehicleControlAddon.createState( "hiredWorker2" , "hiredWorker2", nil                   , VCAValueType.bool  )
+	vehicleControlAddon.createState( "rotSpeedOut"  , "rotSpeedOut", nil                    , VCAValueType.float )
+	vehicleControlAddon.createState( "rotSpeedIn"   , "rotSpeedIn", nil                     , VCAValueType.float )
+	vehicleControlAddon.createState( "antiSlip"     , nil, false                            , VCAValueType.bool  )
+	vehicleControlAddon.createState( "diffLockFront", nil, false                            , VCAValueType.bool  )
+	vehicleControlAddon.createState( "diffLockAWD"  , nil, false                            , VCAValueType.bool  )
+	vehicleControlAddon.createState( "diffLockBack" , nil, false                            , VCAValueType.bool  )
+	vehicleControlAddon.createState( "diffManual"   , nil, false                            , VCAValueType.bool  )
+	vehicleControlAddon.createState( "diffLockSwap" , nil, false                            , VCAValueType.bool  )
+	vehicleControlAddon.createState( "diffFrontAdv" , nil, false                            , VCAValueType.bool  )
+	vehicleControlAddon.createState( "idleThrottle" , "idleThrottle", nil                   , VCAValueType.bool  )
+	vehicleControlAddon.createState( "handThrottle" , nil, 0                                , VCAValueType.float,nil, false )
+end 
+vehicleControlAddon.createStates()
+
 
 function vehicleControlAddon.initSpecialization()
 	vehicleControlAddon.initSpecializationDone = true 
 
-	vehicleControlAddon.createState( "steeringIsOn", VCAGlobals.adaptiveSteering                , VCAValueType.bool  )
-	vehicleControlAddon.createState( "peekLeftRight",VCAGlobals.peekLeftRight                   , VCAValueType.bool  )
-	vehicleControlAddon.createState( "isForward"      , true                                    , VCAValueType.bool, nil, false  )
-	vehicleControlAddon.createState( "camRotInside", VCAGlobals.camInsideRotation               , VCAValueType.int16  )
-	vehicleControlAddon.createState( "camRotOutside",VCAGlobals.camOutsideRotation              , VCAValueType.int16  )
-	vehicleControlAddon.createState( "camRevInside", vehicleControlAddon.getDefaultReverseInside, VCAValueType.bool  )
-	vehicleControlAddon.createState( "camRevOutside",VCAGlobals.camRevOutRotation               , VCAValueType.bool  )
-	vehicleControlAddon.createState( "warningText" , ""                                         , VCAValueType.string, vehicleControlAddon.vcaOnSetWarningText, false )
-	vehicleControlAddon.createState( "limitThrottle",VCAGlobals.limitThrottle                   , VCAValueType.int16 )
-	vehicleControlAddon.createState( "snapAngle"   , VCAGlobals.snapAngle                       , VCAValueType.int16 , vehicleControlAddon.vcaOnSetSnapAngle )
-	vehicleControlAddon.createState( "snapDistance", 0                                          , VCAValueType.float )
-	vehicleControlAddon.createState( "snapOffset1",  0                                          , VCAValueType.float )
-	vehicleControlAddon.createState( "snapOffset2",  0                                          , VCAValueType.float )
-	vehicleControlAddon.createState( "snapEvery90",  false                                      , VCAValueType.bool  )
-	vehicleControlAddon.createState( "snapIsOn" ,    false                                      , VCAValueType.bool  , vehicleControlAddon.vcaOnSetSnapIsOn, false )
-	vehicleControlAddon.createState( "drawHud" ,     VCAGlobals.drawHud                         , VCAValueType.bool  )
-	vehicleControlAddon.createState( "inchingIsOn" , false                                      , VCAValueType.bool, nil, false  )
-	vehicleControlAddon.createState( "noAutoRotBack",false                                      , VCAValueType.bool, nil, false  )
-	vehicleControlAddon.createState( "noARBToggle",  false                                      , VCAValueType.bool  )
-	vehicleControlAddon.createState( "brakeForce",   VCAGlobals.brakeForceFactor                , VCAValueType.float )
-	vehicleControlAddon.createState( "autoShift",    false                                      , VCAValueType.bool  ) --, vehicleControlAddon.vcaOnSetAutoShift )
-	vehicleControlAddon.createState( "ksIsOn",       false                                      , VCAValueType.bool, nil, false  ) --, vehicleControlAddon.vcaOnSetKSIsOn )
-	vehicleControlAddon.createState( "keepSpeed",    0                                          , VCAValueType.float, nil, false )
-	vehicleControlAddon.createState( "ksToggle",     false                                      , VCAValueType.bool  )
-	vehicleControlAddon.createState( "ccSpeed2",     10                                         , VCAValueType.float )
-	vehicleControlAddon.createState( "ccSpeed3",     15                                         , VCAValueType.float )
-	vehicleControlAddon.createState( "lastSnapAngle",10                                         , VCAValueType.float ) --, vehicleControlAddon.vcaOnSetLastSnapAngle ) -- value should be between -pi and pi !!!
-	vehicleControlAddon.createState( "lastSnapPosX", 0                                          , VCAValueType.float )
-	vehicleControlAddon.createState( "lastSnapPosZ", 0                                          , VCAValueType.float )
-	vehicleControlAddon.createState( "isEnteredMP",  false                                      , VCAValueType.bool, nil, false  )
-	vehicleControlAddon.createState( "isBlocked",    false                                      , VCAValueType.bool, nil, false  )
-	vehicleControlAddon.createState( "snapDraw",     1                                          , VCAValueType.int16 )
-	vehicleControlAddon.createState( "snapFactor",   0                                          , VCAValueType.float, nil, false )
-	vehicleControlAddon.createState( "hiredWorker2", VCAGlobals.hiredWorker2                    , VCAValueType.bool  )
-	vehicleControlAddon.createState( "rotSpeedOut",  VCAGlobals.rotSpeedOut                     , VCAValueType.float )
-	vehicleControlAddon.createState( "rotSpeedIn",   VCAGlobals.rotSpeedIn                      , VCAValueType.float )
-	vehicleControlAddon.createState( "antiSlip",     false                                      , VCAValueType.bool  )
-	vehicleControlAddon.createState( "diffLockFront",false                                      , VCAValueType.bool  )
-	vehicleControlAddon.createState( "diffLockAWD",  false                                      , VCAValueType.bool  )
-	vehicleControlAddon.createState( "diffLockBack", false                                      , VCAValueType.bool  )
-	vehicleControlAddon.createState( "diffManual",   false                                      , VCAValueType.bool  )
-	vehicleControlAddon.createState( "diffLockSwap", false                                      , VCAValueType.bool  )
-	vehicleControlAddon.createState( "diffFrontAdv", false                                      , VCAValueType.bool  )
-	vehicleControlAddon.createState( "idleThrottle", VCAGlobals.idleThrottle                    , VCAValueType.bool  )
-	vehicleControlAddon.createState( "handThrottle", 0                                          , VCAValueType.float, nil, false )
+	local schemaSavegame = Vehicle.xmlSchemaSavegame
+	if schemaSavegame then 
+		for name, prop in pairs( vehicleControlAddon.properties ) do 
+			if prop.savegame then 
+				schemaSavegame:register( prop.func.valueType, "vehicles.vehicle(?)." .. g_vehicleControlAddon.vcaSpecName .. "#".. name, "VehicleControlAddon: ".. name)
+			end 
+		end 
+	end 
 end 
 
 function vehicleControlAddon.registerEventListeners(vehicleType)
@@ -367,7 +431,6 @@ function vehicleControlAddon:vcaSetState( name, value, noEventSend )
 	
 	if     noEventSend then 
 	elseif not ( self.spec_vca.isInitialized )
-			or not ( vehicleControlAddon.initSpecializationDone )
 			or vehicleControlAddon.properties[name] == nil
 			or value == nil then 
 	-- nothing 
@@ -379,12 +442,25 @@ function vehicleControlAddon:vcaSetState( name, value, noEventSend )
 	end
 end 
 
+function vehicleControlAddon:vcaSetNewDefault( global, old, new, noEventSend )
+	if self.spec_vca ~= nil and self.spec_vca.isInitialized then 
+		for vn, vp in pairs( vehicleControlAddon.properties ) do
+			if vp.global ~= nil and vp.global == global and self.spec_vca[vn] == old then 
+				vcaDebugPrint( "Info: VCA new default value: name: "..tostring(global)..", old: "..tostring(old)..", new: "..tostring(new))
+				self:vcaSetState( vn, new, noEventSend )		
+			end 
+		end 
+	end 
+end 
+
 function vehicleControlAddon:vcaGetDefault( name )
 	local prop = vehicleControlAddon.properties[name]
-	if prop == nil or prop.default == nil then 
+	if prop == nil or ( prop.default == nil and prop.global == nil ) then 
 		return 
 	end 
-	if type( prop.default ) == "function" then 
+	if     prop.global ~= nil then 
+		return VCAGlobals[prop.global]
+	elseif type( prop.default ) == "function" then 
 		return prop.default( self )
 	end 
 	return prop.default 
@@ -401,14 +477,12 @@ function vehicleControlAddon:vcaGetState( name, default )
 end
 	
 function vehicleControlAddon:onLoad(savegame)
-	if not ( vehicleControlAddon.initSpecializationDone ) then 
-		vehicleControlAddon.initSpecialization()
-	end 
 	
 	self.spec_vca               = {}
 	
 	self.vcaNewState            = vehicleControlAddon.vcaNewState	
 	self.vcaSetState            = vehicleControlAddon.vcaSetState
+	self.vcaSetNewDefault       = vehicleControlAddon.vcaSetNewDefault
 	self.vcaGetDefault          = vehicleControlAddon.vcaGetDefault
 	self.vcaGetState            = vehicleControlAddon.vcaGetState
 	self.vcaIsValidCam          = vehicleControlAddon.vcaIsValidCam
@@ -479,6 +553,10 @@ function vehicleControlAddon:onPostLoad(savegame)
 	if self.spec_vca == nil then return end 
 
 	if savegame ~= nil then
+		if not ( vehicleControlAddon.initSpecializationDone ) then 
+			print("Warning: calling vehicleControlAddon.initSpecialization during load")
+			vehicleControlAddon.initSpecialization() 
+		end 
 		for name,prop in pairs( vehicleControlAddon.properties ) do 
 			if prop.savegame then 
 				local v = savegame.xmlFile:getValue(savegame.key .. "." .. g_vehicleControlAddon.vcaSpecName .. "#" .. name )
@@ -663,6 +741,10 @@ function vehicleControlAddon:onPostLoad(savegame)
 end 
 
 function vehicleControlAddon:saveToXMLFile(xmlFile, key, usedModNames)
+	if not ( vehicleControlAddon.initSpecializationDone ) then 
+		print("Warning: calling vehicleControlAddon.initSpecialization during save")
+		vehicleControlAddon.initSpecialization() 
+	end 
 
 	for name,prop in pairs( vehicleControlAddon.properties ) do 
 		if prop.savegame and self:vcaIsNonDefaultProp( name ) then 
@@ -2757,7 +2839,7 @@ function vehicleControlAddon:vcaSetCruiseSpeed( speed )
 	end
 end 
 
-function vehicleControlAddon:getDefaultReverseInside()
+function vehicleControlAddon:vcaGetDefRevI()
 	if not ( VCAGlobals.camReverseRotation ) then 
 		return false 
 	end 
@@ -3039,19 +3121,22 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 					and motor.gearRatio ~= 0 
 					and motor.maxGearRatio ~= 0 
 					then
+				local h = self.spec_vca.handThrottle
 				local minDifferentialSpeed = motor.minRpm / math.abs(motor.maxGearRatio) * math.pi / 30
+				local minDifferentialHand  = ( motor.minRpm + h * ( motor.maxRpm - motor.minRpm )) / math.abs(motor.maxGearRatio) * math.pi / 30
 
-				if     math.abs(motor.differentialRotSpeed) >= minDifferentialSpeed then
+				if     math.abs(motor.differentialRotSpeed) >= minDifferentialHand then
 					-- close clutch now
 					motor.clutchSlippingTimer = 0
 				elseif math.abs(motor.differentialRotSpeed) <= minDifferentialSpeed * 0.75 then
 					-- clutch will open automatically
-				elseif motor.clutchSlippingTimer > 0 then 
+				elseif motor.clutchSlippingTimer > 0 then  
 					-- clutch was already opened
-				elseif math.abs(motor.differentialRotSpeed) <= minDifferentialSpeed * 0.9 then
+					acceleration = m * math.max( math.abs( acceleration ), h )
+				elseif math.abs(motor.differentialRotSpeed) <= minDifferentialHand * 0.9 then
 					-- full thorttle
 					acceleration = m 
-				elseif math.abs(motor.differentialRotSpeed) < minDifferentialSpeed then 
+				elseif math.abs(motor.differentialRotSpeed) < minDifferentialHand then 
 					-- accelerate
 					acceleration = m * math.max( math.abs( acceleration ), 10 * ( 1 - math.abs(motor.differentialRotSpeed) / minDifferentialSpeed ) )
 				end 

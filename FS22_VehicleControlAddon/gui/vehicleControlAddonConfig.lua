@@ -63,7 +63,14 @@ function VehicleControlAddonConfig:onClickBack()
 	for n,v in pairs( self.vcaBackup ) do 
 		if v ~= nil and v ~= VCAGlobals[n] then 
 			isDirty = true 
+			local o = VCAGlobals[n]
 			VCAGlobals[n] = v
+			
+			for _, vehicle in pairs(g_currentMission.vehicles) do
+				if type( vehicle.vcaSetNewDefault ) == "function" then 
+					vehicle:vcaSetNewDefault( n, o, v, true )
+				end 
+			end 
 		end 
 	end 
 	

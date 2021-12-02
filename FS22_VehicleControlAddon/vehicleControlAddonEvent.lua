@@ -24,12 +24,17 @@ function vehicleControlAddonEvent:readStream(streamId, connection)
 	if vehicleControlAddon.properties ~= nil and vehicleControlAddon.properties[self.name] ~= nil then 
 		local prop = vehicleControlAddon.properties[self.name]
 		self.value 	= prop.func.streamRead(streamId)
+	else 
+		print("Error in vehicleControlAddonEvent: invalid property '"..tostring(self.name).."'")
 	end 
 	local check2 = streamReadUInt8(streamId)
-	if check1 == self.check1 and check2 == self.check2 then 
-		self:run(connection)
+
+	if     check1 ~= self.check1 then 
+		print("Error in vehicleControlAddonEvent: Event has wrong start marker. Check other mods.")
+	elseif check2 ~= self.check2 then 
+		print("Error in vehicleControlAddonEvent: Event has wrong end marker. ")
 	else 
-		print("Error in vehicleControlAddonEvent: check messages are corrupt.")
+		self:run(connection)
 	end 
 end
 function vehicleControlAddonEvent:writeStream(streamId, connection)
@@ -39,6 +44,8 @@ function vehicleControlAddonEvent:writeStream(streamId, connection)
 	if vehicleControlAddon.properties ~= nil and vehicleControlAddon.properties[self.name] ~= nil then 
 		local prop = vehicleControlAddon.properties[self.name]
     prop.func.streamWrite(streamId, Utils.getNoNil( self.value, prop.emptyValue ))
+	else 
+		print("Error in vehicleControlAddonEvent: invalid property '"..tostring(self.name).."'")
 	end 
 	streamWriteUInt8(streamId, self.check2 )
 end

@@ -87,7 +87,7 @@
 		<text name="vca_tip_HudY"         text="Hud Position Y"/>
 		<text name="vca_tip_HIREDWORKER2" text="Steuert, ob die Differentiale modifiziert werden, wenn das Fahrzeug vom Helfer kontrolliert wird"/>
 
-		<text name="vca_tip_GEARRGMODE"   text="Diese Einstellunge vertauscht die hoch/runter Tasten für Gänge und Gruppen"/>
+		<text name="vca_tip_GEARRGMODE"   text="Diese Einstellung vertauscht die hoch/runter Tasten für Gänge und Gruppen"/>
 		<text name="vca_tip_STSPEEDO"     text="Geschwindigkeit der Lenkung"/>
 		<text name="vca_tip_STSPEEDI"     text="Geschwindigkeit der Lenkung beim Zurücklenken"/>
 		<text name="vca_tip_IDLETHROTTLE" text="Motor gibt selbständig Gas zum Halten der Leerlaufdrehzahl"/>
@@ -154,6 +154,7 @@
 		<text name="vcaTitleGPS"        text="Spurführung"/>
 		<text name="vcaTitleThrottle"   text="Gaspedal, Bremse, Getriebe"/>
 		<text name="vcaTitleDiff"       text="Allrad und Differentialsperren"/>
+		<text name="vcaTitleMisc"       text="Verschiedene Einstellungen"/>
 	</texts>   
 
 	<longTexts>

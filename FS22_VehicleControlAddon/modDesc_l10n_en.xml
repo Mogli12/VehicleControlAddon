@@ -245,6 +245,7 @@
 		<text name="vcaTitleGPS"        text="Track Guiding"/>
 		<text name="vcaTitleThrottle"   text="Throttle, Brakes, Transmission"/>
 		<text name="vcaTitleDiff"       text="AWD und Differentials"/>
+		<text name="vcaTitleMisc"       text="Misc. Settings"/>
 	</texts>
 
 	<longTexts>

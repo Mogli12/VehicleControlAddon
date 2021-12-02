@@ -176,10 +176,13 @@ function vehicleControlAddonConfigEvent:readStream(streamId, connection)
 		table.insert( self.globals, { n = name, v = item.configType.streamRead( streamId ) })
 	end
 	local check2 = streamReadUInt8(streamId)
-	if check1 == self.check1 and check2 == self.check2 then 
-		self:run(connection)
+	
+	if     check1 ~= self.check1 then 
+		print("Error in vehicleControlAddonConfigEvent: Event has wrong start marker. Check other mods.")
+	elseif check2 ~= self.check2 then 
+		print("Error in vehicleControlAddonConfigEvent: Event has wrong end marker. ")
 	else 
-		print("Error in vehicleControlAddonConfigEvent: check messages are corrupt.")
+		self:run(connection)
 	end 
 end
 function vehicleControlAddonConfigEvent:writeStream(streamId, connection)
@@ -195,13 +198,16 @@ end
 function vehicleControlAddonConfigEvent:run(connection)
 	if type( self.globals ) == "table" then 
 		for _,p in pairs( self.globals ) do
+			local o = VCAGlobals[p.n]
 			VCAGlobals[p.n] = p.v 
-		end 
-	end 
-  if self.init then 
-		if not ( vehicleControlAddon.initSpecializationDone ) then 
-			vehicleControlAddon.initSpecialization()
-		end 
+			if o ~= p.v then 
+				for _, vehicle in pairs(g_currentMission.vehicles) do
+					if type( vehicle.vcaSetNewDefault ) == "function" then 
+						vehicle:vcaSetNewDefault( p.n, o, p.v, true )
+					end
+				end
+			end 
+		end
 	end 
   if not connection:getIsServer() then
     g_server:broadcastEvent( vehicleControlAddonConfigEvent.new(self.save), nil, connection, nil )
