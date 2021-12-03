@@ -148,19 +148,20 @@
 				</GuiElement>
 
 				<GuiElement type="empty" profile="ingameMenuGameSettingsTextInputWrapper">
-					<GuiElement type="textInput" profile="ingameMenuGameSettingsTextInput" id="snapOffset1" onCreate="onCreateSubElement" 
+					<GuiElement type="textInput" profile="ingameMenuGameSettingsTextInput" id="snapOffset" onCreate="onCreateSubElement" 
 											imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed" />
-					<GuiElement type="text" profile="multiTextOptionSettingsTitle" vcaTextID="vcaOFFSET1" text="snapOffset1"/>
-					<GuiElement type="text" profile="multiTextOptionSettingsTooltip" vcaTextID="vca_tip_OFFSET1" text="snapOffset1 (tt)"/>
+					<GuiElement type="text" profile="multiTextOptionSettingsTitle" vcaTextID="vcaOFFSET1" text="snapOffset"/>
+					<GuiElement type="text" profile="multiTextOptionSettingsTooltip" vcaTextID="vca_tip_OFFSET1" text="snapOffset (tt)"/>
 				</GuiElement>
 				
-				<GuiElement type="empty" profile="ingameMenuGameSettingsTextInputWrapper">
-					<GuiElement type="textInput" profile="ingameMenuGameSettingsTextInput" id="snapOffset2" onCreate="onCreateSubElement" 
-											imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed" />
-					<GuiElement type="text" profile="multiTextOptionSettingsTitle" vcaTextID="vcaOFFSET2" text="snapOffset2"/>
-					<GuiElement type="text" profile="multiTextOptionSettingsTooltip" vcaTextID="vca_tip_OFFSET2" text="snapOffset2 (tt)"/>
-				</GuiElement>
-
+				<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="snapInvert" onCreate="onCreateSubElement">
+					<GuiElement type="button" profile="multiTextOptionSettingsLeft" />
+					<GuiElement type="button" profile="multiTextOptionSettingsRight" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsText" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsTitle" vcaTextID="vcaOFFSET2" text="snapInvert"/>
+					<GuiElement type="bitmap" profile="multiTextOptionSettingsBg" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsTooltip" vcaTextID="vca_tip_OFFSET2" text="snapInvert"/>
+				</GuiElement>			
 
 
 				<GuiElement type="text" profile="settingsMenuSubtitle" vcaTextID="vcaTitleThrottle" text="Throttle / Brakes"/> <!--vcaTextID="vcaSETTINGS" text="settings" /> -->
@@ -280,7 +281,6 @@
 			<GuiElement type="flowLayout" profile="buttonBoxDialog" id="buttonsPC" >
 				<GuiElement type="button" profile="buttonBack"   text="$l10n_button_back"   onClick="onClickBack"  id="backButton" />
 				<GuiElement type="button" profile="buttonExtra1" text="$l10n_button_extra1" onClick="onClickMagic" id="magicButton" vcaTextID="vcaButtonSnapWidth"/>
-				<GuiElement type="button" profile="buttonExtra2" text="$l10n_button_extra2" onClick="onClickSwap"  id="swapButton"  vcaTextID="vcaButtonSnapOffset"/>
 			</GuiElement>
 		</GuiElement>
 	</GuiElement>

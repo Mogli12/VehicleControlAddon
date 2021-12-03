@@ -32,8 +32,8 @@ local function init()
 	addConfigItem( "cameraRotFactorRev"  , VCAValueType.float , 0.3   )
 	addConfigItem( "cameraRotTime"       , VCAValueType.float , 0.001 )
 	addConfigItem( "limitThrottle"       , VCAValueType.int16 , 15    ) -- 9 => 90%/100% 15 => 100%/75% -->
-	addConfigItem( "snapAngle"           , VCAValueType.int16 , 4     ) -- 45° -->
-	addConfigItem( "brakeForceFactor"    , VCAValueType.float , 0.25  )
+	addConfigItem( "snapAngle"           , VCAValueType.int16 , 3     ) -- 45° -->
+	addConfigItem( "brakeForceFactor"    , VCAValueType.float , 1.0   )
 	addConfigItem( "snapAngleHudX"       , VCAValueType.float , -1    ) -- any value >= 0 => position of bottom left corner / -1 above HUD -->
 	addConfigItem( "snapAngleHudY"       , VCAValueType.float , -1    ) -- any value >= 0 => position of bottom left corner / -1 above HUD -->
 	addConfigItem( "drawHud"             , VCAValueType.bool  , true  )
