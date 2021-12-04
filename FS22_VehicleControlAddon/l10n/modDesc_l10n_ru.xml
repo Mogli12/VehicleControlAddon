@@ -25,13 +25,14 @@
 		<text name="vcaNO_ARB"              text="Свободное руление"/>
 		<text name="vcaHANDTHROTTLE"        text="Ручной дроссель"/>
 		<text name="vcaPITCH"               text="Высота звука при макс. оборотах"/>
-		<text name="vcaSETTINGS"            text="Настройки"/>
+		<text name="vcaPITCH_IO"            text="Высота звука внутри/снаружи"/>
+		<text name="vcaSETTINGS"            text="Глобальные настройки"/>
 		<text name="vcaDRAWHUD"             text="HUD трансмиссии"/>
 
 		<text name="vcaDISTANCE"            text="Рабочая ширина"/>
 		<text name="vcaOFFSET1"             text="Смещение оборудования"/>
 		<text name="vcaOFFSET2"             text="Инвертировать смещение"/>
-		<text name="vcaSNAP90"				text="Вращать направления на 90°"/>
+		<text name="vcaSNAP90"              text="Вращать направления на 90°"/>
 		<text name="vcaDRAWMARKER"          text="Маркеры удержания направления"/>
 		<text name="vcaPITCH1"              text="Линейная высота звука"/>
 		<text name="vcaPITCH2"              text="Звук на средних оборотах"/>
@@ -71,8 +72,10 @@
 		<text name="vcaTORQUECURVE"			text="Более реалистичная кривая крутящего момента"/>
 		<text name="vcaROTACCTIME"			text="Время разгона двигателя"/>
 		<text name="vcaGEARRGMODE"			text="Сменить клавиши переключения передач и диапазонов"/>
-		<text name="vcaSTSPEEDO"			text="Скорость руления"/>
-		<text name="vcaSTSPEEDI"			text="Скорость автовозврата"/>
+		<text name="vcaSTSPEEDO"			text="Скорость поворота колёс"/>
+		<text name="vcaSTSPEEDI"			text="Скорость автовозврата колёс"/>
+		<text name="vcaIDLETHROTTLE"        text="Поддержание холостого хода"/>
+		<text name="vcaDEBUG"               text="Отладка"/>
 
 		<text name="vca_tip_CAMERAI"        text="Внутренняя камера автоматически поворачивается в соответствии с углом поворота рулевого колеса."/>
 		<text name="vca_tip_CAMERAO"        text="Внешняя камера автоматически поворачивается в соответствии с углом поворота рулевого колеса."/>
@@ -94,6 +97,7 @@
 		<text name="vca_tip_NO_ARB"         text="Если включается свободное руление, тогда отключается автовозврат руля."/>
 		<text name="vca_tip_HANDTHROTTLE"   text="Двигатель автоматически ускоряется, чтобы достичь оборотов ручного дросселя."/>
 		<text name="vca_tip_PITCH"          text="Высота звука при максимальных оборотах."/>
+		<text name="vca_tip_PITCH_IO"       text="Высота звука внутри/снаружи."/>
 		<text name="vca_tip_DRAWHUD"        text="Отобразить или скрыть HUD трансмиссии."/>
 
 		<text name="vca_tip_DISTANCE"       text="Расстояние между двумя рядами удержания направлений."/>
@@ -141,77 +145,67 @@
 		<text name="vca_tip_GEARRGMODE"		text="Эта настройка меняет местами клавиши для передач вверх / вниз и диапазонов."/>
 		<text name="vca_tip_STSPEEDO"		text="Скорость рулевого управления."/>
 		<text name="vca_tip_STSPEEDI"		text="Скорость автоматического возврата руля."/>
+		<text name="vca_tip_IDLETHROTTLE"   text="Двигатель самостоятельно ускоряется для поддержания скорости холостого хода."/>
+		<text name="vca_tip_DEBUG"          text="В log записываются дополнительные сообщения."/>
 		
-		<text name="input_vcaSETTINGS"      text="VCA: Настройки"/>
-		<text name="input_vcaUP"            text="VCA: Посмотреть вперед"/>
-		<text name="input_vcaDOWN"          text="VCA: Посмотреть назад"/>
-		<text name="input_vcaLEFT"          text="VCA: Посмотреть налево"/>
-		<text name="input_vcaRIGHT"         text="VCA: Посмотреть направо"/>
-		<text name="input_vcaDIRECTION"     text="VCA: Изменить направление движения"/>
-		<text name="input_vcaFORWARD"       text="VCA: Направление движения вперед"/>
-		<text name="input_vcaREVERSE"       text="VCA: Направление движения назад"/>
-		<text name="input_vcaSNAP"          text="VCA: Выровнять направление по сетке"/>
-		<text name="input_vcaSNAPRESET"     text="VCA: Отменить выравнивание направления по сетке"/>
-		<text name="input_vcaSnapUP"        text="VCA: Повернуть фиксированное направление левее"/> <!-- snap direction: направления привязки, фиксированное направление-->
-		<text name="input_vcaSnapDOWN"      text="VCA: Повернуть фиксированное направление правее"/>
-		<text name="input_vcaSnapLEFT"      text="VCA: Сместить фиксированное направление левее"/>
-		<text name="input_vcaSnapRIGHT"     text="VCA: Сместить фиксированное направление правее"/>
-		<text name="input_vcaNO_ARB"        text="VCA: Без автоповорота камеры назад"/>
-		<text name="input_vcaINCHING"       text="VCA: Сцепление"/>
-		<text name="input_vcaKEEPROT"       text="VCA: Сохранить глобальное напр. камеры"/>
-		<text name="input_vcaKEEPROT2"      text="VCA: Постоянно держать направление камеры"/>
-		<text name="input_vcaKEEPSPEED"     text="VCA: Удерживать скорость"/>
-		<text name="input_vcaKEEPSPEED2"    text="VCA: Удерживать постоянную скорость"/>
-		<text name="input_vcaSWAPSPEED"     text="VCA: Изменить скорость круиз-контроля"/>
-		<text name="input_vcaGearUp"        text="VCA: Передача вверх"/>
-		<text name="input_vcaGearDown"      text="VCA: Передача вниз"/>
-		<text name="input_vcaRangeUp"       text="VCA: Диапазон вверх"/>
-		<text name="input_vcaRangeDown"     text="VCA: Диапазон вниз"/>
-		<text name="input_vcaNeutral"       text="VCA: Нейтральная Вкл/Выкл"/>
-		<text name="input_vcaNeutral0"      text="VCA: Нейтральная ВЫКЛ"/>
-		<text name="input_vcaNeutral1"      text="VCA: Нейтральная ВКЛ"/>
-		<text name="input_vcaClutch"        text="VCA: Одинарный выжим"/>
-		<text name="input_vcaShifter1"      text="VCA: G27/G29 Передача 1"/>
-		<text name="input_vcaShifter2"      text="VCA: G27/G29 Передача 2"/>
-		<text name="input_vcaShifter3"      text="VCA: G27/G29 Передача 3"/>
-		<text name="input_vcaShifter4"      text="VCA: G27/G29 Передача 4"/>
-		<text name="input_vcaShifter5"      text="VCA: G27/G29 Передача 5 / Диапазон вверх"/>
-		<text name="input_vcaShifter6"      text="VCA: G27/G29 Передача 6 / Диапазон вниз"/>
-		<text name="input_vcaShifter7"      text="VCA: G27/G29 ЗХ"/>
-		<text name="input_vcaShifter8"      text="VCA: G27/G29 Передача 8"/>
-		<text name="input_vcaShifter9"      text="VCA: G27/G29 Передача 9 / ЗХ"/>
-		<text name="input_vcaShifterLH"     text="VCA: G27/G29 делитель"/>
-		<text name="input_vcaHandRpm"       text="VCA: Обороты ручного дросселя"/>
-		<text name="input_vcaHandRpm_1"     text="VCA: Увеличить ручной дроссель"/>
-		<text name="input_vcaHandRpm_2"     text="VCA: Уменьшить ручной дроссель"/>
-		<text name="input_vcaHandMode"      text="VCA: Режим ручного дросселя"/>
-		<text name="input_vcaManRatio"      text="VCA: ручной Vario"/>
-		<text name="input_vcaManRatio_1"    text="VCA: Vario быстрее"/>
-		<text name="input_vcaManRatio_2"    text="VCA: Vario медленнее"/>
-		<text name="input_vcaAutoShift"     text="VCA: Автоматическое переключение Вкл/Выкл"/>
-		<text name="input_vcaDiffLockF"     text="VCA: Передний дифф. блок/разблок"/>
-		<text name="input_vcaDiffLockM"     text="VCA: Полный привод"/>
-		<text name="input_vcaDiffLockB"     text="VCA: Задний дифф. блок/разблок"/>
-		<text name="input_vcaLowerF"        text="VCA: Опустить/поднять переднее оборудование"/>
-		<text name="input_vcaLowerB"        text="VCA: Опустить/поднять заднее оборудование"/>
-		<text name="input_vcaActivateF"     text="VCA: (Де-)активировать переднее оборудование"/>
-		<text name="input_vcaActivateB"     text="VCA: (Де-)активировать заднее оборудование"/>
-		<text name="input_vcaMenuAction1"   text="VCA: Клавиша меню S"/>
-		<text name="input_vcaMenuAction2"   text="VCA: Клавиша меню L"/>
-		<text name="input_vcaMenuAction3"   text="VCA: Клавиша меню D"/>
-		<text name="input_vcaMenuAction4"   text="VCA: Клавиша меню X"/>
+		<text name="input_vcaSETTINGS"      text="Настройки"/>
+		<text name="input_vcaGLOBALS"       text="Глобальные настройки"/>
+		<text name="input_vcaUP"            text="Посмотреть вперед"/>
+		<text name="input_vcaDOWN"          text="Посмотреть назад"/>
+		<text name="input_vcaLEFT"          text="Посмотреть налево"/>
+		<text name="input_vcaRIGHT"         text="Посмотреть направо"/>
+		<text name="input_vcaDIRECTION"     text="Изменить направление движения"/>
+		<text name="input_vcaFORWARD"       text="Направление движения вперед"/>
+		<text name="input_vcaREVERSE"       text="Направление движения назад"/>
+		<text name="input_vcaSNAP"          text="Выровнять направление по сетке"/>
+		<text name="input_vcaSNAPRESET"     text="Отменить выравнивание направления по сетке"/>
+		<text name="input_vcaSNAPDIST"      text="Определить рабочую ширину фиксированного направления движения"/>
+		<text name="input_vcaSnapUP"        text="Повернуть фиксированное направление левее"/> <!-- snap direction: направления привязки, фиксированное направление-->
+		<text name="input_vcaSnapDOWN"      text="Повернуть фиксированное направление правее"/>
+		<text name="input_vcaSnapLEFT"      text="Сместить фиксированное направление левее"/>
+		<text name="input_vcaSnapRIGHT"     text="Сместить фиксированное направление правее"/>
+		<text name="input_vcaNO_ARB"        text="Без автоповорота камеры назад"/>
+		<text name="input_vcaINCHING"       text="Сцепление"/>
+		<text name="input_vcaKEEPROT"       text="Сохранить глобальное напр. камеры"/>
+		<text name="input_vcaKEEPROT2"      text="Постоянно держать направление камеры"/>
+		<text name="input_vcaKEEPSPEED"     text="Удерживать скорость"/>
+		<text name="input_vcaKEEPSPEED2"    text="Удерживать постоянную скорость"/>
+		<text name="input_vcaSWAPSPEED"     text="Изменить скорость круиз-контроля"/>
+		<text name="input_vcaNeutral"       text="Нейтральная Вкл/Выкл"/>
+		<text name="input_vcaNeutral0"      text="Нейтральная ВЫКЛ"/>
+		<text name="input_vcaNeutral1"      text="Нейтральная ВКЛ"/>
+		<text name="input_vcaClutch"        text="Одинарный выжим"/>
+		<text name="input_vcaHandRpm"       text="Обороты ручного дросселя"/>
+		<text name="input_vcaHandRpm_1"     text="Увеличить ручной дроссель"/>
+		<text name="input_vcaHandRpm_2"     text="Уменьшить ручной дроссель"/>
+		<text name="input_vcaHandMode"      text="Режим ручного дросселя"/>
+		<text name="input_vcaManRatio"      text="ручной Vario"/>
+		<text name="input_vcaManRatio_1"    text="Vario быстрее"/>
+		<text name="input_vcaManRatio_2"    text="Vario медленнее"/>
+		<text name="input_vcaAutoShift"     text="Автоматическое переключение Вкл/Выкл"/>
+		<text name="input_vcaDiffLockF"     text="Передний дифф. блок/разблок"/>
+		<text name="input_vcaDiffLockM"     text="Полный привод"/>
+		<text name="input_vcaDiffLockB"     text="Задний дифф. блок/разблок"/>
+		<text name="input_vcaLowerF"        text="Опустить/поднять переднее оборудование"/>
+		<text name="input_vcaLowerB"        text="Опустить/поднять заднее оборудование"/>
+		<text name="input_vcaActivateF"     text="(Де-)активировать переднее оборудование"/>
+		<text name="input_vcaActivateB"     text="(Де-)активировать заднее оборудование"/>
+		<text name="input_vcaMenuAction1"   text="Клавиша меню S"/>
+		<text name="input_vcaMenuAction2"   text="Клавиша меню L"/>
+		<text name="input_vcaMenuAction3"   text="Клавиша меню D"/>
+		<text name="input_vcaMenuAction4"   text="Клавиша меню X"/>
 		
 		<text name="vcaValueOn"             text="Вкл"/>
 		<text name="vcaValueOff"            text="Выкл"/>
 		<text name="vcaValueNever"          text="никогда"/>
 		<text name="vcaValueAlways"         text="всегда"/>
-		<text name="vcaValueAlwaysH"        text="всегда (вверху)"/>
+		<text name="vcaValueAlwaysH"        text="всегда (высокий)"/>
 		<text name="vcaValueNormal"         text="обычное"/>
 		<text name="vcaValueLight"			text="слабое"/> 
 		<text name="vcaValueStrong"			text="сильное"/>
 		<text name="vcaValueEntered"        text="если внутри"/>
 		<text name="vcaValueInactive"       text="если неактивен"/>
-		<text name="vcaValueInactiveH"      text="если неактивен (вверху)"/>
+		<text name="vcaValueInactiveH"      text="если неактивен (высокий)"/>
 		<text name="vcaValueRPM"            text="RPM"/>
 		
 		<text name="vcaClutchMode_0"		text="автоматически"/>
@@ -233,9 +227,13 @@
 		
 		<text name="vcaButtonSnapWidth"		text="Определить ширину"/>
 		<text name="vcaButtonSnapOffset"	text="Сменить смещение"/>
-		<text name="vcaButtonLoadPreset"	text="Загрузить трансмиссию"/>
-		<text name="vcaButtonSavePreset"	text="Сохранить трансмиссию"/>
-		<text name="vcaButtonDelPreset"		text="Удалить трансмиссию"/>
+
+		<text name="vcaTitleCam"            text="Камера"/>
+		<text name="vcaTitleSteering"       text="Рулевое управление"/>
+		<text name="vcaTitleGPS"            text="Авторуление"/>
+		<text name="vcaTitleThrottle"       text="Акселератор, Тормоза, Трансмиссия"/>
+		<text name="vcaTitleDiff"           text="Полный привод и дифференциалы"/>
+		<text name="vcaTitleMisc"           text="Разные настройки"/>
 	</texts>
 	
 	<longTexts>
@@ -266,7 +264,7 @@ OWN: Созданная вами собственная трансмиссия]]
 		<longText name="vca_Help_4"><![CDATA[Глобальные настройки
 
 Изменения глобальных настроек не влияют на текущий автомобиль. 
-Они сохраняются в файл modsSettings/FS19_VehicleControlAddon/config.xml.]]>	</longText>
+Они сохраняются в файл modSettings/vehicleControlAddon.xml.]]>	</longText>
 		<longText name="vca_Help_5"><![CDATA[Создайте свою собственную трансмиссию
 
 Здесь вы можете настроить свою собственную трансмиссию. Передачи могут переключаться автоматически ...
