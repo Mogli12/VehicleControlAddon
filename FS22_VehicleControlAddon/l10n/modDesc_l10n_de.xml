@@ -30,6 +30,8 @@
 		<text name="vcaOFFSET2"         text="Inverser Versatz"/>
 		<text name="vcaSNAP90"          text="Rasterbahn alle 90°"/>
 		<text name="vcaDRAWMARKER"      text="Anzeige der Rasterbahn"/>
+		<text name="vcaSNAPLEFT"        text="Rasterbahnen links"/>
+		<text name="vcaSNAPRIGHT"       text="Rasterbahnen rechts"/>
 
 		<text name="vcaAntiSlip"        text="Traktionskontrolle"/>
 		<text name="vcaDiffManual"      text="Manueller Allradantrieb und Differentialsperren"/>
@@ -79,6 +81,8 @@
 		<text name="vca_tip_OFFSET2"      text="Inverser Versatz der Rasterbahnen"/>
 		<text name="vca_tip_SNAP90"       text="Automatisches Drehen des Rasterbahn um 90°"/>
 		<text name="vca_tip_DRAWMARKER"   text="Anzeige der aktuellen Rasterbahn"/>
+		<text name="vca_tip_SNAPLEFT"     text="Anzahl Rasterbahnen für linken Umkehrkurs"/>
+		<text name="vca_tip_SNAPRIGHT"    text="Anzahl Rasterbahnen für rechten Umkehrkurs"/>
 		
 		<text name="vca_tip_AntiSlip"     text="Traktionskontrolle bremst einzelne Räder, wenn sie durchdrehen"/>
 		<text name="vca_tip_DiffManual"   text="Manuelle Steuerung des Allradantriebs und der vorderen und hinteren Differentialsperre"/>
@@ -104,7 +108,12 @@
 		<text name="input_vcaFORWARD"     text="Fahrtrichtung vorwärts"/>
 		<text name="input_vcaREVERSE"     text="Fahrtrichtung rückwärts"/>
 		<text name="input_vcaSNAP"        text="Fahrtrichtung am Raster ausrichten"/>
+		<text name="input_vcaSNAPLEFT"    text="Rasterbahn links"/>
+		<text name="input_vcaSNAPCONT"    text="Rasterbahn reaktivieren"/>
+		<text name="input_vcaSNAPRIGHT"   text="Rasterbahn rechts"/>
 		<text name="input_vcaSNAPRESET"   text="Fahrtrichtung nicht am Raster ausrichten"/>
+		<text name="input_vcaSNAPPREV"    text="Vorherige Rasterbahn"/>
+		<text name="input_vcaSNAPNEXT"    text="Nächste Rasterbahn"/>
 		<text name="input_vcaSNAPDIST"    text="Arbeitsbreite für Fahrtrichtung ermitteln"/>
 		<text name="input_vcaSnapUP"      text="Raster nach links drehen"/>
 		<text name="input_vcaSnapDOWN"    text="Raster nach rechts drehen"/>

@@ -31,11 +31,11 @@
 		
 		<text name="vcaDISTANCE"        text="Working width"/>
 		<text name="vcaOFFSET1"         text="Offset of tool"/>
-		<text name="vcaOFFSET2"         text="Inverse offset"/>
-		<text name="vcaSNAP90"          text="Snap driving every 90°"/>
-		<text name="vcaDRAWMARKER"      text="Draw marker of snap driving"/>
-		<text name="vcaPITCH1"          text="Linear sound pitch"/>
-		<text name="vcaPITCH2"          text="Sound pitch at medium RPM"/>
+		<text name="vcaOFFSET2"         text="Invert offset"/>
+		<text name="vcaSNAP90"          text="Lane guidance every 90°"/>
+		<text name="vcaDRAWMARKER"      text="Draw marker of lane guidance"/>
+		<text name="vcaSNAPLEFT"        text="Left reverse guidance lanes"/>
+		<text name="vcaSNAPRIGHT"       text="Right reverse guidance lanes"/>
 		<text name="vcaBLOWOFFVOL"      text="Turbo wastegate volume"/>
 		<text name="vcaSINGLEREV"       text="Single Reverse Gear"/>
 		<text name="vcaAUTOCLUTCH"      text="Automatic clutch"/>
@@ -100,13 +100,13 @@
 		<text name="vca_tip_PITCH_IO"       text="Sound pitch inside / outside"/>
 		<text name="vca_tip_DRAWHUD"      text="Show or hide transmission HUD"/>
 		
-		<text name="vca_tip_DISTANCE"     text="Distance between two snap driving rows"/>
-		<text name="vca_tip_OFFSET1"      text="Offset of snap driving rows"/>
-		<text name="vca_tip_OFFSET2"      text="Inverse offset of snap driving rows"/>
-		<text name="vca_tip_SNAP90"       text="Automatic rotation of snap driving direction by 90°"/>
-		<text name="vca_tip_DRAWMARKER"   text="Draw marker of snap driving"/>
-		<text name="vca_tip_PITCH1"       text="Modification of sound pitch to make it linear"/>
-		<text name="vca_tip_PITCH2"       text="Sound pitch at medium RPM"/>
+		<text name="vca_tip_DISTANCE"     text="Distance between two guidance lanes"/>
+		<text name="vca_tip_OFFSET1"      text="Offset of lane guidance"/>
+		<text name="vca_tip_OFFSET2"      text="Invert offset of lane guidance"/>
+		<text name="vca_tip_SNAP90"       text="Automatic rotation of lane guidance direction by 90°"/>
+		<text name="vca_tip_DRAWMARKER"   text="Draw marker of lane guidance"/>
+		<text name="vca_tip_SNAPLEFT"     text="Number of guidance lanes when turning left"/>
+		<text name="vca_tip_SNAPRIGHT"    text="Number of guidance lanes when turning right"/>
 		<text name="vca_tip_BLOWOFFVOL"   text="Volume of the turbo wastegate"/>
 		<text name="vca_tip_SINGLEREV"    text="With single reverse the transmission uses a single reverse gear or reverse range instead of shuttle control"/>
 		<text name="vca_tip_AUTOCLUTCH"   text="Automatic clutch"/>
@@ -157,13 +157,18 @@
 		<text name="input_vcaDIRECTION"   text="toggle driving direction"/>
 		<text name="input_vcaFORWARD"     text="drive forwards"/>
 		<text name="input_vcaREVERSE"     text="drive backwards"/>
-		<text name="input_vcaSNAP"        text="snap driving direction"/>
-		<text name="input_vcaSNAPRESET"   text="reset snap driving direction"/>
-		<text name="input_vcaSNAPDIST"    text="determine working width of snap driving direction"/>
-		<text name="input_vcaSnapUP"      text="rotate snap direction left"/>
-		<text name="input_vcaSnapDOWN"    text="rotate snap direction right"/>
-		<text name="input_vcaSnapLEFT"    text="snap left"/>
-		<text name="input_vcaSnapRIGHT"   text="snap right"/>
+		<text name="input_vcaSNAP"        text="lane guidance"/>
+		<text name="input_vcaSNAPLEFT"    text="left reverse guidance lane"/>
+		<text name="input_vcaSNAPRIGHT"   text="right reverse guidance lane"/>
+		<text name="input_vcaSNAPPREV"    text="previous guidance lane"/>
+		<text name="input_vcaSNAPNEXT"    text="next guidance lane"/>
+		<text name="input_vcaSNAPCONT"    text="reactivate guidance lane"/>
+		<text name="input_vcaSNAPRESET"   text="reset lane guidance direction"/>
+		<text name="input_vcaSNAPDIST"    text="determine working width of lane guidance"/>
+		<text name="input_vcaSnapUP"      text="rotate lane guidance direction left"/>
+		<text name="input_vcaSnapDOWN"    text="rotate lane guidance direction right"/>
+		<text name="input_vcaSnapLEFT"    text="shift lane guidance left"/>
+		<text name="input_vcaSnapRIGHT"   text="shift lane guidance right"/>
 		<text name="input_vcaNO_ARB"      text="no auto rotate back"/>
 		<text name="input_vcaINCHING"     text="inching"/>
 		<text name="input_vcaKEEPROT"     text="keep global camera direction"/>

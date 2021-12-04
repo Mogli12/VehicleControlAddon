@@ -163,6 +163,23 @@
 					<GuiElement type="text"   profile="multiTextOptionSettingsTooltip" vcaTextID="vca_tip_OFFSET2" text="snapInvert"/>
 				</GuiElement>			
 
+				<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="snapLeft" onCreate="onCreateSubElement" onCreateArgs="list">
+					<GuiElement type="button" profile="multiTextOptionSettingsLeft" />
+					<GuiElement type="button" profile="multiTextOptionSettingsRight" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsText" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsTitle" vcaTextID="vcaSNAPPREV" text="snapLeft"/>
+					<GuiElement type="bitmap" profile="multiTextOptionSettingsBg" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsTooltip" vcaTextID="vca_tip_SNAPPREV" text="snapLeft"/>
+				</GuiElement>
+				
+				<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="snapRight" onCreate="onCreateSubElement" onCreateArgs="list">
+					<GuiElement type="button" profile="multiTextOptionSettingsLeft" />
+					<GuiElement type="button" profile="multiTextOptionSettingsRight" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsText" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsTitle" vcaTextID="vcaSNAPNEXT" text="snapRight"/>
+					<GuiElement type="bitmap" profile="multiTextOptionSettingsBg" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsTooltip" vcaTextID="vca_tip_SNAPNEXT" text="snapRight"/>
+				</GuiElement>
 
 				<GuiElement type="text" profile="settingsMenuSubtitle" vcaTextID="vcaTitleThrottle" text="Throttle / Brakes"/> <!--vcaTextID="vcaSETTINGS" text="settings" /> -->
 

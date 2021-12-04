@@ -238,7 +238,11 @@ function vehicleControlAddon.createStates()
 	vehicleControlAddon.createState( "snapOffset"   , nil                            , 0    , VCAValueType.float )
 	vehicleControlAddon.createState( "snapInvert"   , nil                            , false, VCAValueType.bool  )
 	vehicleControlAddon.createState( "snapEvery90"  , nil                            , false, VCAValueType.bool  )
+	vehicleControlAddon.createState( "snapEvery90"  , nil                            , false, VCAValueType.bool  )
+	vehicleControlAddon.createState( "snapLeft"     , nil                            , 1    , VCAValueType.int16 )
+	vehicleControlAddon.createState( "snapRight"    , nil                            , 1    , VCAValueType.int16 )
 	vehicleControlAddon.createState( "snapIsOn"     , nil                            , false, VCAValueType.bool  , vehicleControlAddon.vcaOnSetSnapIsOn, false )
+	vehicleControlAddon.createState( "snapDirection", nil                            , 0    , VCAValueType.int16 , nil, false )
 	vehicleControlAddon.createState( "drawHud"      , "drawHud"                      , nil  , VCAValueType.bool  )
 	vehicleControlAddon.createState( "inchingIsOn"  , nil                            , false, VCAValueType.bool  , nil, false )
 	vehicleControlAddon.createState( "noAutoRotBack", nil                            , false, VCAValueType.bool  , nil, false )
@@ -272,7 +276,8 @@ function vehicleControlAddon.createStates()
 	vehicleControlAddon.createState( "hasGearsAuto" , nil                            , false, VCAValueType.bool  , nil, false )
 	vehicleControlAddon.createState( "hasGearsIdle" , nil                            , false, VCAValueType.bool  , nil, false )
 	vehicleControlAddon.createState( "handThrottle" , nil                            , 0    , VCAValueType.float , nil, false )
-	vehicleControlAddon.createState( "gearText"     , nil                            , ""   , VCAValueType.string, nil, false )
+	vehicleControlAddon.createState( "minGearSpeed" , nil                            , 0    , VCAValueType.float , nil, false )
+	vehicleControlAddon.createState( "maxGearSpeed" , nil                            , 0    , VCAValueType.float , nil, false )
 end 
 
 
@@ -304,6 +309,7 @@ function vehicleControlAddon.registerEventListeners(vehicleType)
 											"onWriteStream", 
 											"saveToXMLFile", 
 											"onRegisterActionEvents", 
+											"onGearDirectionChanged",
 											} ) do
 		SpecializationUtil.registerEventListener(vehicleType, n, vehicleControlAddon)
 	end 
@@ -758,6 +764,11 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
 																"vcaKEEPSPEED2",
 																"vcaSWAPSPEED",
                                 "vcaSNAP",
+                                "vcaSNAPPREV",
+                                "vcaSNAPCONT",
+                                "vcaSNAPNEXT",
+																"vcaSNAPLEFT",
+																"vcaSNAPRIGHT",
                                 "vcaSNAPRESET",
                                 "vcaSNAPDIST",
 																"vcaDiffLockF",
@@ -1026,6 +1037,7 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 		self:vcaSetState( "lastSnapPosX", 0 )
 		self:vcaSetState( "lastSnapPosZ", 0 )
 		self:vcaSetState( "snapIsOn", false )
+		self:vcaSetState( "snapDirection", 0 )
 	elseif actionName == "vcaSNAPDIST" then
 		local d, o, p = self:vcaGetSnapDistance()
 		self:vcaSetState( "snapDistance", d )
@@ -1035,7 +1047,43 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 		self.spec_vca.snapPosTimer = math.max( Utils.getNoNil( self.spec_vca.snapPosTimer , 0 ), 3000 )
 	elseif actionName == "vcaSNAP" then
 		self:vcaSetState( "snapIsOn", not self.spec_vca.snapIsOn )
+		if self.spec_vca.snapIsOn then 
+			self:vcaSetState( "snapDirection", 0 )
+		end 
 		self:vcaSetSnapFactor()
+	elseif actionName == "vcaSNAPPREV" 
+			or actionName == "vcaSNAPNEXT" then
+		if actionName == "vcaSNAPNEXT" then
+			self:vcaSetState( "snapFactor", self.spec_vca.snapFactor + 1 )
+		else 
+			self:vcaSetState( "snapFactor", self.spec_vca.snapFactor - 1 )
+		end 
+		self.spec_vca.snapPosTimer = math.max( Utils.getNoNil( self.spec_vca.snapPosTimer , 0 ), 3000 )
+	elseif actionName == "vcaSNAPLEFT" 
+			or actionName == "vcaSNAPRIGHT" then
+		self:vcaSetState( "snapIsOn", true )
+		if     self.spec_vca.snapDirection == 1 then
+			self:vcaSetState( "snapDirection", 3 )
+		elseif self.spec_vca.snapDirection == 2 then
+			self:vcaSetState( "snapDirection", 4 )
+		elseif self.spec_vca.snapDirection == 3 then
+			self:vcaSetState( "snapDirection", 1 )
+		elseif self.spec_vca.snapDirection == 4 then
+			self:vcaSetState( "snapDirection", 2 )
+		end 
+		local l,r = self.spec_vca.snapLeft, self.spec_vca.snapRight 
+		if actionName == "vcaSNAPLEFT" then
+			self:vcaSetState( "snapFactor", -self.spec_vca.snapFactor + l )
+			self:vcaSetState( "snapLeft", r )
+			self:vcaSetState( "snapRight", l )
+		else 
+			self:vcaSetState( "snapFactor", -self.spec_vca.snapFactor - r )
+			self:vcaSetState( "snapLeft", r )
+			self:vcaSetState( "snapRight", l )
+		end 
+		self.spec_vca.snapPosTimer = math.max( Utils.getNoNil( self.spec_vca.snapPosTimer , 0 ), 3000 )
+	elseif actionName == "vcaSNAPCONT" then
+		self:vcaSetState( "snapIsOn", true )
 	elseif actionName == "vcaSETTINGS" then
 		vehicleControlAddon.vcaShowSettingsUI( self )
 	elseif actionName == "vcaGLOBALS" then
@@ -1679,8 +1727,6 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 	--*******************************************************************
 	-- Keep Speed 
 	if self.spec_vca.ksIsOn and self.spec_vca.isEntered then	
-		local ksBrake = false 
-	
 		local m
 		if self:vcaGetShuttleCtrl() then
 			if self.spec_vca.isForward then 
@@ -1708,13 +1754,19 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 		elseif math.abs( self.spec_drivable.axisForward ) > 0.01 then 
 		
 			local s = self.lastSpeedReal * 1000 					
-			local f = 3.6 *  math.min( -self.spec_motorized.motor.maxBackwardSpeed, s * self.movingDirection )
-			local t = 3.6 *  math.max(  self.spec_motorized.motor.maxForwardSpeed , s * self.movingDirection )
-			if not self.spec_vca.ksToggle then 
-				f = math.max( f, 3.6 * s * self.movingDirection - 1 )
-				t = math.min( t, 3.6 * s * self.movingDirection + 1 )
-			end 
+			local f = 3.6 *  math.max( -self.spec_motorized.motor.maxBackwardSpeed, s * self.movingDirection - 1 )
+			local t = 3.6 *  math.min(  self.spec_motorized.motor.maxForwardSpeed , s * self.movingDirection + 1 )
 			local a = self.spec_drivable.axisForward
+			
+			if self.spec_vca.maxGearSpeed ~= 0 then 
+				if self.spec_vca.isForward then 				
+					f = math.max( f, 3.6 * self.spec_vca.minGearSpeed )
+					t = math.min( t, 3.6 * self.spec_vca.maxGearSpeed )
+				else 
+					f = math.max( f,-3.6 * self.spec_vca.maxGearSpeed )
+					t = math.min( t,-3.6 * self.spec_vca.minGearSpeed )
+				end 
+			end 
 			
 			s = 0.5
 			
@@ -1729,7 +1781,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 			end 
 			if     m > 0 then 
 				if a > 0.01 then 
-					f = s
+					f = math.max( f, s )
 				else
 					f = 0 
 				end 
@@ -1739,7 +1791,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 				self.spec_vca.lastKSStopTimer = g_currentMission.time + 2000 
 			elseif m < 0 then
 				if a < -0.01 then 
-					t = -s 
+					t = math.min( t, -s )
 				else 
 					t = 0 
 				end 
@@ -1761,8 +1813,6 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 			if t > sl then	
 				t = sl 
 			end 
-			
-			ksBrake = ( self.spec_vca.keepSpeed * a < 0 )
 			
 			self:vcaSetState( "keepSpeed", vehicleControlAddon.mbClamp( self.spec_vca.keepSpeed + a * 0.005 * dt, f, t )  )
 		else 
@@ -2387,7 +2437,7 @@ end
 
 function vehicleControlAddon:onPostUpdate( dt, isActiveForInput, isActiveForInputIgnoreSelection, isSelected ) 
 	if self.isServer then 
-		local text = ""
+		local minGearSpeed, maxGearSpeed = 0, 0
 		if       self:getIsVehicleControlledByPlayer()
 				and self.spec_motorized                     ~= nil 
 				and self.spec_motorized.motor               ~= nil 	
@@ -2398,10 +2448,19 @@ function vehicleControlAddon:onPostUpdate( dt, isActiveForInput, isActiveForInpu
 			local motor = self.spec_motorized.motor 
 			if (motor.backwardGears or motor.forwardGears) and motor.minGearRatio ~= 0 then
 				local factor = math.pi / ( math.abs( motor.minGearRatio ) * 30 ) 
-				text = self:vcaSpeedToString( motor.minRpm * factor, "%5.1f", true ).." .. "..self:vcaSpeedToString( motor.maxRpm * factor, "%5.1f" )
+				minGearSpeed = motor.minRpm * factor
+				maxGearSpeed = motor.maxRpm * factor
 			end 
 		end 
-		self:vcaSetState( "gearText", text )
+		self:vcaSetState( "minGearSpeed", minGearSpeed )
+		self:vcaSetState( "maxGearSpeed", maxGearSpeed )
+	end 
+end 
+
+function vehicleControlAddon:onGearDirectionChanged( newDirection )
+	if      self.spec_vca ~= nil 
+			and self.spec_vca.ksIsOn then 
+		self:vcaSetState( "keepSpeed", 0 ) 
 	end 
 end 
 
@@ -2426,7 +2485,17 @@ function vehicleControlAddon:onDraw()
 		
 		local lx,_,lz = localDirectionToWorld( self:vcaGetSteeringNode(), 0, 0, 1 )			
 		local d = 0
-		if lx*lx+lz*lz > 1e-6 then 
+		if not self.spec_vca.snapIsOn then 
+			d = math.atan2( lx, lz )
+		elseif self.spec_vca.snapDirection == 1 then 
+			d = self.spec_vca.lastSnapAngle 
+		elseif self.spec_vca.snapDirection == 2 then 
+			d = self.spec_vca.lastSnapAngle + 0.5 * math.pi 
+		elseif self.spec_vca.snapDirection == 3 then 
+			d = self.spec_vca.lastSnapAngle + math.pi 
+		elseif self.spec_vca.snapDirection == 4 then 
+			d = self.spec_vca.lastSnapAngle - 0.5 * math.pi 
+		else
 			d = math.atan2( lx, lz )
 		end 
 		local curSnapAngle, curSnapOffset1, curSnapOffset2 = self:vcaGetCurrentSnapAngle( d )
@@ -2501,8 +2570,8 @@ function vehicleControlAddon:onDraw()
 				renderOverlay( vehicleControlAddon.ovDiffLockBack , x, y, w, h )
 			end 
 			
-			if self.spec_vca.gearText ~= nil and self.spec_vca.gearText ~= "" then 
-				renderText(x, y, l, self.spec_vca.gearText)
+			if self.spec_vca.minGearSpeed ~= nil and self.spec_vca.maxGearSpeed ~= nil and self.spec_vca.maxGearSpeed ~= 0 then 
+				renderText(x, y, l, self:vcaSpeedToString( self.spec_vca.minGearSpeed, "%5.1f", true ).." .. "..self:vcaSpeedToString( self.spec_vca.maxGearSpeed, "%5.1f" ))
 				y = y + l * 1.2	
 			end 			
 			
@@ -2710,7 +2779,7 @@ function vehicleControlAddon:vcaGetCurrentSnapAngle(curRot)
 	local o = self.spec_vca.snapOffset
 	local p = o 
 	local d = 0
-	local e = self.spec_vca.snapOffset + self.spec_vca.snapOffset
+	local e = - ( self.spec_vca.snapOffset + self.spec_vca.snapOffset )
 	if self.spec_vca.snapInvert then 
 		e = 0 
 		if not self:vcaGetSnapWillInvert() then 
@@ -2974,19 +3043,39 @@ function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, ax
 				self:vcaSetState( "snapFactor", 0 )
 			end 
 			
-			local f = self.spec_vca.snapFactor
-			local curSnapAngle, _, curSnapOffset = self:vcaGetCurrentSnapAngle( rot )
-			
-			local dist    = curSnapOffset
-			local diffR   = vehicleControlAddon.normalizeAngle( rot - curSnapAngle )
-			
-			if     diffR > 0.5 * math.pi then 
-				curSnapAngle = curSnapAngle + math.pi
-				diffR = vehicleControlAddon.normalizeAngle( rot - curSnapAngle )
-			elseif diffR <-0.5 * math.pi then 
-				curSnapAngle = curSnapAngle - math.pi
-				diffR = vehicleControlAddon.normalizeAngle( rot - curSnapAngle )
+			local rot2 = rot 
+			local setDir = false 
+			if     self.spec_vca.snapDirection == 1 then 
+				rot2 = self.spec_vca.lastSnapAngle 
+			elseif self.spec_vca.snapDirection == 2 then 
+				rot2 = self.spec_vca.lastSnapAngle + 0.5 * math.pi 
+			elseif self.spec_vca.snapDirection == 3 then 
+				rot2 = self.spec_vca.lastSnapAngle + math.pi 
+			elseif self.spec_vca.snapDirection == 4 then 
+				rot2 = self.spec_vca.lastSnapAngle - 0.5 * math.pi 
+			else 
+				setDir = true 
 			end 
+			
+			local curSnapAngle, _, curSnapOffset = self:vcaGetCurrentSnapAngle( rot2 )
+		
+			if setDir then 
+				delta = vehicleControlAddon.normalizeAngle( curSnapAngle - self.spec_vca.lastSnapAngle ) / math.pi 
+				if     -0.25 <= delta and delta <=  0.25 then 
+					self:vcaSetState( "snapDirection", 1 )
+				elseif  0.25 <= delta and delta <=  0.75 then 
+					self:vcaSetState( "snapDirection", 2 )
+				elseif -0.75 <= delta and delta <= -0.25 then 
+					self:vcaSetState( "snapDirection", 4 )
+				else 
+					self:vcaSetState( "snapDirection", 3 )
+				end 
+				print("VCA snap direction: "..tostring(delta).." => "..tostring(self.spec_vca.snapDirection))
+			end 
+		
+			local dist    = curSnapOffset
+			local diffR   = rot - curSnapAngle
+
 			if not self.spec_vca.isForward then
 				diffR	 = -diffR
 			end 
@@ -2996,11 +3085,13 @@ function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, ax
 				local dz    = math.cos( curSnapAngle )			
 				local distX = wx - self.spec_vca.lastSnapPosX
 				local distZ = wz - self.spec_vca.lastSnapPosZ 			
-				local dist  = dist + distX * dz - distZ * dx + f * self.spec_vca.snapDistance
-				local alpha = math.asin( vehicleControlAddon.mbClamp( 0.1 * dist, -0.851, 0.851 ) )			
-				diffR = diffR + alpha
+				local dist  = dist + distX * dz - distZ * dx + self.spec_vca.snapFactor * self.spec_vca.snapDistance
+				local alpha = math.asin( vehicleControlAddon.mbClamp( 0.17 * dist, -0.851, 0.851 ) )			
+				diffR = diffR + alpha				
+			--print(string.format("%6.3fm; %5.2f° = %5.2f° + %5.2f°",dist, diffR*180/math.pi, ( rot-curSnapAngle )*180/math.pi, alpha*180/math.pi ))
 			end 
-			local a = vehicleControlAddon.mbClamp( diffR / 0.174, -1, 1 ) 
+			local a = vehicleControlAddon.mbClamp( vehicleControlAddon.normalizeAngle( diffR ) * 6, -1, 1 )
+
 			if self.spec_reverseDriving  ~= nil and self.spec_reverseDriving.isReverseDriving then
 				a = -a 
 			end
@@ -3152,18 +3243,18 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 					and motor.gearRatio ~= 0 
 					and motor.maxGearRatio ~= 0 
 					then
-				local h = self.spec_vca.handThrottle
-				local minDifferentialSpeed = motor.minRpm / math.abs(motor.maxGearRatio) * math.pi / 30
-				local minDifferentialHand  = ( motor.minRpm + h * ( motor.maxRpm - motor.minRpm )) / math.abs(motor.maxGearRatio) * math.pi / 30
+				local factor = 1 / math.abs(motor.maxGearRatio) * math.pi / 30
+				local minDifferentialSpeed = motor.minRpm * factor
+				local minDifferentialHand  = ( motor.minRpm + self.spec_vca.handThrottle * ( motor.maxRpm - motor.minRpm )) * factor 
 
-				if     math.abs(motor.differentialRotSpeed) >= minDifferentialHand then
+				if     math.abs(motor.differentialRotSpeed) >= minDifferentialHand  then
 					-- close clutch now
 					motor.clutchSlippingTimer = 0
 				elseif math.abs(motor.differentialRotSpeed) <= minDifferentialSpeed * 0.75 then
 					-- clutch will open automatically
 				elseif motor.clutchSlippingTimer > 0 then  
 					-- clutch was already opened
-					acceleration = m * math.max( math.abs( acceleration ), h )
+					acceleration = m * math.max( math.abs( acceleration ), self.spec_vca.handThrottle )
 				elseif math.abs(motor.differentialRotSpeed) <= minDifferentialHand * 0.9 then
 					-- full thorttle
 					acceleration = m 
@@ -3171,6 +3262,7 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 					-- accelerate
 					acceleration = m * math.max( math.abs( acceleration ), 10 * ( 1 - math.abs(motor.differentialRotSpeed) / minDifferentialSpeed ) )
 				end 
+				
 			end 
 		end
 	end 
@@ -3190,8 +3282,46 @@ WheelsUtil.updateWheelsPhysics = Utils.overwrittenFunction( WheelsUtil.updateWhe
 --******************************************************************************************************************************************
 
 --******************************************************************************************************************************************
+-- limit maxRpm in case of inching 
+function vehicleControlAddon:vcaGetRequiredMotorRpmRange( superFunc, ... )
+	if not ( self.vehicle ~= nil 
+			 and self.vehicle.spec_vca ~= nil 
+			 and self.vehicle.spec_vca.idleThrottle
+			 and self.vehicle.spec_vca.oldAcc ~= nil
+			 and self.vehicle.spec_vca.tickDt ~= nil
+			 and self.vehicle.spec_drivable ~= nil 
+			 and self.vehicle.spec_drivable.reverserDirection ~= nil 
+			 and self.currentDirection ~= nil 
+			 and self.currentDirection ~= 0 
+			 and self.gearShiftMode ~= VehicleMotor.SHIFT_MODE_MANUAL_CLUTCH 
+			 and (self.backwardGears or self.forwardGears)
+			 and next(self.vehicle.spec_motorized.differentials) ~= nil
+			) then 
+		return superFunc( self, ... )
+	end 
+	
+	local m = self.currentDirection * self.vehicle.spec_drivable.reverserDirection
+	if self.vehicle:vcaGetShuttleCtrl() then 
+		m = 1 
+	end 
+	
+	if m * self.vehicle.spec_vca.oldAcc <= 0 then 
+		return superFunc( self, ... )
+	end 
+	
+	minRpm, maxRpm = superFunc( self, ... )
+	local motorPtoRpm = math.min(PowerConsumer.getMaxPtoRpm(self.vehicle) * self.ptoMotorRpmRatio, self.maxRpm)
+	local f = math.max( 0.2, math.abs( self.vehicle.spec_vca.oldAcc ) )
+	local r = self.maxRpm - self.minRpm
+	maxRpm = math.min( maxRpm, math.max( self:getNonClampedMotorRpm() - self.vehicle.spec_vca.tickDt * 0.0005 * r, self.minRpm + f * r, motorPtoRpm ) )
 
+	return minRpm, maxRpm
+end
 
+VehicleMotor.getRequiredMotorRpmRange = Utils.overwrittenFunction( VehicleMotor.getRequiredMotorRpmRange, vehicleControlAddon.vcaGetRequiredMotorRpmRange )
+
+--******************************************************************************************************************************************
+-- overwrite automatic shifting to make it local per vehicle
 vehicleControlAddon.vcaVehicleMotorGetUseAutomaticGearShifting = VehicleMotor.getUseAutomaticGearShifting
 VehicleMotor.getUseAutomaticGearShifting = function( self, ... )
 	if vehicleControlAddon.vcaVehicleMotorGetUseAutomaticGearShifting( self, ... ) then 
@@ -3307,7 +3437,7 @@ function vehicleControlAddon.vcaSpeedInt2Ext( speed )
 	if g_gameSettings.useMiles then 
 		s = s * 0.621371
 	end 
-	return 0.1 * math.floor( 10 * s + 0.5 )
+	return s --0.1 * math.floor( 10 * s + 0.5 )
 end 
 function vehicleControlAddon.vcaSpeedExt2Int( speed )
 	if not ( type( speed ) == "number" ) then 
@@ -3371,13 +3501,17 @@ function vehicleControlAddon:vcaShowSettingsUI()
 																	}
 	self.spec_vcaUI.camRotOutside   = self.spec_vcaUI.camRotInside																
 	self.spec_vcaUI.limitThrottle   = {}
+	self.spec_vcaUI.snapRight = { }
 	for i=1,20 do
 	  self.spec_vcaUI.limitThrottle[i] = string.format("%3d %% / %3d %%", 45 + 5 * math.min( i, 11 ), 150 - 5 * math.max( i, 10 ), true )
+		self.spec_vcaUI.snapRight[i] = tostring(i)
 	end
 	self.spec_vcaUI.snapAngle = {}
 	for i,v in pairs( vehicleControlAddon.snapAngles ) do 
 		self.spec_vcaUI.snapAngle[i] = string.format( "%3d°", v )
 	end 
+	self.spec_vcaUI.snapLeft  = self.spec_vcaUI.snapRight
+	
 	self.spec_vcaUI.brakeForce_V = { 0, 0.01, 0.02, 0.05, 0.10, 0.15, 0.2, 0.25, 0.4, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2 }
 	self.spec_vcaUI.brakeForce = {}
 	for i,e in pairs( self.spec_vcaUI.brakeForce_V ) do
@@ -3469,6 +3603,25 @@ function vehicleControlAddon:vcaUISetsnapOffset( value )
 	if type( v ) == "number" then 
 		self:vcaSetState( "snapOffset", v )
 	end 
+end 
+
+function vehicleControlAddon:vcaUIGetsnapLeft()
+	if     self.spec_vca.snapLeft <=  1 then 
+		return 1 
+	elseif self.spec_vca.snapLeft <= 20 then 
+		return self.spec_vca.snapLeft
+	else 
+		return 20
+	end
+end 
+function vehicleControlAddon:vcaUIGetsnapRight()
+	if     self.spec_vca.snapRight <=  1 then 
+		return 1 
+	elseif self.spec_vca.snapRight <= 20 then 
+		return self.spec_vca.snapRight
+	else 
+		return 20
+	end
 end 
 
 function vehicleControlAddon:vcaUIShowdiffManual()
