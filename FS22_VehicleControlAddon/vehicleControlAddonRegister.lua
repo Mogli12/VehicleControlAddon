@@ -76,20 +76,43 @@ end
 local vcaGetText
 	
 function vehicleControlAddonRegister:postLoadMission(mission)
-
+	self.postLoadMissionDone = true 
 	print("--- loading "..self.i18n:getText("vcaVERSION").." by mogli ---")
+		
+	if g_languageShort ~= "en" then
+		l10nXmlFile = loadXMLFile("modL10n", Utils.getFilename("l10n/modDesc_l10n_en.xml",self.vcaDirectory))
 
-	self.mogliTexts = {}
-	
-	local l10nFilenamePrefixFull = Utils.getFilename("modDesc_l10n", directory);
-	local langs = {"en", "de", g_languageShort};
-	for _, lang in ipairs(langs) do
-		local l10nFilename = l10nFilenamePrefixFull.."_"..lang..".xml";
-		if fileExists(l10nFilename) then
-			local l10nXmlFile = loadXMLFile("TempConfig", l10nFilename);
-			delete(l10nXmlFile);
-		end
+		if l10nXmlFile ~= nil then
+			local textI = 0
+
+			while true do
+				local key = string.format("l10n.texts.text(%d)", textI)
+
+				if not hasXMLProperty(l10nXmlFile, key) then
+					break
+				end
+
+				local name = getXMLString(l10nXmlFile, key .. "#name")
+				local text = getXMLString(l10nXmlFile, key .. "#text")
+
+				if name ~= nil and text ~= nil then
+					if not g_i18n:hasModText(name) then
+						print("Info (VCA): text "..tostring(name).." is not translated yet. Using English text.")
+						g_i18n:setText(name, text:gsub("\r\n", "\n"))
+					end
+				end
+
+				textI = textI + 1
+			end
+
+			delete(l10nXmlFile)
+		end 
 	end 
+		
+		
+		
+		
+		
 		
 	if g_client ~= nil then 
 		local function loadTextElement( self, xmlFile, key )		
@@ -164,17 +187,73 @@ function vehicleControlAddonRegister:mouseEvent(posX, posY, isDown, isUp, button
 end;
 
 function vehicleControlAddonRegister:update(dt)
-	if g_client ~= nil and not ( self.helpLoaded ) then 
+	if g_client ~= nil and self.postLoadMissionDone and not ( self.helpLoaded ) then 
 		self.helpLoaded = true 
-		local filename = self.vcaDirectory.."l10n/helpLine_" .. g_languageShort .. ".xml"
-		if not fileExists( filename ) then 
-			filename = self.vcaDirectory.."l10n/helpLine_en.xml"
+		
+		local category = {
+			title = self.i18n:getText("vcaVERSION"),
+			pages = {}
+		}
+		
+		for _,p0 in pairs( 
+				{	
+					{ title = "vcaTitleIntro",
+						paragraphs = { 
+							{ text = "vcaHelpIntro_1" },
+							{ text = "vcaHelpIntro_2" },
+						},
+					},
+					{ title = "vcaTitleCam",
+						paragraphs = { 
+							{ text = "vcaHelpCam_1" },
+							{ text = "vcaHelpCam_2", image = "l10n/help_camera_en.dds", imageUVs="0px 0px 1024px 624px" },
+							{ text = "vcaHelpCam_3" },
+						},
+					},
+					{ title = "vcaTitleSteering",
+						paragraphs = { 
+							{ text = "vcaHelpSteering_1", image = "l10n/help_steering_en.dds", imageUVs="0px 0px 1024px 480px" },
+						},
+					},
+					{ title = "vcaTitleGPS",
+						paragraphs = { 
+							{ text = "vcaHelpGPS_1", image = "l10n/help_gps_en.dds", imageUVs="0px 0px 1024px 624px" },
+						},
+					},
+					{ title = "vcaTitleThrottle",
+						paragraphs = { 
+							{ text = "vcaHelpThrottle_1", image = "l10n/help_throttle_en.dds", imageUVs="0px 0px 1024px 624px" },
+						},
+					},
+					{ title = "vcaTitleDiff",
+						paragraphs = { 
+							{ text = "vcaHelpDiff_1", image = "l10n/help_diff_en.dds", imageUVs="0px 0px 1024px 624px" },
+						},
+					},
+				} ) do 
+
+			local page = {
+				title = self.i18n:getText(p0.title),
+				paragraphs = {}
+			}
+			for _,p1 in pairs(p0.paragraphs) do
+				local paragraph = { text = self.i18n:getText( p1.text ) }
+				if p1.image ~= nil then 
+					paragraph.image = {
+						filename = Utils.getFilename(p1.image, self.vcaDirectory),
+						uvs = GuiUtils.getUVs(Utils.getNoNil( p1.imageUVs, "0px 0px 750px 500px" ), {1024,1024}),
+						size = {1024,1024},
+						heightScale = Utils.getNoNil( p1.heightScale, 1 ),
+						aspectRatio = Utils.getNoNil( p1.aspectRatio, 1 ) }
+				end 
+				table.insert(page.paragraphs, paragraph)
+			end 
+			table.insert(category.pages, page)
 		end 
-		if fileExists( filename ) then 
-			g_helpLineManager:loadFromXML( filename, g_currentMission)
-		end 
+				
+		table.insert( g_helpLineManager.categories, category )
 	end 
-end;
+end
 
 function vehicleControlAddonRegister:draw()
   

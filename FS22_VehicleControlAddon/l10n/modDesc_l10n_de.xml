@@ -1,8 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <l10n>
-	<!-- Note that 'description' is only here for easier translations. It needs to be manually copied to ModDesc.XML later. -->
-	<description><![CDATA[Fügt allen Fahrzeugen eine adaptive Lenkung hinzu]]></description>
-
 	<texts>
 		<text name="vcaCAMERAI"         text="Innere Kamerabewegung"/>
 		<text name="vcaCAMERAO"         text="Äußere Kamerabewegung"/>
@@ -166,46 +163,14 @@
 		<text name="vcaTitleThrottle"   text="Gaspedal, Bremse, Getriebe"/>
 		<text name="vcaTitleDiff"       text="Allrad und Differentialsperren"/>
 		<text name="vcaTitleMisc"       text="Verschiedene Einstellungen"/>
-	</texts>   
 
-	<longTexts>
-		<longText name="vca_Help_1"><![CDATA[Lenkung und Kamera
-
-Dieses Script variiert abhängig von der gefahrenen Geschwindigkeit die Lenkgeschwindigkeit und dreht die Kamera passend zum Lenkeinschlag und zur Fahrtrichtung. 
-Mit Umschalt-Rechts und den Pfeiltasten kann man in die entsprechende Richtung blicken.
-Drückt man Strg Links zusammen mit W, dann richtet sich die Fahrtrichtung an festen Richtungen aus.
-Alle Funktionen lassen sich auch wieder ausschalten.]]></longText>
-		<longText name="vca_Help_2"><![CDATA[Gaspedal und Rastersteuerung
-
-Mit Umschalt-Llinks wird das Gaspedal, der Tempomat und die maximale Drehzahl auf 75% begrenzt.
-Drückt man die Taste entf, dann hält das Fahrzeug die aktuelle Geschwindigkeit. Wie bei modernen Traktoren auch, kann man diese Funktion auch permanent einschalten und per entf dann zeitweise ausschalten.
-Durch die Änderungen an der Tonhöhe kann man die aktuelle Drehzahl besser hören.]]></longText>
-		<longText name="vca_Help_3"><![CDATA[Getriebe
-
-off: Das Standardgetriebe 
-IVT: Das Standardgetriebe  mit kleinen Anpassungen der Drehzahl
-4X4: Ein altmodisches Getriebe mit 4 Gängen in 4 Bereichen und Wendeschaltung. Das Schalten der Gänge benötigt Zeit und man könnte Schwung verlieren.
-4PS: Das gleiche Getriebe wie das 4X4, aber mit Lastschaltung für die Gänge
-2X6: 2 Bereiche mit jeweils 6 Gängen. Dieses Getriebe ist nützlich für G27/G29 Shifter. Die 6 Gänge im Bereich L überlappen nicht mit den 6 Gängen im Bereich H.
-FPS: Full Power Shift: Dieses Getriebe hat 12 Gänge und schaltet ohne Zugkraftunterbrechung.
-6PS: John Deer AutoQuad: 6 manuell zu schaltende Bereiche mit jeweils 4 automatischen Lastschaltstufen
-PKW: 6 Gänge abgestuft für PKW mit Untersetzung fürs Gelände
-VARIO: Fendt Vario: Stufenloses Getriebe mit 2 Bereichen "low" und "high"
-46A: Claas HexaShift: 4 manuell zu schaltende Bereiche mit jeweils 6 automatischen Lastschaltstufen
-OWN: Bau Dir Dein eigenes Getriebe]]></longText>
-		<longText name="vca_Help_4"><![CDATA[Globale Einstellungen
+		<text name="vca_Help_1" text="Dieses Script variiert abhängig von der gefahrenen Geschwindigkeit die Lenkgeschwindigkeit und dreht die Kamera passend zum Lenkeinschlag und zur Fahrtrichtung.  Mit Umschalt-Rechts und den Pfeiltasten kann man in die entsprechende Richtung blicken. Drückt man Strg Links zusammen mit W, dann richtet sich die Fahrtrichtung an festen Richtungen aus. Alle Funktionen lassen sich auch wieder ausschalten."/>
+		<text name="vca_Help_2" text="Mit Umschalt-Llinks wird das Gaspedal, der Tempomat und die maximale Drehzahl auf 75% begrenzt. Drückt man die Taste entf, dann hält das Fahrzeug die aktuelle Geschwindigkeit. Wie bei modernen Traktoren auch, kann man diese Funktion auch permanent einschalten und per entf dann zeitweise ausschalten. Durch die Änderungen an der Tonhöhe kann man die aktuelle Drehzahl besser hören."/>
+		<text name="vca_Help_3" text="Globale Einstellungen
 
 Änderungen an den globale Einstellungen haben keinen Einfluss auf das aktuelle Fahrzeug.
-Sie werden in der Datei modSettings/vehicleControlAddon.xml gespeichert]]></longText>
-		<longText name="vca_Help_5"><![CDATA[Bau Dir Dein eigenes Getriebe
-
-Hier kann man sich sein eigenes Getriebe konfigurieren. Gänge können automatisch geschaltet werden. Daher sind Lastschaltstufen am besten immer Gänge. 
-Die Übersetzung des höchsten Gangs ist die theoretische Endgeschwindigkeit bei ausgeschaltetem Begrenzer. Die Höchstgeschwindigkeit im 1. Gang der höchsten Gruppe bestimmt
-das Verhältnis der Gänge untereinander. 
-Die Höchstgeschwindigkeiten in der vorletzten Gruppe sind redundant. Man muss nur einen von beiden Werten eingeben. Der andere wird automatisch angepasst.]]></longText>
-		<longText name="vca_Help_6"><![CDATA[Differentiale, Allradantrieb, Leistung
-		
-Wenn VCA die Differentiale zuordnen kann, dann ist es hier möglich, die Differentialsperren und den Allradantrieb selber zu ein- und auszuschalten.
+Sie werden in der Datei modSettings/vehicleControlAddon.xml gespeichert"/>
+		<!--text name="vca_Help_4" "text="Wenn VCA die Differentiale zuordnen kann, dann ist es hier möglich, die Differentialsperren und den Allradantrieb selber zu ein- und auszuschalten.
 Man kann die Höchstgeschwindigkeiten vorwärts und rückwärts anpassen.
 Sollte das Fahrzeug nicht die korrekte Nennleistung haben, dann kann diese hier überschreiben. Dazu gibt es 4 verschiedene Drehmomentkurven
 - default nutzt die Drehmomentkurve des Fahrzeugs
@@ -213,6 +178,7 @@ Sollte das Fahrzeug nicht die korrekte Nennleistung haben, dann kann diese hier 
 - modern mit 50% Drehmomentanstieg und 8% höherer Maximalleistung
 - LKW Motor mit 55% Drehmomentanstieg und Nennleistung vom Maximaldrehmoment bis Nenndrehzahl
 - klassisch mit nur 20% Drehmomentanstieg und Maximalleistung erst bei Nenndrehzahl
-- klassisch aber mit 30% Drehmomentanstieg und 2% höherer Maximalleistung]]></longText>
-	</longTexts>
+- klassisch aber mit 30% Drehmomentanstieg und 2% höherer Maximalleistung"/-->
+	</texts>   
+
 </l10n>

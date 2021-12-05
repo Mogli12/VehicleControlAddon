@@ -233,11 +233,24 @@
 		<text name="vcaButtonSnapWidth"  text="Detect width"/>
 		<text name="vcaButtonSnapOffset" text="Swap offset"/>
 
+		<text name="vcaTitleIntro"      text="Introduction"/>
 		<text name="vcaTitleCam"        text="Camera"/>
 		<text name="vcaTitleSteering"   text="Steering"/>
 		<text name="vcaTitleGPS"        text="Track Guiding"/>
 		<text name="vcaTitleThrottle"   text="Throttle, Brakes, Transmission"/>
 		<text name="vcaTitleDiff"       text="AWD und Differentials"/>
 		<text name="vcaTitleMisc"       text="Misc. Settings"/>
+		
+		
+		<text name="vcaHelpIntro_1"       text="Vehicle Control Addon combines several functions in one modification. Most functions are turned off per default." />
+		<text name="vcaHelpIntro_2"       text="The standard key combination to open the settings menu is LCtrl C. Combinatino LCtrl LAlt C opens the global settings menu. Here, you can adjust the default settings, which are used in all (future) vehicles." />
+		<text name="vcaHelpCam_1"         text="Vehicle Control Addon can rotate the camera to match the steering angle and direction." />
+		<text name="vcaHelpCam_2"         text="You can enable camera rotation in the settings menu. You can choose between values &quot;off&quot;, &quot;light&quot;, &quot;normal&quot; and &quot;strong&quot;. There are separate settings for inside and outside cameras." />
+		<text name="vcaHelpCam_3"         text="With Shift-right and the cursor keys you can peek in the corresponding direction." />
+		<text name="vcaHelpSteering_1"    text="This script varies the steering speed depending on the speed you are driving, and it rotates the camera to match the steering angle and direction. With Shift-right and the cursor keys you can peek in the corresponding direction." />
+		<text name="vcaHelpGPS_1"         text="If you press Ctrl left together with W then the driving direction snaps to fixed directions." />
+		<text name="vcaHelpThrottle_1"    text="Shift-Left limits throttle, cruise control and maximum rounds per minute to 75%. If you press delete then the vehicle will keep its speed. Acceleration and brake pedal increase and descrease the speed. The vehicle drives like a modern tractor with joystick." />
+		<text name="vcaHelpDiff_1"        text="If VCA can identify the differentials, then you have the possibility to operate them manually." />
+		
 	</texts>
 </l10n>

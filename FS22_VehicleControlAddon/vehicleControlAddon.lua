@@ -194,6 +194,10 @@ vehicleControlAddon.speedRatioClosed1    = 1.1  -- maxSpeedRatio of diff of whee
 vehicleControlAddon.speedRatioClosed2    = 1.2  -- at least 20% difference 
 vehicleControlAddon.distributeTorqueOpen = false  
 vehicleControlAddon.minTorqueRatio       = 0.3
+vehicleControlAddon.snapRadius           = 7
+vehicleControlAddon.snapLinear           = 1.5
+vehicleControlAddon.snapLinearFactor     = math.acos( 1 - vehicleControlAddon.snapLinear / vehicleControlAddon.snapRadius ) / vehicleControlAddon.snapLinear
+vehicleControlAddon.snapNonLinearFactor  = math.acos( 1 - vehicleControlAddon.snapLinear / vehicleControlAddon.snapRadius )
 
 vehicleControlAddon.properties = {}
 vehicleControlAddon.propertiesIndex = {}
@@ -574,9 +578,9 @@ function vehicleControlAddon:onPostLoad(savegame)
 		
 		local wx, wy, wz, lz1, lz2
 		wx, wy, wz = getWorldTranslation(rootNode1)
-		_,_, lz1 = worldToLocal(self.steeringAxleNode, wx, wy, wz)
+		_,_, lz1 = worldToLocal(self:vcaGetSteeringNode(), wx, wy, wz)
 		wx, wy, wz = getWorldTranslation(rootNode2)
-		_,_, lz2 = worldToLocal(self.steeringAxleNode, wx, wy, wz)
+		_,_, lz2 = worldToLocal(self:vcaGetSteeringNode(), wx, wy, wz)
 		
 		if lz1 > lz2 then 
 			rootNode1, rootNode2 = rootNode2, rootNode1
@@ -1170,7 +1174,7 @@ function vehicleControlAddon.setToolStateRec( self, lowered, active, front, back
 				doit = true 
 			else 
 				local wx, wy, wz = getWorldTranslation(jointDesc.jointTransform)
-				local lx, ly, lz = worldToLocal(self.steeringAxleNode, wx, wy, wz)
+				local lx, ly, lz = worldToLocal(self:vcaGetSteeringNode(), wx, wy, wz)
 				
 				if lz > 0 then 
 					doit = front 
@@ -2763,9 +2767,12 @@ function vehicleControlAddon:onWriteStream(streamId, connection)
 end 
 
 function vehicleControlAddon:vcaGetSteeringNode()
---if type( self.getAIVehicleSteeringNode ) == "function" then 
---	return self:getAIVehicleSteeringNode()
---end 
+	if type( self.getAIVehicleSteeringNode ) == "function" then 
+		return self:getAIVehicleSteeringNode()
+	end 
+	if self.steeringAxleNode ~= nil and self.steeringAxleNode ~= 0 then 
+		return self.steeringAxleNode
+	end 
 	return self.components[1].node  
 end 
 
@@ -2892,13 +2899,13 @@ function vehicleControlAddon:vcaGetSnapDistance()
 						break 
 					end 
 					
-					local vx, vy, vz = vehicleControlAddon.getRelativeTranslation( self.steeringAxleNode, jointDesc.jointTransform )
+					local vx, vy, vz = vehicleControlAddon.getRelativeTranslation( self:vcaGetSteeringNode(), jointDesc.jointTransform )
 					local ix, iy, iz = vehicleControlAddon.getRelativeTranslation( implement.object.steeringAxleNode, jointDesc.jointTransform )
 				--vcaDebugPrint( string.format("SnapDistance: (%5.2f, %5.2f); %5.2f; %5.2f", minX, maxX, vx, ix))
 					minX = minX + vx - ix 
 					maxX = maxX + vx - ix 
 
-				--local m1, m2 = vehicleControlAddon.getDistance( self.steeringAxleNode, leftMarker, rightMarker, minX, maxX )
+				--local m1, m2 = vehicleControlAddon.getDistance( self:vcaGetSteeringNode(), leftMarker, rightMarker, minX, maxX )
 				--vcaDebugPrint( string.format("SnapDistance: (%5.2f, %5.2f); (%5.2f, %5.2f)", minX, maxX, m1, m2))
 					
 					if self.id == parent.id then 
@@ -2913,8 +2920,8 @@ function vehicleControlAddon:vcaGetSnapDistance()
 	
 	if SpecializationUtil.hasSpecialization(AIImplement, self.specializations) then
 		local leftMarker, rightMarker, backMarker, _ = self:getAIMarkers()
-		if self.steeringAxleNode ~= nil and leftMarker ~= nil and rightMarker  ~= nil then 
-			minX, maxX = vehicleControlAddon.getDistance( self.steeringAxleNode, leftMarker, rightMarker, minX, maxX )
+		if self:vcaGetSteeringNode() ~= nil and leftMarker ~= nil and rightMarker  ~= nil then 
+			minX, maxX = vehicleControlAddon.getDistance( self:vcaGetSteeringNode(), leftMarker, rightMarker, minX, maxX )
 		end
 	end
 	
@@ -3079,16 +3086,49 @@ function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, ax
 			if not self.spec_vca.isForward then
 				diffR	 = -diffR
 			end 
-	
+
+			if vehicleControlAddon.snapCurve == nil then 
+				vehicleControlAddon.snapCurve = AnimCurve.new(linearInterpolator1)
+				vehicleControlAddon.snapCurve:addKeyframe({-math.pi*0.5,time=-1 }) 
+				vehicleControlAddon.snapCurve:addKeyframe({ -1.37 ,time=-0.8  }) 
+				vehicleControlAddon.snapCurve:addKeyframe({ -1.16 ,time=-0.6  })
+				vehicleControlAddon.snapCurve:addKeyframe({ -0.86 ,time=-0.4  })
+				vehicleControlAddon.snapCurve:addKeyframe({ -0.66 ,time=-0.3  })
+				vehicleControlAddon.snapCurve:addKeyframe({ -0.53 ,time=-0.25 })
+				vehicleControlAddon.snapCurve:addKeyframe({ -0.38 ,time=-0.2  })
+				vehicleControlAddon.snapCurve:addKeyframe({ -0.25 ,time=-0.15 })
+				vehicleControlAddon.snapCurve:addKeyframe({ -0.15 ,time=-0.1  })
+				vehicleControlAddon.snapCurve:addKeyframe({ -0.10 ,time=-0.075})
+				vehicleControlAddon.snapCurve:addKeyframe({ -0.06 ,time=-0.05 })
+				vehicleControlAddon.snapCurve:addKeyframe({ -0.02 ,time=-0.025})
+				vehicleControlAddon.snapCurve:addKeyframe({ -0.005,time=-0.01 })
+				vehicleControlAddon.snapCurve:addKeyframe({  0    ,time= 0    })
+				vehicleControlAddon.snapCurve:addKeyframe({  0.005,time= 0.01 })
+				vehicleControlAddon.snapCurve:addKeyframe({  0.02 ,time= 0.025})
+				vehicleControlAddon.snapCurve:addKeyframe({  0.06 ,time= 0.05 })
+				vehicleControlAddon.snapCurve:addKeyframe({  0.10 ,time= 0.075})
+				vehicleControlAddon.snapCurve:addKeyframe({  0.15 ,time= 0.1  })
+				vehicleControlAddon.snapCurve:addKeyframe({  0.25 ,time= 0.15 })
+				vehicleControlAddon.snapCurve:addKeyframe({  0.38 ,time= 0.2  })
+				vehicleControlAddon.snapCurve:addKeyframe({  0.53 ,time= 0.25 })
+				vehicleControlAddon.snapCurve:addKeyframe({  0.66 ,time= 0.3  })
+				vehicleControlAddon.snapCurve:addKeyframe({  0.86 ,time= 0.4  })
+				vehicleControlAddon.snapCurve:addKeyframe({  1.16 ,time= 0.6  })
+				vehicleControlAddon.snapCurve:addKeyframe({  1.37 ,time= 0.8  })   
+				vehicleControlAddon.snapCurve:addKeyframe({ math.pi*0.5,time=1 })   
+			end 
+			
 			do
 				local dx    = math.sin( curSnapAngle )
 				local dz    = math.cos( curSnapAngle )			
 				local distX = wx - self.spec_vca.lastSnapPosX
 				local distZ = wz - self.spec_vca.lastSnapPosZ 			
 				local dist  = dist + distX * dz - distZ * dx + self.spec_vca.snapFactor * self.spec_vca.snapDistance
-				local alpha = math.asin( vehicleControlAddon.mbClamp( 0.17 * dist, -0.851, 0.851 ) )			
+				local d2    = vehicleControlAddon.mbClamp( dist / vehicleControlAddon.snapRadius, -1, 1 )
+			--local alpha = d2 * 0.5 * math.pi
+				local alpha = vehicleControlAddon.snapCurve:get( d2 )
+
 				diffR = diffR + alpha				
-			--print(string.format("%6.3fm; %5.2f° = %5.2f° + %5.2f°",dist, diffR*180/math.pi, ( rot-curSnapAngle )*180/math.pi, alpha*180/math.pi ))
 			end 
 			local a = vehicleControlAddon.mbClamp( vehicleControlAddon.normalizeAngle( diffR ) * 6, -1, 1 )
 
@@ -3096,7 +3136,8 @@ function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, ax
 				a = -a 
 			end
 
-			d = 0.0005 * ( 2 + math.min( 18, self.lastSpeed * 3600 ) ) * dt
+		--d = 0.0005 * ( 2 + math.min( 18, self.lastSpeed * 3600 ) ) * dt
+			d = 1
 			
 			if axisSideLast == nil then 
 				axisSideLast = axisSide
@@ -3246,7 +3287,8 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 				local factor = 1 / math.abs(motor.maxGearRatio) * math.pi / 30
 				local minDifferentialSpeed = motor.minRpm * factor
 				local minDifferentialHand  = ( motor.minRpm + self.spec_vca.handThrottle * ( motor.maxRpm - motor.minRpm )) * factor 
-
+				local delta = vehicleControlAddon.mbClamp( 1 - self.spec_vca.handThrottle, 0, 0.1 )
+				
 				if     math.abs(motor.differentialRotSpeed) >= minDifferentialHand  then
 					-- close clutch now
 					motor.clutchSlippingTimer = 0
@@ -3255,12 +3297,15 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 				elseif motor.clutchSlippingTimer > 0 then  
 					-- clutch was already opened
 					acceleration = m * math.max( math.abs( acceleration ), self.spec_vca.handThrottle )
-				elseif math.abs(motor.differentialRotSpeed) <= minDifferentialHand * 0.9 then
+				elseif delta < 1e-3 then 
+					-- full hand thorttle
+					acceleration = m 
+				elseif math.abs(motor.differentialRotSpeed) <= minDifferentialHand * ( 1 - delta ) then
 					-- full thorttle
 					acceleration = m 
 				elseif math.abs(motor.differentialRotSpeed) < minDifferentialHand then 
 					-- accelerate
-					acceleration = m * math.max( math.abs( acceleration ), 10 * ( 1 - math.abs(motor.differentialRotSpeed) / minDifferentialSpeed ) )
+					acceleration = m * math.max( math.abs( acceleration ), ( 1 - math.abs(motor.differentialRotSpeed) / minDifferentialHand ) / delta )
 				end 
 				
 			end 
