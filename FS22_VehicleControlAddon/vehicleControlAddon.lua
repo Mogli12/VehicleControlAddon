@@ -482,7 +482,12 @@ function vehicleControlAddon:onLoad(savegame)
 	self.vcaGetSnapDistance     = vehicleControlAddon.vcaGetSnapDistance
 	self.vcaSetCruiseSpeed      = vehicleControlAddon.vcaSetCruiseSpeed
 	self.vcaSpeedToString       = vehicleControlAddon.vcaSpeedToString
+	self.vcaSetToolStateRec     = vehicleControlAddon.vcaSetToolStateRec
 	
+-- called by FS22_HeadlandManagement
+	self.vcaSnapReverseLeft     = vehicleControlAddon.vcaSnapReverseLeft
+	self.vcaSnapReverseRight    = vehicleControlAddon.vcaSnapReverseRight
+-- called by FS22_HeadlandManagement
 
 	for name,prop in pairs( vehicleControlAddon.properties ) do 
 		self:vcaSetState( name, self:vcaGetDefault( name ), true )
@@ -738,6 +743,44 @@ function vehicleControlAddon.isMPMaster()
 		return g_currentMission.isMasterUser 
 	end 
 	return g_server ~= nil 
+end 
+
+function vehicleControlAddon:vcaSnapReverseLeft()
+-- called by FS22_HeadlandManagement
+	self:vcaSetState( "snapIsOn", true )
+	if     self.spec_vca.snapDirection == 1 then
+		self:vcaSetState( "snapDirection", 3 )
+	elseif self.spec_vca.snapDirection == 2 then
+		self:vcaSetState( "snapDirection", 4 )
+	elseif self.spec_vca.snapDirection == 3 then
+		self:vcaSetState( "snapDirection", 1 )
+	elseif self.spec_vca.snapDirection == 4 then
+		self:vcaSetState( "snapDirection", 2 )
+	end 
+	local l,r = self.spec_vca.snapLeft, self.spec_vca.snapRight 
+	self:vcaSetState( "snapFactor", -self.spec_vca.snapFactor + l )
+	self:vcaSetState( "snapLeft", r )
+	self:vcaSetState( "snapRight", l )
+	self.spec_vca.snapPosTimer = math.max( Utils.getNoNil( self.spec_vca.snapPosTimer , 0 ), 3000 )
+end 
+
+function vehicleControlAddon:vcaSnapReverseRight()
+-- called by FS22_HeadlandManagement
+	self:vcaSetState( "snapIsOn", true )
+	if     self.spec_vca.snapDirection == 1 then
+		self:vcaSetState( "snapDirection", 3 )
+	elseif self.spec_vca.snapDirection == 2 then
+		self:vcaSetState( "snapDirection", 4 )
+	elseif self.spec_vca.snapDirection == 3 then
+		self:vcaSetState( "snapDirection", 1 )
+	elseif self.spec_vca.snapDirection == 4 then
+		self:vcaSetState( "snapDirection", 2 )
+	end 
+	local l,r = self.spec_vca.snapLeft, self.spec_vca.snapRight 
+	self:vcaSetState( "snapFactor", -self.spec_vca.snapFactor - r )
+	self:vcaSetState( "snapLeft", r )
+	self:vcaSetState( "snapRight", l )
+	self.spec_vca.snapPosTimer = math.max( Utils.getNoNil( self.spec_vca.snapPosTimer , 0 ), 3000 )
 end 
 
 function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicle)
@@ -1063,35 +1106,14 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 			self:vcaSetState( "snapFactor", self.spec_vca.snapFactor - 1 )
 		end 
 		self.spec_vca.snapPosTimer = math.max( Utils.getNoNil( self.spec_vca.snapPosTimer , 0 ), 3000 )
-	elseif actionName == "vcaSNAPLEFT" 
-			or actionName == "vcaSNAPRIGHT" then
-		self:vcaSetState( "snapIsOn", true )
-		if     self.spec_vca.snapDirection == 1 then
-			self:vcaSetState( "snapDirection", 3 )
-		elseif self.spec_vca.snapDirection == 2 then
-			self:vcaSetState( "snapDirection", 4 )
-		elseif self.spec_vca.snapDirection == 3 then
-			self:vcaSetState( "snapDirection", 1 )
-		elseif self.spec_vca.snapDirection == 4 then
-			self:vcaSetState( "snapDirection", 2 )
-		end 
-		local l,r = self.spec_vca.snapLeft, self.spec_vca.snapRight 
-		if actionName == "vcaSNAPLEFT" then
-			self:vcaSetState( "snapFactor", -self.spec_vca.snapFactor + l )
-			self:vcaSetState( "snapLeft", r )
-			self:vcaSetState( "snapRight", l )
-		else 
-			self:vcaSetState( "snapFactor", -self.spec_vca.snapFactor - r )
-			self:vcaSetState( "snapLeft", r )
-			self:vcaSetState( "snapRight", l )
-		end 
-		self.spec_vca.snapPosTimer = math.max( Utils.getNoNil( self.spec_vca.snapPosTimer , 0 ), 3000 )
+	elseif actionName == "vcaSNAPLEFT" then 
+		self:vcaSnapReverseLeft()
+	elseif actionName == "vcaSNAPRIGHT" then
+		self:vcaSnapReverseRight()
 	elseif actionName == "vcaSNAPCONT" then
 		self:vcaSetState( "snapIsOn", true )
 	elseif actionName == "vcaSETTINGS" then
 		vehicleControlAddon.vcaShowSettingsUI( self )
-	elseif actionName == "vcaGLOBALS" then
-		vehicleControlAddon.vcaShowGlobalsUI( self )
 	elseif actionName == "vcaAutoShift" then
 		self:vcaSetState( "autoShift", not self.spec_vca.autoShift )
 	elseif actionName == "vcaDiffLockF" then
@@ -1141,17 +1163,17 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 			end 
 		end 
   elseif actionName == "vcaLowerF" then 
-		vehicleControlAddon.setToolStateRec( self, true, false, true, false )
+		self:vcaSetToolStateRec( true, false, true, false )
   elseif actionName == "vcaLowerB" then 
-		vehicleControlAddon.setToolStateRec( self, true, false, false, true )
+		self:vcaSetToolStateRec( true, false, false, true )
   elseif actionName == "vcaActivateF" then 
-		vehicleControlAddon.setToolStateRec( self, false, true, true, false )
+		self:vcaSetToolStateRec( false, true, true, false )
   elseif actionName == "vcaActivateB" then 
-		vehicleControlAddon.setToolStateRec( self, false, true, false, true )
+		self:vcaSetToolStateRec( false, true, false, true )
 	end
 end
 
-function vehicleControlAddon.setToolStateRec( self, lowered, active, front, back, forceState )
+function vehicleControlAddon:vcaSetToolStateRec( lowered, active, front, back, forceState )
 
 -- AttacherJoints:handleLowerImplementByAttacherJointIndex(attacherJointIndex, direction)
 -- if direction == nil then direction = not attacherJoint.moveDown end
@@ -1228,7 +1250,7 @@ function vehicleControlAddon.setToolStateRec( self, lowered, active, front, back
 				end 
 				
 				if recursive then
-					vehicleControlAddon.setToolStateRec( object, lowered, active, true, true, newState )
+					vehicleControlAddon.vcaSetToolStateRec( object, lowered, active, true, true, newState )
 				end 
 			end 
 		end 
@@ -3519,17 +3541,6 @@ function vehicleControlAddon:vcaSpeedToString( speed, numberFormat, noUnit )
 	return string.format( f, s ).." "..u 	
 end 
 
-
-function vehicleControlAddon:vcaShowGlobalsUI()
-	if not vehicleControlAddon.isMPMaster() then 
-		return 
-	end 
-	if g_gui:getIsGuiVisible() then
-		return 
-	end
-	
-	g_gui:showDialog( "vehicleControlAddonConfig", true )	
-end
 
 function vehicleControlAddon:vcaShowSettingsUI()
 

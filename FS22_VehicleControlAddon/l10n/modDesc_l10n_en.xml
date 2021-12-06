@@ -243,14 +243,23 @@
 		
 		
 		<text name="vcaHelpIntro_1"       text="Vehicle Control Addon combines several functions in one modification. Most functions are turned off per default." />
-		<text name="vcaHelpIntro_2"       text="The standard key combination to open the settings menu is LCtrl C. Combinatino LCtrl LAlt C opens the global settings menu. Here, you can adjust the default settings, which are used in all (future) vehicles." />
-		<text name="vcaHelpCam_1"         text="Vehicle Control Addon can rotate the camera to match the steering angle and direction." />
-		<text name="vcaHelpCam_2"         text="You can enable camera rotation in the settings menu. You can choose between values &quot;off&quot;, &quot;light&quot;, &quot;normal&quot; and &quot;strong&quot;. There are separate settings for inside and outside cameras." />
-		<text name="vcaHelpCam_3"         text="With Shift-right and the cursor keys you can peek in the corresponding direction." />
-		<text name="vcaHelpSteering_1"    text="This script varies the steering speed depending on the speed you are driving, and it rotates the camera to match the steering angle and direction. With Shift-right and the cursor keys you can peek in the corresponding direction." />
+		<text name="vcaHelpIntro_2"       text="The standard key combination to open the settings menu is LCtrl C." />
+		<text name="vcaHelpIntro_3"       text="The key combination LCtrl LAlt C opens the global settings menu. Here, you can adjust the default settings, which are used in all (future) vehicles." />
+		<text name="vcaHelpCam_1"         text="Vehicle Control Addon can rotate the camera to match the steering angle and direction. This way you always look into the direction your are driving to." />
+		<text name="vcaHelpCam_2"         text="You can enable camera rotation in the settings menu. You can choose between values &quot;off&quot;, &quot;light&quot;, &quot;normal&quot; and &quot;strong&quot;. There are separate settings for inside and outside cameras. Additionally, you can turn on/off the automatical reveral of the camera." />
+		<text name="vcaHelpCam_3"         text="With Shift-right and the cursor keys you can look into the corresponding direction. There are two modes. If peed is on the camera direction is switched back to the previous view as soon as you release the key. If peek is turned off, the the same key change the camera direction without switching back." />
+		<text name="vcaHelpSteering_1"    text="Vehicle Control Addon varies the steering speed depending on the speed you are driving." />
+		<text name="vcaHelpSteering_2"    text="You settings menu gives you the opportunity to adjust steeering. If adaptive steering is turned off, then Vehicle Control Addon does not change the steering behaviour. The steering speed settings are only relevant is adaptive steering is on. Free steering completely disables the automatic back rotation." />
+		<text name="vcaHelpSteering_3"    text="The adaptive steering was designed for keyboard users. The automatic back rotation speed depends on how long you released the A or D keys. This way, you can keep the current rotation of the steering wheel by shortly tapping of either A or D keys. The back rotation to center position is faster if you press the corresponding key. This is like an emergency mode. If you steered too much, then you try to steer into the other direction. This goes much faster but only until the steering wheel reached center position." />
 		<text name="vcaHelpGPS_1"         text="If you press Ctrl left together with W then the driving direction snaps to fixed directions." />
+		<text name="vcaHelpGPS_2"         text="If you press Ctrl left together with W then the driving direction snaps to fixed directions." />
+		<text name="vcaHelpGPS_3"         text="If you press Ctrl left together with W then the driving direction snaps to fixed directions." />
 		<text name="vcaHelpThrottle_1"    text="Shift-Left limits throttle, cruise control and maximum rounds per minute to 75%. If you press delete then the vehicle will keep its speed. Acceleration and brake pedal increase and descrease the speed. The vehicle drives like a modern tractor with joystick." />
-		<text name="vcaHelpDiff_1"        text="If VCA can identify the differentials, then you have the possibility to operate them manually." />
+		<text name="vcaHelpThrottle_2"    text="Shift-Left limits throttle, cruise control and maximum rounds per minute to 75%. If you press delete then the vehicle will keep its speed. Acceleration and brake pedal increase and descrease the speed. The vehicle drives like a modern tractor with joystick." />
+		<text name="vcaHelpThrottle_3"    text="Shift-Left limits throttle, cruise control and maximum rounds per minute to 75%. If you press delete then the vehicle will keep its speed. Acceleration and brake pedal increase and descrease the speed. The vehicle drives like a modern tractor with joystick." />
+		<text name="vcaHelpDiff_1"        text="If Vehicle Control Addon can identify the differentials, then you have the possibility to operate them manually." />
+		<text name="vcaHelpDiff_2"        text="If Vehicle Control Addon can identify the differentials, then you have the possibility to operate them manually." />
+		<text name="vcaHelpDiff_3"        text="If Vehicle Control Addon can identify the differentials, then you have the possibility to operate them manually." />
 		
 	</texts>
 </l10n>

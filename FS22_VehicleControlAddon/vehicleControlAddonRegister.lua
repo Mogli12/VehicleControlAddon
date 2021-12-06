@@ -200,7 +200,8 @@ function vehicleControlAddonRegister:update(dt)
 					{ title = "vcaTitleIntro",
 						paragraphs = { 
 							{ text = "vcaHelpIntro_1" },
-							{ text = "vcaHelpIntro_2" },
+							{ text = "vcaHelpIntro_2", image = "l10n/help_intro.dds", imageUVs="0px 0px 1024px 1024px" },
+							{ text = "vcaHelpIntro_3" },
 						},
 					},
 					{ title = "vcaTitleCam",
@@ -212,22 +213,30 @@ function vehicleControlAddonRegister:update(dt)
 					},
 					{ title = "vcaTitleSteering",
 						paragraphs = { 
-							{ text = "vcaHelpSteering_1", image = "l10n/help_steering_en.dds", imageUVs="0px 0px 1024px 480px" },
+							{ text = "vcaHelpSteering_1" },
+							{ text = "vcaHelpSteering_2", image = "l10n/help_steering_en.dds", imageUVs="0px 0px 1024px 480px" },
+							{ text = "vcaHelpSteering_3" },
 						},
 					},
 					{ title = "vcaTitleGPS",
 						paragraphs = { 
-							{ text = "vcaHelpGPS_1", image = "l10n/help_gps_en.dds", imageUVs="0px 0px 1024px 624px" },
+							{ text = "vcaHelpGPS_1" },
+							{ text = "vcaHelpGPS_2", image = "l10n/help_gps_en.dds", imageUVs="0px 0px 1024px 840px" },
+							{ text = "vcaHelpGPS_3" },
 						},
 					},
 					{ title = "vcaTitleThrottle",
 						paragraphs = { 
-							{ text = "vcaHelpThrottle_1", image = "l10n/help_throttle_en.dds", imageUVs="0px 0px 1024px 624px" },
+							{ text = "vcaHelpThrottle_1" },
+							{ text = "vcaHelpThrottle_2", image = "l10n/help_throttle_en.dds", imageUVs="0px 0px 1024px 624px" },
+							{ text = "vcaHelpThrottle_3" },
 						},
 					},
 					{ title = "vcaTitleDiff",
 						paragraphs = { 
-							{ text = "vcaHelpDiff_1", image = "l10n/help_diff_en.dds", imageUVs="0px 0px 1024px 624px" },
+							{ text = "vcaHelpDiff_1" },
+							{ text = "vcaHelpDiff_2", image = "l10n/help_diff_en.dds", imageUVs="0px 0px 1024px 624px" },
+							{ text = "vcaHelpDiff_3" },
 						},
 					},
 				} ) do 
@@ -259,6 +268,31 @@ function vehicleControlAddonRegister:draw()
   
 end;
 
+function vehicleControlAddonRegister:draw()
+  
+end;
+
+function vehicleControlAddonRegister:registerActionEvents()
+	local _, eventId = g_gui.inputManager:registerActionEvent(InputAction.vcaGLOBALS, self, vehicleControlAddonRegister.onToggleMenu, false, true, false, true)
+	self.inputManager:setActionEventTextVisibility(eventId, true)
+end
+
+function vehicleControlAddonRegister:unregisterActionEvents()
+	g_gui.inputManager:removeActionEventsByTarget(self)
+end
+---Called by the toggle action event
+function vehicleControlAddonRegister:onToggleMenu()
+	if not g_currentMission.isSynchronizingWithPlayers then
+		if not vehicleControlAddon.isMPMaster() then 
+			return 
+		end 
+		if g_gui:getIsGuiVisible() then
+			return 
+		end
+		g_gui:showDialog( "vehicleControlAddonConfig", true )	
+	end
+end
+
 local function beforeLoadMission(mission)
 	assert( g_vehicleControlAddon == nil )
 	local base = vehicleControlAddonRegister.new( g_i18n )
@@ -284,6 +318,8 @@ local function init()
 	FSBaseMission.onConnectionFinishedLoading = Utils.appendedFunction( FSBaseMission.onConnectionFinishedLoading, afterConnectionFinishedLoading )
 	TypeManager.finalizeTypes = Utils.prependedFunction(TypeManager.finalizeTypes, beforeFinalizeTypes)
 	FSCareerMissionInfo.saveToXMLFile = Utils.appendedFunction( FSCareerMissionInfo.saveToXMLFile, afterMissionInfoSaveToXMLFile )
+  BaseMission.unregisterActionEvents = Utils.appendedFunction( BaseMission.unregisterActionEvents, vehicleControlAddonRegister.unregisterActionEvents )
+  FSBaseMission.registerActionEvents = Utils.appendedFunction( FSBaseMission.registerActionEvents, vehicleControlAddonRegister.registerActionEvents )
 end 
 
 init()
