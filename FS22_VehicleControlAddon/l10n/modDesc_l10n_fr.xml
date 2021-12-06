@@ -163,7 +163,7 @@
 		<text name="input_vcaSNAPPREV"  text="VCA: Guidage auto rangée précèdente"/>"/>
 		<text name="input_vcaSNAPNEXT"  text="VCA: Guidage auto rangée suivante"/>
 		<text name="input_vcaSNAPCONT"  text="VCA: Reprise du guidage auto"/>
-		<text name="input_vcaSNAPRESET" text="VCA: RAZ du guidage auto/>
+		<text name="input_vcaSNAPRESET" text="VCA: RAZ du guidage auto"/>
 		<text name="input_vcaSNAPDIST"  text="VCA: Détection automatique de la largeur de travail"/>
 		<text name="input_vcaSnapUP"    text="VCA: Faire pivoter les lignes GPS vers la gauche"/>
 		<text name="input_vcaSnapDOWN"  text="VCA: Faire pivoter les lignes GPS vers la droite"/>
