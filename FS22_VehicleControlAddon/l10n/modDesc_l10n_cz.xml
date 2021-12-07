@@ -148,57 +148,57 @@
 		<text name="vca_tip_IDLETHROTTLE" text="Motor nezávisle zrychluje, aby udržoval volnoběžné otáčky"/>
 		<text name="vca_tip_DEBUG"        text="Do protokolu se zapisují další zprávy"/>
 		                               
-		<text name="input_vcaSETTINGS"    text="nastavení"/>
-		<text name="input_vcaGLOBALS"     text="globální nastavení"/>
-		<text name="input_vcaUP"          text="přepnout směr pohledu / uzamknout dopředu"/>
-		<text name="input_vcaDOWN"        text="nahlédnout do jiného směru pohledu / uzamknout dozadu"/>
-		<text name="input_vcaLEFT"        text="pohled doleva"/>
-		<text name="input_vcaRIGHT"       text="pohled doprava"/>
-		<text name="input_vcaDIRECTION"   text="změna směru jízdy"/>
-		<text name="input_vcaFORWARD"     text="jízda vpřed"/>
-		<text name="input_vcaREVERSE"     text="jízda vzad"/>
-		<text name="input_vcaSNAP"        text="navádění do jízdních pruhů"/>
-		<text name="input_vcaSNAPLEFT"    text="levý zpětný naváděcí pruh"/>
-		<text name="input_vcaSNAPRIGHT"   text="pravý zpětný naváděcí pruh"/>
-		<text name="input_vcaSNAPPREV"    text="předchozí naváděcí pruh"/>
-		<text name="input_vcaSNAPNEXT"    text="další naváděcí pruh"/>
-		<text name="input_vcaSNAPCONT"    text="znovu aktivovat naváděcí pruh"/>
-		<text name="input_vcaSNAPRESET"   text="resetovat směr navádění jízdními pruhy"/>
-		<text name="input_vcaSNAPDIST"    text="určit pracovní šířku vedení jízdního pruhu"/>
-		<text name="input_vcaSnapUP"      text="otočit směr navádění jízdními pruhy doleva"/>
-		<text name="input_vcaSnapDOWN"    text="otočit směr navádění jízdními pruhy doprava"/>
-		<text name="input_vcaSnapLEFT"    text="změna v jízdního pruhu doleva"/>
-		<text name="input_vcaSnapRIGHT"   text="změna v jízdního pruhu doprava"/>
-		<text name="input_vcaNO_ARB"      text="vypnout automatické otáčení"/>
-		<text name="input_vcaINCHING"     text="palce"/>
-		<text name="input_vcaKEEPROT"     text="zachovat standartní směr kamery"/>
-		<text name="input_vcaKEEPROT2"    text="trvalé udržení směru kamery"/>
-		<text name="input_vcaKEEPSPEED"   text="udržovat rychlost"/>
-		<text name="input_vcaKEEPSPEED2"  text="trvalé udržování rychlosti"/>
-		<text name="input_vcaSWAPSPEED"   text="změna rychlosti"/>
-		<text name="input_vcaNeutral"     text="neutral zap./vyp."/>
-		<text name="input_vcaNeutral0"    text="neutral vyp."/>
-		<text name="input_vcaNeutral1"    text="neutral zap."/>
-		<text name="input_vcaClutch"      text="osa spojky"/> 
-		<text name="input_vcaHandRpm"     text="otáčky ručního plynu"/>
-		<text name="input_vcaHandRpm_1"   text="přidat ruční plyn"/>
-		<text name="input_vcaHandRpm_2"   text="ubrat ruční plyn"/>
-		<text name="input_vcaHandMode"    text="režim ručního plynu"/>
-		<text name="input_vcaManRatio"    text="manuální Vario"/>
-		<text name="input_vcaManRatio_1"  text="Vario rychleji"/>
-		<text name="input_vcaManRatio_2"  text="Vario pomaleji"/>
-		<text name="input_vcaAutoShift"   text="automatické řazení zap./vyp."/>
-		<text name="input_vcaDiffLockF"   text="přední diferenciál zamknout/odemknout"/>
-		<text name="input_vcaDiffLockM"   text="pohon všech/předních kol"/>
-		<text name="input_vcaDiffLockB"   text="zadní diferenciál zamknout/odemknout"/>
-		<text name="input_vcaLowerF"      text="snížit/zvednout přední nástroje"/>
-		<text name="input_vcaLowerB"      text="snížit/zvednout zadní nástroje"/>
-		<text name="input_vcaActivateF"   text="zap./vyp. přední nástroje"/>
-		<text name="input_vcaActivateB"   text="zap./vyp. zadní nástroje"/>
-		<text name="input_vcaMenuAction1" text="Tlačítko nabídky S"/>
-		<text name="input_vcaMenuAction2" text="Tlačítko nabídky L"/>
-		<text name="input_vcaMenuAction3" text="Tlačítko nabídky D"/>
-		<text name="input_vcaMenuAction4" text="Tlačítko nabídky X"/>
+		<text name="input_vcaSETTINGS"    text="VCA: nastavení"/>
+		<text name="input_vcaGLOBALS"     text="VCA: globální nastavení"/>
+		<text name="input_vcaUP"          text="VCA: přepnout směr pohledu / uzamknout dopředu"/>
+		<text name="input_vcaDOWN"        text="VCA: nahlédnout do jiného směru pohledu / uzamknout dozadu"/>
+		<text name="input_vcaLEFT"        text="VCA: pohled doleva"/>
+		<text name="input_vcaRIGHT"       text="VCA: pohled doprava"/>
+		<text name="input_vcaDIRECTION"   text="VCA: změna směru jízdy"/>
+		<text name="input_vcaFORWARD"     text="VCA: jízda vpřed"/>
+		<text name="input_vcaREVERSE"     text="VCA: jízda vzad"/>
+		<text name="input_vcaSNAP"        text="VCA: navádění do jízdních pruhů"/>
+		<text name="input_vcaSNAPLEFT"    text="VCA: levý zpětný naváděcí pruh"/>
+		<text name="input_vcaSNAPRIGHT"   text="VCA: pravý zpětný naváděcí pruh"/>
+		<text name="input_vcaSNAPPREV"    text="VCA: předchozí naváděcí pruh"/>
+		<text name="input_vcaSNAPNEXT"    text="VCA: další naváděcí pruh"/>
+		<text name="input_vcaSNAPCONT"    text="VCA: znovu aktivovat naváděcí pruh"/>
+		<text name="input_vcaSNAPRESET"   text="VCA: resetovat směr navádění jízdními pruhy"/>
+		<text name="input_vcaSNAPDIST"    text="VCA: určit pracovní šířku vedení jízdního pruhu"/>
+		<text name="input_vcaSnapUP"      text="VCA: otočit směr navádění jízdními pruhy doleva"/>
+		<text name="input_vcaSnapDOWN"    text="VCA: otočit směr navádění jízdními pruhy doprava"/>
+		<text name="input_vcaSnapLEFT"    text="VCA: změna v jízdního pruhu doleva"/>
+		<text name="input_vcaSnapRIGHT"   text="VCA: změna v jízdního pruhu doprava"/>
+		<text name="input_vcaNO_ARB"      text="VCA: vypnout automatické otáčení"/>
+		<text name="input_vcaINCHING"     text="VCA: palce"/>
+		<text name="input_vcaKEEPROT"     text="VCA: zachovat standartní směr kamery"/>
+		<text name="input_vcaKEEPROT2"    text="VCA: trvalé udržení směru kamery"/>
+		<text name="input_vcaKEEPSPEED"   text="VCA: udržovat rychlost"/>
+		<text name="input_vcaKEEPSPEED2"  text="VCA: trvalé udržování rychlosti"/>
+		<text name="input_vcaSWAPSPEED"   text="VCA: změna rychlosti"/>
+		<text name="input_vcaNeutral"     text="VCA: neutral zap./vyp."/>
+		<text name="input_vcaNeutral0"    text="VCA: neutral vyp."/>
+		<text name="input_vcaNeutral1"    text="VCA: neutral zap."/>
+		<text name="input_vcaClutch"      text="VCA: osa spojky"/> 
+		<text name="input_vcaHandRpm"     text="VCA: otáčky ručního plynu"/>
+		<text name="input_vcaHandRpm_1"   text="VCA: přidat ruční plyn"/>
+		<text name="input_vcaHandRpm_2"   text="VCA: ubrat ruční plyn"/>
+		<text name="input_vcaHandMode"    text="VCA: režim ručního plynu"/>
+		<text name="input_vcaManRatio"    text="VCA: manuální Vario"/>
+		<text name="input_vcaManRatio_1"  text="VCA: Vario rychleji"/>
+		<text name="input_vcaManRatio_2"  text="VCA: Vario pomaleji"/>
+		<text name="input_vcaAutoShift"   text="VCA: automatické řazení zap./vyp."/>
+		<text name="input_vcaDiffLockF"   text="VCA: přední diferenciál zamknout/odemknout"/>
+		<text name="input_vcaDiffLockM"   text="VCA: pohon všech/předních kol"/>
+		<text name="input_vcaDiffLockB"   text="VCA: zadní diferenciál zamknout/odemknout"/>
+		<text name="input_vcaLowerF"      text="VCA: snížit/zvednout přední nástroje"/>
+		<text name="input_vcaLowerB"      text="VCA: snížit/zvednout zadní nástroje"/>
+		<text name="input_vcaActivateF"   text="VCA: zap./vyp. přední nástroje"/>
+		<text name="input_vcaActivateB"   text="VCA: zap./vyp. zadní nástroje"/>
+		<text name="input_vcaMenuAction1" text="VCA: Klávesa nabídky S"/>
+		<text name="input_vcaMenuAction2" text="VCA: Klávesa nabídky L"/>
+		<text name="input_vcaMenuAction3" text="VCA: Klávesa nabídky D"/>
+		<text name="input_vcaMenuAction4" text="VCA: Klávesa nabídky X"/>
 		
 		<text name="vcaValueOn"         text="Zap."/>
 		<text name="vcaValueOff"        text="Vyp."/>
@@ -238,19 +238,28 @@
 		<text name="vcaTitleSteering"   text="Řízení"/>
 		<text name="vcaTitleGPS"        text="Vedení stopy"/>
 		<text name="vcaTitleThrottle"   text="Plyn, Brzdy, Řazení"/>
-		<text name="vcaTitleDiff"       text="4x4 a diferencial"/>
+		<text name="vcaTitleDiff"       text="AWD a diferencial"/>
 		<text name="vcaTitleMisc"       text="Různá nastavení"/>
 		
 		
 		<text name="vcaHelpIntro_1"       text="Vehicle Control Addon kombinuje několik funkcí v jedné modifikaci. Většina funkcí je ve výchozím nastavení vypnuta." />
 		<text name="vcaHelpIntro_2"       text="Standardní kombinace kláves pro otevření nabídky nastavení je Levý Ctrl+C. Kombinace Levý Ctrl+Levý Alt+C otevře nabídku globálního nastavení. Zde můžete upravit výchozí nastavení, která se používají ve všech (budoucích) vozidlech." />
+		<text name="vcaHelpIntro_3"       text="Kombinace kláves Levé Ctrl+Levé Alt+C otevře nabídku globálního nastavení. Zde můžete upravit výchozí nastavení, která se používají ve všech (budoucích) vozidlech" />
 		<text name="vcaHelpCam_1"         text="Vehicle Control Addon dokáže otočit kameru tak, aby odpovídala úhlu a směru řízení." />
 		<text name="vcaHelpCam_2"         text="Otáčení kamery můžete povolit v nabídce nastavení. Můžete si vybrat mezi hodnotami &quot;off&quot;, &quot;light&quot;, &quot;normal&quot; and &quot;strong&quot;. Existují samostatná nastavení pro vnitřní a vnější kamery." />
 		<text name="vcaHelpCam_3"         text="Pomocí Pravého Shift a kurzorových kláves můžete nahlížet v odpovídajícím směru." />
 		<text name="vcaHelpSteering_1"    text="Tento skript mění rychlost řízení v závislosti na rychlosti, kterou jedete, a otáčí kameru tak, aby odpovídala úhlu a směru řízení. Pomocí Pravého Shift a kurzorových kláves můžete nahlížet v odpovídajícím směru." />
+		<text name="vcaHelpSteering_2"    text="Nabídka nastavení vám dává možnost upravit řízení. Pokud je adaptivní řízení vypnuto, pak Vehicle Control Addon nezmění chování řízení. Nastavení rychlosti řízení je relevantní pouze v případě, že je zapnuté adaptivní řízení. Volné řízení zcela vyřadí automatické otáčení dozadu." />
+		<text name="vcaHelpSteering_3"    text="Adaptivní řízení bylo navrženo pro uživatele klávesnice. Rychlost automatické zpětné rotace závisí na tom, jak dlouho jste pustili klávesy A nebo D. Tímto způsobem můžete zachovat aktuální natočení volantu krátkým klepnutím na klávesy A nebo D. Otočení zpět do středové polohy je rychlejší, pokud stisknete odpovídající klávesu. Je to jako nouzový režim. Pokud jste zamířili příliš, zkuste zatočit opačným směrem. Jde to mnohem rychleji, ale jen do té doby, než volant dosáhne střední polohy." />
 		<text name="vcaHelpGPS_1"         text="Pokud stisknete Levé Ctrl spolu s W, směr jízdy se přichytí k pevným směrům." />
+		<text name="vcaHelpGPS_2"         text="Pokud stisknete Levé Ctrl spolu s W, směr jízdy se přichytí k pevným směrům." />
+		<text name="vcaHelpGPS_3"         text="Pokud stisknete Levé Ctrl spolu s W, směr jízdy se přichytí k pevným směrům." />
 		<text name="vcaHelpThrottle_1"    text="Levý Shift omezuje plyn, tempomat a maximální počet otáček za minutu na 75 %. Pokud stisknete Delete, vozidlo si zachová svou rychlost. Akcelerační a brzdový pedál zvyšují a snižují rychlost. Vozidlo jede jako moderní traktor s joystickem." />
-		<text name="vcaHelpDiff_1"        text="Pokud VCA dokáže identifikovat diferenciály, máte možnost je ovládat ručně." />
+		<text name="vcaHelpThrottle_2"    text="Levý Shift omezuje plyn, tempomat a maximální počet otáček za minutu na 75 %. Pokud stisknete Delete, vozidlo si zachová svou rychlost. Akcelerační a brzdový pedál zvyšují a snižují rychlost. Vozidlo jede jako moderní traktor s joystickem." />
+		<text name="vcaHelpThrottle_3"    text="Levý Shift omezuje plyn, tempomat a maximální počet otáček za minutu na 75 %. Pokud stisknete Delete, vozidlo si zachová svou rychlost. Akcelerační a brzdový pedál zvyšují a snižují rychlost. Vozidlo jede jako moderní traktor s joystickem." />
+		<text name="vcaHelpDiff_1"        text="Pokud Vehicle Control Addon dokáže identifikovat diferenciály, máte možnost je ovládat ručně." />
+		<text name="vcaHelpDiff_2"        text="Pokud Vehicle Control Addon dokáže identifikovat diferenciály, máte možnost je ovládat ručně." />
+		<text name="vcaHelpDiff_3"        text="Pokud Vehicle Control Addon dokáže identifikovat diferenciály, máte možnost je ovládat ručně." />
 		
 	</texts>
 </l10n>
