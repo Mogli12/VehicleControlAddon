@@ -1,5 +1,8 @@
 # VehicleControlAddon for Farming Simulator 2022
 
+## Status
+**Please review the ingame help texts of VCA. **
+
 ## Developer version
 Please be aware you're using a developer version, which may and will contain errors, bugs, mistakes and unfinished code. 
 
@@ -30,8 +33,6 @@ It is possible to swtich to left or right reverse guidance lane. Here are the la
 ## Some settings are display only in MP
 
 In multiplayer games only the master user (aka administrator) can change global settings with key combination LCtrl+LAtr+C.
-
-## Status
 
 ## modSettings
 
