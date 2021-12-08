@@ -230,6 +230,8 @@
 		
 		<text name="vcaPowerShift"      text="power shift"/>
 		
+		<text name="vcaSnapArtAxis"     text="Lane guidance is not supported for vehicles with articulated axis"/>
+		
 		<text name="vcaButtonSnapWidth"  text="Detect width"/>
 		<text name="vcaButtonSnapOffset" text="Swap offset"/>
 

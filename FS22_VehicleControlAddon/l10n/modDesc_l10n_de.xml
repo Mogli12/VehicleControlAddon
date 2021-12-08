@@ -154,6 +154,8 @@
 		
 		<text name="vcaPowerShift"      text="Lastschaltung"/>
 		
+		<text name="vcaSnapArtAxis"     text="Spurführung wird für Knicklenker nicht unterstützt"/>
+		
 		<text name="vcaButtonSnapWidth" text="Breite ermitteln"/>
 		<text name="vcaButtonSnapOffset" text="Offset tauschen"/>		
 		
