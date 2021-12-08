@@ -13,8 +13,7 @@
 		<text name="vcaPEEKLR"          text="Nur ein kurzer Blick"/>
 		<text name="vcaANGLE"           text="Rastersteuerung"/>
 		<text name="vcaBRAKE"           text="Niedrige Bremskraft"/>
-		<text name="vcaAUTOSHIFTG"      text="Automatische Gänge"/>
-		<text name="vcaAUTOSHIFTR"      text="Automatische Gruppen"/>
+		<text name="vcaAUTOSHIFT"       text="Automatische Schaltung"/>
 		<text name="vcaLAUNCH"          text="Geschwindigkeit Startgang"/>
 		<text name="vcaKEEPSPEED"       text="Geschwindigkeit permanent halten"/>
 		<text name="vcaNO_ARB"          text="Freies Lenken"/>
@@ -63,8 +62,7 @@
 		<text name="vca_tip_TRANSMISSION" text="Typ des Getriebes; IVT ist ein stufenloses Getriebe, die anderen Getriebe haben 12 verschiedene Gänge, 2x6 eignet sich am besten für LKWs"/>
 		<text name="vca_tip_MAXSPEED"     text="Maximale Geschwindigkeit, die im höchsten Gang (theoretisch) erreicht werdern kann"/>
 		<text name="vca_tip_LIMSPEED"     text="Begrenzung der Höchtstgeschwindigkeit auf den Standardwert des Fahrzeugs"/>
-		<text name="vca_tip_AUTOSHIFTG"   text="Automatische Schaltung von Gängen"/>
-		<text name="vca_tip_AUTOSHIFTR"   text="Automatische Schaltung von Gruppen"/>
+		<text name="vca_tip_AUTOSHIFT"    text="Mit dieser Einstellung kann man in einzelnen Fahrzeugen die automatische Schaltung aktivieren, wenn sie im Spiel selber manuell ist."/>
 		<text name="vca_tip_LAUNCH"       text="Geschwindigkeit des Ganges, der zum Anfahren benutzt wird"/>
 		<text name="vca_tip_KEEPSPEED"    text="Falls ständiges Halten der Geschwindigkeit aktiviert ist, dann fährt das Fahrzeug quasi immer mit Tempomat. Das entspricht dem Fahrhebel in modernen Traktoren."/>
 		<text name="vca_tip_NO_ARB"       text="Falls freies Lenken aktiviert ist, dann lenkt das Fahrzeug nicht selbständig zurück auf Geradeaus"/>
@@ -141,7 +139,7 @@
 		
 		<text name="vcaValueOn"         text="An"/>
 		<text name="vcaValueOff"        text="Aus"/>
-		<text name="vcaValueNever"      text="Never"/>
+		<text name="vcaValueNever"      text="Nie"/>
 		<text name="vcaValueAlways"     text="Immer"/>
 		<text name="vcaValueAlwaysH"    text="Immer (hoch)"/>
 		<text name="vcaValueNormal"     text="Normal"/>
@@ -166,21 +164,24 @@
 		<text name="vcaTitleDiff"       text="Allrad und Differentialsperren"/>
 		<text name="vcaTitleMisc"       text="Verschiedene Einstellungen"/>
 
-		<text name="vca_Help_1" text="Dieses Script variiert abhängig von der gefahrenen Geschwindigkeit die Lenkgeschwindigkeit und dreht die Kamera passend zum Lenkeinschlag und zur Fahrtrichtung.  Mit Umschalt-Rechts und den Pfeiltasten kann man in die entsprechende Richtung blicken. Drückt man Strg Links zusammen mit W, dann richtet sich die Fahrtrichtung an festen Richtungen aus. Alle Funktionen lassen sich auch wieder ausschalten."/>
-		<text name="vca_Help_2" text="Mit Umschalt-Llinks wird das Gaspedal, der Tempomat und die maximale Drehzahl auf 75% begrenzt. Drückt man die Taste entf, dann hält das Fahrzeug die aktuelle Geschwindigkeit. Wie bei modernen Traktoren auch, kann man diese Funktion auch permanent einschalten und per entf dann zeitweise ausschalten. Durch die Änderungen an der Tonhöhe kann man die aktuelle Drehzahl besser hören."/>
-		<text name="vca_Help_3" text="Globale Einstellungen
-
-Änderungen an den globale Einstellungen haben keinen Einfluss auf das aktuelle Fahrzeug.
-Sie werden in der Datei modSettings/vehicleControlAddon.xml gespeichert"/>
-		<!--text name="vca_Help_4" "text="Wenn VCA die Differentiale zuordnen kann, dann ist es hier möglich, die Differentialsperren und den Allradantrieb selber zu ein- und auszuschalten.
-Man kann die Höchstgeschwindigkeiten vorwärts und rückwärts anpassen.
-Sollte das Fahrzeug nicht die korrekte Nennleistung haben, dann kann diese hier überschreiben. Dazu gibt es 4 verschiedene Drehmomentkurven
-- default nutzt die Drehmomentkurve des Fahrzeugs
-- modern mit 40% Drehmomentanstieg und 7% höherer Maximalleistung
-- modern mit 50% Drehmomentanstieg und 8% höherer Maximalleistung
-- LKW Motor mit 55% Drehmomentanstieg und Nennleistung vom Maximaldrehmoment bis Nenndrehzahl
-- klassisch mit nur 20% Drehmomentanstieg und Maximalleistung erst bei Nenndrehzahl
-- klassisch aber mit 30% Drehmomentanstieg und 2% höherer Maximalleistung"/-->
+		<text name="vcaHelpIntro_1"       text="Vehicle Control Addon kombiniert viele Funktionen in einer Modifikation. Die meisten Funktionen sind standardmäßig ausgeschaltet." />
+		<text name="vcaHelpIntro_2"       text="Man öffnet das Einstellungsmenu im Fahrzeug mit der Standardtastenkombination LCtrl C. Ich empfehle die Tastenkombinationen in die Spieleinstellungen zu überprüfen." />
+		<text name="vcaHelpIntro_3"       text="Die Standardtastenkombination LCtrl LAlt C öffnet das globale Einstellungsmenu. Hier kann man die Standardeinstellungen von VCA für alle Fahrzeuge ändern." />
+		<text name="vcaHelpCam_1"         text="Vehicle Control Addon kann die Kamerarichtung automatische dem Lenkwinkel und der Fahrtrichtung anpassen. So schaut man immer in die Richtung in die man fährt." />
+		<text name="vcaHelpCam_2"         text="Die Rotation der Kamera aktiviert man im Einstellungsmenu. Man hat folgende Werte zur Auswahl: &quot;Aus&quot;, &quot;Leicht&quot;, &quot;Normal&quot; und &quot;Stark&quot;. Man kann die Einstellung für die innere und äußere Kamera getrennt vornehmen. Zusätzlich kann man das automtische Drehen der Kamera in Fahrtrichtung ein- und ausschalten." />
+		<text name="vcaHelpCam_3"         text="Mit den Standardtastenkombinationen RShift und den Pfeiltasten kann man kurz in die entsprechende Richtung blicken. Wenn man die Einstellung für den kurzen Blick ausschaltet, dann wird bei Loslassen der Tastenkombination die Kamera nicht wieder zurück gedreht." />
+		<text name="vcaHelpSteering_1"    text="Vehicle Control Addon kann die Lenkgeschwindigkeit der Geschwindigkeit des Fahrzeugs anpassen." />
+		<text name="vcaHelpSteering_2"    text="Im Einstellungsmenu kann man die Lenkung anpassen. Wenn die adaptive Lenkung ausgeschaltet ist, dann ändert Vehicle Control Addon nicht des Lenkverhalten des Fahrzeugs. Die Einstellungen zur Lenkgeschwindigkeit wirken nur bei eingeschalteter adaptiver Lenkung. Freies Lenken deaktiviert das automatische Zurücklenken der (digitalen) Lenkung." />
+		<text name="vcaHelpSteering_3"    text="Die adaptive Lenkung ist gedacht für Tastaturspieler. Das automatische Zurückstellen der Lenkung hängt davon ab, wie lange die Tasten A oder D nicht gedrückt wurden. So kann man den aktuellen Lenkeinschlag beibehalten, indem man nur kurz auf die Tasten A oder D tippt. Das Zurücklenken ist deutlich schneller, wenn man in die entgegen gesetzte Richtung lenkt. So kann man im Notfall die Lenkung wieder schnell zentrieren." />
+		<text name="vcaHelpGPS_1"         text="Vehicle Control Addon beinhaltet auch eine einfache Spurführung." />
+		<text name="vcaHelpGPS_2"         text="Die Spurführung kann nur gestartet werden, wenn die Arbeitsbreite größer als 0,5m ist. Vehicle Control Addon kann die Arbeitsbreite automatisch im Einstellungsmenu oder mit der Standardtastenkombination LCtrl LAlt W ermittlen. Die Spurführung startet man mit der Tastenkombination LCtrl W. Sobald man selber lenkt schaltet sie sich wieder aus." />
+		<text name="vcaHelpGPS_3"         text="Im Fahrzeug kann man die Spuren mit den Standardtastenkombinationen LCtrl + Pfeiltasten verschieben und drehen. Mit den Tastenkombinationen LAlt A und LAlt D kann an auf den nächsten linken oder rechten Umkehrkurs schalten. Sollte sich die Spurführung durch Lenkeingriff dabei ausschalten, so kann man mit LCtrl S die letze Spur und Richtung wieder reaktivieren. Die Anzahl Spuren für den Umkehrkurs kann man im Einstellungsmenu anpassen. Will man den linken Teil des Feldes bearbeiten, so kann man die Rasterbahnen links um einen höher als rechts wählen. Beim Umkehren über die Tastenkombination werden beide Werte automatisch vertauscht." />
+		<text name="vcaHelpThrottle_1"    text="Vehicle Control Addon bietet ein paar Änderungen an Gas und Bremse. Die meisten Änderungen sind gedacht für Tastaturspieler." />
+		<text name="vcaHelpThrottle_2"    text="Die beiden Gasbegrenzer Werte werden ohne und mit gedrückter Langasamer-Taste verwendet. Man kann den ersten Wert auf 90% stellen, dann wird über das (digitale) Gaspedal nur 90% Gas gegeben, es sei denn, dass man die Langasamer-Taste gedrückt hält. Das kann bei Frontladerarbeiten hilfreich sein. Der niedrigere Prozentwert verändert bei gedrückter Langasamer-Taste die Tempomatgeschwindigkeit. Die niedrige Bremskraft wird im Spiel nur dann angewandt, wenn der Gaspedal noch Bremse gedrückt sind. Niedrigere Werte lassen das Fahrzeug länger ausrollen." />
+		<text name="vcaHelpThrottle_3"    text="Standardmäßig begrenzt die Langasamer-Taste das Gaspedal, den Tempomaten und die Drehzahl auf 75%. Wenn man die Geschwindigkeit-Halten-Taste drückt, dann hält das Fahrzeug die aktuelle Geschwindigkeit ähnlich wie bei Tempomaten. Das kann man auch permanent einschalten, so dass sich das Fahrzeug wie mit einem Fahrhebel steuern lässt. Dann kann man mit der Halten-Taste das permanente Halten kurzfristig deaktivieren. Man kann die automatische Schaltung im Fahrzeug mit der Tastenkombination LCtrl Ü umstellen." />
+		<text name="vcaHelpDiff_1"        text="Wenn Vehicle Control Addon die Differentiale erkennen kann, dann kann man sie auf manuell umstellen." />
+		<text name="vcaHelpDiff_2"        text="Standardmäßig ändert Vehicle Control Addon die Differentiale nicht. Bei eingeschaltetem Allradantrieb drehen sich bei Standardtraktoren die Vorderräder schneller als die Hinterräder. Wenn man diese Funktion einschaltet, dann schaltet Vehicle Control Addon den Allradantrieb oberhalb von 30 km/h automatisch aus." />
+		<text name="vcaHelpDiff_3"        text="Die Standardtastenkombinationen zum Schalten der Differentiale sind LCtrl Ä, LCtrl # and LCtrl +." />
 	</texts>   
 
 </l10n>
