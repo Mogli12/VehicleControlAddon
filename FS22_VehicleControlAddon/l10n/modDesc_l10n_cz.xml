@@ -16,16 +16,10 @@
 		<text name="vcaPEEKLR"          text="Náhled do boku"/>
 		<text name="vcaANGLE"           text="Úhel záběru"/>
 		<text name="vcaBRAKE"           text="Nízká brzdná síla"/>
-		<text name="vcaTRANSMISSION"    text="Převodovka"/>
-		<text name="vcaMAXSPEED"        text="Rychlost nápravy"/>
-		<text name="vcaLIMSPEED"        text="Omezovač rychlosti"/>
 		<text name="vcaAUTOSHIFT"       text="Automat"/>
-		<text name="vcaLAUNCH"          text="Spusťte rychlost převodovky"/>
 		<text name="vcaKEEPSPEED"       text="Trvalé udržení rychlosti"/>
 		<text name="vcaNO_ARB"          text="Volné řízení"/>
 		<text name="vcaHANDTHROTTLE"    text="Ruční plyn"/>
-		<text name="vcaPITCH"           text="Hlasitos při max. otáčkách"/>
-		<text name="vcaPITCH_IO"        text="Hlasitost uvnitř / vně"/>
 		<text name="vcaSETTINGS"        text="Globální nastavení"/>
 		<text name="vcaDRAWHUD"         text="Okno Převodovky"/>
 		
@@ -36,27 +30,6 @@
 		<text name="vcaDRAWMARKER"      text="Nakreslete značku navádění"/>
 		<text name="vcaSNAPLEFT"        text="Levé zpětné naváděcí pruhy"/>
 		<text name="vcaSNAPRIGHT"       text="Pravé zpětné naváděcí pruhy"/>
-		<text name="vcaBLOWOFFVOL"      text="Objem turbodmychadla"/>
-		<text name="vcaSINGLEREV"       text="Jednoduchá Zpátečka"/>
-		<text name="vcaAUTOCLUTCH"      text="Automatická spojka"/>
-		<text name="vcaTURBOCLUTCH"     text="Turbo spojka"/>
-		<text name="vcaGEARRATIOF"      text="Min. rychlostní limit převodovky"/>
-		<text name="vcaGEARRATIOT"      text="Max. rychlostní limit převodovky"/>
-		<text name="vcaG27MODE"         text="Režim řazení G27/G29"/>
-		<text name="vcaHIREDWORKER"     text="Převodovka a najatý pracovník"/>
-		<text name="vcaOWNMINSPEED"     text="Rychlost 1. převodu"/>
-		<text name="vcaOWNMINRANGE"     text="Rychlost 1. převodu a 1. řady -"/>
-		<text name="vcaOWNMAXRANGE"     text="Rychlost 2. převodu nejvyšší řady -"/>
-		<text name="vcaOWNGEARS"        text="Počet převodů"/>
-		<text name="vcaOWNRANGES"       text="Počet řad"/>
-		<text name="vcaOWNGEARTIME"     text="Čas přeřadit"/>
-		<text name="vcaOWNRANGETIME"    text="Čas změnit řadu"/>
-		<text name="vcaOWNAUTOGEARS"    text="Automatické převody"/>
-		<text name="vcaOWNAUTORANGE"    text="Automatické řady"/>
-		<text name="vcaOWNREVGEARS"     text="Couvací převody"/>
-		<text name="vcaOWNREVRANGE"     text="Couvací řady"/>
-		<text name="vcaOWNREVRATIO"     text="Převodový poměr zpátečky"/>
-		<text name="vcaOWNSPLITG27"     text="Dělené řazení G27"/>
 
 		<text name="vcaAntiSlip"        text="Trakční kontrola"/>
 		<text name="vcaDiffManual"      text="Manuální pohon všech kol a diferenciálu"/>
@@ -66,11 +39,6 @@
 		<text name="vcaHudY"            text="Hud pozice y"/>
 		<text name="vcaHIREDWORKER2"    text="Diferenciál a najatý pracovník"/>
 		
-		<text name="vcaSPEEDLIMITF"     text="Rychlostní limit"/>
-		<text name="vcaSPEEDLIMITB"     text="Max. rychlost vzad"/>
-		<text name="vcaRATEDPOWER"      text="Výkon v koňských silách (HP)"/>
-		<text name="vcaTORQUECURVE"     text="Realističtější průběh točivého momentu"/>
-		<text name="vcaROTACCTIME"      text="Doba zrychlení motoru"/>
 		<text name="vcaGEARRGMODE"      text="Vyměňte klíče řazení a rozsahu"/>
 		<text name="vcaSTSPEEDO"        text="Rychlost řízení"/>
 		<text name="vcaSTSPEEDI"        text="Obrácená rychlost řízení"/>
@@ -84,20 +52,14 @@
 		<text name="vca_tip_SHUTTLE"      text="Změna směru jízdy pomocí &lt;space&gt; key"/>
 		<text name="vca_tip_REVERSEI"     text="Pokud vozidlo změní směr, vnitřní kamera se otočí o 180°"/>
 		<text name="vca_tip_REVERSEO"     text="Pokud vozidlo změní směr, vnější kamera se otočí o 180°"/>
-		<text name="vca_tip_LIMIT"        text="Omezovač plynu Levý shift"/>
+		<text name="vca_tip_LIMIT"        text="Omezovač plynu Lshift"/>
 		<text name="vca_tip_PEEKLR"       text="Rychlý pohled pomocí pravého shift a kláves se šipkami doleva/doprava"/>
 		<text name="vca_tip_ANGLE"        text="Řízení automaticky sleduje úhel"/>
 		<text name="vca_tip_BRAKE"        text="Nízké procento brzdné síly, známé jako valivý odpor"/>
-		<text name="vca_tip_TRANSMISSION" text="Typ převodu; Variabilní převodovka IVT, všechny ostatní převodovky mají 12 různých převodů, 2x6 je nejlepší pro nákladní vozy"/>
-		<text name="vca_tip_MAXSPEED"     text="Maximální rychlost nejvyššího rychlostního stupně může být vyšší než maximální rychlost vozidla"/>
-		<text name="vca_tip_LIMSPEED"     text="Omezuje maximální rychlost vozidla na výchozí hodnotu"/>
 		<text name="vca_tip_AUTOSHIFT"    text="Automatické řazení převodů a řad"/>
-		<text name="vca_tip_LAUNCH"       text="Jmenovitá rychlost spouštěcího zařízení"/>
 		<text name="vca_tip_KEEPSPEED"    text="Pokud je povoleno trvalé udržování rychlosti, chová se pedál akcelerace jako joystick. Je to jako jízda s tempomatem."/>
 		<text name="vca_tip_NO_ARB"       text="Pokud je povoleno volné řízení, řízení se automaticky neotočí zpět"/>
 		<text name="vca_tip_HANDTHROTTLE" text="Motor automaticky zrychluje, aby dosáhl otáček ručního plynu"/>
-		<text name="vca_tip_PITCH"        text="Výška zvuku při maximálních otáčkách"/>
-		<text name="vca_tip_PITCH_IO"     text="Výška zvuku uvnitř / vně"/>
 		<text name="vca_tip_DRAWHUD"      text="Zobrazit/skrýt okno převodovky"/>
 		
 		<text name="vca_tip_DISTANCE"     text="Vzdálenost mezi dvěma naváděcími pruhy"/>
@@ -107,27 +69,6 @@
 		<text name="vca_tip_DRAWMARKER"   text="Vykreslení značky navádění"/>
 		<text name="vca_tip_SNAPLEFT"     text="Počet naváděcích pruhů při odbočování vlevo"/>
 		<text name="vca_tip_SNAPRIGHT"    text="Počet naváděcích pruhů při odbočování vpravo"/>
-		<text name="vca_tip_BLOWOFFVOL"   text="Objem turbodmychadla"/>
-		<text name="vca_tip_SINGLEREV"    text="S jednoduchou zpátečkou používá převodovka místo kyvadlového ovládání pouze jednu zpátečku nebo rozsah zpátečky"/>
-		<text name="vca_tip_AUTOCLUTCH"   text="Automatická spojka"/>
-		<text name="vca_tip_TURBOCLUTCH"  text="Přídavná spojka turba"/>
-		<text name="vca_tip_GEARRATIOF"   text="Min. rychlostní limit převodovky"/>
-		<text name="vca_tip_GEARRATIOT"   text="Max. rychlostní limit převodovky"/>
-		<text name="vca_tip_G27MODE"      text="Režim řazení G27/G29"/>
-		<text name="vca_tip_HIREDWORKER"  text="Kontroluje, zda najatý pracovník provozuje vozidlo se standartní nebo upravenou převodovkou"/>
-		<text name="vca_tip_OWNMINSPEED"  text="Rychlost 1. převodu a nejvyšší řady"/>
-		<text name="vca_tip_OWNMINRANGE"  text="Rychlost 1. převodu v 1. řadě"/>
-		<text name="vca_tip_OWNMAXRANGE"  text="Rychlost nejvyššího převodu v 2. řadě"/>
-		<text name="vca_tip_OWNGEARS"     text="Počet převodů"/>
-		<text name="vca_tip_OWNRANGES"    text="Počet řad"/>
-		<text name="vca_tip_OWNGEARTIME"  text="Čas přeřadit"/>
-		<text name="vca_tip_OWNRANGETIME" text="Čas změnit řadu"/>
-		<text name="vca_tip_OWNAUTOGEARS" text="Automatické převody a přizpůsobení rychlosti"/>
-		<text name="vca_tip_OWNAUTORANGE" text="Automatické přizpůsobení řad a rychlosti"/>
-		<text name="vca_tip_OWNREVGEARS"  text="Couvací převody; pokud je prázdné"/>
-		<text name="vca_tip_OWNREVRANGE"  text="Couvací řady; pokud je prázdné"/>
-		<text name="vca_tip_OWNREVRATIO"  text="Poměr zpátečky"/>
-		<text name="vca_tip_OWNSPLITG27"  text="Řazení G27 rozděluje převody. Pokud máte 12 rychlostních stupňů, rozdělovač přepne mezi sudými a lichými rychlostmi."/>
 		
 		<text name="vca_tip_AntiSlip"     text="Kontrola trakce přibrzdí jednotlivá kola v případě prokluzu"/>
 		<text name="vca_tip_DiffManual"   text="Manuální ovládání pohonu všech kol a předního a zadního diferenciálu"/>
@@ -137,11 +78,6 @@
 		<text name="vca_tip_HudY"         text="Pozice okna y"/>
 		<text name="vca_tip_HIREDWORKER2" text="Kontroluje, zda najatý pracovník provozuje vozidlo se standartním nebo upraveným diferenciálem"/>
 	
-		<text name="vca_tip_SPEEDLIMITF"  text="Omezovač rychlosti vozidla"/>
-		<text name="vca_tip_SPEEDLIMITB"  text="Maximální povolená rychlost vozidla při couvání"/>
-		<text name="vca_tip_RATEDPOWER"   text="Výkon vozidla při jmenovitých otáčkách"/>
-		<text name="vca_tip_TORQUECURVE"  text="Realističtější křivka točivého momentu vozidla"/>
-		<text name="vca_tip_ROTACCTIME"   text="Čas v ms, který motor potřebuje, aby se zvýšil z minimálních otáček na maximální otáčky"/>
 		<text name="vca_tip_GEARRGMODE"   text="Toto nastavení zamění vstupy nahoru/dolů převodů a rozsahů"/>
 		<text name="vca_tip_STSPEEDO"     text="Rychlost volantu"/>
 		<text name="vca_tip_STSPEEDI"     text="Obrácená rychlost volantu"/>
@@ -154,9 +90,6 @@
 		<text name="input_vcaDOWN"        text="VCA: nahlédnout do jiného směru pohledu / uzamknout dozadu"/>
 		<text name="input_vcaLEFT"        text="VCA: pohled doleva"/>
 		<text name="input_vcaRIGHT"       text="VCA: pohled doprava"/>
-		<text name="input_vcaDIRECTION"   text="VCA: změna směru jízdy"/>
-		<text name="input_vcaFORWARD"     text="VCA: jízda vpřed"/>
-		<text name="input_vcaREVERSE"     text="VCA: jízda vzad"/>
 		<text name="input_vcaSNAP"        text="VCA: navádění do jízdních pruhů"/>
 		<text name="input_vcaSNAPLEFT"    text="VCA: levý zpětný naváděcí pruh"/>
 		<text name="input_vcaSNAPRIGHT"   text="VCA: pravý zpětný naváděcí pruh"/>
@@ -176,17 +109,10 @@
 		<text name="input_vcaKEEPSPEED"   text="VCA: udržovat rychlost"/>
 		<text name="input_vcaKEEPSPEED2"  text="VCA: trvalé udržování rychlosti"/>
 		<text name="input_vcaSWAPSPEED"   text="VCA: změna rychlosti"/>
-		<text name="input_vcaNeutral"     text="VCA: neutral zap./vyp."/>
-		<text name="input_vcaNeutral0"    text="VCA: neutral vyp."/>
-		<text name="input_vcaNeutral1"    text="VCA: neutral zap."/>
-		<text name="input_vcaClutch"      text="VCA: osa spojky"/> 
 		<text name="input_vcaHandRpm"     text="VCA: otáčky ručního plynu"/>
 		<text name="input_vcaHandRpm_1"   text="VCA: přidat ruční plyn"/>
 		<text name="input_vcaHandRpm_2"   text="VCA: ubrat ruční plyn"/>
 		<text name="input_vcaHandMode"    text="VCA: režim ručního plynu"/>
-		<text name="input_vcaManRatio"    text="VCA: manuální Vario"/>
-		<text name="input_vcaManRatio_1"  text="VCA: Vario rychleji"/>
-		<text name="input_vcaManRatio_2"  text="VCA: Vario pomaleji"/>
 		<text name="input_vcaAutoShift"   text="VCA: automatické řazení zap./vyp."/>
 		<text name="input_vcaDiffLockF"   text="VCA: přední diferenciál zamknout/odemknout"/>
 		<text name="input_vcaDiffLockM"   text="VCA: pohon všech/předních kol"/>
@@ -195,10 +121,6 @@
 		<text name="input_vcaLowerB"      text="VCA: snížit/zvednout zadní nástroje"/>
 		<text name="input_vcaActivateF"   text="VCA: zap./vyp. přední nástroje"/>
 		<text name="input_vcaActivateB"   text="VCA: zap./vyp. zadní nástroje"/>
-		<text name="input_vcaMenuAction1" text="VCA: Klávesa nabídky S"/>
-		<text name="input_vcaMenuAction2" text="VCA: Klávesa nabídky L"/>
-		<text name="input_vcaMenuAction3" text="VCA: Klávesa nabídky D"/>
-		<text name="input_vcaMenuAction4" text="VCA: Klávesa nabídky X"/>
 		
 		<text name="vcaValueOn"         text="Zap."/>
 		<text name="vcaValueOff"        text="Vyp."/>
@@ -213,22 +135,7 @@
 		<text name="vcaValueInactiveH"  text="Je-li neaktivní (priorita)"/>
 		<text name="vcaValueRPM"        text="Otáčky"/>
 
-		<text name="vcaClutchMode_0"    text="automatický"/>
-		<text name="vcaClutchMode_1"    text="auto (rychle)"/>
-		<text name="vcaClutchMode_2"    text="manuální"/>
-		<text name="vcaClutchMode_3"    text="turbo (rychle)"/>
-		<text name="vcaClutchMode_4"    text="turbo (pomalu)"/>
-		<text name="vcaClutchMode_5"    text="turbo (otevřené)"/>
-		<text name="vcaClutchMode_6"    text="turbo (ručně)"/>
-
-		<text name="vcaTorqueCurve_0"   text="standart"/>
-		<text name="vcaTorqueCurve_1"   text="moderní (40% nárůst)"/>
-		<text name="vcaTorqueCurve_2"   text="moderní (50% nárůst)"/>
-		<text name="vcaTorqueCurve_3"   text="náklaďák (60% nárůst)"/>
-		<text name="vcaTorqueCurve_4"   text="veterán (20% nárůst)"/>
-		<text name="vcaTorqueCurve_5"   text="veterán (30% nárůst)"/>
-		
-		<text name="vcaPowerShift"      text="Powershift"/>
+		<text name="vcaSnapArtAxis"     text="Navádění jízdními pruhy není podporováno u vozidel s kloubovou osou"/>
 		
 		<text name="vcaButtonSnapWidth"  text="Zjistit šířku"/>
 		<text name="vcaButtonSnapOffset" text="Změna ofsetu"/>
@@ -239,27 +146,27 @@
 		<text name="vcaTitleGPS"        text="Vedení stopy"/>
 		<text name="vcaTitleThrottle"   text="Plyn, Brzdy, Řazení"/>
 		<text name="vcaTitleDiff"       text="AWD a diferencial"/>
-		<text name="vcaTitleMisc"       text="Různá nastavení"/>
-		
+		<text name="vcaTitleMisc"       text="Různá nastavení"/>		
+
 		
 		<text name="vcaHelpIntro_1"       text="Vehicle Control Addon kombinuje několik funkcí v jedné modifikaci. Většina funkcí je ve výchozím nastavení vypnuta." />
-		<text name="vcaHelpIntro_2"       text="Standardní kombinace kláves pro otevření nabídky nastavení je Levý Ctrl+C. Kombinace Levý Ctrl+Levý Alt+C otevře nabídku globálního nastavení. Zde můžete upravit výchozí nastavení, která se používají ve všech (budoucích) vozidlech." />
-		<text name="vcaHelpIntro_3"       text="Kombinace kláves Levé Ctrl+Levé Alt+C otevře nabídku globálního nastavení. Zde můžete upravit výchozí nastavení, která se používají ve všech (budoucích) vozidlech" />
+		<text name="vcaHelpIntro_2"       text="Standardní kombinace kláves pro otevření nabídky nastavení je LCtrl+C. Navrhuji zkontrolovat přiřazení kláves v menu hry." />
+		<text name="vcaHelpIntro_3"       text="Kombinace kláves LCtrl+LAlt+C otevře nabídku globálního nastavení. Zde můžete upravit výchozí nastavení, která se používají ve všech (budoucích) vozidlech" />
 		<text name="vcaHelpCam_1"         text="Vehicle Control Addon dokáže otočit kameru tak, aby odpovídala úhlu a směru řízení." />
 		<text name="vcaHelpCam_2"         text="Otáčení kamery můžete povolit v nabídce nastavení. Můžete si vybrat mezi hodnotami &quot;off&quot;, &quot;light&quot;, &quot;normal&quot; and &quot;strong&quot;. Existují samostatná nastavení pro vnitřní a vnější kamery." />
-		<text name="vcaHelpCam_3"         text="Pomocí Pravého Shift a kurzorových kláves můžete nahlížet v odpovídajícím směru." />
+		<text name="vcaHelpCam_3"         text="Pomocí PShift a kurzorových kláves můžete nahlížet v odpovídajícím směru." />
 		<text name="vcaHelpSteering_1"    text="Tento skript mění rychlost řízení v závislosti na rychlosti, kterou jedete, a otáčí kameru tak, aby odpovídala úhlu a směru řízení. Pomocí Pravého Shift a kurzorových kláves můžete nahlížet v odpovídajícím směru." />
 		<text name="vcaHelpSteering_2"    text="Nabídka nastavení vám dává možnost upravit řízení. Pokud je adaptivní řízení vypnuto, pak Vehicle Control Addon nezmění chování řízení. Nastavení rychlosti řízení je relevantní pouze v případě, že je zapnuté adaptivní řízení. Volné řízení zcela vyřadí automatické otáčení dozadu." />
 		<text name="vcaHelpSteering_3"    text="Adaptivní řízení bylo navrženo pro uživatele klávesnice. Rychlost automatické zpětné rotace závisí na tom, jak dlouho jste pustili klávesy A nebo D. Tímto způsobem můžete zachovat aktuální natočení volantu krátkým klepnutím na klávesy A nebo D. Otočení zpět do středové polohy je rychlejší, pokud stisknete odpovídající klávesu. Je to jako nouzový režim. Pokud jste zamířili příliš, zkuste zatočit opačným směrem. Jde to mnohem rychleji, ale jen do té doby, než volant dosáhne střední polohy." />
-		<text name="vcaHelpGPS_1"         text="Pokud stisknete Levé Ctrl spolu s W, směr jízdy se přichytí k pevným směrům." />
-		<text name="vcaHelpGPS_2"         text="Pokud stisknete Levé Ctrl spolu s W, směr jízdy se přichytí k pevným směrům." />
-		<text name="vcaHelpGPS_3"         text="Pokud stisknete Levé Ctrl spolu s W, směr jízdy se přichytí k pevným směrům." />
-		<text name="vcaHelpThrottle_1"    text="Levý Shift omezuje plyn, tempomat a maximální počet otáček za minutu na 75 %. Pokud stisknete Delete, vozidlo si zachová svou rychlost. Akcelerační a brzdový pedál zvyšují a snižují rychlost. Vozidlo jede jako moderní traktor s joystickem." />
-		<text name="vcaHelpThrottle_2"    text="Levý Shift omezuje plyn, tempomat a maximální počet otáček za minutu na 75 %. Pokud stisknete Delete, vozidlo si zachová svou rychlost. Akcelerační a brzdový pedál zvyšují a snižují rychlost. Vozidlo jede jako moderní traktor s joystickem." />
-		<text name="vcaHelpThrottle_3"    text="Levý Shift omezuje plyn, tempomat a maximální počet otáček za minutu na 75 %. Pokud stisknete Delete, vozidlo si zachová svou rychlost. Akcelerační a brzdový pedál zvyšují a snižují rychlost. Vozidlo jede jako moderní traktor s joystickem." />
+		<text name="vcaHelpGPS_1"         text="Vehicle Control Addon obsahuje jednoduché navádění do jízdních pruhů." />
+		<text name="vcaHelpGPS_2"         text="Navádění jízdními pruhy lze spustit pouze v případě, že je šířka jízdního pruhu větší než 0,5 m. Aktuální šířku nástroje můžete zjistit v nabídce nastavení nebo s výchozí klávesovou zkratkou LCtrl+LAlt+W. Navádění jízdními pruhy se spustí s výchozí klávesovou zkratkou LCtrl+W. Při použití ovládacích tlačítek nebo kolečka je automaticky deaktivováno." />
+		<text name="vcaHelpGPS_3"         text="Ve vozidle můžete posouvat nebo otáčet naváděcí pruhy pomocí výchozích kláves LCtrl + šipka. S výchozím vázáním kláves LAlt+A a LAlt+D můžete přepnout do levého nebo pravého couvacího pruhu. V nabídce nastavení můžete určit počet pruhů, které se mají přepnout. Pokud chcete pracovat na poli vlevo, můžete zadat čísla levého jízdního pruhu o jedno větší než čísla pravého jízdního pruhu. Při každém obrácení jízdního pruhu doplněk VCA vymění číslo levého a pravého jízdního pruhu." />
+		<text name="vcaHelpThrottle_1"    text="Vehicle Control Addon nabízí malá vylepšení plynu a brzdění. Většina z nich je určena pro hráče používající klávesnici." />
+		<text name="vcaHelpThrottle_2"    text="Hodnoty omezovače rychlosti. 1. hodnota je použita bez stisku klávesy. 2. hodnota je použita při stisku klávesy. Nižší procentuální hodnota se vztahuje na rychlost tempomatu, pokud je stisknuto posouvání. Nízká brzdná síla je brzdná síla, kterou vozidlo automaticky použije, pokud není sešlápnut pedál akcelerace ani brzdový pedál. Snížení brzdné síly umožní vozidlu jet déle bez snížení rychlosti." />
+		<text name="vcaHelpThrottle_3"    text="LShift omezuje plyn, tempomat a maximální počet otáček za minutu na 75 %. Pokud stisknete Delete, vozidlo si zachová svou rychlost. Akcelerační a brzdový pedál zvyšují a snižují rychlost. Vozidlo jede jako moderní traktor s joystickem. Automatické řazení můžete přepínat pomocí výchozí klávesové zkratky LCtrl (." />
 		<text name="vcaHelpDiff_1"        text="Pokud Vehicle Control Addon dokáže identifikovat diferenciály, máte možnost je ovládat ručně." />
-		<text name="vcaHelpDiff_2"        text="Pokud Vehicle Control Addon dokáže identifikovat diferenciály, máte možnost je ovládat ručně." />
-		<text name="vcaHelpDiff_3"        text="Pokud Vehicle Control Addon dokáže identifikovat diferenciály, máte možnost je ovládat ručně." />
+		<text name="vcaHelpDiff_2"        text="Ve výchozím nastavení Vehicle Control Addon nemění diferenciály. Když je aktivován pohon všech kol, přední kola standardních traktorů se otáčejí rychleji než zadní kola. Můžete to povolit pomocí pokročilého nastavení rychlosti. V tomto případě Vehicle Control Addon automaticky deaktivuje pohon všech kol nad 30 km/h." />
+		<text name="vcaHelpDiff_3"        text="Výchozí klávesové zkratky pro ovládání rozdílů jsou LCtrl ), LCtrl ' a LCtrl \. />
 		
 	</texts>
 </l10n>
