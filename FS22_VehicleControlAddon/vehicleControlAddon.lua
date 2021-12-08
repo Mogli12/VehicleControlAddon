@@ -350,19 +350,6 @@ function vehicleControlAddon:vcaIsValidCam( index )
 	return false
 end
 
-function vehicleControlAddon.getText( id, default )
-	if id == nil then 
-		return "NIL" 
-	end 
-	if g_i18n:hasText( id ) then 
-		return g_i18n:getText( id )
-	end 
-	if default ~= nil then 
-		return default 
-	end 
-	return id 
-end 
-
 function vehicleControlAddon:vcaIsNonDefaultProp( name )
 	if self.spec_vca == nil or self.spec_vca[name] == nil then 
 		return false 
@@ -1093,11 +1080,15 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 		self:vcaSetState( "warningText", vehicleControlAddon.getText("vcaDISTANCE", "Width")..": "..vehicleControlAddon.formatNumber( self.spec_vca.snapDistance ) )
 		self.spec_vca.snapPosTimer = math.max( Utils.getNoNil( self.spec_vca.snapPosTimer , 0 ), 3000 )
 	elseif actionName == "vcaSNAP" then
-		self:vcaSetState( "snapIsOn", not self.spec_vca.snapIsOn )
-		if self.spec_vca.snapIsOn then 
-			self:vcaSetState( "snapDirection", 0 )
+		if false and ( self.spec_articulatedAxis ~= nil and self.spec_articulatedAxis.componentJoint ~= nil ) then 
+			self:vcaSetState("warningText",vehicleControlAddon.getText("vcaSnapArtAxis", "VCA does not support articulated axis"))
+		else 
+			self:vcaSetState( "snapIsOn", not self.spec_vca.snapIsOn )
+			if self.spec_vca.snapIsOn then 
+				self:vcaSetState( "snapDirection", 0 )
+			end 
+			self:vcaSetSnapFactor()
 		end 
-		self:vcaSetSnapFactor()
 	elseif actionName == "vcaSNAPPREV" 
 			or actionName == "vcaSNAPNEXT" then
 		if actionName == "vcaSNAPNEXT" then
@@ -1111,7 +1102,9 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 	elseif actionName == "vcaSNAPRIGHT" then
 		self:vcaSnapReverseRight()
 	elseif actionName == "vcaSNAPCONT" then
-		self:vcaSetState( "snapIsOn", true )
+		if  -4 <= self.spec_vca.lastSnapAngle and self.spec_vca.lastSnapAngle <= 4 and self.spec_vca.snapDistance >= 0.25 then 
+			self:vcaSetState( "snapIsOn", true )
+		end 
 	elseif actionName == "vcaSETTINGS" then
 		vehicleControlAddon.vcaShowSettingsUI( self )
 	elseif actionName == "vcaAutoShift" then
@@ -1472,6 +1465,12 @@ function vehicleControlAddon:onPreUpdate(dt, isActiveForInput, isActiveForInputI
 		self:vcaSetState( "snapIsOn", false )
 	end 
 	
+	if      false and ( self.spec_articulatedAxis ~= nil and self.spec_articulatedAxis.componentJoint ~= nil )
+			and self.spec_vca.snapIsOn then
+		self:vcaSetState( "snapIsOn", false )
+		self:vcaSetState("warningText",vehicleControlAddon.getText("vcaSnapArtAxis", "VCA does not support articulated axis"))
+	end 
+	
 --******************************************************************************************************************************************
 -- adaptive steering 	
 	local lastAxisSteer, lastAxisSteerTime1, lastAxisSteerTime2
@@ -1619,7 +1618,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 	if self.spec_vca == nil then return end
 
 	self.spec_vca.tickDt = self.spec_vca.tickDt + 0.05 * ( dt - self.spec_vca.tickDt )
-	
+
 	local lastIsEntered = self.spec_vca.isEntered
 
 	if self.isClient and self.getIsEntered ~= nil and self:getIsControlled() and self:getIsEntered() then 
@@ -1733,7 +1732,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 	
 	--*******************************************************************
 	-- moving direction
-	if self:getIsActive()and self.isServer then
+	if self:getIsActive() and self.isServer then
 		if self:getLastSpeed() < 1 then 
 			if self:vcaGetShuttleCtrl() then 
 				local motor = self.spec_motorized.motor
@@ -2687,9 +2686,10 @@ function vehicleControlAddon:onDraw()
 			
 			local dist  = distX * dz - distZ * dx + curSnapOffset2
 
+			local r, g, b, a = 1, 1, 1, 1
 			if self.spec_vca.snapIsOn then 
 				dist = dist + self.spec_vca.snapFactor * self.spec_vca.snapDistance
-				setTextColor(0, 1, 1, 0.5) 
+				r, g, b, a = 0, 1, 1, 0.5
 				if math.abs( dist ) > 1 then 
 					if self.spec_vca.snapPosTimer == nil or self.spec_vca.snapPosTimer < 1000 then 
 						self.spec_vca.snapPosTimer = 1000
@@ -2702,7 +2702,7 @@ function vehicleControlAddon:onDraw()
 				while dist+dist <-self.spec_vca.snapDistance do 
 					dist = dist + self.spec_vca.snapDistance
 				end 
-				setTextColor(1, 0, 0, 1) 
+				r, g, b, a = 1, 0, 0, 1
 			end 
 
 			setTextAlignment( RenderText.ALIGN_CENTER ) 
@@ -2712,36 +2712,41 @@ function vehicleControlAddon:onDraw()
 			if ( self.spec_vca.snapDraw == 1 or self.spec_vca.snapDraw == 3 ) and self.spec_vca.snapIsOn and self.spec_vca.snapPosTimer == nil then 
 				xMax = 0 
 			end 
-			local a = 0
-			local t = "|"
 			for x=-xMax,xMax do 
 				for zi=-1,2,0.1 do
 					local z = 10 
 					if self.spec_reverseDriving  ~= nil and self.spec_reverseDriving.isReverseDriving then			
-						if zi > 0 then 
+						if zi < 1 then 
 							z = z - 20 * zi 
 						else 
-							z = z - 10 * zi * zi * zi
+							z = z - 10 * zi * zi
 						end 
 					else 
-						if zi < 0 then 
+						if zi < 1 then 
 							z = z + 20 * zi 
 						else 
-							z = z + 10 * zi * zi * zi
+							z = z + 20 * zi * zi
 						end 
 					end 
 					local fx = 0
 					if x ~= 0 then 
 						fx = x * 0.5 * self.spec_vca.snapDistance + curSnapOffset1
+						setTextColor(r,g,b, 0.5*a) 
+					else
+						setTextColor(r,g,b, a) 
 					end
 					local px = wx - dist * dz - fx * dz + z * dx 
 					local pz = wz + dist * dx + fx * dx + z * dz 
 					local py = getTerrainHeightAtWorldPos( g_currentMission.terrainRootNode, px, 0, pz ) 
-					renderText3D( px,py,pz, 0,curSnapAngle-a,0, 0.5, t )
+					renderText3D( px,py,pz, 0,curSnapAngle,0,             0.52, '|' )
+					renderText3D( px,py,pz, 0,curSnapAngle-0.5*math.pi,0, 0.52, '|' )
 					if self.spec_vca.snapDraw > 2 then 
-						renderText3D( px,py+0.48,pz, 0,curSnapAngle-a,0, 0.5, t )
-						renderText3D( px,py+0.96,pz, 0,curSnapAngle-a,0, 0.5, t )
-						renderText3D( px,py+1.44,pz, 0,curSnapAngle-a,0, 0.5, t )
+						renderText3D( px,py+0.5,pz, 0,curSnapAngle,0,             0.52, '|' )
+						renderText3D( px,py+0.5,pz, 0,curSnapAngle-0.5*math.pi,0, 0.52, '|' )
+						renderText3D( px,py+1.0,pz, 0,curSnapAngle,0,             0.52, '|' )
+						renderText3D( px,py+1.0,pz, 0,curSnapAngle-0.5*math.pi,0, 0.52, '|' )
+						renderText3D( px,py+1.5,pz, 0,curSnapAngle,0,             0.52, '|' )
+						renderText3D( px,py+1.5,pz, 0,curSnapAngle-0.5*math.pi,0, 0.52, '|' )
 					end 
 				end 
 			end 
@@ -2789,8 +2794,12 @@ function vehicleControlAddon:onWriteStream(streamId, connection)
 end 
 
 function vehicleControlAddon:vcaGetSteeringNode()
-	if type( self.getAIVehicleSteeringNode ) == "function" then 
-		return self:getAIVehicleSteeringNode()
+	local n
+	if type( self.getAIRootNode ) == "function" then 
+		n = self:getAIRootNode()
+		if n ~= nil then 
+			return n
+		end 
 	end 
 	if self.steeringAxleNode ~= nil and self.steeringAxleNode ~= 0 then 
 		return self.steeringAxleNode
@@ -3117,21 +3126,21 @@ function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, ax
 				vehicleControlAddon.snapCurve:addKeyframe({ -0.86 ,time=-0.4  })
 				vehicleControlAddon.snapCurve:addKeyframe({ -0.66 ,time=-0.3  })
 				vehicleControlAddon.snapCurve:addKeyframe({ -0.53 ,time=-0.25 })
-				vehicleControlAddon.snapCurve:addKeyframe({ -0.38 ,time=-0.2  })
-				vehicleControlAddon.snapCurve:addKeyframe({ -0.25 ,time=-0.15 })
-				vehicleControlAddon.snapCurve:addKeyframe({ -0.15 ,time=-0.1  })
-				vehicleControlAddon.snapCurve:addKeyframe({ -0.10 ,time=-0.075})
-				vehicleControlAddon.snapCurve:addKeyframe({ -0.06 ,time=-0.05 })
+				vehicleControlAddon.snapCurve:addKeyframe({ -0.35 ,time=-0.2  })
+				vehicleControlAddon.snapCurve:addKeyframe({ -0.20 ,time=-0.15 })
+				vehicleControlAddon.snapCurve:addKeyframe({ -0.10 ,time=-0.1  })
+				vehicleControlAddon.snapCurve:addKeyframe({ -0.07 ,time=-0.075})
+				vehicleControlAddon.snapCurve:addKeyframe({ -0.04 ,time=-0.05 })
 				vehicleControlAddon.snapCurve:addKeyframe({ -0.02 ,time=-0.025})
 				vehicleControlAddon.snapCurve:addKeyframe({ -0.005,time=-0.01 })
 				vehicleControlAddon.snapCurve:addKeyframe({  0    ,time= 0    })
 				vehicleControlAddon.snapCurve:addKeyframe({  0.005,time= 0.01 })
 				vehicleControlAddon.snapCurve:addKeyframe({  0.02 ,time= 0.025})
-				vehicleControlAddon.snapCurve:addKeyframe({  0.06 ,time= 0.05 })
-				vehicleControlAddon.snapCurve:addKeyframe({  0.10 ,time= 0.075})
-				vehicleControlAddon.snapCurve:addKeyframe({  0.15 ,time= 0.1  })
-				vehicleControlAddon.snapCurve:addKeyframe({  0.25 ,time= 0.15 })
-				vehicleControlAddon.snapCurve:addKeyframe({  0.38 ,time= 0.2  })
+				vehicleControlAddon.snapCurve:addKeyframe({  0.04 ,time= 0.05 })
+				vehicleControlAddon.snapCurve:addKeyframe({  0.07 ,time= 0.075})
+				vehicleControlAddon.snapCurve:addKeyframe({  0.10 ,time= 0.1  })
+				vehicleControlAddon.snapCurve:addKeyframe({  0.20 ,time= 0.15 })
+				vehicleControlAddon.snapCurve:addKeyframe({  0.35 ,time= 0.2  })
 				vehicleControlAddon.snapCurve:addKeyframe({  0.53 ,time= 0.25 })
 				vehicleControlAddon.snapCurve:addKeyframe({  0.66 ,time= 0.3  })
 				vehicleControlAddon.snapCurve:addKeyframe({  0.86 ,time= 0.4  })
@@ -3158,8 +3167,8 @@ function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, ax
 				a = -a 
 			end
 
-		--d = 0.0005 * ( 2 + math.min( 18, self.lastSpeed * 3600 ) ) * dt
-			d = 1
+			d = 0.0005 * ( 2 + math.min( 18, self.lastSpeed * 3600 ) ) * dt
+		--d = 1
 			
 			if axisSideLast == nil then 
 				axisSideLast = axisSide

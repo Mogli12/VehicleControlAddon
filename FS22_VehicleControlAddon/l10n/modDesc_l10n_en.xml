@@ -16,16 +16,10 @@
 		<text name="vcaPEEKLR"          text="Peek Sideways"/>
 		<text name="vcaANGLE"           text="Snap Angle"/>
 		<text name="vcaBRAKE"           text="Low Brake Force"/>
-		<text name="vcaTRANSMISSION"    text="Transmission"/>
-		<text name="vcaMAXSPEED"        text="Axle Speed"/>
-		<text name="vcaLIMSPEED"        text="Speed Limiter"/>
 		<text name="vcaAUTOSHIFT"       text="Automatic"/>
-		<text name="vcaLAUNCH"          text="Launch gear speed"/>
 		<text name="vcaKEEPSPEED"       text="Permanent keep speed"/>
 		<text name="vcaNO_ARB"          text="Free steering"/>
 		<text name="vcaHANDTHROTTLE"    text="Hand throttle"/>
-		<text name="vcaPITCH"           text="Sound pitch at max. RPM"/>
-		<text name="vcaPITCH_IO"          text="Sound pitch inside / outside"/>
 		<text name="vcaSETTINGS"        text="Global Settings"/>
 		<text name="vcaDRAWHUD"         text="Transmission HUD"/>
 		
@@ -36,27 +30,6 @@
 		<text name="vcaDRAWMARKER"      text="Draw marker of lane guidance"/>
 		<text name="vcaSNAPLEFT"        text="Left reverse guidance lanes"/>
 		<text name="vcaSNAPRIGHT"       text="Right reverse guidance lanes"/>
-		<text name="vcaBLOWOFFVOL"      text="Turbo wastegate volume"/>
-		<text name="vcaSINGLEREV"       text="Single Reverse Gear"/>
-		<text name="vcaAUTOCLUTCH"      text="Automatic clutch"/>
-		<text name="vcaTURBOCLUTCH"     text="Turbo clutch"/>
-		<text name="vcaGEARRATIOF"      text="Min. gear speed limit"/>
-		<text name="vcaGEARRATIOT"      text="Max. gear speed limit"/>
-		<text name="vcaG27MODE"         text="G27/G29 shifter mode"/>
-		<text name="vcaHIREDWORKER"     text="Transmission and hired worker"/>
-		<text name="vcaOWNMINSPEED"     text="Gear speed of 1st gear"/>
-		<text name="vcaOWNMINRANGE"     text="Gear speed of 1st gear and 1st range -"/>
-		<text name="vcaOWNMAXRANGE"     text="Gear speed of 2nd highest range -"/>
-		<text name="vcaOWNGEARS"        text="Number of gears"/>
-		<text name="vcaOWNRANGES"       text="Number of ranges"/>
-		<text name="vcaOWNGEARTIME"     text="Time to shift gears"/>
-		<text name="vcaOWNRANGETIME"    text="Time to shift ranges"/>
-		<text name="vcaOWNAUTOGEARS"    text="Automatic gears"/>
-		<text name="vcaOWNAUTORANGE"    text="Automatic ranges"/>
-		<text name="vcaOWNREVGEARS"     text="Reverse gears"/>
-		<text name="vcaOWNREVRANGE"     text="Reverse ranges"/>
-		<text name="vcaOWNREVRATIO"     text="Reverse ratio"/>
-		<text name="vcaOWNSPLITG27"     text="Split G27 shifter gears"/>
 
 		<text name="vcaAntiSlip"        text="Traction control"/>
 		<text name="vcaDiffManual"      text="Manual AWD and differentials"/>
@@ -66,11 +39,6 @@
 		<text name="vcaHudY"            text="Hud position y"/>
 		<text name="vcaHIREDWORKER2"    text="Differentials and hired worker"/>
 		
-		<text name="vcaSPEEDLIMITF"     text="Speed limit"/>
-		<text name="vcaSPEEDLIMITB"     text="Maximum reverse speed"/>
-		<text name="vcaRATEDPOWER"      text="Rated power in HP"/>
-		<text name="vcaTORQUECURVE"     text="More realistic torque curve"/>
-		<text name="vcaROTACCTIME"      text="Motor acceleration time"/>
 		<text name="vcaGEARRGMODE"      text="Swap gear and range keys"/>
 		<text name="vcaSTSPEEDO"        text="Steering speed"/>
 		<text name="vcaSTSPEEDI"        text="Inverse steering speed"/>
@@ -88,16 +56,10 @@
 		<text name="vca_tip_PEEKLR"       text="Take a quick look with Shift-Right and the left/right arrow keys"/>
 		<text name="vca_tip_ANGLE"        text="Steer automatically to follow snap angle"/>
 		<text name="vca_tip_BRAKE"        text="Low brake force percentage, aka rolling resistance"/>
-		<text name="vca_tip_TRANSMISSION" text="Type of the transmission; IVT variable transmission, all other transmissions have 12 differnt gears, 2x6 is best for trucks"/>
-		<text name="vca_tip_MAXSPEED"     text="Maximum speed of highest gear, can be faster than the maximum speed of the vehicle"/>
-		<text name="vca_tip_LIMSPEED"     text="Limits the maximum speed of the vehicle to its default value"/>
 		<text name="vca_tip_AUTOSHIFT"    text="Automatic shifting of gears and ranges"/>
-		<text name="vca_tip_LAUNCH"       text="Rated speed of the launch gear"/>
 		<text name="vca_tip_KEEPSPEED"    text="If permanent keep speed is enabled then the acceleration pedal behaves like a joystick. This is like driving with cruise control."/>
 		<text name="vca_tip_NO_ARB"       text="If free steering is enabled then the steering will not automatically rotate back"/>
 		<text name="vca_tip_HANDTHROTTLE" text="The engine automatically accelerates to reach hand throttle RPM"/>
-		<text name="vca_tip_PITCH"        text="Sound pitch at maximum RPM"/>
-		<text name="vca_tip_PITCH_IO"       text="Sound pitch inside / outside"/>
 		<text name="vca_tip_DRAWHUD"      text="Show or hide transmission HUD"/>
 		
 		<text name="vca_tip_DISTANCE"     text="Distance between two guidance lanes"/>
@@ -107,27 +69,6 @@
 		<text name="vca_tip_DRAWMARKER"   text="Draw marker of lane guidance"/>
 		<text name="vca_tip_SNAPLEFT"     text="Number of guidance lanes when turning left"/>
 		<text name="vca_tip_SNAPRIGHT"    text="Number of guidance lanes when turning right"/>
-		<text name="vca_tip_BLOWOFFVOL"   text="Volume of the turbo wastegate"/>
-		<text name="vca_tip_SINGLEREV"    text="With single reverse the transmission uses a single reverse gear or reverse range instead of shuttle control"/>
-		<text name="vca_tip_AUTOCLUTCH"   text="Automatic clutch"/>
-		<text name="vca_tip_TURBOCLUTCH"  text="Additional turbo clutch"/>
-		<text name="vca_tip_GEARRATIOF"   text="Min. gear speed limit"/>
-		<text name="vca_tip_GEARRATIOT"   text="Max. gear speed limit"/>
-		<text name="vca_tip_G27MODE"      text="G27/G29 shifter mode"/>
-		<text name="vca_tip_HIREDWORKER"  text="Controls if the hired worked operates the vehicle with vanilla or modified transmission"/>
-		<text name="vca_tip_OWNMINSPEED"  text="Gear speed of 1st gear in highest range"/>
-		<text name="vca_tip_OWNMINRANGE"  text="Gear speed of 1st gear in 1st range"/>
-		<text name="vca_tip_OWNMAXRANGE"  text="Gear speed of highest gear in 2nd highest range"/>
-		<text name="vca_tip_OWNGEARS"     text="Number of gears"/>
-		<text name="vca_tip_OWNRANGES"    text="Number of ranges"/>
-		<text name="vca_tip_OWNGEARTIME"  text="Time to shift gears"/>
-		<text name="vca_tip_OWNRANGETIME" text="Time to shift ranges"/>
-		<text name="vca_tip_OWNAUTOGEARS" text="Automatic gears and speed matching"/>
-		<text name="vca_tip_OWNAUTORANGE" text="Automatic ranges and speed matching"/>
-		<text name="vca_tip_OWNREVGEARS"  text="Reverse gears; all if empty"/>
-		<text name="vca_tip_OWNREVRANGE"  text="Reverse ranges; all if empty"/>
-		<text name="vca_tip_OWNREVRATIO"  text="Reverse ratio"/>
-		<text name="vca_tip_OWNSPLITG27"  text="G27 shifter splits gears. If you have 12 gears than the splitter will switch between even and odd gears."/>
 		
 		<text name="vca_tip_AntiSlip"     text="Traction control brakes individual wheels in case of slip"/>
 		<text name="vca_tip_DiffManual"   text="Manual control of all wheel drive and front and back differentials"/>
@@ -137,11 +78,6 @@
 		<text name="vca_tip_HudY"         text="Hud position y"/>
 		<text name="vca_tip_HIREDWORKER2" text="Controls if the hired worked operates the vehicle with vanilla or modified differentials"/>
 	
-		<text name="vca_tip_SPEEDLIMITF"  text="Speed limit of the vehicle"/>
-		<text name="vca_tip_SPEEDLIMITB"  text="Maximum speed limit of the vehicle if reverse driving"/>
-		<text name="vca_tip_RATEDPOWER"   text="Horse power of the vehicle at rated RPM"/>
-		<text name="vca_tip_TORQUECURVE"  text="More realistic torque curve of the vehicle"/>
-		<text name="vca_tip_ROTACCTIME"   text="Time in ms that the motor needs to rev up from min RPM to max RPM"/>
 		<text name="vca_tip_GEARRGMODE"   text="This settings swaps the up/down inputs of gears and ranges"/>
 		<text name="vca_tip_STSPEEDO"     text="Steering speed"/>
 		<text name="vca_tip_STSPEEDI"     text="Inverse steering speed"/>
@@ -154,9 +90,6 @@
 		<text name="input_vcaDOWN"        text="peek into other view direction / lock backwards"/>
 		<text name="input_vcaLEFT"        text="look left"/>
 		<text name="input_vcaRIGHT"       text="look right"/>
-		<text name="input_vcaDIRECTION"   text="toggle driving direction"/>
-		<text name="input_vcaFORWARD"     text="drive forwards"/>
-		<text name="input_vcaREVERSE"     text="drive backwards"/>
 		<text name="input_vcaSNAP"        text="lane guidance"/>
 		<text name="input_vcaSNAPLEFT"    text="left reverse guidance lane"/>
 		<text name="input_vcaSNAPRIGHT"   text="right reverse guidance lane"/>
@@ -176,17 +109,10 @@
 		<text name="input_vcaKEEPSPEED"   text="keep speed"/>
 		<text name="input_vcaKEEPSPEED2"  text="permanent keep speed"/>
 		<text name="input_vcaSWAPSPEED"   text="swap speed"/>
-		<text name="input_vcaNeutral"     text="neutral on/off"/>
-		<text name="input_vcaNeutral0"    text="neutral off"/>
-		<text name="input_vcaNeutral1"    text="neutral on"/>
-		<text name="input_vcaClutch"      text="clutch axis"/> 
 		<text name="input_vcaHandRpm"     text="hand throttle RPM"/>
 		<text name="input_vcaHandRpm_1"   text="more hand throttle"/>
 		<text name="input_vcaHandRpm_2"   text="less hand throttle"/>
 		<text name="input_vcaHandMode"    text="hand throttle mode"/>
-		<text name="input_vcaManRatio"    text="manual Vario"/>
-		<text name="input_vcaManRatio_1"  text="Vario faster"/>
-		<text name="input_vcaManRatio_2"  text="Vario slower"/>
 		<text name="input_vcaAutoShift"   text="automatic shifting on/off"/>
 		<text name="input_vcaDiffLockF"   text="front differential (un)lock"/>
 		<text name="input_vcaDiffLockM"   text="all/front wheel drive"/>
@@ -195,10 +121,6 @@
 		<text name="input_vcaLowerB"      text="lower/raise back tools "/>
 		<text name="input_vcaActivateF"   text="(de-)activate front tools "/>
 		<text name="input_vcaActivateB"   text="(de-)activate back tools "/>
-		<text name="input_vcaMenuAction1" text="Menu Button S"/>
-		<text name="input_vcaMenuAction2" text="Menu Button L"/>
-		<text name="input_vcaMenuAction3" text="Menu Button D"/>
-		<text name="input_vcaMenuAction4" text="Menu Button X"/>
 		
 		<text name="vcaValueOn"         text="On"/>
 		<text name="vcaValueOff"        text="Off"/>
@@ -212,23 +134,8 @@
 		<text name="vcaValueInactive"   text="If inactive"/>
 		<text name="vcaValueInactiveH"  text="If inactive (high)"/>
 		<text name="vcaValueRPM"        text="RPM"/>
-
-		<text name="vcaClutchMode_0"    text="automatic"/>
-		<text name="vcaClutchMode_1"    text="auto (fast)"/>
-		<text name="vcaClutchMode_2"    text="manual"/>
-		<text name="vcaClutchMode_3"    text="turbo (fast)"/>
-		<text name="vcaClutchMode_4"    text="turbo (slow)"/>
-		<text name="vcaClutchMode_5"    text="turbo (open)"/>
-		<text name="vcaClutchMode_6"    text="turbo (manual)"/>
-
-		<text name="vcaTorqueCurve_0"   text="default"/>
-		<text name="vcaTorqueCurve_1"   text="modern (40% increase)"/>
-		<text name="vcaTorqueCurve_2"   text="modern (50% increase)"/>
-		<text name="vcaTorqueCurve_3"   text="truck engine (60% increase)"/>
-		<text name="vcaTorqueCurve_4"   text="classic (20% increase)"/>
-		<text name="vcaTorqueCurve_5"   text="classic (30% increase)"/>
 		
-		<text name="vcaPowerShift"      text="power shift"/>
+		<text name="vcaSnapArtAxis"     text="Lane guidance is not supported for vehicles with articulated axis"/>
 		
 		<text name="vcaButtonSnapWidth"  text="Detect width"/>
 		<text name="vcaButtonSnapOffset" text="Swap offset"/>
@@ -243,23 +150,23 @@
 		
 		
 		<text name="vcaHelpIntro_1"       text="Vehicle Control Addon combines several functions in one modification. Most functions are turned off per default." />
-		<text name="vcaHelpIntro_2"       text="The standard key combination to open the settings menu is LCtrl C." />
+		<text name="vcaHelpIntro_2"       text="The standard key combination to open the settings menu is LCtrl C. I propose to check the key binding of Vehicle Control Addon in the game settings menu." />
 		<text name="vcaHelpIntro_3"       text="The key combination LCtrl LAlt C opens the global settings menu. Here, you can adjust the default settings, which are used in all (future) vehicles." />
 		<text name="vcaHelpCam_1"         text="Vehicle Control Addon can rotate the camera to match the steering angle and direction. This way you always look into the direction your are driving to." />
 		<text name="vcaHelpCam_2"         text="You can enable camera rotation in the settings menu. You can choose between values &quot;off&quot;, &quot;light&quot;, &quot;normal&quot; and &quot;strong&quot;. There are separate settings for inside and outside cameras. Additionally, you can turn on/off the automatical reveral of the camera." />
 		<text name="vcaHelpCam_3"         text="With Shift-right and the cursor keys you can look into the corresponding direction. There are two modes. If peed is on the camera direction is switched back to the previous view as soon as you release the key. If peek is turned off, the the same key change the camera direction without switching back." />
 		<text name="vcaHelpSteering_1"    text="Vehicle Control Addon varies the steering speed depending on the speed you are driving." />
-		<text name="vcaHelpSteering_2"    text="You settings menu gives you the opportunity to adjust steeering. If adaptive steering is turned off, then Vehicle Control Addon does not change the steering behaviour. The steering speed settings are only relevant is adaptive steering is on. Free steering completely disables the automatic back rotation." />
+		<text name="vcaHelpSteering_2"    text="The settings menu gives you the opportunity to adjust steeering. If adaptive steering is turned off, then Vehicle Control Addon does not change the steering behaviour. The steering speed settings are only relevant is adaptive steering is on. Free steering completely disables the automatic back rotation." />
 		<text name="vcaHelpSteering_3"    text="The adaptive steering was designed for keyboard users. The automatic back rotation speed depends on how long you released the A or D keys. This way, you can keep the current rotation of the steering wheel by shortly tapping of either A or D keys. The back rotation to center position is faster if you press the corresponding key. This is like an emergency mode. If you steered too much, then you try to steer into the other direction. This goes much faster but only until the steering wheel reached center position." />
-		<text name="vcaHelpGPS_1"         text="If you press Ctrl left together with W then the driving direction snaps to fixed directions." />
-		<text name="vcaHelpGPS_2"         text="If you press Ctrl left together with W then the driving direction snaps to fixed directions." />
-		<text name="vcaHelpGPS_3"         text="If you press Ctrl left together with W then the driving direction snaps to fixed directions." />
-		<text name="vcaHelpThrottle_1"    text="Shift-Left limits throttle, cruise control and maximum rounds per minute to 75%. If you press delete then the vehicle will keep its speed. Acceleration and brake pedal increase and descrease the speed. The vehicle drives like a modern tractor with joystick." />
-		<text name="vcaHelpThrottle_2"    text="Shift-Left limits throttle, cruise control and maximum rounds per minute to 75%. If you press delete then the vehicle will keep its speed. Acceleration and brake pedal increase and descrease the speed. The vehicle drives like a modern tractor with joystick." />
-		<text name="vcaHelpThrottle_3"    text="Shift-Left limits throttle, cruise control and maximum rounds per minute to 75%. If you press delete then the vehicle will keep its speed. Acceleration and brake pedal increase and descrease the speed. The vehicle drives like a modern tractor with joystick." />
+		<text name="vcaHelpGPS_1"         text="Vehicle Control Addon includes a simple lane guidance." />
+		<text name="vcaHelpGPS_2"         text="Lane guidance can only be started if there is a lane width larger than 0.5m. You can detect the current tool width in the settings menu or with the default key binding LCtrl LAlt W. Lane guidance is started with default key binding LCtrl W. It is automatically disabled if you use the steering buttons or wheel." />
+		<text name="vcaHelpGPS_3"         text="In the vehicle you can move or rotate the guidance lanes with default key bindings LCtrl + cursor key. With default key bindings LAlt A and LAlt D you can switch to the left or right reversal lane. You can specify the number of lanes to switch in the settings menu. If you want to work on the field to the left, than you can specify the left lane numbers one larger than the right lane numbers. With every lane reversal action Vehicle Control Addon swaps the left and right lane numbers." />
+		<text name="vcaHelpThrottle_1"    text="Vehicle Control Addon offers some small improvements to throttle and braking. Most of them are intended for players using the keyboard." />
+		<text name="vcaHelpThrottle_2"    text="The throttle limiter values are used with the inching key binding. The 1st value is used without inching, the 2nd value is used when inching is pressed. The lower percentage value applies to cruise control speed if inching is pressed. Low brake force is the brake force the vehicle automatically applies if neither acceleration nor brake pedal are pressed. Reducing the brake force let's the vehicle roll longer without reducing speed." />
+		<text name="vcaHelpThrottle_3"    text="Shift-Left limits throttle, cruise control and maximum rounds per minute to 75%. If you press delete then the vehicle will keep its speed. Acceleration and brake pedal increase and descrease the speed. The vehicle drives like a modern tractor with joystick. You can toggle automatic shifting with default key binding LCtrl (." />
 		<text name="vcaHelpDiff_1"        text="If Vehicle Control Addon can identify the differentials, then you have the possibility to operate them manually." />
-		<text name="vcaHelpDiff_2"        text="If Vehicle Control Addon can identify the differentials, then you have the possibility to operate them manually." />
-		<text name="vcaHelpDiff_3"        text="If Vehicle Control Addon can identify the differentials, then you have the possibility to operate them manually." />
+		<text name="vcaHelpDiff_2"        text="Per default Vehicle Control Addon does not change the differentials. When all wheel drive is activated, then the front wheels of standard tractors turn faster than the back wheels. You can enable this with the advance speed settings. In this case Vehicle Control Addon will automatically deactivate all wheel drive above 30 km/h." />
+		<text name="vcaHelpDiff_3"        text="The default key bindings to operate differentials are LCtrl ), LCtrl ' and LCtrl \." />
 		
 	</texts>
 </l10n>
