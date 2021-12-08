@@ -4,7 +4,6 @@
 --
 
 vehicleControlAddon = {}
-            
 
 local function getCamRot( xmlFile, xmlProp, xmlAttr )
 	local text = getXMLString( xmlFile, xmlProp..'#'..xmlAttr )
@@ -300,23 +299,19 @@ function vehicleControlAddon.initSpecialization()
 end 
 
 function vehicleControlAddon.registerEventListeners(vehicleType)
-	for _,n in pairs( { 
-											"onLoad", 
-											"onPostLoad", 
-											"onPreUpdate", 
-											"onUpdate", 
-											"onPostUpdate",
-											"onDraw",
-											"onEnterVehicle",
-											"onLeaveVehicle",
-											"onReadStream", 
-											"onWriteStream", 
-											"saveToXMLFile", 
-											"onRegisterActionEvents", 
-											"onGearDirectionChanged",
-											} ) do
-		SpecializationUtil.registerEventListener(vehicleType, n, vehicleControlAddon)
-	end 
+	SpecializationUtil.registerEventListener(vehicleType, "onLoad",                 vehicleControlAddon)
+	SpecializationUtil.registerEventListener(vehicleType, "onPostLoad",             vehicleControlAddon)
+	SpecializationUtil.registerEventListener(vehicleType, "onPreUpdate",            vehicleControlAddon)
+	SpecializationUtil.registerEventListener(vehicleType, "onUpdate",               vehicleControlAddon)
+	SpecializationUtil.registerEventListener(vehicleType, "onPostUpdate",           vehicleControlAddon)
+	SpecializationUtil.registerEventListener(vehicleType, "onDraw",                 vehicleControlAddon)
+	SpecializationUtil.registerEventListener(vehicleType, "onEnterVehicle",         vehicleControlAddon)
+	SpecializationUtil.registerEventListener(vehicleType, "onLeaveVehicle",         vehicleControlAddon)
+	SpecializationUtil.registerEventListener(vehicleType, "onReadStream",           vehicleControlAddon)
+	SpecializationUtil.registerEventListener(vehicleType, "onWriteStream",          vehicleControlAddon)
+	SpecializationUtil.registerEventListener(vehicleType, "saveToXMLFile",          vehicleControlAddon)
+	SpecializationUtil.registerEventListener(vehicleType, "onGearDirectionChanged", vehicleControlAddon)
+	SpecializationUtil.registerEventListener(vehicleType, "onRegisterActionEvents", vehicleControlAddon)
 end 
 
 function vehicleControlAddon.registerOverwrittenFunctions(vehicleType)
@@ -924,12 +919,12 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 		self.spec_vca.keepRotPressed   = keyStatus >= 0.5 			
 	elseif actionName == "vcaKEEPROT2" then 
 		
-		local krToggle = "vcaKRToggleOut"
+		local krToggle = "kRToggleOut"
 		if self.spec_vca.camIsInside then 
-			krToggle = "vcaKRToggleIn"
+			krToggle = "kRToggleIn"
 		end 
-		self[krToggle] = not self[krToggle] 
-		self.spec_vca.keepCamRot = self[krToggle] 
+		self.spec_vca[krToggle] = not self.spec_vca[krToggle] 
+		self.spec_vca.keepCamRot = self.spec_vca[krToggle] 
 			
 	elseif actionName == "vcaINCHING" then 
 		self.spec_vca.inchingPressed   = keyStatus >= 0.5 
@@ -2708,12 +2703,16 @@ function vehicleControlAddon:onDraw()
 			setTextAlignment( RenderText.ALIGN_CENTER ) 
 			setTextVerticalAlignment( RenderText.VERTICAL_ALIGN_BASELINE )
 				
+			local text = {'|','»»»»»»»»»»»»»»»»'}
+			if not self.spec_vca.snapIsOn or self.spec_vca.snapDirection <1 then 
+				text = {'|','------------------'}
+			end 
 			local xMax = 1 
 			if ( self.spec_vca.snapDraw == 1 or self.spec_vca.snapDraw == 3 ) and self.spec_vca.snapIsOn and self.spec_vca.snapPosTimer == nil then 
 				xMax = 0 
 			end 
 			for x=-xMax,xMax do 
-				for zi=-1,2,0.1 do
+				for zi=-1,2,0.2 do
 					local z = 10 
 					if self.spec_reverseDriving  ~= nil and self.spec_reverseDriving.isReverseDriving then			
 						if zi < 1 then 
@@ -2738,17 +2737,23 @@ function vehicleControlAddon:onDraw()
 					local px = wx - dist * dz - fx * dz + z * dx 
 					local pz = wz + dist * dx + fx * dx + z * dz 
 					local py = getTerrainHeightAtWorldPos( g_currentMission.terrainRootNode, px, 0, pz ) 
-					renderText3D( px,py,pz, 0,curSnapAngle,0,             0.52, '|' )
-					renderText3D( px,py,pz, 0,curSnapAngle-0.5*math.pi,0, 0.52, '|' )
-					if self.spec_vca.snapDraw > 2 then 
-						renderText3D( px,py+0.5,pz, 0,curSnapAngle,0,             0.52, '|' )
-						renderText3D( px,py+0.5,pz, 0,curSnapAngle-0.5*math.pi,0, 0.52, '|' )
-						renderText3D( px,py+1.0,pz, 0,curSnapAngle,0,             0.52, '|' )
-						renderText3D( px,py+1.0,pz, 0,curSnapAngle-0.5*math.pi,0, 0.52, '|' )
-						renderText3D( px,py+1.5,pz, 0,curSnapAngle,0,             0.52, '|' )
-						renderText3D( px,py+1.5,pz, 0,curSnapAngle-0.5*math.pi,0, 0.52, '|' )
+					
+					local a = 0
+					for _,t in pairs(text) do
+						if self.spec_vca.snapDraw > 2 then 
+							renderText3D( px,py+0.5,pz, 0,curSnapAngle-a,0, 0.52, t )
+							renderText3D( px,py+1.0,pz, 0,curSnapAngle-a,0, 0.52, t )
+							renderText3D( px,py+1.5,pz, 0,curSnapAngle-a,0, 0.52, t )
+						else 
+							renderText3D( px,py,pz, 0,curSnapAngle-a,0, 0.52, t )
+						end 
+						if self.spec_reverseDriving  ~= nil and self.spec_reverseDriving.isReverseDriving then			
+							a = -0.5*math.pi 
+						else 
+							a =  0.5*math.pi 
+						end 
 					end 
-				end 
+				end  
 			end 
 			dx, dz = -dz, dx
 		end 

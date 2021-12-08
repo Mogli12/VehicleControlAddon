@@ -84,43 +84,43 @@
 		<text name="vca_tip_IDLETHROTTLE" text="The engine independently accelerates to maintain idle speed"/>
 		<text name="vca_tip_DEBUG"        text="Additional messages are written into the log"/>
 		                               
-		<text name="input_vcaSETTINGS"    text="settings"/>
-		<text name="input_vcaGLOBALS"     text="global settings"/>
-		<text name="input_vcaUP"          text="toggle view direction / lock forwards"/>
-		<text name="input_vcaDOWN"        text="peek into other view direction / lock backwards"/>
-		<text name="input_vcaLEFT"        text="look left"/>
-		<text name="input_vcaRIGHT"       text="look right"/>
-		<text name="input_vcaSNAP"        text="lane guidance"/>
-		<text name="input_vcaSNAPLEFT"    text="left reverse guidance lane"/>
-		<text name="input_vcaSNAPRIGHT"   text="right reverse guidance lane"/>
-		<text name="input_vcaSNAPPREV"    text="previous guidance lane"/>
-		<text name="input_vcaSNAPNEXT"    text="next guidance lane"/>
-		<text name="input_vcaSNAPCONT"    text="reactivate guidance lane"/>
-		<text name="input_vcaSNAPRESET"   text="reset lane guidance direction"/>
-		<text name="input_vcaSNAPDIST"    text="determine working width of lane guidance"/>
-		<text name="input_vcaSnapUP"      text="rotate lane guidance direction left"/>
-		<text name="input_vcaSnapDOWN"    text="rotate lane guidance direction right"/>
-		<text name="input_vcaSnapLEFT"    text="shift lane guidance left"/>
-		<text name="input_vcaSnapRIGHT"   text="shift lane guidance right"/>
-		<text name="input_vcaNO_ARB"      text="no auto rotate back"/>
-		<text name="input_vcaINCHING"     text="inching"/>
-		<text name="input_vcaKEEPROT"     text="keep global camera direction"/>
-		<text name="input_vcaKEEPROT2"    text="permanent keep camera direction"/>
-		<text name="input_vcaKEEPSPEED"   text="keep speed"/>
-		<text name="input_vcaKEEPSPEED2"  text="permanent keep speed"/>
-		<text name="input_vcaSWAPSPEED"   text="swap speed"/>
-		<text name="input_vcaHandRpm"     text="hand throttle RPM"/>
-		<text name="input_vcaHandRpm_1"   text="more hand throttle"/>
-		<text name="input_vcaHandRpm_2"   text="less hand throttle"/>
-		<text name="input_vcaHandMode"    text="hand throttle mode"/>
-		<text name="input_vcaAutoShift"   text="automatic shifting on/off"/>
-		<text name="input_vcaDiffLockF"   text="front differential (un)lock"/>
-		<text name="input_vcaDiffLockM"   text="all/front wheel drive"/>
-		<text name="input_vcaDiffLockB"   text="back differential (un)lock"/>
-		<text name="input_vcaLowerF"      text="lower/raise front tools "/>
-		<text name="input_vcaLowerB"      text="lower/raise back tools "/>
-		<text name="input_vcaActivateF"   text="(de-)activate front tools "/>
-		<text name="input_vcaActivateB"   text="(de-)activate back tools "/>
+		<text name="input_vcaSETTINGS"    text="VCA: settings"/>
+		<text name="input_vcaGLOBALS"     text="VCA: global settings"/>
+		<text name="input_vcaUP"          text="VCA: toggle view direction / lock forwards"/>
+		<text name="input_vcaDOWN"        text="VCA: peek into other view direction / lock backwards"/>
+		<text name="input_vcaLEFT"        text="VCA: look left"/>
+		<text name="input_vcaRIGHT"       text="VCA: look right"/>
+		<text name="input_vcaSNAP"        text="VCA: lane guidance"/>
+		<text name="input_vcaSNAPLEFT"    text="VCA: left reverse guidance lane"/>
+		<text name="input_vcaSNAPRIGHT"   text="VCA: right reverse guidance lane"/>
+		<text name="input_vcaSNAPPREV"    text="VCA: previous guidance lane"/>
+		<text name="input_vcaSNAPNEXT"    text="VCA: next guidance lane"/>
+		<text name="input_vcaSNAPCONT"    text="VCA: reactivate guidance lane"/>
+		<text name="input_vcaSNAPRESET"   text="VCA: reset lane guidance direction"/>
+		<text name="input_vcaSNAPDIST"    text="VCA: determine working width of lane guidance"/>
+		<text name="input_vcaSnapUP"      text="VCA: rotate lane guidance direction left"/>
+		<text name="input_vcaSnapDOWN"    text="VCA: rotate lane guidance direction right"/>
+		<text name="input_vcaSnapLEFT"    text="VCA: shift lane guidance left"/>
+		<text name="input_vcaSnapRIGHT"   text="VCA: shift lane guidance right"/>
+		<text name="input_vcaNO_ARB"      text="VCA: no auto rotate back"/>
+		<text name="input_vcaINCHING"     text="VCA: inching"/>
+		<text name="input_vcaKEEPROT"     text="VCA: keep global camera direction"/>
+		<text name="input_vcaKEEPROT2"    text="VCA: permanent keep camera direction"/>
+		<text name="input_vcaKEEPSPEED"   text="VCA: keep speed"/>
+		<text name="input_vcaKEEPSPEED2"  text="VCA: permanent keep speed"/>
+		<text name="input_vcaSWAPSPEED"   text="VCA: swap speed"/>
+		<text name="input_vcaHandRpm"     text="VCA: hand throttle RPM"/>
+		<text name="input_vcaHandRpm_1"   text="VCA: more hand throttle"/>
+		<text name="input_vcaHandRpm_2"   text="VCA: less hand throttle"/>
+		<text name="input_vcaHandMode"    text="VCA: hand throttle mode"/>
+		<text name="input_vcaAutoShift"   text="VCA: automatic shifting on/off"/>
+		<text name="input_vcaDiffLockF"   text="VCA: front differential (un)lock"/>
+		<text name="input_vcaDiffLockM"   text="VCA: all/front wheel drive"/>
+		<text name="input_vcaDiffLockB"   text="VCA: back differential (un)lock"/>
+		<text name="input_vcaLowerF"      text="VCA: lower/raise front tools "/>
+		<text name="input_vcaLowerB"      text="VCA: lower/raise back tools "/>
+		<text name="input_vcaActivateF"   text="VCA: (de-)activate front tools "/>
+		<text name="input_vcaActivateB"   text="VCA: (de-)activate back tools "/>
 		
 		<text name="vcaValueOn"         text="On"/>
 		<text name="vcaValueOff"        text="Off"/>
