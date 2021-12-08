@@ -126,13 +126,13 @@
 		<text name="vcaValueOff"        text="Vyp."/>
 		<text name="vcaValueNever"      text="Nikdy"/>
 		<text name="vcaValueAlways"     text="Vždy"/>
-		<text name="vcaValueAlwaysH"    text="Vždy (priorita)"/>
+		<text name="vcaValueAlwaysH"    text="Vždy (dlouhý)"/>
 		<text name="vcaValueNormal"     text="Normální"/>
 		<text name="vcaValueLight"      text="Lehký"/> 
 		<text name="vcaValueStrong"     text="Silný"/>
 		<text name="vcaValueEntered"    text="je-li zadáno"/>
 		<text name="vcaValueInactive"   text="Je-li neaktivní"/>
-		<text name="vcaValueInactiveH"  text="Je-li neaktivní (priorita)"/>
+		<text name="vcaValueInactiveH"  text="Je-li neaktivní (dlouhý)"/>
 		<text name="vcaValueRPM"        text="Otáčky"/>
 
 		<text name="vcaSnapArtAxis"     text="Navádění jízdními pruhy není podporováno u vozidel s kloubovou osou"/>
@@ -145,7 +145,7 @@
 		<text name="vcaTitleSteering"   text="Řízení"/>
 		<text name="vcaTitleGPS"        text="Vedení stopy"/>
 		<text name="vcaTitleThrottle"   text="Plyn, Brzdy, Řazení"/>
-		<text name="vcaTitleDiff"       text="AWD a diferencial"/>
+		<text name="vcaTitleDiff"       text="AWD a diferenciál"/>
 		<text name="vcaTitleMisc"       text="Různá nastavení"/>		
 
 		
@@ -166,7 +166,7 @@
 		<text name="vcaHelpThrottle_3"    text="LShift omezuje plyn, tempomat a maximální počet otáček za minutu na 75 %. Pokud stisknete Delete, vozidlo si zachová svou rychlost. Akcelerační a brzdový pedál zvyšují a snižují rychlost. Vozidlo jede jako moderní traktor s joystickem. Automatické řazení můžete přepínat pomocí výchozí klávesové zkratky LCtrl (." />
 		<text name="vcaHelpDiff_1"        text="Pokud Vehicle Control Addon dokáže identifikovat diferenciály, máte možnost je ovládat ručně." />
 		<text name="vcaHelpDiff_2"        text="Ve výchozím nastavení Vehicle Control Addon nemění diferenciály. Když je aktivován pohon všech kol, přední kola standardních traktorů se otáčejí rychleji než zadní kola. Můžete to povolit pomocí pokročilého nastavení rychlosti. V tomto případě Vehicle Control Addon automaticky deaktivuje pohon všech kol nad 30 km/h." />
-		<text name="vcaHelpDiff_3"        text="Výchozí klávesové zkratky pro ovládání rozdílů jsou LCtrl ), LCtrl ' a LCtrl \. />
+		<text name="vcaHelpDiff_3"        text="Výchozí klávesové zkratky pro ovládání rozdílů jsou LCtrl ), LCtrl ' a LCtrl \." />
 		
 	</texts>
 </l10n>
