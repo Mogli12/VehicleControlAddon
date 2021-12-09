@@ -4,271 +4,272 @@
 	<description><![CDATA[Voegt specialisatie toe voor adaptieve toetsenbord besturing]]></description>
 
 	<texts>
-		<text name="vcaCAMERAI" text="Camera Rotatie (binnen)"/>
-		<text name="vcaCAMERAO" text="Camera Rotatie (buiten)"/>
-		<text name="vcaEXPONENT" text="Gevoeligheid"/>
-		<text name="vcaSTEERING" text="Adaptieve Besturing"/>
-		<text name="vcaSHUTTLE" text="Schakelen"/>
-		<text name="vcaREVERSE" text="Kijk Achterwaarts"/>
-		<text name="vcaREVERSEI" text="Kijk Achterwaarts (binnen)"/>
-		<text name="vcaREVERSEO" text="Kijk Achterwaarts (buiten)"/>
-		<text name="vcaLIMIT" text="Gasregelaar"/>
-		<text name="vcaPEEKLR" text="Zijwaarts kijken"/>
-		<text name="vcaANGLE" text="Snap Angle"/>
-		<text name="vcaBRAKE" text="Verminderde remkracht"/>
-		<text name="vcaTRANSMISSION" text="Transmissie"/>
-		<text name="vcaMAXSPEED" text="As Snelheid"/>
-		<text name="vcaLIMSPEED" text="Snelheidsbeperking"/>
-		<text name="vcaAUTOSHIFT" text="Automaat"/>
-		<text name="vcaLAUNCH" text="Wegrij Versnelling"/>
-		<text name="vcaKEEPSPEED" text="Permanente snelheid"/>
-		<text name="vcaNO_ARB" text="Vrij sturen"/>
-		<text name="vcaHANDTHROTTLE" text="Handgas"/>
-		<text name="vcaPITCH" text="Toonhoogte op max. RPM"/>
-		<text name="vcaSETTINGS" text="Instellingen"/>
-		<text name="vcaDRAWHUD" text="Transmissie HUD"/>
+		<text name="vcaCAMERAI"             text="Camera Rotatie (binnen)"/>
+		<text name="vcaCAMERAO"             text="Camera Rotatie (buiten)"/>
+		<text name="vcaEXPONENT"            text="Gevoeligheid"/>
+		<text name="vcaSTEERING"            text="Adaptieve Besturing"/>
+		<text name="vcaSHUTTLE"             text="Schakelen"/>
+		<text name="vcaREVERSE"             text="Kijk Achterwaarts"/>
+		<text name="vcaREVERSEI"            text="Kijk Achterwaarts (binnen)"/>
+		<text name="vcaREVERSEO"            text="Kijk Achterwaarts (buiten)"/>
+		<text name="vcaLIMIT"               text="Gasregelaar"/>
+		<text name="vcaPEEKLR"              text="Kort zijwaarts kijken"/>
+		<text name="vcaANGLE"               text="Hoek aanpassen"/>
+		<text name="vcaBRAKE"               text="Lage remkracht"/>
+		<text name="vcaTRANSMISSION"        text="Transmissie"/>
+		<text name="vcaMAXSPEED"            text="As Snelheid"/>
+		<text name="vcaLIMSPEED"            text="Snelheidsbeperking"/>
+		<text name="vcaAUTOSHIFT"           text="Automaat"/>
+		<text name="vcaLAUNCH"              text="Wegrij Versnelling"/>
+		<text name="vcaKEEPSPEED"           text="Permanente snelheid"/>
+		<text name="vcaNO_ARB"              text="Vrij sturen"/>
+		<text name="vcaHANDTHROTTLE"        text="Handgas"/>
+		<text name="vcaPITCH"               text="Toonhoogte op max. RPM"/>
+		<text name="vcaSETTINGS"            text="Instellingen"/>
+		<text name="vcaDRAWHUD"             text="Transmissie HUD"/>
 
-		<text name="vcaDISTANCE" text="Werkbreedte"/>
-		<text name="vcaOFFSET1" text="Offset van machine"/>
-		<text name="vcaOFFSET2" text="Omgekeerde offset"/>
-		<text name="vcaDRAWMARKER" text="Teken een Rasterrijrichting"/>
-		<text name="vcaPITCH1" text="Lineare geluids toonhoogte"/>
-		<text name="vcaPITCH2" text="Geluids toonhoogte bij medium RPM"/>
-		<text name="vcaBLOWOFFVOL" text="Turbo wastegate volume"/>
-		<text name="vcaSINGLEREV" text="1 versnelling achteruit"/>
-		<text name="vcaAUTOCLUTCH" text="Automatische koppeling"/>
-		<text name="vcaTURBOCLUTCH" text="Turbo koppeling"/>
-		<text name="vcaGEARRATIOF" text="Min. versnelling snelheidslimiet"/>
-		<text name="vcaGEARRATIOT" text="Max. versnelling snelheidslimiet"/>
-		<text name="vcaG27MODE" text="G27/G29 schakel mode"/>
-		<text name="vcaHIREDWORKER" text="Versnellingen en ingehuurde helper"/>
-		<text name="vcaOWNMINSPEED" text="Versnellings snelheid van 1ste versnelling"/>
-		<text name="vcaOWNMINRANGE" text="Versnellings snelheid van 1ste versnelling en groep -"/>
-		<text name="vcaOWNMAXRANGE" text="Max. versnellings snelheid van range -"/>
-		<text name="vcaOWNGEARS" text="Aamtal versnellingen"/>
-		<text name="vcaOWNRANGES" text="Aantal groepen"/>
-		<text name="vcaOWNGEARTIME" text="Snelheid om versnelling te schakelen"/>
-		<text name="vcaOWNRANGETIME" text="Snelheid om groepen te schakelen"/>
-		<text name="vcaOWNAUTOGEARS" text="Automatische versnellingen"/>
-		<text name="vcaOWNAUTORANGE" text="Automatische groepen"/>
-		<text name="vcaOWNREVGEARS" text="Versnellingen achteruit"/>
-		<text name="vcaOWNREVRANGE" text="Groepen achteruit"/>
-		<text name="vcaOWNREVRATIO" text="Ratio achteruit"/>
-		<text name="vcaOWNSPLITG27" text="Splits G27 versnellingen"/>
+		<text name="vcaDISTANCE"            text="Werkbreedte"/>
+		<text name="vcaOFFSET1"             text="Offset van werktuig"/>
+		<text name="vcaOFFSET2"             text="Omgekeerde offset"/>
+		<text name="vcaSNAP90"              text="Baangeleiding elke 90°"/>
+		<text name="vcaDRAWMARKER"          text="Teken de baangeleiding"/>
+		<text name="vcaSNAPLEFT"            text="Baangeleiding linksom"/>
+		<text name="vcaSNAPRIGHT"           text="Baangeleiding rechtsom"/>
+		<text name="vcaPITCH1"              text="Lineare geluids toonhoogte"/>
+		<text name="vcaPITCH2"              text="Geluids toonhoogte bij medium RPM"/>
+		<text name="vcaBLOWOFFVOL"          text="Turbo wastegate volume"/>
+		<text name="vcaSINGLEREV"           text="1 versnelling achteruit"/>
+		<text name="vcaAUTOCLUTCH"          text="Automatische koppeling"/>
+		<text name="vcaTURBOCLUTCH"         text="Turbo koppeling"/>
+		<text name="vcaGEARRATIOF"          text="Min. versnelling snelheidslimiet"/>
+		<text name="vcaGEARRATIOT"          text="Max. versnelling snelheidslimiet"/>
+		<text name="vcaG27MODE"             text="G27/G29 schakel mode"/>
+		<text name="vcaHIREDWORKER"         text="Versnellingen en ingehuurde helper"/>
+		<text name="vcaOWNMINSPEED"         text="Versnellings snelheid van 1ste versnelling"/>
+		<text name="vcaOWNMINRANGE"         text="Versnellings snelheid van 1ste versnelling en groep -"/>
+		<text name="vcaOWNMAXRANGE"         text="Max. versnellings snelheid van groep -"/>
+		<text name="vcaOWNGEARS"            text="Aantal versnellingen"/>
+		<text name="vcaOWNRANGES"           text="Aantal groepen"/>
+		<text name="vcaOWNGEARTIME"         text="Snelheid om versnelling te schakelen"/>
+		<text name="vcaOWNRANGETIME"        text="Snelheid om groepen te schakelen"/>
+		<text name="vcaOWNAUTOGEARS"        text="Automatische versnellingen"/>
+		<text name="vcaOWNAUTORANGE"        text="Automatische groepen"/>
+		<text name="vcaOWNREVGEARS"         text="Versnellingen achteruit"/>
+		<text name="vcaOWNREVRANGE"         text="Groepen achteruit"/>
+		<text name="vcaOWNREVRATIO"         text="Ratio achteruit"/>
+		<text name="vcaOWNSPLITG27"         text="Splits G27 versnellingen"/>
 
-		<text name="vcaAntiSlip" text="Tractie controle"/>
-		<text name="vcaDiffManual" text="Handmatige AWD en differentieel"/>
-		<text name="vcaDiffFrontAdv" text="Geavanceerde snelheid van vooras"/>
-		<text name="vcaDiffLockSwap" text="Wissel voor- en achteras"/>
-		<text name="vcaHudX" text="Hud positie x"/>
-		<text name="vcaHudY" text="Hud positie y"/>
-		<text name="vcaHIREDWORKER2" text="Differentieel en ingehuurde helper"/>
+		<text name="vcaAntiSlip"            text="Tractie controle"/>
+		<text name="vcaDiffManual"          text="Handmatige AWD en differentieel"/>
+		<text name="vcaDiffFrontAdv"        text="Geavanceerde snelheid van vooras"/>
+		<text name="vcaDiffLockSwap"        text="Wissel voor- en achteras"/>
+		<text name="vcaHudX"                text="Hud positie x"/>
+		<text name="vcaHudY"                text="Hud positie y"/>
+		<text name="vcaHIREDWORKER2"        text="Differentieel en ingehuurde helper"/>
 
-		<text name="vcaSPEEDLIMITF" text="Snelheidslimiet"/>
-		<text name="vcaSPEEDLIMITB" text="Maximale achteruitrij snelheid"/>
-		<text name="vcaRATEDPOWER" text="Nominaal vermogen in PK's"/>
-		<text name="vcaTORQUECURVE" text="Meer realistische koppelkromme"/>
+		<text name="vcaGEARRGMODE"          text="Verwissel versnelling en groep toetsen"/>
+		<text name="vcaSTSPEEDO"            text="Stuursnelheid"/>
+		<text name="vcaSTSPEEDI"            text="Inverse stuursnelheid"/>
+		<text name="vcaIDLETHROTTLE"        text="Stationair gas"/>
+		<text name="vcaDEBUG"               text="Debug"/>
 
-		<text name="vca_tip_CAMERAI" text="De camera binnen draait automatisch met de stuuruitslag"/>
-		<text name="vca_tip_CAMERAO" text="De camera buiten draait automatisch met de stuuruitslag"/>
-		<text name="vca_tip_EXPONENT" text="Gevoeligheid van de adaptieve besturing ten opzichte van de grondsnelheid"/>
-		<text name="vca_tip_STEERING" text="Aanpassing van de automatisch terugsturing en maximale stuuruitslag van de adaptieve besturing"/>
-		<text name="vca_tip_SHUTTLE" text="Verander de rijrichting met &lt;spatiebalk&gt;"/>
-		<text name="vca_tip_REVERSEI" text="Wanneer de rijrichting verandert, draait de camera binnen 180°"/>
-		<text name="vca_tip_REVERSEO" text="Wanneer de rijrichting verandert, draait de camera buiten 180°"/>
-		<text name="vca_tip_LIMIT" text="Beperkt de snelheid met en zonder linker shift toets"/>
-		<text name="vca_tip_PEEKLR" text="Kijk om de hoek met Shift-Rechts en de linker of rechter cursortoets"/>
-		<text name="vca_tip_ANGLE" text="Stuur automatisch om de rasterhoek te volgen"/>
-		<text name="vca_tip_BRAKE" text="Remkracht percentage, aka rolweerstand"/>
-		<text name="vca_tip_TRANSMISSION" text="Type transmissie; IVT variable transmissie (automaat), alle andere transmissies hebben 12 versnellingen, 2x6 is geschikt voor vrachtwagens"/>
-		<text name="vca_tip_MAXSPEED" text="Maximum snelheid van de hoogste versnelling, kan hoger zijn dan max. snelheid van het voertuig"/>
-		<text name="vca_tip_LIMSPEED" text="Beperkt de maximum snelheid van het voertuig naar standaard waarde"/>
-		<text name="vca_tip_AUTOSHIFT" text="Automatisch schakelen van versnellingen en bereik"/>
-		<text name="vca_tip_LAUNCH" text="Nominale snelheid van de wegrijversnelling"/>
-		<text name="vca_tip_KEEPSPEED" text="Wanneer permanente snelheid is geactiveerd dan gedraagd het gaspedaal zich als een joystick. Dit is als rijden met cruise control."/>
-		<text name="vca_tip_NO_ARB" text="Als vrij sturen is ingeschakeld, draait het stuur niet automatisch terug"/>
-		<text name="vca_tip_HANDTHROTTLE" text="De motor accelereert automatisch om het toerental van het handgas te bereiken"/>
-		<text name="vca_tip_PITCH" text="Toonhoogte op maximaal RPM"/>
-		<text name="vca_tip_DRAWHUD" text="Transmissie HUD tonen of verbergen"/>
+		<text name="vcaSPEEDLIMITF"         text="Snelheidslimiet"/>
+		<text name="vcaSPEEDLIMITB"         text="Maximale achteruitrij snelheid"/>
+		<text name="vcaRATEDPOWER"          text="Nominaal vermogen in PK's"/>
+		<text name="vcaTORQUECURVE"         text="Meer realistische koppelkromme"/>
 
-		<text name="vca_tip_DISTANCE" text="Afstand tussen 2 Rasterrijrichting"/>
-		<text name="vca_tip_OFFSET1" text="Offset van Rasterrijrichting"/>
-		<text name="vca_tip_OFFSET2" text="Draai offset Rasterrijrichting om"/>
-		<text name="vca_tip_DRAWMARKER" text="Teken markering van Rasterrijrichting"/>
-		<text name="vca_tip_PITCH1" text="Aanpassing van geluid om het liniair te maken"/>
-		<text name="vca_tip_PITCH2" text="Geluids toonhoogte bij medium RPM"/>
-		<text name="vca_tip_BLOWOFFVOL" text="Turbo wastegate volume"/>
-		<text name="vca_tip_SINGLEREV" text="Met een enkele achteruit versnelling gebruikt de versnellingsbak een enkele achteruit versnelling of groep in plaats van shuttle control"/>
-		<text name="vca_tip_AUTOCLUTCH" text="Automatische koppeling"/>
-		<text name="vca_tip_TURBOCLUTCH" text="Additionele turbo koppeling"/>
-		<text name="vca_tip_GEARRATIOF" text="Min. versnellings snelheidslimiet"/>
-		<text name="vca_tip_GEARRATIOT" text="Max. versnellings snelheidslimiet"/>
-		<text name="vca_tip_G27MODE" text="G27/G29 schakel mode"/>
-		<text name="vca_tip_HIREDWORKER" text="Bedient of de ingehuurde werker het voertuig bestuurd met vanilla of aangepaste versnellingsbak"/>
-		<text name="vca_tip_OWNMINSPEED" text="Versnellings snelheid van de 1ste versnelling in de hoogste groep"/>
-		<text name="vca_tip_OWNMINRANGE" text="Versnellings snelheid van de 1ste versnelling in de op 2 na hoogste groep"/>
-		<text name="vca_tip_OWNMAXRANGE" text="Versnellings snelheid van de hoogste versnelling in de op 2 na hoogste groep"/>
-		<text name="vca_tip_OWNGEARS" text="Aantal versnellingen"/>
-		<text name="vca_tip_OWNRANGES" text="Aantal groepen"/>
-		<text name="vca_tip_OWNGEARTIME" text="Snelheid om versnelling te schakelen"/>
-		<text name="vca_tip_OWNRANGETIME" text="Snelheid om groep te schakelen"/>
-		<text name="vca_tip_OWNAUTOGEARS" text="Automatische versnellingen en snelheidsmatch"/>
-		<text name="vca_tip_OWNAUTORANGE" text="Automatische groepen en snelheidsmatch"/>
-		<text name="vca_tip_OWNREVGEARS" text="Versnellingen achteruit; allemaal als leeg"/>
-		<text name="vca_tip_OWNREVRANGE" text="Groepen achteruit; allemaal als leeg"/>
-		<text name="vca_tip_OWNREVRATIO" text="Ratio achteruit"/>
-		<text name="vca_tip_OWNSPLITG27" text="G27 shifter splits versnellingen. Als je 12 versnelingen hebt dan zal de splitter wisselen tussen even- en oneven versnellingen."/>
+		<text name="vca_tip_CAMERAI"        text="De camera binnen draait automatisch met de stuuruitslag"/>
+		<text name="vca_tip_CAMERAO"        text="De camera buiten draait automatisch met de stuuruitslag"/>
+		<text name="vca_tip_EXPONENT"       text="Gevoeligheid van de adaptieve besturing ten opzichte van de grondsnelheid"/>
+		<text name="vca_tip_STEERING"       text="Aanpassing van de automatisch terugsturing en maximale stuuruitslag van de adaptieve besturing"/>
+		<text name="vca_tip_SHUTTLE"        text="Verander de rijrichting met &lt;spatiebalk&gt;"/>
+		<text name="vca_tip_REVERSEI"       text="Wanneer de rijrichting verandert, draait de camera binnen 180°"/>
+		<text name="vca_tip_REVERSEO"       text="Wanneer de rijrichting verandert, draait de camera buiten 180°"/>
+		<text name="vca_tip_LIMIT"          text="Beperkt de snelheid met en zonder de 'langzamer rijden' toets"/>
+		<text name="vca_tip_PEEKLR"         text="Kijk kort zijwaarts met RShift en de linker of rechter cursortoets"/>
+		<text name="vca_tip_ANGLE"          text="Baangeleidingshoek stapsgewijs aanpassen"/>
+		<text name="vca_tip_BRAKE"          text="Lage remkracht percentage, beter bekend als rolweerstand"/>
+		<text name="vca_tip_TRANSMISSION"   text="Type transmissie; IVT variable transmissie (automaat), alle andere transmissies hebben 12 versnellingen, 2x6 is geschikt voor vrachtwagens"/>
+		<text name="vca_tip_MAXSPEED"       text="Maximum snelheid van de hoogste versnelling, kan hoger zijn dan max. snelheid van het voertuig"/>
+		<text name="vca_tip_LIMSPEED"       text="Beperkt de maximum snelheid van het voertuig naar standaard waarde"/>
+		<text name="vca_tip_AUTOSHIFT"      text="Automatisch schakelen van versnellingen en groepen"/>
+		<text name="vca_tip_LAUNCH"         text="Nominale snelheid van de wegrijversnelling"/>
+		<text name="vca_tip_KEEPSPEED"      text="Wanneer permanente snelheid is geactiveerd dan gedraagd het gaspedaal zich als een joystick. Dit is als rijden met cruise control."/>
+		<text name="vca_tip_NO_ARB"         text="Als vrij sturen is ingeschakeld, draait het stuur niet automatisch terug"/>
+		<text name="vca_tip_HANDTHROTTLE"   text="De motor accelereert automatisch om het toerental van het handgas te bereiken"/>
+		<text name="vca_tip_PITCH"          text="Toonhoogte op maximaal RPM"/>
+		<text name="vca_tip_DRAWHUD"        text="Transmissie HUD tonen of verbergen"/>
 
-		<text name="vca_tip_AntiSlip" text="Tractie controle remt een individueel wiel in geval van slip"/>
-		<text name="vca_tip_DiffManual" text="Handmatige besturing van AWD en voor/achter differentieel"/>
-		<text name="vca_tip_DiffFrontAdv" text="Geavanceerde snelheid van de vooras als AWD is ingeschakeld"/>
-		<text name="vca_tip_DiffLockSwap" text="Wissel voor- en achteras om"/>
-		<text name="vca_tip_HudX" text="Hud positie x"/>
-		<text name="vca_tip_HudY" text="Hud positie y"/>
-		<text name="vca_tip_HIREDWORKER2" text="Bedient of de ingehuurde werker het voertuig bestuurd met vanilla of aangepaste versnellingsbak"/>
+		<text name="vca_tip_DISTANCE"       text="Breedte van de geleidingsbanen"/>
+		<text name="vca_tip_OFFSET1"        text="Offset van werktuig"/>
+		<text name="vca_tip_OFFSET2"        text="Draai offset werktuig om"/>
+		<text name="vca_tip_SNAP90"         text="Automatisch draaien van baangeleiding met 90°"/>
+		<text name="vca_tip_DRAWMARKER"     text="Teken markering van baangeleiding"/>
+		<text name="vca_tip_SNAPLEFT"       text="Aantal geleidingsbanen bij links omdraaien"/>
+		<text name="vca_tip_SNAPRIGHT"      text="Aantal geleidingsbanen bij rechts omdraaien"/>
+		<text name="vca_tip_PITCH1"         text="Aanpassing van geluid om het liniair te maken"/>
+		<text name="vca_tip_PITCH2"         text="Geluids toonhoogte bij medium RPM"/>
+		<text name="vca_tip_BLOWOFFVOL"     text="Turbo wastegate volume"/>
+		<text name="vca_tip_SINGLEREV"      text="Met een enkele achteruit versnelling gebruikt de versnellingsbak een enkele achteruit versnelling of groep in plaats van shuttle control"/>
+		<text name="vca_tip_AUTOCLUTCH"     text="Automatische koppeling"/>
+		<text name="vca_tip_TURBOCLUTCH"    text="Additionele turbo koppeling"/>
+		<text name="vca_tip_GEARRATIOF"     text="Min. versnellings snelheidslimiet"/>
+		<text name="vca_tip_GEARRATIOT"     text="Max. versnellings snelheidslimiet"/>
+		<text name="vca_tip_G27MODE"        text="G27/G29 schakel mode"/>
+		<text name="vca_tip_HIREDWORKER"    text="Bedient of de ingehuurde werker het voertuig bestuurd met vanilla of aangepaste versnellingsbak"/>
+		<text name="vca_tip_OWNMINSPEED"    text="Versnellings snelheid van de 1ste versnelling in de hoogste groep"/>
+		<text name="vca_tip_OWNMINRANGE"    text="Versnellings snelheid van de 1ste versnelling in de op 2 na hoogste groep"/>
+		<text name="vca_tip_OWNMAXRANGE"    text="Versnellings snelheid van de hoogste versnelling in de op 2 na hoogste groep"/>
+		<text name="vca_tip_OWNGEARS"       text="Aantal versnellingen"/>
+		<text name="vca_tip_OWNRANGES"      text="Aantal groepen"/>
+		<text name="vca_tip_OWNGEARTIME"    text="Snelheid om versnelling te schakelen"/>
+		<text name="vca_tip_OWNRANGETIME"   text="Snelheid om groep te schakelen"/>
+		<text name="vca_tip_OWNAUTOGEARS"   text="Automatische versnellingen en snelheidsmatch"/>
+		<text name="vca_tip_OWNAUTORANGE"   text="Automatische groepen en snelheidsmatch"/>
+		<text name="vca_tip_OWNREVGEARS"    text="Versnellingen achteruit; allemaal als leeg"/>
+		<text name="vca_tip_OWNREVRANGE"    text="Groepen achteruit; allemaal als leeg"/>
+		<text name="vca_tip_OWNREVRATIO"    text="Ratio achteruit"/>
+		<text name="vca_tip_OWNSPLITG27"    text="G27 shifter splits versnellingen. Als je 12 versnelingen hebt dan zal de splitter wisselen tussen even- en oneven versnellingen."/>
 
-		<text name="vca_tip_SPEEDLIMITF" text="Snelheidslimiet van het voertuig"/>
-		<text name="vca_tip_SPEEDLIMITB" text="Maximale snelheidslimiet van het voertuig bij achteruit rijden"/>
-		<text name="vca_tip_RATEDPOWER" text="PK's van het voertuig op nominaal toerental"/>
-		<text name="vca_tip_TORQUECURVE" text="Meer realistische koppelkromme van het voertuig"/>
+		<text name="vca_tip_AntiSlip"       text="Tractie controle remt een individueel wiel in geval van slip"/>
+		<text name="vca_tip_DiffManual"     text="Handmatige besturing van AWD en voor/achter differentieel"/>
+		<text name="vca_tip_DiffFrontAdv"   text="Geavanceerde snelheid van de vooras als AWD is ingeschakeld"/>
+		<text name="vca_tip_DiffLockSwap"   text="Wissel voor- en achteras om"/>
+		<text name="vca_tip_HudX"           text="Hud positie x"/>
+		<text name="vca_tip_HudY"           text="Hud positie y"/>
+		<text name="vca_tip_HIREDWORKER2"   text="Bedient of de ingehuurde werker het voertuig bestuurd met vanilla of aangepaste versnellingsbak"/>
 
-		<text name="input_vcaSETTINGS" text="VCA: instellingen"/>
-		<text name="input_vcaUP" text="VCA: kijk vooruit"/>
-		<text name="input_vcaDOWN" text="VCA: kijk achteruit"/>
-		<text name="input_vcaLEFT" text="VCA: kijk links"/>
-		<text name="input_vcaRIGHT" text="VCA: kijk rechts"/>
-		<text name="input_vcaDIRECTION" text="VCA: verander rijrichting"/>
-		<text name="input_vcaFORWARD" text="VCA: rij vooruit"/>
-		<text name="input_vcaREVERSE" text="VCA: rij achteruit"/>
-		<text name="input_vcaSNAP" text="VCA: rasterrijrichting"/>
-		<text name="input_vcaSNAPRESET" text="VCA: reset rasterrijrichting"/>
-		<text name="input_vcaSnapUP" text="VCA: draai de rasterrijrichting naar links"/>
-		<text name="input_vcaSnapDOWN" text="VCA: draai de rasterrijrichting naar rechts"/>
-		<text name="input_vcaSnapLEFT" text="VCA: richting naar links"/>
-		<text name="input_vcaSnapRIGHT" text="VCA: richting naar rechts"/>
-		<text name="input_vcaNO_ARB" text="VCA: niet automatisch terugsturen"/>
-		<text name="input_vcaINCHING" text="VCA: inching"/>
-		<text name="input_vcaKEEPROT" text="VCA: behoud de globale camerarichting"/>
-		<text name="input_vcaKEEPROT2" text="VCA: maak camera richting permanent"/>
-		<text name="input_vcaKEEPSPEED" text="VCA: behoud snelheid"/>
-		<text name="input_vcaKEEPSPEED2" text="VCA: behoud permannente snelheid"/>
-		<text name="input_vcaSWAPSPEED" text="VCA: wissel snelheid"/>
-		<text name="input_vcaGearUp" text="VCA: opschakelen"/>
-		<text name="input_vcaGearDown" text="VCA: terugschakelen"/>
-		<text name="input_vcaRangeUp" text="VCA: bereik opschakelen"/>
-		<text name="input_vcaRangeDown" text="VCA: bereik terugschakelen"/>
-		<text name="input_vcaNeutral" text="VCA: vVersnelling in neutraal aan/uit"/>
-		<text name="input_vcaNeutral0" text="VCA: neutraal uit"/>
-		<text name="input_vcaNeutral1" text="VCA: neutraal aan"/>
-		<text name="input_vcaClutch" text="VCA: kKoppelingspedaal"/>
-		<text name="input_vcaShifter1" text="VCA: G27/G29 versn. 1"/>
-		<text name="input_vcaShifter2" text="VCA: G27/G29 versn. 2"/>
-		<text name="input_vcaShifter3" text="VCA: G27/G29 versn. 3"/>
-		<text name="input_vcaShifter4" text="VCA: G27/G29 versn. 4"/>
-		<text name="input_vcaShifter5" text="VCA: G27/G29 versn. 5 / Bereik terug"/>
-		<text name="input_vcaShifter6" text="VCA: G27/G29 versn. 6 / Bereik omhoog"/>
-		<text name="input_vcaShifter7" text="VCA: G27/G29 versn. 7 / Achteruit"/>
-		<text name="input_vcaShifter8" text="VCA: G27/G29 versn. 8"/>
-		<text name="input_vcaShifter9" text="VCA: G27/G29 versn. 9 / Achteruit"/>
-		<text name="input_vcaShifterLH" text="VCA: G27/G29 Versnelling Splitter"/>
-		<text name="input_vcaHandRpm" text="VCA: handgas RPM"/>
-		<text name="input_vcaHandRpm_1" text="VCA: handgas verhogen"/>
-		<text name="input_vcaHandRpm_2" text="VCA: handgas verlagen"/>
-		<text name="input_vcaHandMode" text="VCA: handgas mode"/>
-		<text name="input_vcaManRatio" text="VCA: handmatige Vario"/>
-		<text name="input_vcaManRatio_1" text="VCA: Vario sneller"/>
-		<text name="input_vcaManRatio_2" text="VCA: Vario langzamer"/>
-		<text name="input_vcaAutoShift" text="VCA: automatische versnellingen aan/uit"/>
-		<text name="input_vcaDiffLockF" text="VCA: voor differentieel (un)lock"/>
-		<text name="input_vcaDiffLockM" text="VCA: all/voor wiel aandrijving"/>
-		<text name="input_vcaDiffLockB" text="VCA: achter differentieel (un)lock"/>
-		<text name="input_vcaLowerF" text="VCA: omhoog/omlaag voorste werktuig "/>
-		<text name="input_vcaLowerB" text="VCA: omhoog/omlaag achterste werktuig "/>
-		<text name="input_vcaActivateF" text="VCA: (de-)activeer voorste werktuig "/>
-		<text name="input_vcaActivateB" text="VCA: (de-)activaer achterste werktuig "/>
+		<text name="vca_tip_GEARRGMODE"     text="Deze instelling verwisselt de omhoog/omlaag toetsen voor versnellingen en groepen"/>
+		<text name="vca_tip_STSPEEDO"       text="Stuursnelheid"/>
+		<text name="vca_tip_STSPEEDI"       text="Inverse stuursnelheid"/>
+		<text name="vca_tip_IDLETHROTTLE"   text="De motor geeft automatisch gas om het stationair toerental te behouden"/>
+		<text name="vca_tip_DEBUG"          text="Alle berichten worden in de log geschreven"/>
 
-		<text name="vcaValueOn" text="aan"/>
-		<text name="vcaValueOff" text="uit"/>
-		<text name="vcaValueNever" text="nooit"/>
-		<text name="vcaValueAlways" text="altijd"/>
-		<text name="vcaValueAlwaysH" text="altijd (hoog)"/>
-		<text name="vcaValueNormal" text="normaal"/>
-		<text name="vcaValueEntered" text="als toegetreden"/>
-		<text name="vcaValueInactive" text="als inactief"/>
-		<text name="vcaValueInactiveH" text="als inactief (hoog)"/>
-		<text name="vcaValueRPM" text="RPM"/>
+		<text name="vca_tip_SPEEDLIMITF"    text="Snelheidslimiet van het voertuig"/>
+		<text name="vca_tip_SPEEDLIMITB"    text="Maximale snelheidslimiet van het voertuig bij achteruit rijden"/>
+		<text name="vca_tip_RATEDPOWER"     text="PK's van het voertuig op nominaal toerental"/>
+		<text name="vca_tip_TORQUECURVE"    text="Meer realistische koppelkromme van het voertuig"/>
 
-		<text name="vcaClutchMode_0" text="automatisch"/>
-		<text name="vcaClutchMode_1" text="auto (snel)"/>
-		<text name="vcaClutchMode_2" text="handmatig"/>
-		<text name="vcaClutchMode_3" text="turbo (snel)"/>
-		<text name="vcaClutchMode_4" text="turbo (langzaam)"/>
-		<text name="vcaClutchMode_5" text="turbo (open)"/>
-		<text name="vcaClutchMode_6" text="turbo (handmatig)"/>
+		<text name="input_vcaSETTINGS"      text="VCA: instellingen"/>
+		<text name="input_vcaGLOBALS"       text="VCA: globale instellingen"/>
+		<text name="input_vcaUP"            text="VCA: kijk vooruit"/>
+		<text name="input_vcaDOWN"          text="VCA: kijk achteruit"/>
+		<text name="input_vcaLEFT"          text="VCA: kijk links"/>
+		<text name="input_vcaRIGHT"         text="VCA: kijk rechts"/>
+		<text name="input_vcaDIRECTION"     text="VCA: verander rijrichting"/>
+		<text name="input_vcaFORWARD"       text="VCA: rij vooruit"/>
+		<text name="input_vcaREVERSE"       text="VCA: rij achteruit"/>
+		<text name="input_vcaSNAP"          text="VCA: baangeleiding"/>
+		<text name="input_vcaSNAPLEFT"      text="VCA: omdraaien naar linker geleidingsbaan"/>
+		<text name="input_vcaSNAPRIGHT"     text="VCA: omdraaien naar rechter geleidingsbaan"/>
+		<text name="input_vcaSNAPPREV"      text="VCA: vorige geleidingsbaan"/>
+		<text name="input_vcaSNAPNEXT"      text="VCA: volgende geleidingsbaan"/>
+		<text name="input_vcaSNAPCONT"      text="VCA: heractiveer baangeleiding"/>
+		<text name="input_vcaSNAPRESET"     text="VCA: reset baangeleiding"/>
+		<text name="input_vcaSNAPDIST"      text="VCA: bepaal werkbreedte voor baangeleiding"/>
+		<text name="input_vcaSnapUP"        text="VCA: draai de baangeleiding linksom"/>
+		<text name="input_vcaSnapDOWN"      text="VCA: draai de baangeleiding rechtsom"/>
+		<text name="input_vcaSnapLEFT"      text="VCA: schuif de baangeleiding naar links"/>
+		<text name="input_vcaSnapRIGHT"     text="VCA: schuif de baangeleiding naar rechts"/>
+		<text name="input_vcaNO_ARB"        text="VCA: niet automatisch terugsturen"/>
+		<text name="input_vcaINCHING"       text="VCA: langzamer rijden"/>
+		<text name="input_vcaKEEPROT"       text="VCA: behoud de globale camerarichting"/>
+		<text name="input_vcaKEEPROT2"      text="VCA: maak camera richting permanent"/>
+		<text name="input_vcaKEEPSPEED"     text="VCA: behoud snelheid"/>
+		<text name="input_vcaKEEPSPEED2"    text="VCA: behoud permannente snelheid"/>
+		<text name="input_vcaSWAPSPEED"     text="VCA: wissel snelheid"/>
+		<text name="input_vcaGearUp"        text="VCA: opschakelen"/>
+		<text name="input_vcaGearDown"      text="VCA: terugschakelen"/>
+		<text name="input_vcaRangeUp"       text="VCA: bereik opschakelen"/>
+		<text name="input_vcaRangeDown"     text="VCA: bereik terugschakelen"/>
+		<text name="input_vcaNeutral"       text="VCA: versnelling in neutraal aan/uit"/>
+		<text name="input_vcaNeutral0"      text="VCA: neutraal uit"/>
+		<text name="input_vcaNeutral1"      text="VCA: neutraal aan"/>
+		<text name="input_vcaClutch"        text="VCA: koppelingspedaal"/>
+		<text name="input_vcaShifter1"      text="VCA: G27/G29 versn. 1"/>
+		<text name="input_vcaShifter2"      text="VCA: G27/G29 versn. 2"/>
+		<text name="input_vcaShifter3"      text="VCA: G27/G29 versn. 3"/>
+		<text name="input_vcaShifter4"      text="VCA: G27/G29 versn. 4"/>
+		<text name="input_vcaShifter5"      text="VCA: G27/G29 versn. 5 / Bereik terug"/>
+		<text name="input_vcaShifter6"      text="VCA: G27/G29 versn. 6 / Bereik omhoog"/>
+		<text name="input_vcaShifter7"      text="VCA: G27/G29 versn. 7 / Achteruit"/>
+		<text name="input_vcaShifter8"      text="VCA: G27/G29 versn. 8"/>
+		<text name="input_vcaShifter9"      text="VCA: G27/G29 versn. 9 / Achteruit"/>
+		<text name="input_vcaShifterLH"     text="VCA: G27/G29 Versnelling Splitter"/>
+		<text name="input_vcaHandRpm"       text="VCA: handgas RPM"/>
+		<text name="input_vcaHandRpm_1"     text="VCA: handgas verhogen"/>
+		<text name="input_vcaHandRpm_2"     text="VCA: handgas verlagen"/>
+		<text name="input_vcaHandMode"      text="VCA: handgas mode"/>
+		<text name="input_vcaManRatio"      text="VCA: handmatige Vario"/>
+		<text name="input_vcaManRatio_1"    text="VCA: Vario sneller"/>
+		<text name="input_vcaManRatio_2"    text="VCA: Vario langzamer"/>
+		<text name="input_vcaAutoShift"     text="VCA: automatische versnellingen aan/uit"/>
+		<text name="input_vcaDiffLockF"     text="VCA: voor differentieel (un)lock"/>
+		<text name="input_vcaDiffLockM"     text="VCA: all/voor wiel aandrijving"/>
+		<text name="input_vcaDiffLockB"     text="VCA: achter differentieel (un)lock"/>
+		<text name="input_vcaLowerF"        text="VCA: omhoog/omlaag voorste werktuig "/>
+		<text name="input_vcaLowerB"        text="VCA: omhoog/omlaag achterste werktuig "/>
+		<text name="input_vcaActivateF"     text="VCA: (de-)activeer voorste werktuig "/>
+		<text name="input_vcaActivateB"     text="VCA: (de-)activeer achterste werktuig "/>
 
-		<text name="vcaTorqueCurve_0" text="standaard"/>
-		<text name="vcaTorqueCurve_1" text="modern (40% stijging)"/>
-		<text name="vcaTorqueCurve_2" text="modern (50% stijging)"/>
-		<text name="vcaTorqueCurve_3" text="vrachtwagen motor (60% stijging)"/>
-		<text name="vcaTorqueCurve_4" text="klassiek (20% stijging)"/>
-		<text name="vcaTorqueCurve_5" text="klassiek (30% stijging"/>
+		<text name="vcaValueOn"             text="aan"/>
+		<text name="vcaValueOff"            text="uit"/>
+		<text name="vcaValueNever"          text="nooit"/>
+		<text name="vcaValueAlways"         text="altijd"/>
+		<text name="vcaValueAlwaysH"        text="altijd (hoog)"/>
+		<text name="vcaValueNormal"         text="normaal"/>
+		<text name="vcaValueLight"          text="licht"/>
+		<text name="vcaValueStrong"         text="sterk"/>
+		<text name="vcaValueEntered"        text="als toegetreden"/>
+		<text name="vcaValueInactive"       text="als inactief"/>
+		<text name="vcaValueInactiveH"      text="als inactief (hoog)"/>
+		<text name="vcaValueRPM"            text="RPM"/>
+
+		<text name="vcaSnapArtAxis"         text="Baangeleiding wordt niet ondersteund voor gelede voertuigen"/>
+
+		<text name="vcaButtonSnapWidth"     text="Detecteer werkbreedte"/>
+		<text name="vcaButtonSnapOffset"    text="Offset omwisselen"/>
+
+		<text name="vcaTitleIntro"          text="Introductie"/>
+		<text name="vcaTitleCam"            text="Camera"/>
+		<text name="vcaTitleSteering"       text="Besturing"/>
+		<text name="vcaTitleGPS"            text="Baangeleiding"/>
+		<text name="vcaTitleThrottle"       text="Gas, Remmen, Versnellingen"/>
+		<text name="vcaTitleDiff"           text="AWD en Differentieel"/>
+		<text name="vcaTitleMisc"           text="Diverse instellingen"/>
+
+		<text name="vcaClutchMode_0"        text="automatisch"/>
+		<text name="vcaClutchMode_1"        text="auto (snel)"/>
+		<text name="vcaClutchMode_2"        text="handmatig"/>
+		<text name="vcaClutchMode_3"        text="turbo (snel)"/>
+		<text name="vcaClutchMode_4"        text="turbo (langzaam)"/>
+		<text name="vcaClutchMode_5"        text="turbo (open)"/>
+		<text name="vcaClutchMode_6"        text="turbo (handmatig)"/>
+
+		<text name="vcaTorqueCurve_0"       text="standaard"/>
+		<text name="vcaTorqueCurve_1"       text="modern (40% stijging)"/>
+		<text name="vcaTorqueCurve_2"       text="modern (50% stijging)"/>
+		<text name="vcaTorqueCurve_3"       text="vrachtwagen motor (60% stijging)"/>
+		<text name="vcaTorqueCurve_4"       text="klassiek (20% stijging)"/>
+		<text name="vcaTorqueCurve_5"       text="klassiek (30% stijging"/>
+
+		<text name="vcaHelpIntro_1"         text="Vehicle Control Addon combineert verschillende functies in één modificatie. De meeste functies zijn standaard uitgeschakeld." />
+		<text name="vcaHelpIntro_2"         text="De standaard toetsencombinatie om het instellingenmenu te openen is LCtrl C. Ik stel voor om de sneltoetsen voor Vehicle Control Addon in het instellingenmenu van het spel te controleren." />
+		<text name="vcaHelpIntro_3"         text="De toetscombinatie LCtrl LAlt C opent het globale instellingen menu. Hier kun je de standaardinstellingen aanpassen, die in alle (toekomstige) voertuigen worden gebruikt." />
+		<text name="vcaHelpCam_1"           text="Vehicle Control Addon kan de camera draaien om deze aan te passen aan de stuurhoek en richting. Zo kijk je altijd in de richting waarin je rijdt." />
+		<text name="vcaHelpCam_2"           text="U kunt camera rotatie inschakelen in het instellingenmenu. U kunt kiezen tussen de waarden &quot;uit&quot;, &quot;licht&quot;, &quot;normaal&quot; and &quot;sterk&quot;. Er zijn aparte instellingen voor binnen- en buitencamera's. Bovendien kunt u het automatisch terugzetten van de camera in-/uitschakelen." />
+		<text name="vcaHelpCam_3"           text="Met RShift en de cursortoetsen kun je in de bijbehorende richting kijken. Er zijn twee modi; Als kort zijwaarts kijken aan staat, wordt de camerarichting teruggeschakeld naar de vorige weergave zodra u de toets loslaat. Als kort zijwaarts kijken uit staat, verandert dezelfde toets de camerarichting zonder terug te schakelen." />
+		<text name="vcaHelpSteering_1"      text="Vehicle Control Addon varieert de stuursnelheid afhankelijk van de snelheid die u rijdt." />
+		<text name="vcaHelpSteering_2"      text="Het instellingenmenu geeft je de mogelijkheid om de besturing aan te passen. Als adaptieve besturing is uitgeschakeld, verandert Vehicle Control Addon het stuurgedrag niet. De instellingen van de stuursnelheid zijn alleen relevant als adaptieve besturing is ingeschakeld. Vrij sturen schakelt de automatische terugdraaiing volledig uit." />
+		<text name="vcaHelpSteering_3"      text="De adaptieve besturing is ontworpen voor toetsenbordgebruikers. De automatische terugdraaisnelheid hangt af van hoe lang u de A- of D-toetsen losgelaten heeft. Op deze manier kunt u de huidige draaiing van het stuur behouden door kort op de A- of D-toets te tikken. Het terugdraaien naar de middenpositie gaat sneller als u op de bijbehorende toets drukt. Dit is als een noodmodus. Stuur je teveel, dan probeer je de andere kant op te sturen. Dit gaat veel sneller, maar alleen totdat het stuur de middenpositie bereikt." />
+		<text name="vcaHelpGPS_1"           text="Vehicle Control Addon bevat een eenvoudige baangeleiding." />
+		<text name="vcaHelpGPS_2"           text="Baangeleiding kan alleen gestart worden bij een baanbreedte groter dan 0,5m. U kunt de huidige werktuigbreedte detecteren in het instellingenmenu of met de sneltoetsen LCtrl LAlt W. De baangeleiding wordt gestart met de sneltoetsen LCtrl W. Het wordt automatisch uitgeschakeld als u de stuurknoppen of het wiel gebruikt." />
+		<text name="vcaHelpGPS_3"           text="In het voertuig kunt u de geleidingsbanen verschuiven of draaien met standaard sneltoetsen LCtrl + cursortoets. Met de standaard sneltoetsen LAlt A en LAlt D kunt u wisselen naar de linker of rechter geleidingsbaan. In het instellingenmenu kunt u het aantal te wisselen geleidingsbaan opgeven. Als u op het veld links wilt werken, dan kunt u de linkerbaannummers één groter dan de rechterbaannummers opgeven. Bij elke actie om de geleidingsbaan om te keren, verwisselt Vehicle Control Addon de linker- en rechterbaannummers." />
+		<text name="vcaHelpThrottle_1"      text="Vehicle Control Addon biedt enkele kleine verbeteringen op het gebied van gas geven en remmen. De meeste zijn bedoeld voor spelers die het toetsenbord gebruiken." />
+		<text name="vcaHelpThrottle_2"      text="De waarden van de gasbegrenzer worden gebruikt met de 'langzamer rijden' sneltoets. De 1e waarde wordt gebruikt zonder 'langzamer rijden', de 2e waarde wordt gebruikt wanneer op 'langzamer rijden' wordt gedrukt. De lagere procentuele waarde is van toepassing op de snelheid van de cruisecontrol als op 'langzamer rijden' wordt gedrukt. Lage remkracht is de remkracht die het voertuig automatisch toepast als het gaspedaal en het rempedaal niet worden ingetrapt. Door de remkracht te verminderen, kan het voertuig langer rollen zonder de snelheid te verminderen." />
+		<text name="vcaHelpThrottle_3"      text="RShift beperkt het gaspedaal, de cruisecontrol en het maximum aantal toeren per minuut tot 75%. Als u op delete drukt, behoudt het voertuig zijn snelheid. Acceleratie- en rempedaal verhogen en verlagen de snelheid. Het voertuig rijdt als een moderne tractor met joystick. U kunt het automatisch schakelen omschakelen met de standaard sneltoets LCtrl [." />
+		<text name="vcaHelpDiff_1"          text="Als Vehicle Control Addon de differentiëlen kan identificeren, hebt u de mogelijkheid om ze handmatig te bedienen." />
+		<text name="vcaHelpDiff_2"          text="De Vehicle Control Addon verandert standaard de differentiëlen niet. Als de vierwielaandrijving is geactiveerd, draaien de voorwielen van standaardtractoren sneller dan de achterwielen. U kunt dit inschakelen met de geavanceerde snelheidsinstellingen. In dit geval zal Vehicle Control Addon automatisch de vierwielaandrijving uitschakelen boven 30 km/u." />
+		<text name="vcaHelpDiff_3"          text="De standaard sneltoetsen om differentiëlen te bedienen zijn LCtrl ], LCtrl ' and LCtrl \." />
 	</texts>
-
-	<longTexts>
-		<longText name="vca_Help_1">
-			<![CDATA[
-Dit script varieert de stuursnelheid afhankelijk van de snelheid waarmee je rijdt en draait de camera mee afhankelijk van de stuuruitslag.
-Linker SHIFT toets beperkt het gas en cruise control en beperkt het toerental tot 75%. Met de rechter SHIFT toets + cursortoets link/rechts kan je snel naar links of rechts kijken.
-Linker CTRL+W toets zorgt er voor dat je rijrichting wordt gefixeerd op rasterhoek.
-Alle functies kunnen worden uitgeschakeld.]]>
-		</longText>
-		<longText name="vca_Help_2">
-			<![CDATA[Toerental en Rasterrijrichting
-
-Shift-Left limiteert het toerental, cruise control en maximum toerental op 75%. 
-Als je delete indrukt zal het voertuig zijn snelheid behouden. Gas en Rempedaal verhogen en verlagen de snelheid. Het voertuig rijdt als een moderne trekker met een joystick.
-De lineaire toonhoogte aanpassing maakt het makkelijker om het motortoerental te horen.]]>
-		</longText>
-		<longText name="vca_Help_3">
-			<![CDATA[Transmissie
-
-off: De standaard versnellingsbak zonder aanpassingen
-IVT: Nog steeds de standaard versnellingsbak, maar met kleine aanpassingen aan het toegestane motortoerental. More to come...
-4X4: Een ouderwetse transmissie met 4 versnellingen en 4 groepen en shuttle control. Het schakelen van versnellingen kost tijd en je kunt momentum verliezen.
-4PS: Dezelfde versnellingsbak als bovenstaand maar met power shift voor de versnellingen.
-2X6: Twee groepen met 6 versnellingen. Deze transmissie is handig voor G27/G29 gear shifters. Er is een hoge en lage range. De 6 versnellingen in elke range overlappen niet met de 6 versnellingen in de andere range.
-FPS: Full Power Shift: De transmissie heeft 12 versnellingen en schakelt zonder onderbrekingen.
-6PS: een John Deere AutoQuad transmissie. Deze transmissie heeft 6 versnellingen. Elke versnelling kan gereduceerd worden met ongeveer 80%.
-PKW: Een transmissie met 6 versnellingen voor auto's met een low range.
-VARIO: Een Fendt Vario transmissie. De transmissie lijkt op de IVT, maar heeft een hoge en lage range.
-46A: Een Claas HexaShift transmissie. De transmissie heet 4 handmatige groepen en 6 automatische powershift versnellingen.
-OWN: Maak je eigen transmissie.]]>
-		</longText>
-		<longText name="vca_Help_4">
-			<![CDATA[Globale instellingen
-
-Aanpassingen aan de globale instellingen heeft geen effect op het huidige voertuig. 
-Ze worden allemaal opgeslagen in het volgende bestand: modsSettings/FS19_VehicleControlAddon/config.xml.]]>
-		</longText>
-		<longText name="vca_Help_5">
-			<![CDATA[Maak je eigen transmissie
-
-Hier kun je je eigen transmissie configureren. Versnellingen kunnen automatisch schakelen..
-De maximum snelheid in elke versnelling kan theoretisch zijn. Je kunt het alleen bereiken zonder snelheids limiter. De ratios tussen versnellingen is berekend vanaf de maximum snelheid van de 1ste versnelling.
-De 2 hoogste versnellingen van de op 2 na hoogste groep zijn redundant. Als je één waarde invuld, wijzigd de ander waarde overeenkomstig.]]>
-		</longText>
-		<longText name="vca_Help_6">
-			<![CDATA[Differentieel en all wheel drive
-
-Als VCA het differentieel kan herkennen, heb je de mogelijkheid om deze handmatig te bedienen.
-Je kunt de snelheidslimieten voor vooruit en achteruit rijden hier overschrijven.
-Als het vermogen en koppel niet accuraat genoeg is, kun je dat hier overschrijven.
-- standaard gebruikt de koppelkromme van het voertuig
-- modern, 40% koppel stijging en 7% meer piekvermogen dan het nominaal vermogen
-- modern, 50% koppel stijging en 8% meer piekvermogen dan het nominaal vermogen
-- vrachtwagen motor, 55% koppel en piekvermogen stijging van het maximale koppel en nominaal vermogen
-- klassiek, 20% koppel en piekvermogen stijging van het maximale koppel en nominaal vermoge
-- klassiek, 30% koppel stijging en 2% meer piekvermogen dan het nominaal vermogen]]>
-		</longText>
-	</longTexts>
 </l10n>
