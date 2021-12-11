@@ -1727,19 +1727,21 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 	
 	--*******************************************************************
 	-- moving direction
+	local moveDir = self.movingDirection
+	
 	if self:getIsActive() and self.isServer then
 		if self:getLastSpeed() < 5 then 
 			if self.spec_motorized ~= nil and self.spec_motorized.motor ~= nil then 
 				local motor = self.spec_motorized.motor
-				if     motor.currentDirection < 0 then 
+				if     motor.currentDirection * self.spec_drivable.reverserDirection < 0 then 
 					self:vcaSetState( "isForward", false )
-				elseif motor.currentDirection > 0 then 
+				elseif motor.currentDirection * self.spec_drivable.reverserDirection > 0 then 
 					self:vcaSetState( "isForward", true )
 				end 
 			end 
-		elseif self.movingDirection < 0 then 
+		elseif moveDir < 0 then 
 			self:vcaSetState( "isForward", false )
-		elseif self.movingDirection > 0 then 
+		elseif moveDir > 0 then 
 			self:vcaSetState( "isForward", true )
 		end 
 	end
@@ -1752,7 +1754,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 			m = self.spec_motorized.motor.currentDirection
 		elseif self.lastSpeedReal * 3600 < 0.5 then 
 			m = 0
-		elseif self.movingDirection < 0 then 
+		elseif moveDir < 0 then 
 			m = -1 
 		else
 			m = 1
@@ -1770,15 +1772,15 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 		elseif math.abs( self.spec_drivable.axisForward ) > 0.01 then 
 		
 			local s = self.lastSpeedReal * 1000 					
-			local f = 3.6 *  math.max( -self.spec_motorized.motor.maxBackwardSpeed, s * self.movingDirection - 1 )
-			local t = 3.6 *  math.min(  self.spec_motorized.motor.maxForwardSpeed , s * self.movingDirection + 1 )
+			local f = 3.6 *  math.max( -self.spec_motorized.motor.maxBackwardSpeed, s * moveDir - 1 )
+			local t = 3.6 *  math.min(  self.spec_motorized.motor.maxForwardSpeed , s * moveDir + 1 )
 			local a = self.spec_drivable.axisForward
 			
 			if self.spec_vca.maxGearSpeed ~= 0 then 
 				if self.spec_vca.isForward then 				
 					f = math.max( f, 3.6 * self.spec_vca.minGearSpeed )
 					t = math.min( t, 3.6 * self.spec_vca.maxGearSpeed )
-				else 
+				else               
 					f = math.max( f,-3.6 * self.spec_vca.maxGearSpeed )
 					t = math.min( t,-3.6 * self.spec_vca.minGearSpeed )
 				end 
@@ -1831,6 +1833,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 			end 
 			
 			self:vcaSetState( "keepSpeed", vehicleControlAddon.mbClamp( self.spec_vca.keepSpeed + a * 0.005 * dt, f, t )  )
+			self.spec_drivable.axisForward = 0
 		else 
 			self:vcaSetState( "keepSpeed", vehicleControlAddon.mbClamp( self.spec_vca.keepSpeed, -sl, sl ) )
 		end 
@@ -2097,7 +2100,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 		local f, m, b = self:vcaGetDiffState()
 		
 		local updateDiffs  = false 
-		local vehicleSpeed = self.lastSpeedReal*1000*self.movingDirection
+		local vehicleSpeed = self.lastSpeedReal*1000*moveDir
 		local avgWheelSpeed,n=0,0
 		local minWheelSpeed, maxWheelSpeed
 		
@@ -3188,25 +3191,8 @@ function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, ax
 		self.spec_vca.axisSideLast   = axisSideLast
 	end 				
 	
-	local ccState = nil
-	local spec = self.spec_drivable
-	if      self.spec_vca ~= nil
-			and self:vcaIsVehicleControlledByPlayer()
-			and spec.cruiseControl.state ~= Drivable.CRUISECONTROL_STATE_OFF
-			and ( self:vcaGetShuttleCtrl() or self.movingDirection > 0 )
-			and axisForward > 0 then 
-		local speed,_ = self:getSpeedLimit(true)			
-		ccState = spec.cruiseControl.state
-		spec.cruiseControl.state = Drivable.CRUISECONTROL_STATE_OFF
-		self:getMotor():setSpeedLimit( speed )
-	end 
-	
 	local res = { superFunc( self, axisForward, axisSide, doHandbrake, dt ) }
-	
-	if ccState ~= nil and spec.cruiseControl.state == Drivable.CRUISECONTROL_STATE_OFF then 
-		self:setCruiseControlState(ccState)
-	end 
-	
+
 	return unpack( res )
 end 
 
@@ -3255,7 +3241,7 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 
 		elseif  self:vcaGetShuttleCtrl()
 				and self:getLastSpeed() > 1
-				and motor.currentDirection * self.movingDirection < 0 then 
+				and motor.currentDirection * self.movingDirection * self.spec_drivable.reverserDirection < 0 then 
 			acceleration = -1
 		elseif self.spec_vca.ksIsOn and ( self.spec_vca.ksBrakeTime == nil or g_currentMission.time < self.spec_vca.ksBrakeTime + 1000 ) then 
 			if math.abs( self.spec_vca.keepSpeed ) < 0.5 then 
