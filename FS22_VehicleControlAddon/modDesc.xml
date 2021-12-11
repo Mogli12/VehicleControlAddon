@@ -5,32 +5,29 @@
 		<en>Vehicle Control Addon</en>
 	</title>
 	<description>
-		<en><![CDATA[This script varies the steering speed depending on the speed you are driving, and it rotates the camera to match the steering angle and direction.
-Shift-Left limits throttle, cruise control and maximum rounds per minute to 75%. With Shift-right and the cursor keys you can peek in the corresponding direction.
-If you press Ctrl left together with W then the driving direction snaps to fixed directions.
-
+		<en><![CDATA[Vehicle Control Addon (VCA) combines several functions in one modification. Most functions are turned off per default. VCA can rotate the camera to match the steering angle and direction. This way you always look into the direction your are driving to. With Shift-right and the cursor keys you can peek in the corresponding direction. Shift-right limits throttle, cruise control and maximum rounds per minute to 75%.
+Vehicle Control Addon includes a simple lane guidance. If you press Ctrl left together with W then the driving direction snaps to fixed directions.
 All functions are switchable with the following default key combinations:
 [Ctrl Left + C]: Settings
 [Ctrl Left + W]: Snap Angle (continue)
 [Alt Left + W]: Snap Angle (restart)
-[Shift Left]: Throttle limiter / reduced cruise control speed
+[Shift Right]: Throttle limiter / reduced cruise control speed
 [Shift Right + Cursor]: look forward, backwards, left right]]></en>
-		<de><![CDATA[Dieses Script variiert abhängig von der gefahrenen Geschwindigkeit die Lenkgeschwindigkeit und dreht die Kamera passend zum Lenkeinschlag und zur Fahrtrichtung. 
-Mit Umschalt-Llinks wird das Gaspedal, der Tempomat und die maximale Drehzahl auf 75% begrenzt. Drückt man Strg Links zusammen mit W, dann richtet sich die Fahrtrichtung an festen Richtungen aus.
-
+		<de><![CDATA[Vehicle Control Addon (VCA) kombiniert viele Funktionen in einer Modifikation. Die meisten Funktionen sind standardmäßig ausgeschaltet. VCA kann die Kamerarichtung automatische dem Lenkwinkel und der Fahrtrichtung anpassen. So schaut man immer in die Richtung in die man fährt. Mit den Standardtastenkombinationen RShift und den Pfeiltasten kann man kurz in die entsprechende Richtung blicken. Die adaptive Lenkung ist gedacht für Tastaturspieler. VCA kann die Lenkgeschwindigkeit der Geschwindigkeit des Fahrzeugs anpassen.
+Vehicle Control Addon beinhaltet auch eine einfache Spurführung. Drückt man Strg Links zusammen mit W, dann richtet sich die Fahrtrichtung an festen Richtungen aus.
 Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tasten:
 [Strg Links + C]: Einstellungen
 [Strg Links + W]: Rastersteuerung fortsetzen
 [Alt Links + W]: Rastersteuerung neu starten
-[Umschalt Links]: Gaspedalbegrenzer / verringerter Tempomatgeschwindigkeit
+[Umschalt Rechts]: Gaspedalbegrenzer / verringerter Tempomatgeschwindigkeit
 [Umschalt Rechts + Pfeiltaste]: Nach vorne, hinten, links, rechts blicken]]></de>
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>store.dds</iconFilename>
-	<version>9.0.2.4</version>
+	<version>9.0.2.5</version>
 	<l10n filenamePrefix="l10n/modDesc_l10n">
 		<text name="vcaVERSION">          
-			<en>Vehicle Control Addon 1.0 rc2</en>
+			<en>Vehicle Control Addon 1.0 rc3</en>
 		</text>
 	</l10n>
 	

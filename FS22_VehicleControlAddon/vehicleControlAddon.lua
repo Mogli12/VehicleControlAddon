@@ -1728,8 +1728,8 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 	--*******************************************************************
 	-- moving direction
 	if self:getIsActive() and self.isServer then
-		if self:getLastSpeed() < 1 then 
-			if self:vcaGetShuttleCtrl() then 
+		if self:getLastSpeed() < 5 then 
+			if self.spec_motorized ~= nil and self.spec_motorized.motor ~= nil then 
 				local motor = self.spec_motorized.motor
 				if     motor.currentDirection < 0 then 
 					self:vcaSetState( "isForward", false )
@@ -1749,11 +1749,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 	if self.spec_vca.ksIsOn and self.spec_vca.isEntered then	
 		local m
 		if self:vcaGetShuttleCtrl() then
-			if self.spec_vca.isForward then 
-				m = 1 
-			else 
-				m = -1 
-			end 
+			m = self.spec_motorized.motor.currentDirection
 		elseif self.lastSpeedReal * 3600 < 0.5 then 
 			m = 0
 		elseif self.movingDirection < 0 then 
@@ -1979,7 +1975,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 			local diff = oldRotY - self.spec_vca.lastCamRotY
 			
 			if     self.spec_vca.keepCamRot then 
-				self.spec_vca.camRotWorld = vehicleControlAddon.vcaGetRelativeYRotation(g_currentMission.terrainRootNode,self.spec_wheels.steeringCenterNode)
+				self.spec_vca.camRotWorld = vehicleControlAddon.vcaGetRelativeYRotation(g_currentMission.terrainRootNode,self:vcaGetSteeringNode())
 			elseif lastWorldRotation ~= nil then 
 			-- reset to old rotation 	
 			elseif newRotCursorKey ~= nil then
@@ -3227,8 +3223,8 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 	self.spec_vca.oldHandbrake = doHandbrake
 	
 	local lastKSBrakeTime = self.spec_vca.ksBrakeTime
-	self.spec_vca.ksBrakeTime   = nil 
-
+	self.spec_vca.ksBrakeTime = nil 
+	
 	if self:vcaIsVehicleControlledByPlayer() then
 		if self.spec_vca.ksIsOn then 
 			if self:vcaGetShuttleCtrl() or self.spec_vca.keepSpeed > 0 then 
@@ -3315,33 +3311,50 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 			
 			if      self:getIsMotorStarted()
 					and ( ( m > 0 and acceleration > -0.01 ) or ( m < 0 and acceleration < 0.01 ) )
-					and motor.gearShiftMode ~= VehicleMotor.SHIFT_MODE_MANUAL_CLUTCH 
+				--and motor.gearShiftMode ~= VehicleMotor.SHIFT_MODE_MANUAL_CLUTCH 
 					and (motor.backwardGears or motor.forwardGears) 
 					and motor.gearRatio ~= 0 
 					and motor.maxGearRatio ~= 0 
+					and math.abs( self.lastSpeedReal ) >= motor.lowBrakeForceSpeedLimit
 					then
-				local factor = 1 / math.abs(motor.maxGearRatio) * math.pi / 30
-				local minDifferentialSpeed = motor.minRpm * factor
-				local minDifferentialHand  = ( motor.minRpm + self.spec_vca.handThrottle * ( motor.maxRpm - motor.minRpm )) * factor 
-				local delta = vehicleControlAddon.mbClamp( 1 - self.spec_vca.handThrottle, 0, 0.1 )
+				local minRpm    = ( motor.minRpm + self.spec_vca.handThrottle * ( motor.maxRpm - motor.minRpm ))
+				local diffRpm   = motor.differentialRotSpeed * 30 / math.pi
+				local motorRpm  = math.abs( diffRpm * motor.gearRatio )
+				local clutchRpm = math.abs( diffRpm * motor.maxGearRatio )
 				
-				if     math.abs(motor.differentialRotSpeed) >= minDifferentialHand  then
-					-- close clutch now
-					motor.clutchSlippingTimer = 0
-				elseif math.abs(motor.differentialRotSpeed) <= minDifferentialSpeed * 0.75 then
-					-- clutch will open automatically
-				elseif motor.clutchSlippingTimer > 0 then  
-					-- clutch was already opened
-					acceleration = m * math.max( math.abs( acceleration ), self.spec_vca.handThrottle )
-				elseif delta < 1e-3 then 
-					-- full hand thorttle
-					acceleration = m 
-				elseif math.abs(motor.differentialRotSpeed) <= minDifferentialHand * ( 1 - delta ) then
-					-- full thorttle
-					acceleration = m 
-				elseif math.abs(motor.differentialRotSpeed) < minDifferentialHand then 
+				local delta  = vehicleControlAddon.mbClamp( 1 - self.spec_vca.handThrottle, 0, 0.1 )
+				local t = self.spec_vca.handThrottle
+				if motor:getClutchPedal() < 0.1 then 
+					t = math.max( t, 0.03 )
+				end 
+				
+				
+				
+				if     motor.manualClutchValue >= 0.1 then 
+					-- manual lutch is open
+					acceleration = m * math.max( math.abs( acceleration ), t )
+				else
 					-- accelerate
-					acceleration = m * math.max( math.abs( acceleration ), ( 1 - math.abs(motor.differentialRotSpeed) / minDifferentialHand ) / delta )
+					local function getClutchMinAcc()
+						if     clutchRpm >= minRpm then 
+							return 0 
+						elseif delta < 1e-3 then 
+							return 1
+						else
+							return ( 1 - clutchRpm / minRpm ) / delta
+						end 
+					end 
+					local function getMotorMaxAcc()
+						local maxRpm = 0.95 * minRpm + 0.05 * motor.maxRpm
+						if     motorRpm >= maxRpm then 
+							return 0 
+						elseif motorRpm <= minRpm then 
+							return 1 
+						else 
+							return ( maxRpm - motorRpm ) / ( maxRpm - minRpm )
+						end 
+					end 
+					acceleration = m * math.max( math.abs( acceleration ), math.min( getClutchMinAcc(), getMotorMaxAcc() ) )
 				end 
 				
 			end 
@@ -3374,7 +3387,8 @@ function vehicleControlAddon:vcaGetRequiredMotorRpmRange( superFunc, ... )
 			 and self.vehicle.spec_drivable.reverserDirection ~= nil 
 			 and self.currentDirection ~= nil 
 			 and self.currentDirection ~= 0 
-			 and self.gearShiftMode ~= VehicleMotor.SHIFT_MODE_MANUAL_CLUTCH 
+		 --and self.gearShiftMode ~= VehicleMotor.SHIFT_MODE_MANUAL_CLUTCH 
+			 and self.manualClutchValue < 0.1
 			 and (self.backwardGears or self.forwardGears)
 			 and next(self.vehicle.spec_motorized.differentials) ~= nil
 			) then 
@@ -3400,6 +3414,23 @@ function vehicleControlAddon:vcaGetRequiredMotorRpmRange( superFunc, ... )
 end
 
 VehicleMotor.getRequiredMotorRpmRange = Utils.overwrittenFunction( VehicleMotor.getRequiredMotorRpmRange, vehicleControlAddon.vcaGetRequiredMotorRpmRange )
+
+--******************************************************************************************************************************************
+--
+function vehicleControlAddon:vcaGetLastModulatedMotorRpm( superFunc, ... )
+	if not ( self.vehicle ~= nil 
+			 and self.vehicle.spec_vca ~= nil 
+			 and self.vehicle.spec_vca.idleThrottle
+			 and self.lastRealMotorRpm ~= nil 
+			 and (self.backwardGears or self.forwardGears)
+			 and next(self.vehicle.spec_motorized.differentials) ~= nil
+			) then 
+		return superFunc( self, ... )
+	end 
+	return self.lastRealMotorRpm
+end 
+
+VehicleMotor.getLastModulatedMotorRpm = Utils.overwrittenFunction( VehicleMotor.getLastModulatedMotorRpm, vehicleControlAddon.vcaGetLastModulatedMotorRpm )
 
 --******************************************************************************************************************************************
 -- overwrite automatic shifting to make it local per vehicle
@@ -3485,7 +3516,7 @@ function vehicleControlAddon:vcaGetAbsolutRotY( camIndex )
 			or self.spec_enterable.cameras[camIndex] == nil then
 		return 0
 	end
-  return vehicleControlAddon.vcaGetRelativeYRotation( self.spec_enterable.cameras[camIndex].cameraNode, self.spec_wheels.steeringCenterNode )
+  return vehicleControlAddon.vcaGetRelativeYRotation( self.spec_enterable.cameras[camIndex].cameraNode, self:vcaGetSteeringNode() )
 end
 
 function vehicleControlAddon.vcaGetRelativeYRotation(root,node)
@@ -3760,7 +3791,8 @@ function vehicleControlAddon:vcaUIShowidleThrottle()
 			and next(self.spec_motorized.differentials) ~= nil
 			then 
 		local motor = self.spec_motorized.motor 
-		if motor.gearShiftMode ~= VehicleMotor.SHIFT_MODE_MANUAL_CLUTCH and (motor.backwardGears or motor.forwardGears) then
+	--if motor.gearShiftMode ~= VehicleMotor.SHIFT_MODE_MANUAL_CLUTCH and (motor.backwardGears or motor.forwardGears) then
+		if (motor.backwardGears or motor.forwardGears) then
 			return true 
 		end 
 	end 
