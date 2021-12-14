@@ -157,6 +157,7 @@
 		<text name="vcaButtonSnapWidth" text="Breite ermitteln"/>
 		<text name="vcaButtonSnapOffset" text="Offset tauschen"/>		
 		
+		<text name="vcaTitleIntro"      text="Übersicht"/>
 		<text name="vcaTitleCam"        text="Kamera"/>
 		<text name="vcaTitleSteering"   text="Lenkung"/>
 		<text name="vcaTitleGPS"        text="Spurführung"/>

@@ -159,6 +159,20 @@ function vehicleControlAddon.normalizeAngle( angle )
 end
 
 --********************************
+-- normalizeAngleCam
+--********************************
+function vehicleControlAddon.normalizeAngleCam( angle )
+	local normalizedAngle = angle
+	while normalizedAngle > math.pi + math.pi do
+		normalizedAngle = normalizedAngle - math.pi - math.pi
+	end 
+	while normalizedAngle <= 0 do
+		normalizedAngle = normalizedAngle + math.pi + math.pi
+	end
+	return normalizedAngle
+end
+
+--********************************
 -- mbClamp
 --********************************
 function vehicleControlAddon.mbClamp( v, minV, maxV )
@@ -483,6 +497,8 @@ function vehicleControlAddon:onLoad(savegame)
 	self.spec_vca.keepCamRot    = false 
 	self.spec_vca.kRToggleIn    = false 
 	self.spec_vca.kRToggleOut   = false 
+  self.spec_vca.GPSModActive  = false 
+  self.spec_vca.snapPossible  = false 
 
 	self.spec_vca.maxWheelSlip  = 0
 	self.spec_vca.maxBrakePedal = 1
@@ -817,6 +833,22 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
 				addThis = vehicleControlAddon.isMPMaster()
 			end 
 			
+			if self.spec_vca.GPSModActive and actionName == "vcaSNAP" then 
+				addThis = false 
+			elseif actionName == "vcaSnapUP"     
+					or actionName == "vcaSnapDOWN"     
+					or actionName == "vcaSnapLEFT"    
+					or actionName == "vcaSnapRIGHT"
+					or actionName == "vcaSNAPPREV"
+					or actionName == "vcaSNAPCONT"
+					or actionName == "vcaSNAPNEXT"
+					or actionName == "vcaSNAPLEFT"
+					or actionName == "vcaSNAPRIGHT"
+					or actionName == "vcaSNAPRESET"
+					or actionName == "vcaSNAPDIST" then 
+				addThis = self.spec_vca.snapPossible
+			end 
+		
 --		if      actionName == "vcaGearUp"
 --				or  actionName == "vcaGearDown"
 --				or  actionName == "vcaRangeUp"
@@ -974,7 +1006,13 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 				if     r == nil then 
 					self.spec_vca.newRotCursorKey = 0
 				elseif math.abs( r ) < 0.1 * math.pi then
-					self.spec_vca.newRotCursorKey = math.pi
+					if     r < -0.001 then 
+						self.spec_vca.newRotCursorKey = -0.999 * math.pi
+					elseif r >  0.001 then 
+						self.spec_vca.newRotCursorKey =  0.999 * math.pi
+					else 
+						self.spec_vca.newRotCursorKey = math.pi
+					end 
 				else 
 					self.spec_vca.newRotCursorKey = 0
 				end 
@@ -984,7 +1022,13 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 				if     r == nil then 
 					self.spec_vca.newRotCursorKey = nil
 				elseif math.abs( r ) < 0.5 * math.pi then
-					self.spec_vca.newRotCursorKey = math.pi
+					if     r < -0.001 then 
+						self.spec_vca.newRotCursorKey = -0.999 * math.pi
+					elseif r >  0.001 then 
+						self.spec_vca.newRotCursorKey =  0.999 * math.pi
+					else 
+						self.spec_vca.newRotCursorKey = math.pi
+					end 
 				else 
 					self.spec_vca.newRotCursorKey = 0
 				end 
@@ -1021,8 +1065,7 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 	elseif actionName == "vcaNO_ARB" then 
 		self:vcaSetState( "noAutoRotBack", keyStatus >= 0.5 )
 		
-	elseif  -4 <= self.spec_vca.lastSnapAngle and self.spec_vca.lastSnapAngle <= 4
-			and self.spec_vca.snapDistance >= 0.25
+	elseif  self.spec_vca.snapPossible
 			and ( actionName == "vcaSnapLEFT" or actionName == "vcaSnapRIGHT" ) then
 			
 		self.spec_vca.snapPosTimer  = math.max( Utils.getNoNil( self.spec_vca.snapPosTimer , 0 ), 3000 )
@@ -1047,16 +1090,12 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 		self:vcaSetState( "lastSnapPosX", self.spec_vca.lastSnapPosX + fz * dx + fx * dz )
 		self:vcaSetState( "lastSnapPosZ", self.spec_vca.lastSnapPosZ + fz * dz - fx * dx )
 		
-	elseif  -4 <= self.spec_vca.lastSnapAngle and self.spec_vca.lastSnapAngle <= 4
-			and self.spec_vca.snapDistance >= 0.25
-			and vehicleControlAddon.snapAngles[self.spec_vca.snapAngle] ~= nil
+	elseif  self.spec_vca.snapPossible
 			and actionName == "vcaSnapDOWN" then 
 		self.spec_vca.snapPosTimer  = math.max( Utils.getNoNil( self.spec_vca.snapPosTimer , 0 ), 3000 )
 		self:vcaSetState( "lastSnapAngle", vehicleControlAddon.normalizeAngle( self.spec_vca.lastSnapAngle - math.rad(0.1*vehicleControlAddon.snapAngles[self.spec_vca.snapAngle])))
 		self:vcaSetSnapFactor()
-	elseif  -4 <= self.spec_vca.lastSnapAngle and self.spec_vca.lastSnapAngle <= 4
-			and self.spec_vca.snapDistance >= 0.25
-			and vehicleControlAddon.snapAngles[self.spec_vca.snapAngle] ~= nil
+	elseif  self.spec_vca.snapPossible
 			and actionName == "vcaSnapUP" then 
 		self.spec_vca.snapPosTimer  = math.max( Utils.getNoNil( self.spec_vca.snapPosTimer , 0 ), 3000 )
 		self:vcaSetState( "lastSnapAngle", vehicleControlAddon.normalizeAngle( self.spec_vca.lastSnapAngle + math.rad(0.1*vehicleControlAddon.snapAngles[self.spec_vca.snapAngle])))
@@ -1454,17 +1493,27 @@ function vehicleControlAddon:onPreUpdate(dt, isActiveForInput, isActiveForInputI
 		self:vcaSetState( "snapIsOn", false )
 	end 
 	
-	if      self.spec_globalPositioningSystem ~= nil
-			and self.spec_vca.snapIsOn
-			and self.spec_globalPositioningSystem.guidanceSteeringIsActive then
-		self:vcaSetState( "snapIsOn", false )
+	local lastGPSModActive = self.spec_vca.GPSModActive 
+	local lastSnapPossible = self.spec_vca.snapPossible
+	self.spec_vca.GPSModActive = false 
+	if self.spec_globalPositioningSystem ~= nil and self.spec_globalPositioningSystem.hasGuidanceSystem then
+		self.spec_vca.GPSModActive = true 
+		self.spec_vca.snapPossible = false 
+		
+		if self.spec_vca.snapIsOn then
+			self:vcaSetState( "snapIsOn", false )
+		end 
+	elseif  -4 <= self.spec_vca.lastSnapAngle and self.spec_vca.lastSnapAngle <= 4
+			and self.spec_vca.snapDistance >= 0.25
+			and vehicleControlAddon.snapAngles[self.spec_vca.snapAngle] ~= nil then 
+		self.spec_vca.snapPossible = true 
+	end 
+
+	if     lastGPSModActive ~= self.spec_vca.GPSModActive
+			or lastSnapPossible ~= self.spec_vca.snapPossible then 
+		self.actionEventUpdateRequested = true 
 	end 
 	
-	if      false and ( self.spec_articulatedAxis ~= nil and self.spec_articulatedAxis.componentJoint ~= nil )
-			and self.spec_vca.snapIsOn then
-		self:vcaSetState( "snapIsOn", false )
-		self:vcaSetState("warningText",vehicleControlAddon.getText("vcaSnapArtAxis", "VCA does not support articulated axis"))
-	end 
 	
 --******************************************************************************************************************************************
 -- adaptive steering 	
@@ -1680,7 +1729,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 	self.spec_vca.camRotWorld     = nil
 
 	if newRotCursorKey ~= nil then
-		self.spec_enterable.cameras[i].rotY = vehicleControlAddon.normalizeAngle( self.spec_enterable.cameras[i].origRotY + newRotCursorKey )
+		self.spec_enterable.cameras[i].rotY = vehicleControlAddon.normalizeAngleCam( self.spec_enterable.cameras[i].origRotY + newRotCursorKey )
 		if     math.abs( newRotCursorKey ) < 1e-4 then 
 			requestedBack = false 
 		elseif math.abs( newRotCursorKey - math.pi ) < 1e-4 then 
@@ -1853,9 +1902,17 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 		self.spec_vca.camIsInside   = false
 		
 		if camera.isInside then 
-			rotIsOn = self.spec_vca.camRotInside
-		  revIsOn = self.spec_vca.camRevInside
 			self.spec_vca.camIsInside = true 
+
+			if      g_gameSettings:getValue("isHeadTrackingEnabled") 
+					and isHeadTrackingAvailable() 
+					and camera.headTrackingNode ~= nil then
+				rotIsOn = 0 
+				revIsOn = false 
+			else 
+				rotIsOn = self.spec_vca.camRotInside
+				revIsOn = self.spec_vca.camRevInside
+			end 
 		end 
 		
 		if self.spec_crabSteering ~= nil and rotIsOn > 0 then  
@@ -1905,7 +1962,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 				-- camera is automatically reset
 				elseif ( not oldCam.isInside and self.spec_vca.camRotOutside > 0 )
 						or (     oldCam.isInside and self.spec_vca.camRotInside  > 0 ) then 
-					oldCam.rotY = self.spec_vca.zeroCamRotY + oldCam.rotY - self.spec_vca.lastCamRotY
+					oldCam.rotY = vehicleControlAddon.normalizeAngleCam( self.spec_vca.zeroCamRotY + oldCam.rotY - self.spec_vca.lastCamRotY )
 				end 
 			end 
 				
@@ -1921,52 +1978,6 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 				self.spec_vca.keepCamRot = self.spec_vca.kRToggleOut 
 			end 
 						
-		elseif  g_gameSettings:getValue("isHeadTrackingEnabled") 
-				and isHeadTrackingAvailable() 
-				and camera.isInside 
-				and camera.headTrackingNode ~= nil then
-				
-			if requestedBack ~= nil then 
-				self.spec_vca.cameraBack = requestedBack 
-			end 
-			
-			if revIsOn or self.spec_vca.cameraBack ~= nil then			
-				if camera.headTrackingMogliPF == nil then 
-					local p = getParent( camera.headTrackingNode )
-					camera.headTrackingMogliPF = createTransformGroup("headTrackingMogliPF")
-					link( p, camera.headTrackingMogliPF )
-					link( camera.headTrackingMogliPF, camera.headTrackingNode )
-					setRotation( camera.headTrackingMogliPF, 0, 0, 0 )
-					setTranslation( camera.headTrackingMogliPF, 0, 0, 0 )
-					camera.headTrackingMogliPR = false 
-				end 
-				
-				local targetBack = false 
-				if revIsOn and not ( self.spec_vca.isForward ) then 
-					targetBack = true 
-				end 
-				
-				if self.spec_vca.cameraBack ~= nil then 
-					if self.spec_vca.cameraBack == targetBack then 
-						self.spec_vca.cameraBack = nil 
-					else 
-						targetBack = self.spec_vca.cameraBack 
-					end 
-				end
-				
-				if targetBack then 
-					if not camera.headTrackingMogliPR then 
-						camera.headTrackingMogliPR = true 
-						setRotation( camera.headTrackingMogliPF, 0, math.pi, 0 )
-					end 
-				else 
-					if camera.headTrackingMogliPR then 
-						camera.headTrackingMogliPR = false  
-						setRotation( camera.headTrackingMogliPF, 0, 0, 0 )
-					end 
-				end 
-			end 
-			
 		elseif rotIsOn > 0
 				or revIsOn
 				or self.spec_vca.keepCamRot
@@ -2056,7 +2067,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 				self.spec_vca.lastFactor = 0
 			end
 
-			camera.rotY = newRotY			
+			camera.rotY = vehicleControlAddon.normalizeAngleCam( newRotY )		
 		end
 		
 		self.spec_vca.lastCamRotY = camera.rotY
@@ -3301,7 +3312,8 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 					and (motor.backwardGears or motor.forwardGears) 
 					and motor.gearRatio ~= 0 
 					and motor.maxGearRatio ~= 0 
-					and math.abs( self.lastSpeedReal ) >= motor.lowBrakeForceSpeedLimit
+					and ( math.abs( self.lastSpeedReal ) >= motor.lowBrakeForceSpeedLimit
+						 or math.abs( acceleration )       >= 0.001 )
 					then
 				local minRpm    = ( motor.minRpm + self.spec_vca.handThrottle * ( motor.maxRpm - motor.minRpm ))
 				local diffRpm   = motor.differentialRotSpeed * 30 / math.pi
@@ -3314,34 +3326,27 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 					t = math.max( t, 0.03 )
 				end 
 				
-				
-				
-				if     motor.manualClutchValue >= 0.1 then 
-					-- manual lutch is open
-					acceleration = m * math.max( math.abs( acceleration ), t )
-				else
-					-- accelerate
-					local function getClutchMinAcc()
-						if     clutchRpm >= minRpm then 
-							return 0 
-						elseif delta < 1e-3 then 
-							return 1
-						else
-							return ( 1 - clutchRpm / minRpm ) / delta
-						end 
+				-- accelerate
+				local function getClutchMinAcc()
+					if     clutchRpm >= minRpm then 
+						return 0 
+					elseif delta < 1e-3 then 
+						return 1
+					else
+						return ( 1 - clutchRpm / minRpm ) / delta
 					end 
-					local function getMotorMaxAcc()
-						local maxRpm = 0.95 * minRpm + 0.05 * motor.maxRpm
-						if     motorRpm >= maxRpm then 
-							return 0 
-						elseif motorRpm <= minRpm then 
-							return 1 
-						else 
-							return ( maxRpm - motorRpm ) / ( maxRpm - minRpm )
-						end 
-					end 
-					acceleration = m * math.max( math.abs( acceleration ), math.min( getClutchMinAcc(), getMotorMaxAcc() ) )
 				end 
+				local function getMotorMaxAcc()
+					local maxRpm = 0.95 * minRpm + 0.05 * motor.maxRpm
+					if     motorRpm >= maxRpm then 
+						return 0 
+					elseif motorRpm <= minRpm then 
+						return 1 
+					else 
+						return ( maxRpm - motorRpm ) / ( maxRpm - minRpm )
+					end 
+				end 
+				acceleration = m * math.max( math.abs( acceleration ), math.min( getClutchMinAcc(), getMotorMaxAcc() ) )
 				
 			end 
 		end
@@ -3360,7 +3365,6 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 end 
 WheelsUtil.updateWheelsPhysics = Utils.overwrittenFunction( WheelsUtil.updateWheelsPhysics, vehicleControlAddon.vcaUpdateWheelsPhysics )
 --******************************************************************************************************************************************
-
 --******************************************************************************************************************************************
 -- limit maxRpm in case of inching 
 function vehicleControlAddon:vcaGetRequiredMotorRpmRange( superFunc, ... )
@@ -3476,6 +3480,11 @@ function vehicleControlAddon:vcaOnSetSnapIsOn( old, new, noEventSend )
 		
 		if self.isServer and new and self.spec_vca.snapDistance < 0.1 then
 			local d, o, p = self:vcaGetSnapDistance()
+			if d < 0.1 then 
+				d = 1
+				o = 0
+				p = false 
+			end 
 			self:vcaSetState( "snapDistance", d, noEventSend )
 			self:vcaSetState( "snapOffset", o, noEventSend )
 			self:vcaSetState( "snapInvert", p, noEventSend )
