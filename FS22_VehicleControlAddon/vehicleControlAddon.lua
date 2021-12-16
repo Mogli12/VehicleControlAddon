@@ -255,7 +255,6 @@ function vehicleControlAddon.createStates()
 	vehicleControlAddon.createState( "snapOffset"   , nil                            , 0    , VCAValueType.float )
 	vehicleControlAddon.createState( "snapInvert"   , nil                            , false, VCAValueType.bool  )
 	vehicleControlAddon.createState( "snapEvery90"  , nil                            , false, VCAValueType.bool  )
-	vehicleControlAddon.createState( "snapEvery90"  , nil                            , false, VCAValueType.bool  )
 	vehicleControlAddon.createState( "snapLeft"     , nil                            , 1    , VCAValueType.int16 )
 	vehicleControlAddon.createState( "snapRight"    , nil                            , 1    , VCAValueType.int16 )
 	vehicleControlAddon.createState( "snapIsOn"     , nil                            , false, VCAValueType.bool  , vehicleControlAddon.vcaOnSetSnapIsOn, false )
@@ -1386,18 +1385,7 @@ function vehicleControlAddon:vcaGetShuttleCtrl()
 end 
 
 function vehicleControlAddon:vcaGetIsReverse()
-	if self:vcaGetShuttleCtrl() then 
-		return not self.spec_vca.isForward
-	elseif g_currentMission.missionInfo.stopAndGoBraking then
-		local movingDirection = self.movingDirection * self.spec_drivable.reverserDirection
-		if math.abs( self.lastSpeed ) < 0.000278 then
-			return false 
-		end
-		return movingDirection < 0
-	elseif self.nextMovingDirection ~= nil and self.spec_drivable.reverserDirection ~= nil then 
-		return self.nextMovingDirection * self.spec_drivable.reverserDirection < 0
-	end 
-	return false 
+	return not self.spec_vca.isForward
 end 
 
 function vehicleControlAddon:vcaHasDiffFront()
@@ -1782,9 +1770,9 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 		if self:getLastSpeed() < 5 then 
 			if self.spec_motorized ~= nil and self.spec_motorized.motor ~= nil then 
 				local motor = self.spec_motorized.motor
-				if     motor.currentDirection * self.spec_drivable.reverserDirection < 0 then 
+				if     motor.currentDirection < 0 then 
 					self:vcaSetState( "isForward", false )
-				elseif motor.currentDirection * self.spec_drivable.reverserDirection > 0 then 
+				elseif motor.currentDirection > 0 then 
 					self:vcaSetState( "isForward", true )
 				end 
 			end 
@@ -3250,10 +3238,6 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 			doHandbrake = true 
 		elseif self.spec_drivable.cruiseControl.state > 0 then 
 
-		elseif  self:vcaGetShuttleCtrl()
-				and self:getLastSpeed() > 1
-				and motor.currentDirection * self.movingDirection * self.spec_drivable.reverserDirection < 0 then 
-			acceleration = -1
 		elseif self.spec_vca.ksIsOn and ( self.spec_vca.ksBrakeTime == nil or g_currentMission.time < self.spec_vca.ksBrakeTime + 1000 ) then 
 			if math.abs( self.spec_vca.keepSpeed ) < 0.5 then 
 				acceleration = 0
@@ -3301,7 +3285,7 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 				and next(self.spec_motorized.differentials) ~= nil
 				then 
 			local motor = self.spec_motorized.motor 
-			local m = motor.currentDirection * self.spec_drivable.reverserDirection
+			local m = motor.currentDirection
 			if self:vcaGetShuttleCtrl() then 
 				m = 1 
 			end 
@@ -3373,8 +3357,6 @@ function vehicleControlAddon:vcaGetRequiredMotorRpmRange( superFunc, ... )
 			 and self.vehicle.spec_vca.idleThrottle
 			 and self.vehicle.spec_vca.oldAcc ~= nil
 			 and self.vehicle.spec_vca.tickDt ~= nil
-			 and self.vehicle.spec_drivable ~= nil 
-			 and self.vehicle.spec_drivable.reverserDirection ~= nil 
 			 and self.currentDirection ~= nil 
 			 and self.currentDirection ~= 0 
 		 --and self.gearShiftMode ~= VehicleMotor.SHIFT_MODE_MANUAL_CLUTCH 
@@ -3385,7 +3367,7 @@ function vehicleControlAddon:vcaGetRequiredMotorRpmRange( superFunc, ... )
 		return superFunc( self, ... )
 	end 
 	
-	local m = self.currentDirection * self.vehicle.spec_drivable.reverserDirection
+	local m = self.currentDirection
 	if self.vehicle:vcaGetShuttleCtrl() then 
 		m = 1 
 	end 
