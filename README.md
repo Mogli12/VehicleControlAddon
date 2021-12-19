@@ -3,6 +3,8 @@
 ## Status
 Currenty, the lane guidance of VCA is deactivated if the vehicle has GPS configured. The reason is that lane guidance requires several action bindings and I try to avoid mod conflicts. 
 
+**After the stress about GPS mod I decided to take a break.**
+
 ## Developer version
 Please be aware you're using a developer version, which may and will contain errors, bugs, mistakes and unfinished code. 
 
