@@ -1,8 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="no" ?>
-<modDesc descVersion="61">
+<modDesc descVersion="63">
 	<author>mogli</author>
 	<title>
 		<en>Vehicle Control Addon</en>
+		<de>Erweiterung zur Fahrzeugkontrolle</de>
 	</title>
 	<description>
 		<en><![CDATA[Vehicle Control Addon (VCA) combines several functions in one modification. Most functions are turned off per default. VCA can rotate the camera to match the steering angle and direction. This way you always look into the direction your are driving to. With Shift-right and the cursor keys you can peek in the corresponding direction. Shift-right limits throttle, cruise control and maximum rounds per minute to 75%.
@@ -23,11 +24,12 @@ Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tast
 [Umschalt Rechts + Pfeiltaste]: Nach vorne, hinten, links, rechts blicken]]></de>
 	</description>
 	<multiplayer supported="true"/>   
-	<iconFilename>store.dds</iconFilename>
-	<version>9.0.2.7</version>
+	<iconFilename>modIcon.dds</iconFilename>
+	<version>9.0.2.8</version>
 	<l10n filenamePrefix="l10n/modDesc_l10n">
 		<text name="vcaVERSION">          
-			<en>Vehicle Control Addon 1.0 rc6</en>
+			<en>Vehicle Control Addon 1.0 rc8</en>
+			<de>Erweiterung zur Fahrzeugkontrolle 1.0</de>
 		</text>
 	</l10n>
 	

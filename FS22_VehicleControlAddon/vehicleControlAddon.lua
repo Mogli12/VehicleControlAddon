@@ -1003,14 +1003,14 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 
 			if     actionName == "vcaUP" then
 				if     r == nil then 
-					self.spec_vca.newRotCursorKey = 0
-				elseif math.abs( r ) < 0.1 * math.pi then
-					if     r < -0.001 then 
-						self.spec_vca.newRotCursorKey = -0.999 * math.pi
-					elseif r >  0.001 then 
-						self.spec_vca.newRotCursorKey =  0.999 * math.pi
-					else 
+					self.spec_vca.newRotCursorKey = math.pi
+				elseif math.abs( r ) < 0.3 then
+					if     r < -0.1 then 
+						self.spec_vca.newRotCursorKey = - math.pi
+					elseif r >  0.1 then 
 						self.spec_vca.newRotCursorKey = math.pi
+					else                              
+						self.spec_vca.newRotCursorKey = - math.pi
 					end 
 				else 
 					self.spec_vca.newRotCursorKey = 0
@@ -1021,12 +1021,12 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 				if     r == nil then 
 					self.spec_vca.newRotCursorKey = nil
 				elseif math.abs( r ) < 0.5 * math.pi then
-					if     r < -0.001 then 
-						self.spec_vca.newRotCursorKey = -0.999 * math.pi
-					elseif r >  0.001 then 
-						self.spec_vca.newRotCursorKey =  0.999 * math.pi
-					else 
+					if     r < -0.1 then 
+						self.spec_vca.newRotCursorKey = - math.pi
+					elseif r >  0.1 then 
 						self.spec_vca.newRotCursorKey = math.pi
+					else 
+						self.spec_vca.newRotCursorKey = - math.pi
 					end 
 				else 
 					self.spec_vca.newRotCursorKey = 0
@@ -1484,7 +1484,7 @@ function vehicleControlAddon:onPreUpdate(dt, isActiveForInput, isActiveForInputI
 	local lastGPSModActive = self.spec_vca.GPSModActive 
 	local lastSnapPossible = self.spec_vca.snapPossible
 	self.spec_vca.GPSModActive = false 
-	if self.spec_globalPositioningSystem ~= nil and self.spec_globalPositioningSystem.hasGuidanceSystem then
+	if self.spec_globalPositioningSystem ~= nil and self.spec_globalPositioningSystem.guidanceSteeringIsActive then
 		self.spec_vca.GPSModActive = true 
 		self.spec_vca.snapPossible = false 
 		
@@ -1767,7 +1767,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 	local moveDir = self.movingDirection
 	
 	if self:getIsActive() and self.isServer then
-		if self:getLastSpeed() < 5 then 
+		if math.abs( self:getLastSpeed() ) < 5 then 
 			if self.spec_motorized ~= nil and self.spec_motorized.motor ~= nil then 
 				local motor = self.spec_motorized.motor
 				if     motor.currentDirection < 0 then 
@@ -1981,7 +1981,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 			elseif lastWorldRotation ~= nil then 
 			-- reset to old rotation 	
 			elseif newRotCursorKey ~= nil then
-				self.spec_vca.zeroCamRotY = vehicleControlAddon.normalizeAngle( camera.origRotY + newRotCursorKey )
+				self.spec_vca.zeroCamRotY = camera.origRotY + newRotCursorKey
 			elseif rotIsOn > 0 then
 				self.spec_vca.zeroCamRotY = self.spec_vca.zeroCamRotY + diff
 			else
@@ -2000,7 +2000,17 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 				-- nothing
 				elseif self.spec_vca.lastCamFwd == nil or self.spec_vca.lastCamFwd ~= self.spec_vca.isForward then
 					if isRev == self.spec_vca.isForward then
-						self.spec_vca.zeroCamRotY = vehicleControlAddon.normalizeAngle( self.spec_vca.zeroCamRotY + math.pi )
+						if math.abs( self.spec_vca.zeroCamRotY - math.pi ) < 0.1 then 
+							self.spec_vca.zeroCamRotY = 0
+						elseif self.spec_vca.zeroCamRotY > math.pi+math.pi - 0.1 then 
+							self.spec_vca.zeroCamRotY = math.pi
+						elseif self.spec_vca.zeroCamRotY < 0.1 then 
+							self.spec_vca.zeroCamRotY = math.pi
+						elseif self.spec_vca.zeroCamRotY >= math.pi then 
+							self.spec_vca.zeroCamRotY = self.spec_vca.zeroCamRotY - math.pi 
+						else 
+							self.spec_vca.zeroCamRotY = self.spec_vca.zeroCamRotY + math.pi 
+						end 
 						isRev = not isRev						
 					end
 				end
@@ -2011,12 +2021,12 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 			
 			if self.spec_vca.keepCamRot then 
 				if newRotCursorKey ~= nil then
-					newRotY = vehicleControlAddon.normalizeAngle( camera.origRotY + newRotCursorKey )	
+					newRotY = camera.origRotY + newRotCursorKey 
 				else 
 					newRotY = camera.rotY 
 				end 
 				if lastWorldRotation ~= nil then 
-					newRotY = vehicleControlAddon.normalizeAngle( newRotY + ( self.spec_vca.camRotWorld - lastWorldRotation ) )
+					newRotY = newRotY + ( self.spec_vca.camRotWorld - lastWorldRotation )
 				end 
 			elseif rotIsOn > 0 then
 				
@@ -2054,8 +2064,12 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 			else
 				self.spec_vca.lastFactor = 0
 			end
-
-			camera.rotY = vehicleControlAddon.normalizeAngleCam( newRotY )		
+			
+			if self.spec_cabView ~= nil and camera.isInside then  
+				camera.rotY = math.max( 0, math.min( newRotY, math.pi+math.pi ))
+			else 
+				camera.rotY = vehicleControlAddon.normalizeAngleCam( newRotY )	
+			end 
 		end
 		
 		self.spec_vca.lastCamRotY = camera.rotY
