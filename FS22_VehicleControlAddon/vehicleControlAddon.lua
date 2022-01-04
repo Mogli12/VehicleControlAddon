@@ -3019,27 +3019,6 @@ function vehicleControlAddon:vcaGetDefRevI()
 	return true 
 end
 
-
---******************************************************************************************************************************************
--- hand RPM via PowerConsumer.getMaxPtoRpm 
-function vehicleControlAddon:vcaGetMaxPtoRpm( superFunc, ... )
-	if     self.spec_vca              == nil
-			or self.spec_vca.handThrottle == nil  
-			or self.spec_vca.handThrottle <= 0
-			or self.spec_motorized        == nil 
-			or self.spec_motorized.motor  == nil 
-			or self.spec_motorized.motor.ptoMotorRpmRatio == nil
-			or self.spec_motorized.motor.ptoMotorRpmRatio <= 0
-			then 
-		return superFunc( self, ... )
-	end 
-	local motor = self.spec_motorized.motor
-	local r0 = superFunc( self, ... )
-	local r1 = ( motor.minRpm + vehicleControlAddon.mbClamp( self.spec_vca.handThrottle, 0, 1 ) * ( motor.maxRpm - motor.minRpm ) ) / motor.ptoMotorRpmRatio
-	return math.max( r0, r1 )
-end 
-PowerConsumer.getMaxPtoRpm = Utils.overwrittenFunction( PowerConsumer.getMaxPtoRpm, vehicleControlAddon.vcaGetMaxPtoRpm )
-
 --******************************************************************************************************************************************
 function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, axisSide, doHandbrake, dt )
 	if self.spec_vca == nil then return superFunc( self, axisForward, axisSide, doHandbrake, dt ) end 
@@ -3291,6 +3270,7 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 			end
 		end
 		
+		self.spec_vca.useIdleThrottle = false 
 		
 		if      self.spec_vca.idleThrottle 
 				and self.spec_motorized       ~= nil 
@@ -3313,7 +3293,10 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 					and ( math.abs( self.lastSpeedReal ) >= motor.lowBrakeForceSpeedLimit
 						 or math.abs( acceleration )       >= 0.001 )
 					then
-				local minRpm    = ( motor.minRpm + self.spec_vca.handThrottle * ( motor.maxRpm - motor.minRpm ))
+
+				self.spec_vca.useIdleThrottle = true 
+
+				local minRpm    = math.max( motor.minRpm, math.min( PowerConsumer.getMaxPtoRpm( self ) * motor.ptoMotorRpmRatio, motor.maxRpm ) )
 				local diffRpm   = motor.differentialRotSpeed * 30 / math.pi
 				local motorRpm  = math.abs( diffRpm * motor.gearRatio )
 				local clutchRpm = math.abs( diffRpm * motor.maxGearRatio )
@@ -3363,23 +3346,43 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 end 
 WheelsUtil.updateWheelsPhysics = Utils.overwrittenFunction( WheelsUtil.updateWheelsPhysics, vehicleControlAddon.vcaUpdateWheelsPhysics )
 --******************************************************************************************************************************************
-function vehicleControlAddon:hasActiveWorkArea()
 
-  if self.spec_turnOnVehicle ~= nil and self.spec_turnOnVehicle.isTurnedOn then 
-		return true 
+function vehicleControlAddon:vcaIsHydraulicSamplePlaying()
+	if self == nil then 
+		return false 
 	end 
-
-	if self.spec_workArea ~= nil and type( self.spec_workArea.workAreas ) == "table" then 
-		for _,w in pairs( self.spec_workArea.workAreas ) do 
-			if self:getIsWorkAreaActive(w) then 	
-				return true 
-			end 
+	
+	if self.spec_cylindered ~= nil then 
+		local spec = self.spec_cylindered
+		if spec.movingToolNeedsSound or spec.movingPartNeedsSound then 
+			return true 
 		end 
 	end 
 	
-	if self.spec_attacherJoints ~= nil and type( self.spec_attacherJoints.attachedImplements ) == "table" then 
+	if self.spec_foldable ~= nil and self.spec_foldable.foldAnimTime ~= nil then 
+		local spec = self.spec_foldable
+		if 0.01 < spec.foldAnimTime and spec.foldAnimTime < 0.99 and ( spec.foldMiddleAnimTime == nil or math.abs( spec.foldAnimTime - spec.foldMiddleAnimTime ) > 0.01 ) then 
+			return true 
+		end 
+	end 
+	
+	if self.spec_attacherJoints ~= nil and type( self.spec_attacherJoints.attachedImplements ) == "table" then  
+		local spec = self.spec_attacherJoints
 		for _,implement in pairs( self.spec_attacherJoints.attachedImplements ) do 
-			if implement.object ~= nil and vehicleControlAddon.hasActiveWorkArea( implement.object ) then 
+			local jointDesc = spec.attacherJoints[implement.jointDescIndex]
+			
+			if jointDesc == nil or implement.object == nil then 
+				return false 
+			end 
+			
+			if      not implement.object.spec_attachable.isHardAttached
+					and not implement.attachingIsInProgress 
+					and jointDesc ~= nil 
+					and jointDesc.allowsLowering and self:getIsActive()
+					and not jointDesc.moveDown 
+					and math.abs(jointDesc.moveAlpha - jointDesc.upperAlpha) > 0.05 then 
+				return true 
+			elseif vehicleControlAddon.vcaIsHydraulicSamplePlaying( implement.object ) then 
 				return true 
 			end 
 		end 
@@ -3387,6 +3390,33 @@ function vehicleControlAddon:hasActiveWorkArea()
 	
 	return false 
 end 
+
+--******************************************************************************************************************************************
+-- hand RPM via PowerConsumer.getMaxPtoRpm (only in neutral)
+function vehicleControlAddon:vcaGetMaxPtoRpm( superFunc, ... )
+	if     self.spec_vca              == nil
+			or self.spec_motorized        == nil 
+			or self.spec_motorized.motor  == nil 
+			or not self.spec_vca.isInitialized 
+			or self.spec_motorized.motor.ptoMotorRpmRatio == nil
+			or self.spec_motorized.motor.ptoMotorRpmRatio <= 0
+			then 
+		return superFunc( self, ... )
+	end 
+	
+	local motor = self.spec_motorized.motor 
+	if self.spec_vca.handThrottle > 0 then
+	-- hand throttle overrides PTO RPM
+		return ( motor.minRpm + vehicleControlAddon.mbClamp( self.spec_vca.handThrottle, 0, 1 ) * ( motor.maxRpm - motor.minRpm ) ) / motor.ptoMotorRpmRatio
+	elseif self.spec_vca.idleThrottle and vehicleControlAddon.vcaIsHydraulicSamplePlaying( self ) then 
+		local r0 = superFunc( self, ... )
+		local r1 = ( motor.minRpm + 0.2 * ( motor.maxRpm - motor.minRpm ) ) / motor.ptoMotorRpmRatio
+		return math.max( r0, r1 )
+	end 
+	return superFunc( self, ... )
+end 
+PowerConsumer.getMaxPtoRpm = Utils.overwrittenFunction( PowerConsumer.getMaxPtoRpm, vehicleControlAddon.vcaGetMaxPtoRpm )
+
 --******************************************************************************************************************************************
 -- limit maxRpm in case of inching 
 function vehicleControlAddon:vcaGetRequiredMotorRpmRange( superFunc, ... )
@@ -3418,47 +3448,79 @@ function vehicleControlAddon:vcaGetRequiredMotorRpmRange( superFunc, ... )
 			 and self.vehicle.spec_vca.oldAcc ~= nil
 			 and self.vehicle.spec_vca.tickDt ~= nil
 			 and self.currentDirection ~= nil 
-			 and self.currentDirection ~= 0 
-		 --and self.gearShiftMode ~= VehicleMotor.SHIFT_MODE_MANUAL_CLUTCH 
 			 and self.manualClutchValue < 0.1
 			 and next(self.vehicle.spec_motorized.differentials) ~= nil
 			) then 
 		return superFunc( self, ... )
 	end 
 	
-	local m = self.currentDirection
-	if self.vehicle:vcaGetShuttleCtrl() then 
-		m = 1 
+	local m = 1
+	if not self.vehicle:vcaGetShuttleCtrl() and self.currentDirection < 0 then 
+		m = -1 
 	end 
 	local curAcc = math.max( 0, m * self.vehicle.spec_vca.oldAcc )
 	local curBrake = math.max( 0, -m * self.vehicle.spec_vca.oldAcc )
 	
-	local motorPtoRpm = math.min(PowerConsumer.getMaxPtoRpm(self.vehicle) * self.ptoMotorRpmRatio, self.maxRpm)
-	local minRpm, maxRpm = self.minRpm, self.maxRpm
-	if motorPtoRpm > 0 then
-		minRpm = motorPtoRpm
-	end 
-	
 	local rpmRange = self.maxRpm - self.minRpm
+	local minRpm, maxRpm = self.minRpm, self.maxRpm
 	local motorPtoRpm = math.min(PowerConsumer.getMaxPtoRpm(self.vehicle) * self.ptoMotorRpmRatio, self.maxRpm)
+	
 	local speed = self.vehicle:getLastSpeed()
 
 	lastMinRpm = vehicleControlAddon.mbClamp( lastMinRpm, minRpm, maxRpm )
 	lastMaxRpm = vehicleControlAddon.mbClamp( lastMaxRpm, minRpm, maxRpm )
 	
 	if self.backwardGears or self.forwardGears then 
-		if curAcc <= 0 then 
-			return superFunc( self, ... )
-		end 
-	
--- limit maxRpm in case of inching 
-		local f = math.max( 0.2, math.abs( self.vehicle.spec_vca.oldAcc ) )
+		-- standard transmission 
+		if curBrake > 0 then 
+			maxRpm = self.maxRpm 
+		else 
+			-- limit maxRpm in case of inching 
+			local f = math.max( 0.2, math.abs( self.vehicle.spec_vca.oldAcc ) )
 
-		maxRpm = math.min( maxRpm, math.max( self.minRpm + f * rpmRange, motorPtoRpm ) )
+			maxRpm = math.min( maxRpm, math.max( self.minRpm + f * rpmRange, motorPtoRpm ) )
+		end 
+		if motorPtoRpm > self.minRpm and not self.vehicle.spec_vca.useIdleThrottle then 
+			minRpm = motorPtoRpm
+		end 
+	elseif motorPtoRpm > self.minRpm then 
+		-- variable transmission and fixed RPM 
+		if self.smoothedLoadPercentage > 0.9 then 	
+			-- reduce maxRpm under full load
+			local f = 10 * self.smoothedLoadPercentage - 9
+			motorPtoRpm = motorPtoRpm - 0.07 * f * rpmRange 
+		end 
+		minRpm = vehicleControlAddon.mbClamp( motorPtoRpm                  , self.minRpm, self.maxRpm )
+		maxRpm = vehicleControlAddon.mbClamp( motorPtoRpm + 0.07 * rpmRange, self.minRpm, self.maxRpm )
 	else 
-	
+		-- variable transmission and variable RPM; e.g. Fendt TMS
+		
+		local function vehicleHasActiveWorkArea( self )
+			if self.spec_turnOnVehicle ~= nil and self.spec_turnOnVehicle.isTurnedOn then 
+				return true 
+			end 
+
+			if self.spec_workArea ~= nil and type( self.spec_workArea.workAreas ) == "table" then 
+				for _,w in pairs( self.spec_workArea.workAreas ) do 
+					if self:getIsWorkAreaActive(w) then 	
+						return true 
+					end 
+				end 
+			end 
+			
+			if self.spec_attacherJoints ~= nil and type( self.spec_attacherJoints.attachedImplements ) == "table" then 
+				for _,implement in pairs( self.spec_attacherJoints.attachedImplements ) do 
+					if implement.object ~= nil and vehicleHasActiveWorkArea( implement.object ) then 
+						return true 
+					end 
+				end 
+			end 
+			
+			return false 
+		end 
+		
 		local hasActiveWorkArea = false 
-		if vehicleControlAddon.hasActiveWorkArea( self.vehicle ) then 
+		if vehicleHasActiveWorkArea( self.vehicle ) then 
 			hasActiveWorkArea     = true 
 			self.vcaActiveWATimer = g_currentMission.time + 1000
 		elseif self.vcaActiveWATimer == nil then 
@@ -3486,56 +3548,45 @@ function vehicleControlAddon:vcaGetRequiredMotorRpmRange( superFunc, ... )
 		else
 			if speed  > 2   then 
 				-- not stopped => increase RPM
-				self.vcaIncreaseRpm = math.max( lastIncreaseRpm, g_currentMission.time + 1000 )
+				self.vcaIncreaseRpm = math.max( lastIncreaseRpm, g_currentMission.time + 2000 )
 			elseif curAcc > 0.1 then 
 				-- accelerating => increase RPM 
 				self.vcaIncreaseRpm = math.max( lastIncreaseRpm, g_currentMission.time + 1000 )
 			elseif lastIncreaseRpm > g_currentMission.time then 
 				self.vcaIncreaseRpm = lastIncreaseRpm
 			end 
+		end 
+		
+		if hasActiveWorkArea then 
+			idleRpm = math.min( math.max( minRpm, self.minRpm + 0.4 * rpmRange ), maxRpm )
+		end 
+					
+		local function getRequiredRpmAtSpeedLimit(ratio)
+			local speedLimit = math.min(self.vehicle:getSpeedLimit(true), self.vehicle.lastSpeedReal * 3600 + 1 )
 
-			if hasActiveWorkArea then 
-				idleRpm = math.min( math.max( minRpm, self.minRpm + 0.4 * rpmRange ), maxRpm )
+			if self.vehicle:getCruiseControlState() == Drivable.CRUISECONTROL_STATE_ACTIVE then
+				speedLimit = math.min(speedLimit, self.vehicle:getCruiseControlSpeed())
+			end
+
+			speedLimit = ratio > 0 and math.min(speedLimit, self.maxForwardSpeed * 3.6) or math.min(speedLimit, self.maxBackwardSpeed * 3.6)
+
+			return speedLimit / 3.6 * 30 / math.pi * math.abs(ratio)
+		end			
+					
+		local speedMinRpm  = getRequiredRpmAtSpeedLimit( self.minGearRatio )
+		local peakPowerRpm = self.peakMotorPowerRotSpeed * 30 / math.pi
+
+		if self.smoothedLoadPercentage > 0.9 then 	
+		-- reduce maxRpm under full load
+			local f = 10 * self.smoothedLoadPercentage - 9
+			maxRpm = math.min( maxRpm,math.max( minRpm, idleRpm, peakPowerRpm - 0.1 * f * rpmRange, speedMinRpm ) )
+		else
+			local r = self.maxRpm 
+			if self.smoothedLoadPercentage < 0.8 then 
+			-- reduce maxRpm for best efficiency
+				r = speedMinRpm
 			end 
-						
-			local function getRequiredRpmAtSpeedLimit(ratio)
-				local speedLimit = math.min(self.vehicle:getSpeedLimit(true), self.vehicle.lastSpeedReal * 3600 + 1 )
-
-				if self.vehicle:getCruiseControlState() == Drivable.CRUISECONTROL_STATE_ACTIVE then
-					speedLimit = math.min(speedLimit, self.vehicle:getCruiseControlSpeed())
-				end
-
-				speedLimit = ratio > 0 and math.min(speedLimit, self.maxForwardSpeed * 3.6) or math.min(speedLimit, self.maxBackwardSpeed * 3.6)
-
-				return speedLimit / 3.6 * 30 / math.pi * math.abs(ratio)
-			end			
-						
-			local speedMinRpm  = getRequiredRpmAtSpeedLimit( self.minGearRatio )
-			local peakPowerRpm = self.peakMotorPowerRotSpeed * 30 / math.pi
-
-			if self.smoothedLoadPercentage > 0.9 then 	
-			-- reduce maxRpm under full load
-				local f = 10 * self.smoothedLoadPercentage - 9
-				maxRpm = math.min( maxRpm,math.max( minRpm, 
-																						idleRpm,
-																						motorPtoRpm - 0.1 * f * rpmRange,
-																						peakPowerRpm - 0.1 * f * rpmRange,
-																						speedMinRpm ) )
-				if motorPtoRpm > 0 then 
-					minRpm = motorPtoRpm - 0.1 * f * rpmRange
-				end 
-			else
-				local r = self.maxRpm 
-				if self.smoothedLoadPercentage < 0.8 then 
-				-- reduce maxRpm for best efficiency
-					r = speedMinRpm
-				end 
-				maxRpm = math.min( maxRpm,math.max( minRpm,
-																						idleRpm + 0.1 * rpmRange,
-																						motorPtoRpm,
-																						r ) )
-			end 
-			
+			maxRpm = math.min( maxRpm, math.max( minRpm, idleRpm + 0.1 * rpmRange, r ) )
 		end 
 		
 		if self.vcaIncreaseRpm ~= nil and g_currentMission.time < self.vcaIncreaseRpm then 
@@ -3938,9 +3989,9 @@ function vehicleControlAddon:vcaUIShowidleThrottle()
 			then 
 		local motor = self.spec_motorized.motor 
 	--if motor.gearShiftMode ~= VehicleMotor.SHIFT_MODE_MANUAL_CLUTCH and (motor.backwardGears or motor.forwardGears) then
-		if (motor.backwardGears or motor.forwardGears) then
+	--if (motor.backwardGears or motor.forwardGears) then
 			return true 
-		end 
+	--end 
 	end 
 	return false
 end 

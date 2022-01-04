@@ -45,7 +45,7 @@
 		<text name="vcaGEARRGMODE"      text="Tasten für Gänge und Gruppen tauschen"/>
 		<text name="vcaSTSPEEDO"        text="Lenkgeschwindigkeit"/>
 		<text name="vcaSTSPEEDI"        text="Inverse Lenkgeschwindigkeit"/>
-		<text name="vcaIDLETHROTTLE"    text="Leerlaufanreicherung"/>
+		<text name="vcaIDLETHROTTLE"    text="Motormodifikationen"/>
 		<text name="vcaDEBUG"           text="Debug"/>
 		
 		<text name="vca_tip_CAMERAI"      text="Die innere Kamera dreht sich passend zum Lenkeinschlag automatisch mit."/>
@@ -90,7 +90,7 @@
 		<text name="vca_tip_GEARRGMODE"   text="Diese Einstellung vertauscht die hoch/runter Tasten für Gänge und Gruppen"/>
 		<text name="vca_tip_STSPEEDO"     text="Geschwindigkeit der Lenkung"/>
 		<text name="vca_tip_STSPEEDI"     text="Geschwindigkeit der Lenkung beim Zurücklenken"/>
-		<text name="vca_tip_IDLETHROTTLE" text="Motor gibt selbständig Gas zum Halten der Leerlaufdrehzahl"/>
+		<text name="vca_tip_IDLETHROTTLE" text="Das Fahrzeug gibt selbständig Gas zum Halten der Leerlaufdrehzahl und das stufenlose Getriebe ändert die Drehzahl"/>
 		<text name="vca_tip_DEBUG"        text="Er werden zusätzliche Meldungen ins Log geschrieben"/>
 		
 		<text name="input_vcaSETTINGS"    text="VCA: Einstellungen"/>
