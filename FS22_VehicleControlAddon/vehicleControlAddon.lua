@@ -3363,9 +3363,55 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 end 
 WheelsUtil.updateWheelsPhysics = Utils.overwrittenFunction( WheelsUtil.updateWheelsPhysics, vehicleControlAddon.vcaUpdateWheelsPhysics )
 --******************************************************************************************************************************************
+function vehicleControlAddon:hasActiveWorkArea()
+
+  if self.spec_turnOnVehicle ~= nil and self.spec_turnOnVehicle.isTurnedOn then 
+		return true 
+	end 
+
+	if self.spec_workArea ~= nil and type( self.spec_workArea.workAreas ) == "table" then 
+		for _,w in pairs( self.spec_workArea.workAreas ) do 
+			if self:getIsWorkAreaActive(w) then 	
+				return true 
+			end 
+		end 
+	end 
+	
+	if self.spec_attacherJoints ~= nil and type( self.spec_attacherJoints.attachedImplements ) == "table" then 
+		for _,implement in pairs( self.spec_attacherJoints.attachedImplements ) do 
+			if implement.object ~= nil and vehicleControlAddon.hasActiveWorkArea( implement.object ) then 
+				return true 
+			end 
+		end 
+	end 
+	
+	return false 
+end 
 --******************************************************************************************************************************************
 -- limit maxRpm in case of inching 
 function vehicleControlAddon:vcaGetRequiredMotorRpmRange( superFunc, ... )
+	local lastIncreaseRpm = -1 
+	if self.vcaIncreaseRpm ~= nil then 
+		lastIncreaseRpm = self.vcaIncreaseRpm
+	end 
+	local lastDecreaseRpm = -1 
+	if self.vcaDecreaseRpm ~= nil then 
+		lastDecreaseRpm = self.vcaDecreaseRpm
+	end 
+	local lastMinRpm = self.minRpm 
+	if self.vcaMinRpm ~= nil then 
+		lastMinRpm = self.vcaMinRpm
+	end 
+	local lastMaxRpm = self.maxRpm
+	if self.vcaMaxRpm ~= nil then 
+		lastMaxRpm = self.vcaMaxRpm
+	end 
+	
+	self.vcaIncreaseRpm = nil 
+	self.vcaDecreaseRpm = nil 
+	self.vcaMinRpm      = nil 
+  self.vcaMaxRpm      = nil 
+
 	if not ( self.vehicle ~= nil 
 			 and self.vehicle.spec_vca ~= nil 
 			 and self.vehicle.spec_vca.idleThrottle
@@ -3375,7 +3421,6 @@ function vehicleControlAddon:vcaGetRequiredMotorRpmRange( superFunc, ... )
 			 and self.currentDirection ~= 0 
 		 --and self.gearShiftMode ~= VehicleMotor.SHIFT_MODE_MANUAL_CLUTCH 
 			 and self.manualClutchValue < 0.1
-			 and (self.backwardGears or self.forwardGears)
 			 and next(self.vehicle.spec_motorized.differentials) ~= nil
 			) then 
 		return superFunc( self, ... )
@@ -3385,17 +3430,98 @@ function vehicleControlAddon:vcaGetRequiredMotorRpmRange( superFunc, ... )
 	if self.vehicle:vcaGetShuttleCtrl() then 
 		m = 1 
 	end 
+	local curAcc = math.max( 0, m * self.vehicle.spec_vca.oldAcc )
+	local curBrake = math.max( 0, -m * self.vehicle.spec_vca.oldAcc )
 	
-	if m * self.vehicle.spec_vca.oldAcc <= 0 then 
-		return superFunc( self, ... )
+	local motorPtoRpm = math.min(PowerConsumer.getMaxPtoRpm(self.vehicle) * self.ptoMotorRpmRatio, self.maxRpm)
+	local minRpm, maxRpm = self.minRpm, self.maxRpm
+	if motorPtoRpm > 0 then
+		minRpm = motorPtoRpm
 	end 
 	
-	minRpm, maxRpm = superFunc( self, ... )
+	local rpmRange = self.maxRpm - self.minRpm
 	local motorPtoRpm = math.min(PowerConsumer.getMaxPtoRpm(self.vehicle) * self.ptoMotorRpmRatio, self.maxRpm)
-	local f = math.max( 0.2, math.abs( self.vehicle.spec_vca.oldAcc ) )
-	local r = self.maxRpm - self.minRpm
-	maxRpm = math.min( maxRpm, math.max( self:getNonClampedMotorRpm() - self.vehicle.spec_vca.tickDt * 0.0005 * r, self.minRpm + f * r, motorPtoRpm ) )
+	local speed = self.vehicle:getLastSpeed()
 
+	lastMinRpm = vehicleControlAddon.mbClamp( lastMinRpm, minRpm, maxRpm )
+	lastMaxRpm = vehicleControlAddon.mbClamp( lastMaxRpm, minRpm, maxRpm )
+	
+	if self.backwardGears or self.forwardGears then 
+		if curAcc <= 0 then 
+			return superFunc( self, ... )
+		end 
+	
+-- limit maxRpm in case of inching 
+		local f = math.max( 0.2, math.abs( self.vehicle.spec_vca.oldAcc ) )
+
+		maxRpm = math.min( maxRpm, math.max( self.minRpm + f * rpmRange, motorPtoRpm ) )
+	else 
+	
+		local hasActiveWorkArea = false 
+		if vehicleControlAddon.hasActiveWorkArea( self.vehicle ) then 
+			hasActiveWorkArea     = true 
+			self.vcaActiveWATimer = g_currentMission.time + 1000
+		elseif self.vcaActiveWATimer == nil then 
+		elseif g_currentMission.time < self.vcaActiveWATimer then 
+			hasActiveWorkArea     = true 
+		else 
+			self.vcaActiveWATimer = nil 
+		end 	
+	
+		local vcaMinRpm = math.min( math.max( minRpm, self.minRpm + 0.2 * rpmRange ), maxRpm )
+		local vcaMaxRpm = maxRpm 
+
+		if self.vehicle.spec_combine ~= nil then 
+			-- increase RPM for combine
+			if     speed  > 2   then 
+				-- not stopped => increase RPM
+				self.vcaIncreaseRpm = math.max( lastIncreaseRpm, g_currentMission.time + 5000 )
+			elseif curAcc > 0.1 then 
+				-- accelerating => increase RPM for a short time 
+				self.vcaIncreaseRpm = math.max( lastIncreaseRpm, g_currentMission.time + 2000 )
+			elseif lastIncreaseRpm > g_currentMission.time then 
+				self.vcaIncreaseRpm = lastIncreaseRpm
+			end 
+
+			vcaMinRpm = math.min( math.max( minRpm, self.minRpm + 0.6 * rpmRange ), maxRpm )
+		else
+			if speed  > 2   then 
+				-- not stopped => increase RPM
+				self.vcaIncreaseRpm = math.max( lastIncreaseRpm, g_currentMission.time + 1000 )
+			elseif curAcc > 0.1 then 
+				-- accelerating => increase RPM 
+				self.vcaIncreaseRpm = math.max( lastIncreaseRpm, g_currentMission.time + 1000 )
+			elseif lastIncreaseRpm > g_currentMission.time then 
+				self.vcaIncreaseRpm = lastIncreaseRpm
+			end 
+
+			if hasActiveWorkArea then 
+				vcaMinRpm = math.min( math.max( minRpm, self.minRpm + 0.4 * rpmRange ), maxRpm )
+			end 
+			
+			if self.smoothedLoadPercentage > 0.9 then 
+				local f = 10 * self.smoothedLoadPercentage - 9
+				maxRpm = math.min( maxRpm,math.max( minRpm, vcaMinRpm,
+																						self.maxRpm - 0.4 * f * rpmRange, 
+																						motorPtoRpm - 0.1 * f * rpmRange,
+																						speed * math.abs( self.minGearRatio ) * 2.6525823848649222628147293895419 ) )
+				if motorPtoRpm > 0 then 
+					minRpm = motorPtoRpm - 0.1 * f * rpmRange
+				end 
+			end 
+		end 
+		
+		if self.vcaIncreaseRpm ~= nil and g_currentMission.time < self.vcaIncreaseRpm then 
+			minRpm = math.max( minRpm, vcaMinRpm )
+		end		
+	end 
+	
+	minRpm = vehicleControlAddon.mbClamp( minRpm, lastMinRpm - self.vehicle.spec_vca.tickDt * 0.0005 * rpmRange, lastMinRpm + self.vehicle.spec_vca.tickDt * 0.0005 * rpmRange )
+	maxRpm = vehicleControlAddon.mbClamp( maxRpm, lastMaxRpm - self.vehicle.spec_vca.tickDt * 0.0005 * rpmRange, lastMaxRpm + self.vehicle.spec_vca.tickDt * 0.0005 * rpmRange )
+	
+	self.vcaMinRpm = minRpm 
+	self.vcaMaxRpm = maxRpm 
+	
 	return minRpm, maxRpm
 end
 
