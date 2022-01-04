@@ -3468,8 +3468,7 @@ function vehicleControlAddon:vcaGetRequiredMotorRpmRange( superFunc, ... )
 			self.vcaActiveWATimer = nil 
 		end 	
 	
-		local vcaMinRpm = math.min( math.max( minRpm, self.minRpm + 0.2 * rpmRange ), maxRpm )
-		local vcaMaxRpm = maxRpm 
+		local idleRpm = math.min( math.max( minRpm, self.minRpm + 0.15 * rpmRange ), maxRpm )
 
 		if self.vehicle.spec_combine ~= nil then 
 			-- increase RPM for combine
@@ -3483,7 +3482,7 @@ function vehicleControlAddon:vcaGetRequiredMotorRpmRange( superFunc, ... )
 				self.vcaIncreaseRpm = lastIncreaseRpm
 			end 
 
-			vcaMinRpm = math.min( math.max( minRpm, self.minRpm + 0.6 * rpmRange ), maxRpm )
+			idleRpm = math.min( math.max( minRpm, self.minRpm + 0.6 * rpmRange ), maxRpm )
 		else
 			if speed  > 2   then 
 				-- not stopped => increase RPM
@@ -3496,23 +3495,51 @@ function vehicleControlAddon:vcaGetRequiredMotorRpmRange( superFunc, ... )
 			end 
 
 			if hasActiveWorkArea then 
-				vcaMinRpm = math.min( math.max( minRpm, self.minRpm + 0.4 * rpmRange ), maxRpm )
+				idleRpm = math.min( math.max( minRpm, self.minRpm + 0.4 * rpmRange ), maxRpm )
 			end 
-			
-			if self.smoothedLoadPercentage > 0.9 then 
+						
+			local function getRequiredRpmAtSpeedLimit(ratio)
+				local speedLimit = math.min(self.vehicle:getSpeedLimit(true), self.vehicle.lastSpeedReal * 3600 + 1 )
+
+				if self.vehicle:getCruiseControlState() == Drivable.CRUISECONTROL_STATE_ACTIVE then
+					speedLimit = math.min(speedLimit, self.vehicle:getCruiseControlSpeed())
+				end
+
+				speedLimit = ratio > 0 and math.min(speedLimit, self.maxForwardSpeed * 3.6) or math.min(speedLimit, self.maxBackwardSpeed * 3.6)
+
+				return speedLimit / 3.6 * 30 / math.pi * math.abs(ratio)
+			end			
+						
+			local speedMinRpm  = getRequiredRpmAtSpeedLimit( self.minGearRatio )
+			local peakPowerRpm = self.peakMotorPowerRotSpeed * 30 / math.pi
+
+			if self.smoothedLoadPercentage > 0.9 then 	
+			-- reduce maxRpm under full load
 				local f = 10 * self.smoothedLoadPercentage - 9
-				maxRpm = math.min( maxRpm,math.max( minRpm, vcaMinRpm,
-																						self.maxRpm - 0.4 * f * rpmRange, 
+				maxRpm = math.min( maxRpm,math.max( minRpm, 
+																						idleRpm,
 																						motorPtoRpm - 0.1 * f * rpmRange,
-																						speed * math.abs( self.minGearRatio ) * 2.6525823848649222628147293895419 ) )
+																						peakPowerRpm - 0.1 * f * rpmRange,
+																						speedMinRpm ) )
 				if motorPtoRpm > 0 then 
 					minRpm = motorPtoRpm - 0.1 * f * rpmRange
 				end 
+			else
+				local r = self.maxRpm 
+				if self.smoothedLoadPercentage < 0.8 then 
+				-- reduce maxRpm for best efficiency
+					r = speedMinRpm
+				end 
+				maxRpm = math.min( maxRpm,math.max( minRpm,
+																						idleRpm + 0.1 * rpmRange,
+																						motorPtoRpm,
+																						r ) )
 			end 
+			
 		end 
 		
 		if self.vcaIncreaseRpm ~= nil and g_currentMission.time < self.vcaIncreaseRpm then 
-			minRpm = math.max( minRpm, vcaMinRpm )
+			minRpm = math.max( minRpm, idleRpm, self:getNonClampedMotorRpm() - self.vehicle.spec_vca.tickDt * 0.0005 * rpmRange )
 		end		
 	end 
 	
@@ -3611,6 +3638,8 @@ function vehicleControlAddon:vcaOnSetSnapIsOn( old, new, noEventSend )
 			self:vcaSetState( "snapOffset", o, noEventSend )
 			self:vcaSetState( "snapInvert", p, noEventSend )
 		end
+	elseif new and self.isClient and self:vcaIsActive() and vehicleControlAddon.snapOnSample ~= nil then
+		playSample(vehicleControlAddon.snapOnSample, 1, 0.2, 0, 0, 0)
 	end 
 end 
 

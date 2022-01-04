@@ -34,11 +34,11 @@ Les fonction du GPS sont accessibles via les raccourcis par défaut suivants :
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>modIcon.dds</iconFilename>
-	<version>9.0.2.9</version>
+	<version>9.0.3.0</version>
 	<l10n filenamePrefix="l10n/modDesc_l10n">
 		<text name="vcaVERSION">          
-			<en>Vehicle Control Addon 1.0 rc9</en>
-			<de>Erweiterung zur Fahrzeugkontrolle 1.0 rc9</de>
+			<en>Vehicle Control Addon</en>
+			<de>Erweiterung zur Fahrzeugkontrolle</de>
 		</text>
 	</l10n>
 	
