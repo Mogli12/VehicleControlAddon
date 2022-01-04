@@ -3408,11 +3408,16 @@ function vehicleControlAddon:vcaGetMaxPtoRpm( superFunc, ... )
 	if self.spec_vca.handThrottle > 0 then
 	-- hand throttle overrides PTO RPM
 		return ( motor.minRpm + vehicleControlAddon.mbClamp( self.spec_vca.handThrottle, 0, 1 ) * ( motor.maxRpm - motor.minRpm ) ) / motor.ptoMotorRpmRatio
+	elseif self.spec_vca.useIdleThrottle then 
+	-- do not increase RPM while driving
+		return superFunc( self, ... )
 	elseif self.spec_vca.idleThrottle and vehicleControlAddon.vcaIsHydraulicSamplePlaying( self ) then 
+	-- extra RPM for hydraulics
 		local r0 = superFunc( self, ... )
 		local r1 = ( motor.minRpm + 0.2 * ( motor.maxRpm - motor.minRpm ) ) / motor.ptoMotorRpmRatio
 		return math.max( r0, r1 )
 	end 
+	
 	return superFunc( self, ... )
 end 
 PowerConsumer.getMaxPtoRpm = Utils.overwrittenFunction( PowerConsumer.getMaxPtoRpm, vehicleControlAddon.vcaGetMaxPtoRpm )
