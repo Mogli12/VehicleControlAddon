@@ -1,9 +1,9 @@
 # VehicleControlAddon for Farming Simulator 2022
 
 ## Status
-Currenty, the lane guidance of VCA is deactivated if the vehicle has GPS configured. The reason is that lane guidance requires several action bindings and I try to avoid mod conflicts. 
+At the moment I am waiting for the mod to be published in ModHub. 
 
-**After the stress about GPS mod I decided to take a break.**
+I moved several issues to the new discussion forum. Please use the disucssion forum for questions and ideas. 
 
 ## Developer version
 Please be aware you're using a developer version, which may and will contain errors, bugs, mistakes and unfinished code. 
