@@ -1484,7 +1484,7 @@ function vehicleControlAddon:onPreUpdate(dt, isActiveForInput, isActiveForInputI
 	local lastGPSModActive = self.spec_vca.GPSModActive 
 	local lastSnapPossible = self.spec_vca.snapPossible
 	self.spec_vca.GPSModActive = false 
-	if self.spec_globalPositioningSystem ~= nil and self.spec_globalPositioningSystem.guidanceSteeringIsActive then
+	if self.spec_globalPositioningSystem ~= nil and self.spec_globalPositioningSystem.guidanceIsActive then
 		self.spec_vca.GPSModActive = true 
 		self.spec_vca.snapPossible = false 
 		
@@ -2546,8 +2546,7 @@ function vehicleControlAddon:onDraw()
 			
 			local showCompass = true 
 
-			if not self:getIsVehicleControlledByPlayer() then 
-			elseif self.spec_globalPositioningSystem ~= nil and self.spec_globalPositioningSystem.guidanceSteeringIsActive then
+			if not self:getIsVehicleControlledByPlayer() or self.spec_vca.GPSModActive then
 			elseif self.aiveAutoSteer or not ( -4 <= self.spec_vca.lastSnapAngle and self.spec_vca.lastSnapAngle <= 4 ) then 
 				if showCompass then 
 					renderText(x, y, l, string.format( "%4.1f°", math.deg( math.pi - d )))
@@ -2654,7 +2653,7 @@ function vehicleControlAddon:onDraw()
 		
 		local snapDraw = false
 		
-		if not self:getIsVehicleControlledByPlayer() then 
+		if not ( self:getIsVehicleControlledByPlayer() and self.spec_vca.snapPossible ) then 
 			self.spec_vca.snapDrawTimer = nil
 			self.spec_vca.snapPosTimer  = nil 
 			self.spec_vca.drawSnapIsOn  = nil 
