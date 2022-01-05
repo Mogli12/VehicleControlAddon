@@ -265,6 +265,7 @@ function vehicleControlAddon.createStates()
 	vehicleControlAddon.createState( "noARBToggle"  , nil                            , false, VCAValueType.bool  )
 	vehicleControlAddon.createState( "brakeForce"   , "brakeForceFactor"             , nil  , VCAValueType.float )
 	vehicleControlAddon.createState( "autoShift"    , nil                            , false, VCAValueType.bool  ) --, vehicleControlAddon.vcaOnSetAutoShift )
+	vehicleControlAddon.createState( "handbrake"    , nil                            , false, VCAValueType.bool  )
 	vehicleControlAddon.createState( "ksIsOn"       , nil                            , false, VCAValueType.bool  , nil, false ) --, vehicleControlAddon.vcaOnSetKSIsOn )
 	vehicleControlAddon.createState( "keepSpeed"    , nil                            , 0    , VCAValueType.float , nil, false )
 	vehicleControlAddon.createState( "ksToggle"     , nil                            , false, VCAValueType.bool  )
@@ -823,6 +824,7 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
 																"vcaLowerB",
 																"vcaActivateF",
 																"vcaActivateB",
+																"vcaHandbrake",
 																"vcaAutoShift",
 															}) do
 																
@@ -1142,6 +1144,19 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 		vehicleControlAddon.vcaShowSettingsUI( self )
 	elseif actionName == "vcaAutoShift" then
 		self:vcaSetState( "autoShift", not self.spec_vca.autoShift )
+	elseif actionName == "vcaHandbrake" then
+		self:vcaSetState( "handbrake", not self.spec_vca.handbrake )
+		if self.spec_vca.handbrake then 
+			if self.spec_motorized.motor.targetGear ~= 0 then 
+				self.spec_vca.gearBeforeHandbrake = self.spec_motorized.motor.targetGear 
+			else 
+				self.spec_vca.gearBeforeHandbrake = nil 
+			end 
+			MotorGearShiftEvent.sendEvent(self, MotorGearShiftEvent.TYPE_SELECT_GEAR, 0)
+		elseif self.spec_vca.gearBeforeHandbrake ~= nil then 
+			MotorGearShiftEvent.sendEvent(self, MotorGearShiftEvent.TYPE_SELECT_GEAR, self.spec_vca.gearBeforeHandbrake)
+			self.spec_vca.gearBeforeHandbrake = nil 
+		end 
 	elseif actionName == "vcaDiffLockF" then
 		if self:vcaIsVehicleControlledByPlayer() and self:vcaHasDiffFront() then
 			self:vcaSetState( "diffLockFront", not self.spec_vca.diffLockFront )
@@ -3228,6 +3243,9 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 		if not self:getIsMotorStarted() then 
 			acceleration = 0
 			doHandbrake = true 
+		elseif self.spec_vca.handbrake then 
+			acceleration = 0
+			doHandbrake = true 		
 		elseif self.spec_drivable.cruiseControl.state > 0 then 
 
 		elseif self.spec_vca.ksIsOn and ( self.spec_vca.ksBrakeTime == nil or g_currentMission.time < self.spec_vca.ksBrakeTime + 1000 ) then 
@@ -3272,6 +3290,7 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 		self.spec_vca.useIdleThrottle = false 
 		
 		if      self.spec_vca.idleThrottle 
+				and not self.spec_vca.handbrake
 				and self.spec_motorized       ~= nil 
 				and self.spec_motorized.motor ~= nil 	
 				and self.spec_motorized.motorizedNode ~= nil
@@ -3419,20 +3438,26 @@ function vehicleControlAddon:vcaGetMaxPtoRpm( superFunc, ... )
 	end 
 	
 	local motor = self.spec_motorized.motor 
+	
+	local r0 = superFunc( self, ... )
+	
+	if self.spec_vca.handbrake and self.spec_vca.oldAcc ~= nil and self.spec_vca.oldAcc > 0 then 
+		r0 = math.max( r0, ( motor.minRpm + self.spec_vca.oldAcc * ( motor.maxRpm - motor.minRpm ) ) / motor.ptoMotorRpmRatio )
+	end 
+
+	local r1 = r0
+	
 	if self.spec_vca.handThrottle > 0 then
 	-- hand throttle overrides PTO RPM
-		return ( motor.minRpm + vehicleControlAddon.mbClamp( self.spec_vca.handThrottle, 0, 1 ) * ( motor.maxRpm - motor.minRpm ) ) / motor.ptoMotorRpmRatio
+		r1 = ( motor.minRpm + vehicleControlAddon.mbClamp( self.spec_vca.handThrottle, 0, 1 ) * ( motor.maxRpm - motor.minRpm ) ) / motor.ptoMotorRpmRatio
 	elseif self.spec_vca.useIdleThrottle then 
 	-- do not increase RPM while driving
-		return superFunc( self, ... )
 	elseif self.spec_vca.idleThrottle and vehicleControlAddon.vcaIsHydraulicSamplePlaying( self ) then 
 	-- extra RPM for hydraulics
-		local r0 = superFunc( self, ... )
-		local r1 = ( motor.minRpm + 0.2 * ( motor.maxRpm - motor.minRpm ) ) / motor.ptoMotorRpmRatio
-		return math.max( r0, r1 )
+		r1 = math.max( r0, ( motor.minRpm + 0.2 * ( motor.maxRpm - motor.minRpm ) ) / motor.ptoMotorRpmRatio )
 	end 
 	
-	return superFunc( self, ... )
+	return r1
 end 
 PowerConsumer.getMaxPtoRpm = Utils.overwrittenFunction( PowerConsumer.getMaxPtoRpm, vehicleControlAddon.vcaGetMaxPtoRpm )
 
@@ -3618,6 +3643,24 @@ function vehicleControlAddon:vcaGetRequiredMotorRpmRange( superFunc, ... )
 end
 
 VehicleMotor.getRequiredMotorRpmRange = Utils.overwrittenFunction( VehicleMotor.getRequiredMotorRpmRange, vehicleControlAddon.vcaGetRequiredMotorRpmRange )
+
+--******************************************************************************************************************************************
+
+function vehicleControlAddon:vcaGetGearToDisplay( superFunc )
+	if      self.vehicle          ~= nil        
+			and self.vehicle.spec_vca ~= nil 
+			and self.vehicle.spec_vca.handbrake 
+			then 
+		if self.backwardGears or self.forwardGears then
+			return "P", false, false, nil, nil, nil, nil, false 
+		else 
+			return "P", false, false, "R", "D", nil, nil, false 
+		end 
+	end
+	return superFunc( self )
+end 
+
+VehicleMotor.getGearToDisplay = Utils.overwrittenFunction( VehicleMotor.getGearToDisplay, vehicleControlAddon.vcaGetGearToDisplay )
 
 --******************************************************************************************************************************************
 --

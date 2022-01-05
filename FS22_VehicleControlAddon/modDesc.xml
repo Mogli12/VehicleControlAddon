@@ -34,7 +34,7 @@ Les fonction du GPS sont accessibles via les raccourcis par défaut suivants :
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>modIcon.dds</iconFilename>
-	<version>9.0.3.4</version>
+	<version>9.0.3.5</version>
 	<l10n filenamePrefix="l10n/modDesc_l10n">
 		<text name="vcaVERSION">          
 			<en>Vehicle Control Addon</en>
@@ -68,6 +68,7 @@ Les fonction du GPS sont accessibles via les raccourcis par défaut suivants :
 		<action name="vcaKEEPSPEED" category="VEHICLE" axisType="HALF"/>
 		<action name="vcaKEEPSPEED2" category="VEHICLE" axisType="HALF"/>
 		<action name="vcaSWAPSPEED" category="VEHICLE" axisType="HALF"/>
+		<action name="vcaHandbrake"   category="VEHICLE" axisType="HALF"/>
 		<action name="vcaAutoShift" category="VEHICLE" axisType="HALF"/>
 		<action name="vcaDiffLockF" category="VEHICLE" axisType="HALF"/>
 		<action name="vcaDiffLockM" category="VEHICLE" axisType="HALF"/>
@@ -159,6 +160,9 @@ Les fonction du GPS sont accessibles via les raccourcis par défaut suivants :
 		</actionBinding>	
 		<actionBinding action="vcaDiffLockB">
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_backslash"/>
+		</actionBinding>	
+		<actionBinding action="vcaHandbrake">
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_semicolon"/>
 		</actionBinding>	
 		<actionBinding action="vcaAutoShift">
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_leftbracket"/>
