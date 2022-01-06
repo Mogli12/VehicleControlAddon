@@ -34,7 +34,7 @@ Les fonction du GPS sont accessibles via les raccourcis par défaut suivants :
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>modIcon.dds</iconFilename>
-	<version>9.0.3.7</version>
+	<version>9.0.3.8</version>
 	<l10n filenamePrefix="l10n/modDesc_l10n">
 		<text name="vcaVERSION">          
 			<en>Vehicle Control Addon</en>
@@ -43,41 +43,42 @@ Les fonction du GPS sont accessibles via les raccourcis par défaut suivants :
 	</l10n>
 	
 	<actions>
-		<action name="vcaSETTINGS"  category="VEHICLE" axisType="HALF"/>
-		<action name="vcaGLOBALS"   category="ONFOOT"  axisType="HALF"/>
-		<action name="vcaUP"        category="VEHICLE" axisType="HALF"/>
-		<action name="vcaDOWN"      category="VEHICLE" axisType="HALF"/>
-		<action name="vcaLEFT"      category="VEHICLE" axisType="HALF"/>
-		<action name="vcaRIGHT"     category="VEHICLE" axisType="HALF"/>
-		<action name="vcaSnapUP"    category="VEHICLE" axisType="HALF"/>
-		<action name="vcaSnapDOWN"  category="VEHICLE" axisType="HALF"/>
-		<action name="vcaSnapLEFT"  category="VEHICLE" axisType="HALF"/>
-		<action name="vcaSnapRIGHT" category="VEHICLE" axisType="HALF"/>
-		<action name="vcaSNAP"      category="VEHICLE" axisType="HALF"/>
-		<action name="vcaSNAPLEFT"  category="VEHICLE" axisType="HALF"/>
-		<action name="vcaSNAPRIGHT" category="VEHICLE" axisType="HALF"/>
-		<action name="vcaSNAPPREV"  category="VEHICLE" axisType="HALF"/>
-		<action name="vcaSNAPCONT"  category="VEHICLE" axisType="HALF"/>
-		<action name="vcaSNAPNEXT"  category="VEHICLE" axisType="HALF"/>
-		<action name="vcaSNAPRESET" category="VEHICLE" axisType="HALF"/>
-		<action name="vcaSNAPDIST"  category="VEHICLE" axisType="HALF"/>
-		<action name="vcaNO_ARB"    category="VEHICLE" axisType="HALF"/>
-		<action name="vcaINCHING"   category="VEHICLE" axisType="HALF"/>
-		<action name="vcaKEEPROT"   category="VEHICLE" axisType="HALF"/>
-		<action name="vcaKEEPROT2"  category="VEHICLE" axisType="HALF"/>
-		<action name="vcaKEEPSPEED" category="VEHICLE" axisType="HALF"/>
+		<action name="vcaSETTINGS"   category="VEHICLE" axisType="HALF"/>
+		<action name="vcaGLOBALS"    category="ONFOOT"  axisType="HALF"/>
+		<action name="vcaUP"         category="VEHICLE" axisType="HALF"/>
+		<action name="vcaDOWN"       category="VEHICLE" axisType="HALF"/>
+		<action name="vcaLEFT"       category="VEHICLE" axisType="HALF"/>
+		<action name="vcaRIGHT"      category="VEHICLE" axisType="HALF"/>
+		<action name="vcaSnapUP"     category="VEHICLE" axisType="HALF"/>
+		<action name="vcaSnapDOWN"   category="VEHICLE" axisType="HALF"/>
+		<action name="vcaSnapLEFT"   category="VEHICLE" axisType="HALF"/>
+		<action name="vcaSnapRIGHT"  category="VEHICLE" axisType="HALF"/>
+		<action name="vcaSNAP"       category="VEHICLE" axisType="HALF"/>
+		<action name="vcaSNAPLEFT"   category="VEHICLE" axisType="HALF"/>
+		<action name="vcaSNAPRIGHT"  category="VEHICLE" axisType="HALF"/>
+		<action name="vcaSNAPPREV"   category="VEHICLE" axisType="HALF"/>
+		<action name="vcaSNAPCONT"   category="VEHICLE" axisType="HALF"/>
+		<action name="vcaSNAPNEXT"   category="VEHICLE" axisType="HALF"/>
+		<action name="vcaSNAPRESET"  category="VEHICLE" axisType="HALF"/>
+		<action name="vcaSNAPDIST"   category="VEHICLE" axisType="HALF"/>
+		<action name="vcaNO_ARB"     category="VEHICLE" axisType="HALF"/>
+		<action name="vcaINCHING"    category="VEHICLE" axisType="HALF"/>
+		<action name="vcaKEEPROT"    category="VEHICLE" axisType="HALF"/>
+		<action name="vcaKEEPROT2"   category="VEHICLE" axisType="HALF"/>
+		<action name="vcaKEEPSPEED"  category="VEHICLE" axisType="HALF"/>
 		<action name="vcaKEEPSPEED2" category="VEHICLE" axisType="HALF"/>
-		<action name="vcaSWAPSPEED" category="VEHICLE" axisType="HALF"/>
-		<action name="vcaHandbrake"   category="VEHICLE" axisType="HALF"/>
-		<action name="vcaAutoShift" category="VEHICLE" axisType="HALF"/>
-		<action name="vcaDiffLockF" category="VEHICLE" axisType="HALF"/>
-		<action name="vcaDiffLockM" category="VEHICLE" axisType="HALF"/>
-		<action name="vcaDiffLockB" category="VEHICLE" axisType="HALF"/>
-		<action name="vcaHandRpm"   category="VEHICLE" axisType="FULL"/>
-		<action name="vcaLowerF"    category="VEHICLE" axisType="HALF"/>
-		<action name="vcaLowerB"    category="VEHICLE" axisType="HALF"/>
-		<action name="vcaActivateF" category="VEHICLE" axisType="HALF"/>
-		<action name="vcaActivateB" category="VEHICLE" axisType="HALF"/>
+    <action name="vcaKSAXIS"     category="VEHICLE" axisType="FULL"                                                                     displayCategory="VEHICLE_DRIVING"/>
+		<action name="vcaSWAPSPEED"  category="VEHICLE" axisType="HALF"/>
+		<action name="vcaHandbrake"  category="VEHICLE" axisType="HALF"/>
+		<action name="vcaAutoShift"  category="VEHICLE" axisType="HALF"/>
+		<action name="vcaDiffLockF"  category="VEHICLE" axisType="HALF"/>
+		<action name="vcaDiffLockM"  category="VEHICLE" axisType="HALF"/>
+		<action name="vcaDiffLockB"  category="VEHICLE" axisType="HALF"/>
+		<action name="vcaHandRpm"    category="VEHICLE" axisType="FULL"/>
+		<action name="vcaLowerF"     category="VEHICLE" axisType="HALF"/>
+		<action name="vcaLowerB"     category="VEHICLE" axisType="HALF"/>
+		<action name="vcaActivateF"  category="VEHICLE" axisType="HALF"/>
+		<action name="vcaActivateB"  category="VEHICLE" axisType="HALF"/>
 	</actions>
 	<inputBinding>
 		<actionBinding action="vcaSETTINGS">	
@@ -148,6 +149,10 @@ Les fonction du GPS sont accessibles via les raccourcis par défaut suivants :
 		</actionBinding>	
 		<actionBinding action="vcaKEEPSPEED2">
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_delete"/>
+		</actionBinding>	
+		<actionBinding action="vcaKSAXIS">
+      <binding device="KB_MOUSE_DEFAULT" input="MOUSE_BUTTON_WHEEL_UP" axisComponent="+" neutralInput="0"/>
+      <binding device="KB_MOUSE_DEFAULT" input="MOUSE_BUTTON_WHEEL_DOWN" axisComponent="-" neutralInput="0"/>
 		</actionBinding>	
 		<actionBinding action="vcaSWAPSPEED">
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_4"/>

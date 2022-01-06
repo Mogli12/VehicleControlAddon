@@ -120,6 +120,9 @@
 		<text name="input_vcaKEEPROT2"    text="VCA: Kamerarichtung permanent fixieren"/>
 		<text name="input_vcaKEEPSPEED"   text="VCA: Geschwindigkeit halten"/>
 		<text name="input_vcaKEEPSPEED2"  text="VCA: Geschwindigkeit permanent halten"/>
+		<text name="input_vcaKSAXIS"      text="VCA: permanente Geschwindigkeit ändern"/>
+		<text name="input_vcaKSAXIS_1"    text="VCA: permanente Geschwindigkeit: schneller"/>
+		<text name="input_vcaKSAXIS_2"    text="VCA: permanente Geschwindigkeit: langsamer"/>
 		<text name="input_vcaSWAPSPEED"   text="VCA: Tempomatgeschwindigkeit wechseln"/>
 		<text name="input_vcaHandRpm"     text="VCA: Handgas Drehzahl"/>
 		<text name="input_vcaHandRpm_1"   text="VCA: mehr Handgas"/>

@@ -108,6 +108,9 @@
 		<text name="input_vcaKEEPROT2"    text="VCA: permanent keep camera direction"/>
 		<text name="input_vcaKEEPSPEED"   text="VCA: keep speed"/>
 		<text name="input_vcaKEEPSPEED2"  text="VCA: permanent keep speed"/>
+		<text name="input_vcaKSAXIS"      text="VCA: permanent keep speed axis"/>
+		<text name="input_vcaKSAXIS_1"    text="VCA: permanent keep speed: faster"/>
+		<text name="input_vcaKSAXIS_2"    text="VCA: permanent keep speed: slower"/>
 		<text name="input_vcaSWAPSPEED"   text="VCA: swap speed"/>
 		<text name="input_vcaHandRpm"     text="VCA: hand throttle RPM"/>
 		<text name="input_vcaHandRpm_1"   text="VCA: more hand throttle"/>

@@ -272,7 +272,6 @@ function vehicleControlAddon.createStates()
 	vehicleControlAddon.createState( "ccSpeed2"     , nil                            , 10   , VCAValueType.float )
 	vehicleControlAddon.createState( "ccSpeed3"     , nil                            , 15   , VCAValueType.float )
 	vehicleControlAddon.createState( "lastSnapAngle", nil                            , 10   , VCAValueType.float ) --, vehicleControlAddon.vcaOnSetLastSnapAngle ) -- value should be between -pi and pi !!!
-	vehicleControlAddon.createState( "lastSnapInv"  , nil                            , false, VCAValueType.bool  )
 	vehicleControlAddon.createState( "lastSnapPosX" , nil                            , 0    , VCAValueType.float )
 	vehicleControlAddon.createState( "lastSnapPosZ" , nil                            , 0    , VCAValueType.float )
 	vehicleControlAddon.createState( "isEnteredMP"  , nil                            , false, VCAValueType.bool  , nil, false )
@@ -324,7 +323,6 @@ function vehicleControlAddon.registerEventListeners(vehicleType)
 	SpecializationUtil.registerEventListener(vehicleType, "onReadStream",           vehicleControlAddon)
 	SpecializationUtil.registerEventListener(vehicleType, "onWriteStream",          vehicleControlAddon)
 	SpecializationUtil.registerEventListener(vehicleType, "saveToXMLFile",          vehicleControlAddon)
-	SpecializationUtil.registerEventListener(vehicleType, "onGearDirectionChanged", vehicleControlAddon)
 	SpecializationUtil.registerEventListener(vehicleType, "onRegisterActionEvents", vehicleControlAddon)
 end 
 
@@ -807,6 +805,7 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
 																"vcaKEEPROT2",
 																"vcaKEEPSPEED",
 																"vcaKEEPSPEED2",
+																"vcaKSAXIS",
 																"vcaSWAPSPEED",
                                 "vcaSNAP",
                                 "vcaSNAPPREV",
@@ -901,6 +900,7 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
 					triggerKeyDown = false 
 					triggerAlways  = true 
 				elseif actionName == "vcaHandRpm" 
+						or actionName == "vcaKSAXIS"
 						then 
 					triggerAlways  = true 
 				end 
@@ -1059,7 +1059,7 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 			self.spec_vca.prevRotCursorKey = nil
 		end
 	elseif actionName == "vcaSWAPSPEED" then 
-		local temp = self:getCruiseControlSpeed()
+		local temp = self.spec_drivable.cruiseControl.speed
     self:vcaSetCruiseSpeed( self.spec_vca.ccSpeed2 )
 		self:vcaSetState( "ccSpeed2", self.spec_vca.ccSpeed3 )
 		self:vcaSetState( "ccSpeed3", temp )
@@ -1157,6 +1157,29 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 	elseif actionName == "vcaDiffLockB" then
 		if self:vcaIsVehicleControlledByPlayer() and self:vcaHasDiffBack() then
 			self:vcaSetState( "diffLockBack", not self.spec_vca.diffLockBack )
+		end 
+	elseif actionName == "vcaKSAXIS" and self.spec_vca.ksIsOn then 
+		if self.spec_vca.keepSpeedTemp == nil then 
+			self.spec_vca.keepSpeedTemp = self.spec_vca.keepSpeed
+		end 
+		if     math.abs( self.spec_vca.keepSpeedTemp ) <  1 then 
+			if     keyStatus > 0 then 
+				self.spec_vca.keepSpeedTemp = 1 
+			elseif keyStatus < 0 then 
+				self.spec_vca.keepSpeedTemp = -1 
+			end 
+		elseif isAnalog then 
+			self.spec_vca.keepSpeedTemp = self.spec_vca.keepSpeedTemp + keyStatus
+		elseif math.abs( self.spec_vca.keepSpeedTemp ) <  5 then 
+			self.spec_vca.keepSpeedTemp = 0.1 * math.floor( 10 * self.spec_vca.keepSpeedTemp + keyStatus + 0.5 )
+		elseif math.abs( self.spec_vca.keepSpeedTemp ) < 10 then 
+			self.spec_vca.keepSpeedTemp = 0.2 * math.floor(  5 * self.spec_vca.keepSpeedTemp + keyStatus + 0.5 )
+		elseif math.abs( self.spec_vca.keepSpeedTemp ) < 20 then 
+			self.spec_vca.keepSpeedTemp = 0.4 * math.floor(2.5 * self.spec_vca.keepSpeedTemp + keyStatus + 0.5 )
+		elseif math.abs( self.spec_vca.keepSpeedTemp ) < 30 then 
+			self.spec_vca.keepSpeedTemp = 0.5 * math.floor(  2 * self.spec_vca.keepSpeedTemp + keyStatus + 0.5 )
+		else
+			self.spec_vca.keepSpeedTemp = math.floor(self.spec_vca.keepSpeedTemp + keyStatus + 0.5 )
 		end 
 	elseif actionName == "vcaHandRpm" then 
 		local h = 0
@@ -1813,33 +1836,61 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 			m = 1
 		end
 		
-		local sl = self:getSpeedLimit(true)
+		local sl  = self:getSpeedLimit(true)
+		local slf = -math.min( sl, self.spec_drivable.cruiseControl.maxSpeedReverse )
+		local slt =  math.min( sl, self.spec_drivable.cruiseControl.maxSpeed )
+		if self:vcaGetShuttleCtrl() then 
+			if m < 0 then 
+				slt = 0 
+			else 
+				slf = 0 
+			end 
+		end 
+		
+		if self.spec_vca.maxGearSpeed ~= 0 and not self.spec_motorized.motor:getUseAutomaticGearShifting() then 
+			if m < 0 then 
+				slf = math.max( slf,-3.6 * self.spec_vca.maxGearSpeed )
+				slt = math.min( slt,-3.6 * self.spec_vca.minGearSpeed )
+			else 
+				slf = math.max( slf, 3.6 * self.spec_vca.minGearSpeed )
+				slt = math.min( slt, 3.6 * self.spec_vca.maxGearSpeed )
+			end 
+		end 
 		
 		if     self.spec_drivable.cruiseControl.state == Drivable.CRUISECONTROL_STATE_FULL then 
-			self:vcaSetState( "keepSpeed", vehicleControlAddon.mbClamp( self.lastSpeedReal * 3600 * m, -sl, sl ) )
-		elseif self.spec_drivable.cruiseControl.state ~= Drivable.CRUISECONTROL_STATE_OFF then 		
-			self:vcaSetState( "keepSpeed", vehicleControlAddon.mbClamp( self:getCruiseControlSpeed() * m, -sl, sl ) )
-			self:setCruiseControlState( Drivable.CRUISECONTROL_STATE_OFF )
-		elseif math.abs( self.spec_drivable.axisForward ) < 0.1 and not self:vcaGetShuttleCtrl() and self.lastSpeedReal * 3600 < 0.5 then 
-			self:vcaSetState( "keepSpeed", 0 )
-		elseif math.abs( self.spec_drivable.axisForward ) > 0.01 then 
-		
-			local s = self.lastSpeedReal * 1000 					
-			local f = 3.6 *  math.max( -self.spec_motorized.motor.maxBackwardSpeed, s * moveDir - 1 )
-			local t = 3.6 *  math.min(  self.spec_motorized.motor.maxForwardSpeed , s * moveDir + 1 )
-			local a = self.spec_drivable.axisForward
-			
-			if self.spec_vca.maxGearSpeed ~= 0 then 
-				if self.spec_vca.isForward then 				
-					f = math.max( f, 3.6 * self.spec_vca.minGearSpeed )
-					t = math.min( t, 3.6 * self.spec_vca.maxGearSpeed )
-				else               
-					f = math.max( f,-3.6 * self.spec_vca.maxGearSpeed )
-					t = math.min( t,-3.6 * self.spec_vca.minGearSpeed )
-				end 
+			if m < 0 then 
+				self.spec_vca.keepSpeedTemp = slf
+			else
+				self.spec_vca.keepSpeedTemp = slt
 			end 
-			
-			s = 0.5
+			self:setCruiseControlState( Drivable.CRUISECONTROL_STATE_OFF )		
+		elseif self.spec_drivable.cruiseControl.state ~= Drivable.CRUISECONTROL_STATE_OFF then 		
+			if m < 0 then 
+				self.spec_vca.keepSpeedTemp = vehicleControlAddon.mbClamp( -self.spec_drivable.cruiseControl.speed, slf, slt )
+			else 
+				self.spec_vca.keepSpeedTemp = vehicleControlAddon.mbClamp(  self.spec_drivable.cruiseControl.speed, slf, slt )
+			end 
+			self:setCruiseControlState( Drivable.CRUISECONTROL_STATE_OFF )		
+		end 
+
+		local k = self.spec_vca.keepSpeed
+		
+		if self:vcaGetShuttleCtrl() then 
+			if m < 0 then 
+				k = -math.abs( k )
+			else 
+				k = math.abs( k )
+			end 
+		end 
+		
+		if     math.abs( self.spec_drivable.axisForward ) > 0.01 then 
+			self.spec_vca.keepSpeedTemp = nil 
+		
+			local s = self.lastSpeedReal * 3600 * moveDir					
+			local f = slf
+			local t = slt
+			local a = self.spec_drivable.axisForward
+			local l = self.spec_motorized.motor:getSmoothLoadPercentage()
 			
 			-- joystick
 			if     self:vcaGetShuttleCtrl() then 
@@ -1852,9 +1903,12 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 			end 
 			if     m > 0 then 
 				if a > 0.01 then 
-					f = math.max( f, s )
+					f = math.max( f, 0.5, s )
+					a = a * vehicleControlAddon.mbClamp( 1 - l, 0.2, 1 )
+					t = math.min( t, math.max( k, s + 1 ) )
 				else
 					f = 0 
+					t = math.min( t, s )
 				end 
 				if t < f then 
 					t = f 
@@ -1862,9 +1916,12 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 				self.spec_vca.lastKSStopTimer = g_currentMission.time + 2000 
 			elseif m < 0 then
 				if a < -0.01 then 
-					t = math.min( t, -s )
+					t = math.min( t, -0.5, s )
+					a = a * vehicleControlAddon.mbClamp( 1 - l, 0.2, 1 )
+					f = math.max( f, math.min( k, s - 1 ) )
 				else 
 					t = 0 
+					f = math.max( f, s )
 				end 
 				if f > t then 
 					f = t 
@@ -1885,11 +1942,32 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 				t = sl 
 			end 
 			
-			self:vcaSetState( "keepSpeed", vehicleControlAddon.mbClamp( self.spec_vca.keepSpeed + a * 0.005 * dt, f, t )  )
+			self:vcaSetState( "keepSpeed", vehicleControlAddon.mbClamp( k + a * 0.01 * dt, f, t )  )
 			self.spec_drivable.axisForward = 0
-		else 
-			self:vcaSetState( "keepSpeed", vehicleControlAddon.mbClamp( self.spec_vca.keepSpeed, -sl, sl ) )
+			
+		else
+			if self.spec_vca.keepSpeedTemp ~= nil then 		
+				if not self:vcaGetShuttleCtrl() then 
+					self.spec_vca.keepSpeedTemp = vehicleControlAddon.mbClamp( self.spec_vca.keepSpeedTemp, slf, slt )
+				elseif m < 0 then 	
+					self.spec_vca.keepSpeedTemp = vehicleControlAddon.mbClamp( -math.abs( self.spec_vca.keepSpeedTemp ), slf, slt )
+				else 
+					self.spec_vca.keepSpeedTemp = vehicleControlAddon.mbClamp( math.abs( self.spec_vca.keepSpeedTemp ), slf, slt )
+				end 
+				if math.abs( k - self.spec_vca.keepSpeedTemp ) < 0.1 then 
+					k = self.spec_vca.keepSpeedTemp
+					self.spec_vca.keepSpeedTemp = nil 
+				else 
+					local l = self.spec_motorized.motor:getSmoothLoadPercentage()
+					local a = vehicleControlAddon.mbClamp( 1 - l, 0.2, 1 )
+					k = k + vehicleControlAddon.mbClamp( self.spec_vca.keepSpeedTemp - k, -a * 0.01 * dt, a * 0.01 * dt )
+				end 
+			end 
+			
+			self:vcaSetState( "keepSpeed", vehicleControlAddon.mbClamp( k, slf, slt ) )
 		end 
+	else 
+		self.spec_vca.keepSpeedTemp = nil 
 	end 
 	
 	--*******************************************************************
@@ -2505,13 +2583,6 @@ function vehicleControlAddon:onPostUpdate( dt, isActiveForInput, isActiveForInpu
 	end 
 end 
 
-function vehicleControlAddon:onGearDirectionChanged( newDirection )
-	if      self.spec_vca ~= nil 
-			and self.spec_vca.ksIsOn then 
-		self:vcaSetState( "keepSpeed", 0 ) 
-	end 
-end 
-
 function vehicleControlAddon:onDraw()
 
 	if self.spec_vca.isEntered then
@@ -2560,14 +2631,7 @@ function vehicleControlAddon:onDraw()
 				y = y + l * 1.2
 			end 
 			
-			local showCompass = true 
-
 			if not self:getIsVehicleControlledByPlayer() or self.spec_vca.GPSModActive then
-			elseif self.aiveAutoSteer or not ( -4 <= self.spec_vca.lastSnapAngle and self.spec_vca.lastSnapAngle <= 4 ) then 
-				if showCompass then 
-					renderText(x, y, l, string.format( "%4.1f°", math.deg( math.pi - d )))
-					y = y + l * 1.2	
-				end 
 			elseif self.spec_vca.snapIsOn then 
 				setTextColor(0, 1, 0, 0.5) 
 				if self.spec_vca.snapDistance >= 0.25 then 
@@ -2577,13 +2641,13 @@ function vehicleControlAddon:onDraw()
 				end 
 				y = y + l * 1.2	
 				setTextColor(1, 1, 1, 1) 
-			else
+			elseif -4 <= self.spec_vca.lastSnapAngle and self.spec_vca.lastSnapAngle <= 4 and not ( self.aiveAutoSteer ) then 
 				renderText(x, y, l, string.format( "%4.1f° / %4.1f°", math.deg( math.pi - curSnapAngle ), math.deg( math.pi - d )))
 				y = y + l * 1.2	
 			end
 			
 			if self.spec_vca.ksIsOn and self.spec_drivable.cruiseControl.state == 0 then 
-				renderText(x, y, l, self:vcaSpeedToString( self.spec_vca.keepSpeed / 3.6, "%5.1f" ))
+				renderText(x, y, l, self:vcaSpeedToString( Utils.getNoNil( self.spec_vca.keepSpeedTemp, self.spec_vca.keepSpeed ) / 3.6, "%5.1f" ))
 				y = y + l * 1.2	
 			end
 			
@@ -2617,7 +2681,11 @@ function vehicleControlAddon:onDraw()
 				renderOverlay( vehicleControlAddon.ovDiffLockBack , x, y, w, h )
 			end 
 			
-			if self.spec_vca.minGearSpeed ~= nil and self.spec_vca.maxGearSpeed ~= nil and self.spec_vca.maxGearSpeed ~= 0 then 
+			if      self.spec_vca.minGearSpeed ~= nil
+					and self.spec_vca.maxGearSpeed ~= nil
+					and self.spec_vca.maxGearSpeed ~= 0
+					and self:getGearShiftMode()    ~= VehicleMotor.SHIFT_MODE_AUTOMATIC
+					and not self.spec_vca.autoShift then 
 				renderText(x, y, l, self:vcaSpeedToString( self.spec_vca.minGearSpeed, "%5.1f", true ).." .. "..self:vcaSpeedToString( self.spec_vca.maxGearSpeed, "%5.1f" ))
 				y = y + l * 1.2	
 			end 			
@@ -2854,7 +2922,7 @@ function vehicleControlAddon:vcaGetCurrentSnapAngle(curRot)
 		e = 0 
 		if not self:vcaGetSnapWillInvert() then 
 			p = -o 
-		elseif self.spec_vca.lastSnapInv == self:vcaGetSnapIsInverted() then 
+		elseif self:vcaGetSnapIsInverted() then 
 			o = -o 
 			p =  o
 		end 
@@ -2991,7 +3059,11 @@ function vehicleControlAddon:vcaGetSnapDistance()
 	if minX ~= nil and maxX ~= nil then 
 		local d = 0.1 * math.floor( 10 * ( maxX - minX ) + 0.5 )
 		local o = 0.1 * math.floor(  5 * ( maxX + minX ) + 0.5 )
-		return d, -o, self:vcaGetSnapWillInvert()
+		local p = self:vcaGetSnapWillInvert()
+		if p and self:vcaGetSnapIsInverted() then 
+			o = -o 
+		end 
+		return d, -o, p
 	end 
 	
 	return 0, 0, false 
@@ -3088,7 +3160,6 @@ function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, ax
 				end 
 				
 				self:vcaSetState( "lastSnapAngle", vehicleControlAddon.normalizeAngle( target ) )
-				self:vcaSetState( "lastSnapInv",   self:vcaGetSnapIsInverted() )
 				self:vcaSetState( "snapFactor", 0 )
 			end 
 			
@@ -3198,9 +3269,7 @@ function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, ax
 		self.spec_vca.axisSideLast   = axisSideLast
 	end 				
 	
-	local res = { superFunc( self, axisForward, axisSide, doHandbrake, dt ) }
-
-	return unpack( res )
+	return superFunc( self, axisForward, axisSide, doHandbrake, dt )
 end 
 
 Drivable.updateVehiclePhysics = Utils.overwrittenFunction( Drivable.updateVehiclePhysics, vehicleControlAddon.vcaUpdateVehiclePhysics )
@@ -3249,21 +3318,19 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 			doHandbrake = true 		
 		elseif self.spec_drivable.cruiseControl.state > 0 then 
 
+		elseif self.spec_vca.ksIsOn and math.abs( self.spec_vca.keepSpeed ) < 0.5 then 
+			acceleration = 0
+			doHandbrake  = true 
 		elseif self.spec_vca.ksIsOn and ( self.spec_vca.ksBrakeTime == nil or g_currentMission.time < self.spec_vca.ksBrakeTime + 1000 ) then 
-			if math.abs( self.spec_vca.keepSpeed ) < 0.5 then 
-				acceleration = 0
-				doHandbrake  = true 
-			else 
-				self.spec_motorized.motor:setSpeedLimit( math.min( self:getSpeedLimit(true), math.abs(self.spec_vca.keepSpeed) ) )
-				if self:vcaGetShuttleCtrl() then 
-					acceleration = 1
-				elseif self.spec_vca.keepSpeed > 0 then 
-					acceleration = self.spec_drivable.reverserDirection
-					self.nextMovingDirection = 1
-				else
-					acceleration = -self.spec_drivable.reverserDirection
-					self.nextMovingDirection = -1
-				end 
+			self.spec_motorized.motor:setSpeedLimit( math.min( self:getSpeedLimit(true), math.abs(self.spec_vca.keepSpeed) ) )
+			if self:vcaGetShuttleCtrl() then 
+				acceleration = 1
+			elseif self.spec_vca.keepSpeed > 0 then 
+				acceleration = self.spec_drivable.reverserDirection
+				self.nextMovingDirection = 1
+			else
+				acceleration = -self.spec_drivable.reverserDirection
+				self.nextMovingDirection = -1
 			end 
 			self.spec_vca.oldAcc = acceleration
 		elseif self.spec_vca.isBlocked and self.spec_vca.isEnteredMP then
@@ -3399,6 +3466,27 @@ function vehicleControlAddon.vcaGetManualClutchPedal( motor, superFunc, ... )
 end 
 VehicleMotor.getManualClutchPedal = Utils.overwrittenFunction( VehicleMotor.getManualClutchPedal, vehicleControlAddon.vcaGetManualClutchPedal )
 
+--******************************************************************************************************************************************
+--******************************************************************************************************************************************
+function vehicleControlAddon:getCruiseControlState( superFunc )
+	if self.spec_vca ~= nil and self.spec_vca.ksIsOn and math.abs( self.spec_vca.keepSpeed ) >= 0.5 then  
+		return Drivable.CRUISECONTROL_STATE_ACTIVE 
+	end 
+	return superFunc( self )
+end 
+Drivable.getCruiseControlState = Utils.overwrittenFunction( Drivable.getCruiseControlState, vehicleControlAddon.getCruiseControlState )
+
+function vehicleControlAddon:getCruiseControlSpeed( superFunc )
+	if      self.spec_drivable.cruiseControl.state == Drivable.CRUISECONTROL_STATE_OFF
+			and self.spec_vca ~= nil 
+			and self.spec_vca.ksIsOn 
+			and math.abs( self.spec_vca.keepSpeed ) >= 0.5 then  
+		return self.spec_vca.keepSpeed
+	end 
+	return superFunc( self )
+end 
+Drivable.getCruiseControlSpeed = Utils.overwrittenFunction( Drivable.getCruiseControlSpeed, vehicleControlAddon.getCruiseControlSpeed ) 
+--******************************************************************************************************************************************
 --******************************************************************************************************************************************
 
 
