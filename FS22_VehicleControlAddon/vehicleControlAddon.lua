@@ -1671,6 +1671,18 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 	if self.isClient and self.getIsEntered ~= nil and self:getIsControlled() and self:getIsEntered() then 
 		self.spec_vca.isEntered = true
 		self:vcaSetState( "isEnteredMP", true )
+
+		local isBlocked = false 
+		if     self.spec_drivable.cruiseControl.state ~= Drivable.CRUISECONTROL_STATE_OFF then
+		elseif self.spec_vca.ksIsOn then 
+		elseif g_gui.currentListener ~= nil then 
+			if     ChatDialog ~= nil and g_gui.currentListener == g_gui.screens[ChatDialog] then 
+				isBlocked = false  
+			else
+				isBlocked = true 
+			end 
+		end 
+		self:vcaSetState( "isBlocked", isBlocked )
 	else 
 		self.spec_vca.isEntered = false 
 	end 	
@@ -3243,7 +3255,7 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 		if not self:getIsMotorStarted() then 
 			acceleration = 0
 			doHandbrake = true 
-		elseif self.spec_vca.handbrake then 
+		elseif self.spec_vca.handbrake or self.spec_vca.isBlocked then  
 			acceleration = 0
 			doHandbrake = true 		
 		elseif self.spec_drivable.cruiseControl.state > 0 then 
@@ -3290,7 +3302,7 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 		self.spec_vca.useIdleThrottle = false 
 		
 		if      self.spec_vca.idleThrottle 
-				and not self.spec_vca.handbrake
+				and not doHandbrake
 				and self.spec_motorized       ~= nil 
 				and self.spec_motorized.motor ~= nil 	
 				and self.spec_motorized.motorizedNode ~= nil
