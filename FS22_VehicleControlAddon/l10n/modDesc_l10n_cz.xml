@@ -53,7 +53,7 @@
 		<text name="vca_tip_REVERSEI"     text="Pokud vozidlo změní směr, vnitřní kamera se otočí o 180°"/>
 		<text name="vca_tip_REVERSEO"     text="Pokud vozidlo změní směr, vnější kamera se otočí o 180°"/>
 		<text name="vca_tip_LIMIT"        text="Omezovač plynu Lshift"/>
-		<text name="vca_tip_PEEKLR"       text="Rychlý pohled pomocí pravého shift a kláves se šipkami doleva/doprava"/>
+		<text name="vca_tip_PEEKLR"       text="Rychlý pohled pomocí pshift a kláves se šipkami doleva/doprava"/>
 		<text name="vca_tip_ANGLE"        text="Řízení automaticky sleduje úhel"/>
 		<text name="vca_tip_BRAKE"        text="Nízké procento brzdné síly, známé jako valivý odpor"/>
 		<text name="vca_tip_AUTOSHIFT"    text="Automatické řazení převodů a řad"/>
@@ -67,8 +67,8 @@
 		<text name="vca_tip_OFFSET2"      text="Obrácený Offset naváděcího pruhu"/>
 		<text name="vca_tip_SNAP90"       text="Automatické otočení naváděcího pruhu o 90°"/>
 		<text name="vca_tip_DRAWMARKER"   text="Vykreslení značky navádění"/>
-		<text name="vca_tip_SNAPLEFT"     text="Počet naváděcích pruhů při odbočování vlevo"/>
-		<text name="vca_tip_SNAPRIGHT"    text="Počet naváděcích pruhů při odbočování vpravo"/>
+		<text name="vca_tip_SNAPLEFT"     text="Počet naváděcích pruhů při otáčení vlevo"/>
+		<text name="vca_tip_SNAPRIGHT"    text="Počet naváděcích pruhů při otáčení vpravo"/>
 		
 		<text name="vca_tip_AntiSlip"     text="Kontrola trakce přibrzdí jednotlivá kola v případě prokluzu"/>
 		<text name="vca_tip_DiffManual"   text="Manuální ovládání pohonu všech kol a předního a zadního diferenciálu"/>
@@ -100,8 +100,8 @@
 		<text name="input_vcaSNAPDIST"    text="VCA: určit pracovní šířku vedení jízdního pruhu"/>
 		<text name="input_vcaSnapUP"      text="VCA: otočit směr navádění jízdními pruhy doleva"/>
 		<text name="input_vcaSnapDOWN"    text="VCA: otočit směr navádění jízdními pruhy doprava"/>
-		<text name="input_vcaSnapLEFT"    text="VCA: změna v jízdního pruhu doleva"/>
-		<text name="input_vcaSnapRIGHT"   text="VCA: změna v jízdního pruhu doprava"/>
+		<text name="input_vcaSnapLEFT"    text="VCA: změna jízdního pruhu doleva"/>
+		<text name="input_vcaSnapRIGHT"   text="VCA: změna jízdního pruhu doprava"/>
 		<text name="input_vcaNO_ARB"      text="VCA: vypnout automatické otáčení"/>
 		<text name="input_vcaINCHING"     text="VCA: palce"/>
 		<text name="input_vcaKEEPROT"     text="VCA: zachovat standartní směr kamery"/>
@@ -112,7 +112,7 @@
 		<text name="input_vcaHandRpm"     text="VCA: otáčky ručního plynu"/>
 		<text name="input_vcaHandRpm_1"   text="VCA: přidat ruční plyn"/>
 		<text name="input_vcaHandRpm_2"   text="VCA: ubrat ruční plyn"/>
-		<text name="input_vcaHandMode"    text="VCA: režim ručního plynu"/>
+		<text name="input_vcaHandbrake"   text="VCA: ruční brzda zap./vyp."/>
 		<text name="input_vcaAutoShift"   text="VCA: automatické řazení zap./vyp."/>
 		<text name="input_vcaDiffLockF"   text="VCA: přední diferenciál zamknout/odemknout"/>
 		<text name="input_vcaDiffLockM"   text="VCA: pohon všech/předních kol"/>
@@ -126,15 +126,15 @@
 		<text name="vcaValueOff"        text="Vyp."/>
 		<text name="vcaValueNever"      text="Nikdy"/>
 		<text name="vcaValueAlways"     text="Vždy"/>
-		<text name="vcaValueAlwaysH"    text="Vždy (dlouhý)"/>
+		<text name="vcaValueAlwaysH"    text="Vždy (vysoký)"/>
 		<text name="vcaValueNormal"     text="Normální"/>
 		<text name="vcaValueLight"      text="Lehký"/> 
 		<text name="vcaValueStrong"     text="Silný"/>
 		<text name="vcaValueEntered"    text="je-li zadáno"/>
 		<text name="vcaValueInactive"   text="Je-li neaktivní"/>
-		<text name="vcaValueInactiveH"  text="Je-li neaktivní (dlouhý)"/>
+		<text name="vcaValueInactiveH"  text="Je-li neaktivní (vysoký)"/>
 		<text name="vcaValueRPM"        text="Otáčky"/>
-
+		
 		<text name="vcaSnapArtAxis"     text="Navádění jízdními pruhy není podporováno u vozidel s kloubovou osou"/>
 		
 		<text name="vcaButtonSnapWidth"  text="Zjistit šířku"/>
@@ -146,26 +146,26 @@
 		<text name="vcaTitleGPS"        text="Vedení stopy"/>
 		<text name="vcaTitleThrottle"   text="Plyn, Brzdy, Řazení"/>
 		<text name="vcaTitleDiff"       text="AWD a diferenciál"/>
-		<text name="vcaTitleMisc"       text="Různá nastavení"/>		
+		<text name="vcaTitleMisc"       text="Různá nastavení"/>
 
-		
-		<text name="vcaHelpIntro_1"       text="Vehicle Control Addon kombinuje několik funkcí v jedné modifikaci. Většina funkcí je ve výchozím nastavení vypnuta." />
+
+		<text name="vcaHelpIntro_1"       text="VCA kombinuje několik funkcí v jedné modifikaci. Většina funkcí je ve výchozím nastavení vypnuta." />
 		<text name="vcaHelpIntro_2"       text="Standardní kombinace kláves pro otevření nabídky nastavení je LCtrl+C. Navrhuji zkontrolovat přiřazení kláves v menu hry." />
 		<text name="vcaHelpIntro_3"       text="Kombinace kláves LCtrl+LAlt+C otevře nabídku globálního nastavení. Zde můžete upravit výchozí nastavení, která se používají ve všech (budoucích) vozidlech" />
-		<text name="vcaHelpCam_1"         text="Vehicle Control Addon dokáže otočit kameru tak, aby odpovídala úhlu a směru řízení." />
+		<text name="vcaHelpCam_1"         text="VCA dokáže otočit kameru tak, aby odpovídala úhlu a směru řízení." />
 		<text name="vcaHelpCam_2"         text="Otáčení kamery můžete povolit v nabídce nastavení. Můžete si vybrat mezi hodnotami &quot;off&quot;, &quot;light&quot;, &quot;normal&quot; and &quot;strong&quot;. Existují samostatná nastavení pro vnitřní a vnější kamery." />
 		<text name="vcaHelpCam_3"         text="Pomocí PShift a kurzorových kláves můžete nahlížet v odpovídajícím směru." />
 		<text name="vcaHelpSteering_1"    text="Tento skript mění rychlost řízení v závislosti na rychlosti, kterou jedete, a otáčí kameru tak, aby odpovídala úhlu a směru řízení. Pomocí Pravého Shift a kurzorových kláves můžete nahlížet v odpovídajícím směru." />
-		<text name="vcaHelpSteering_2"    text="Nabídka nastavení vám dává možnost upravit řízení. Pokud je adaptivní řízení vypnuto, pak Vehicle Control Addon nezmění chování řízení. Nastavení rychlosti řízení je relevantní pouze v případě, že je zapnuté adaptivní řízení. Volné řízení zcela vyřadí automatické otáčení dozadu." />
+		<text name="vcaHelpSteering_2"    text="Nabídka nastavení vám dává možnost upravit řízení. Pokud je adaptivní řízení vypnuto, pak VCA nezmění chování řízení. Nastavení rychlosti řízení je relevantní pouze v případě, že je zapnuté adaptivní řízení. Volné řízení zcela vyřadí automatické otáčení dozadu." />
 		<text name="vcaHelpSteering_3"    text="Adaptivní řízení bylo navrženo pro uživatele klávesnice. Rychlost automatické zpětné rotace závisí na tom, jak dlouho jste pustili klávesy A nebo D. Tímto způsobem můžete zachovat aktuální natočení volantu krátkým klepnutím na klávesy A nebo D. Otočení zpět do středové polohy je rychlejší, pokud stisknete odpovídající klávesu. Je to jako nouzový režim. Pokud jste zamířili příliš, zkuste zatočit opačným směrem. Jde to mnohem rychleji, ale jen do té doby, než volant dosáhne střední polohy." />
-		<text name="vcaHelpGPS_1"         text="Vehicle Control Addon obsahuje jednoduché navádění do jízdních pruhů." />
+		<text name="vcaHelpGPS_1"         text="VCA obsahuje jednoduché navádění do jízdních pruhů." />
 		<text name="vcaHelpGPS_2"         text="Navádění jízdními pruhy lze spustit pouze v případě, že je šířka jízdního pruhu větší než 0,5 m. Aktuální šířku nástroje můžete zjistit v nabídce nastavení nebo s výchozí klávesovou zkratkou LCtrl+LAlt+W. Navádění jízdními pruhy se spustí s výchozí klávesovou zkratkou LCtrl+W. Při použití ovládacích tlačítek nebo kolečka je automaticky deaktivováno." />
 		<text name="vcaHelpGPS_3"         text="Ve vozidle můžete posouvat nebo otáčet naváděcí pruhy pomocí výchozích kláves LCtrl + šipka. S výchozím vázáním kláves LAlt+A a LAlt+D můžete přepnout do levého nebo pravého couvacího pruhu. V nabídce nastavení můžete určit počet pruhů, které se mají přepnout. Pokud chcete pracovat na poli vlevo, můžete zadat čísla levého jízdního pruhu o jedno větší než čísla pravého jízdního pruhu. Při každém obrácení jízdního pruhu doplněk VCA vymění číslo levého a pravého jízdního pruhu." />
-		<text name="vcaHelpThrottle_1"    text="Vehicle Control Addon nabízí malá vylepšení plynu a brzdění. Většina z nich je určena pro hráče používající klávesnici." />
+		<text name="vcaHelpThrottle_1"    text="VCA nabízí malá vylepšení plynu a brzdění. Většina z nich je určena pro hráče používající klávesnici." />
 		<text name="vcaHelpThrottle_2"    text="Hodnoty omezovače rychlosti. 1. hodnota je použita bez stisku klávesy. 2. hodnota je použita při stisku klávesy. Nižší procentuální hodnota se vztahuje na rychlost tempomatu, pokud je stisknuto posouvání. Nízká brzdná síla je brzdná síla, kterou vozidlo automaticky použije, pokud není sešlápnut pedál akcelerace ani brzdový pedál. Snížení brzdné síly umožní vozidlu jet déle bez snížení rychlosti." />
 		<text name="vcaHelpThrottle_3"    text="LShift omezuje plyn, tempomat a maximální počet otáček za minutu na 75 %. Pokud stisknete Delete, vozidlo si zachová svou rychlost. Akcelerační a brzdový pedál zvyšují a snižují rychlost. Vozidlo jede jako moderní traktor s joystickem. Automatické řazení můžete přepínat pomocí výchozí klávesové zkratky LCtrl (." />
-		<text name="vcaHelpDiff_1"        text="Pokud Vehicle Control Addon dokáže identifikovat diferenciály, máte možnost je ovládat ručně." />
-		<text name="vcaHelpDiff_2"        text="Ve výchozím nastavení Vehicle Control Addon nemění diferenciály. Když je aktivován pohon všech kol, přední kola standardních traktorů se otáčejí rychleji než zadní kola. Můžete to povolit pomocí pokročilého nastavení rychlosti. V tomto případě Vehicle Control Addon automaticky deaktivuje pohon všech kol nad 30 km/h." />
+		<text name="vcaHelpDiff_1"        text="Pokud VCA dokáže identifikovat diferenciály, máte možnost je ovládat ručně." />
+		<text name="vcaHelpDiff_2"        text="Ve výchozím nastavení VCA nemění diferenciály. Když je aktivován pohon všech kol, přední kola standardních traktorů se otáčejí rychleji než zadní kola. Můžete to povolit pomocí pokročilého nastavení rychlosti. V tomto případě VCA automaticky deaktivuje pohon všech kol nad 30 km/h." />
 		<text name="vcaHelpDiff_3"        text="Výchozí klávesové zkratky pro ovládání rozdílů jsou LCtrl ), LCtrl ' a LCtrl \." />
 		
 	</texts>
