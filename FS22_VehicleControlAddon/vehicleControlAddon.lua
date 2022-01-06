@@ -1146,17 +1146,6 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 		self:vcaSetState( "autoShift", not self.spec_vca.autoShift )
 	elseif actionName == "vcaHandbrake" then
 		self:vcaSetState( "handbrake", not self.spec_vca.handbrake )
-		if self.spec_vca.handbrake then 
-			if self.spec_motorized.motor.targetGear ~= 0 then 
-				self.spec_vca.gearBeforeHandbrake = self.spec_motorized.motor.targetGear 
-			else 
-				self.spec_vca.gearBeforeHandbrake = nil 
-			end 
-			MotorGearShiftEvent.sendEvent(self, MotorGearShiftEvent.TYPE_SELECT_GEAR, 0)
-		elseif self.spec_vca.gearBeforeHandbrake ~= nil then 
-			MotorGearShiftEvent.sendEvent(self, MotorGearShiftEvent.TYPE_SELECT_GEAR, self.spec_vca.gearBeforeHandbrake)
-			self.spec_vca.gearBeforeHandbrake = nil 
-		end 
 	elseif actionName == "vcaDiffLockF" then
 		if self:vcaIsVehicleControlledByPlayer() and self:vcaHasDiffFront() then
 			self:vcaSetState( "diffLockFront", not self.spec_vca.diffLockFront )
@@ -3255,7 +3244,7 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 		if not self:getIsMotorStarted() then 
 			acceleration = 0
 			doHandbrake = true 
-		elseif self.spec_vca.handbrake or self.spec_vca.isBlocked then  
+		elseif self.spec_vca.handbrake then  
 			acceleration = 0
 			doHandbrake = true 		
 		elseif self.spec_drivable.cruiseControl.state > 0 then 
@@ -3277,9 +3266,9 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 				end 
 			end 
 			self.spec_vca.oldAcc = acceleration
-	--elseif self.spec_vca.isBlocked and self.spec_vca.isEnteredMP then
-	--	acceleration = 0
-	--	doHandbrake  = true 
+		elseif self.spec_vca.isBlocked and self.spec_vca.isEnteredMP then
+			acceleration = 0
+			doHandbrake  = true 
 		end 
 			
 		if self.spec_drivable.cruiseControl.state == 0 and self.spec_vca.limitThrottle ~= nil and self.spec_vca.inchingIsOn ~= nil and math.abs( acceleration ) > 0.01 then 
@@ -3376,6 +3365,42 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 end 
 WheelsUtil.updateWheelsPhysics = Utils.overwrittenFunction( WheelsUtil.updateWheelsPhysics, vehicleControlAddon.vcaUpdateWheelsPhysics )
 --******************************************************************************************************************************************
+function vehicleControlAddon:vcaGetSmoothedAccBrake( superFunc, acceleratorPedal, brakePedal, dt )
+	if      self          ~= nil 
+			and self.spec_vca ~= nil 
+			and self.spec_vca.isInitialized
+			and self:vcaIsVehicleControlledByPlayer()
+			and next(self.spec_motorized.differentials) ~= nil
+			and ( self.spec_vca.handbrake 
+				or  self.spec_vca.isBlocked 
+				or  ( self.spec_vca.ksIsOn and math.abs( self.spec_vca.keepSpeed ) < 0.5 ) )
+			then 
+		return superFunc( self, 0, 1, dt )
+	end 
+	return superFunc( self, acceleratorPedal, brakePedal, dt )
+end 
+WheelsUtil.getSmoothedAcceleratorAndBrakePedals = Utils.overwrittenFunction( WheelsUtil.getSmoothedAcceleratorAndBrakePedals, vehicleControlAddon.vcaGetSmoothedAccBrake )
+
+--******************************************************************************************************************************************
+function vehicleControlAddon.vcaGetManualClutchPedal( motor, superFunc, ... )
+	local self = motor.vehicle 
+	if      self          ~= nil 
+			and self.spec_vca ~= nil 
+			and self.spec_vca.isInitialized
+			and self:vcaIsVehicleControlledByPlayer()
+			and next(self.spec_motorized.differentials) ~= nil
+			and ( self.spec_vca.handbrake 
+				or  self.spec_vca.isBlocked 
+				or  ( self.spec_vca.ksIsOn and math.abs( self.spec_vca.keepSpeed ) < 0.5 ) )
+			then 
+		return 1
+	end 
+	return superFunc( motor, ... )
+end 
+VehicleMotor.getManualClutchPedal = Utils.overwrittenFunction( VehicleMotor.getManualClutchPedal, vehicleControlAddon.vcaGetManualClutchPedal )
+
+--******************************************************************************************************************************************
+
 
 function vehicleControlAddon:vcaIsHydraulicSamplePlaying()
 	if self == nil then 
