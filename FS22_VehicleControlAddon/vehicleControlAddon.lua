@@ -3447,9 +3447,10 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 						 or math.abs( acceleration )       >= 0.001 )
 					then
 
+				local minRpm    = math.max( motor.minRpm, math.min( PowerConsumer.getMaxPtoRpm( self ) * motor.ptoMotorRpmRatio, motor.maxRpm ) )
+
 				self.spec_vca.useIdleThrottle = true 
 
-				local minRpm    = math.max( motor.minRpm, math.min( PowerConsumer.getMaxPtoRpm( self ) * motor.ptoMotorRpmRatio, motor.maxRpm ) )
 				local diffRpm   = motor.differentialRotSpeed * 30 / math.pi
 				local motorRpm  = math.abs( diffRpm * motor.gearRatio )
 				local clutchRpm = math.abs( diffRpm * motor.maxGearRatio )
@@ -3629,6 +3630,11 @@ function vehicleControlAddon:vcaGetMaxPtoRpm( superFunc, ... )
 		return superFunc( self, ... )
 	end 
 	
+	if self.spec_vca.useIdleThrottle then 
+	-- do not increase RPM while driving
+		return 0 
+	end 
+	
 	local motor = self.spec_motorized.motor 
 	
 	local r0 = superFunc( self, ... )
@@ -3642,8 +3648,6 @@ function vehicleControlAddon:vcaGetMaxPtoRpm( superFunc, ... )
 	if self.spec_vca.handThrottle > 0 then
 	-- hand throttle overrides PTO RPM
 		r1 = ( motor.minRpm + vehicleControlAddon.mbClamp( self.spec_vca.handThrottle, 0, 1 ) * ( motor.maxRpm - motor.minRpm ) ) / motor.ptoMotorRpmRatio
-	elseif self.spec_vca.useIdleThrottle then 
-	-- do not increase RPM while driving
 	elseif self.spec_vca.idleThrottle and vehicleControlAddon.vcaIsHydraulicSamplePlaying( self ) then 
 	-- extra RPM for hydraulics
 		r1 = math.max( r0, ( motor.minRpm + 0.2 * ( motor.maxRpm - motor.minRpm ) ) / motor.ptoMotorRpmRatio )
