@@ -525,8 +525,14 @@ function vehicleControlAddon:onLoad(savegame)
 			vehicleControlAddon.ovDiffLockFront  = createImageOverlay( Utils.getFilename( "diff_front.dds",       g_vehicleControlAddon.vcaDirectory))
 			vehicleControlAddon.ovDiffLockMid    = createImageOverlay( Utils.getFilename( "diff_middle.dds",      g_vehicleControlAddon.vcaDirectory))
 			vehicleControlAddon.ovDiffLockBack   = createImageOverlay( Utils.getFilename( "diff_back.dds",        g_vehicleControlAddon.vcaDirectory))
-			vehicleControlAddon.ovDiffLockBg     = createImageOverlay( Utils.getFilename( "diff_wheels.dds",      g_vehicleControlAddon.vcaDirectory))
-			
+			vehicleControlAddon.ovDiffLockWheels = createImageOverlay( Utils.getFilename( "diff_wheels.dds",      g_vehicleControlAddon.vcaDirectory))
+			vehicleControlAddon.ovDiffLockBg     = createImageOverlay( Utils.getFilename( "diff_bg.dds",      g_vehicleControlAddon.vcaDirectory))
+			local r, g, b, a = unpack(SpeedMeterDisplay.COLOR.GEARS_BG)
+			setOverlayColor( vehicleControlAddon.ovDiffLockBg, r, g, b, a )
+			vehicleControlAddon.ovGearSpeedBg    = createImageOverlay( Utils.getFilename( "gear_bg.dds",      g_vehicleControlAddon.vcaDirectory))
+			local r, g, b, a = unpack(SpeedMeterDisplay.COLOR.GEARS_BG)
+			setOverlayColor( vehicleControlAddon.ovGearSpeedBg, r, g, b, a )
+			setOverlayUVs( vehicleControlAddon.ovGearSpeedBg, unpack( GuiUtils.getUVs( { 0, 0, 1024, 128 } ) ) )
 		end 
 	end 
 end
@@ -2633,14 +2639,12 @@ function vehicleControlAddon:onDraw()
 
 		local x = g_currentMission.inGameMenu.hud.speedMeter.gaugeCenterX
 		local y = g_currentMission.inGameMenu.hud.speedMeter.gaugeCenterY + g_currentMission.inGameMenu.hud.speedMeter.speedIndicatorRadiusY * 1.6
-		local l = getCorrectTextSize(0.02)
+		local l = g_currentMission.inGameMenu.hud.speedMeter.gearTextSize --getCorrectTextSize(0.02)
 		local w = 0.015 * vehicleControlAddon.getUiScale()
 		local h = w * g_screenAspectRatio
 		
 		setTextAlignment( RenderText.ALIGN_CENTER ) 
 		setTextVerticalAlignment( RenderText.VERTICAL_ALIGN_MIDDLE )
-		setTextColor(1, 1, 1, 1) 
-		setTextBold(false)
 		
 		local lx,_,lz = localDirectionToWorld( self:vcaGetSteeringNode(), 0, 0, 1 )			
 		local d = 0
@@ -2660,44 +2664,27 @@ function vehicleControlAddon:onDraw()
 		local curSnapAngle, curSnapOffset1, curSnapOffset2 = self:vcaGetCurrentSnapAngle( d )
 		
 		if self.spec_vca.drawHud then 
-			if VCAGlobals.snapAngleHudX >= 0 then
-				x = VCAGlobals.snapAngleHudX
-				setTextAlignment( RenderText.ALIGN_LEFT ) 
-			end 
-			if VCAGlobals.snapAngleHudY >= 0 then
-				y = VCAGlobals.snapAngleHudY
-				setTextVerticalAlignment( RenderText.VERTICAL_ALIGN_BASELINE )
+
+			local posX   = g_currentMission.inGameMenu.hud.speedMeter.gearBg.overlay.x
+			local posY   = g_currentMission.inGameMenu.hud.speedMeter.gearBg.overlay.y
+			local width  = g_currentMission.inGameMenu.hud.speedMeter.gearBg.overlay.width 
+			local height = g_currentMission.inGameMenu.hud.speedMeter.gearBg.overlay.height
+			
+			height = width * g_screenAspectRatio
+			if height > posY then 
+				height = posY 
+				posY   = 0 
 			else 
-				y = y + l * 1.2
+				posY   = 0.5 * ( posY - height  )
 			end 
-			
-			if not self:getIsVehicleControlledByPlayer() or self.spec_vca.GPSModActive then
-			elseif self.spec_vca.snapIsOn then 
-				setTextColor(0, 1, 0, 0.5) 
-				if self.spec_vca.snapDistance >= 0.25 then 
-					renderText(x, y, l, string.format( "%4.1f° / %4.1fm", math.deg( math.pi - curSnapAngle ), self.spec_vca.snapDistance))
-				else
-					renderText(x, y, l, string.format( "%4.1f° / %4.1f°", math.deg( math.pi - curSnapAngle ), math.deg( math.pi - d )))
-				end 
-				y = y + l * 1.2	
-				setTextColor(1, 1, 1, 1) 
-			elseif -4 <= self.spec_vca.lastSnapAngle and self.spec_vca.lastSnapAngle <= 4 and not ( self.aiveAutoSteer ) then 
-				renderText(x, y, l, string.format( "%4.1f° / %4.1f°", math.deg( math.pi - curSnapAngle ), math.deg( math.pi - d )))
-				y = y + l * 1.2	
-			end
-			
-			if self.spec_vca.ksIsOn and self.spec_drivable.cruiseControl.state == 0 then 
-				renderText(x, y, l, self:vcaSpeedToString( Utils.getNoNil( self.spec_vca.keepSpeedTemp, self.spec_vca.keepSpeed ) / 3.6, "%5.1f" ))
-				y = y + l * 1.2	
-			end
-			
+		
 			local f, m, b = self:vcaGetDiffState()
 			if f > 0 or m > 0 or b > 0 then
 				local function getRenderColor( state )
 					if     state == nil then 
 						return 0,0,0,1
 					elseif state == 0 then 
-						return 0.25,0.25,0.25,1
+						return 0.35,0.35,0.35,1
 					elseif state == 1 then 
 						return 1,1,1,1
 					elseif state == 2 then 
@@ -2710,25 +2697,45 @@ function vehicleControlAddon:onDraw()
 				setOverlayColor( vehicleControlAddon.ovDiffLockFront, getRenderColor( f ) )
 				setOverlayColor( vehicleControlAddon.ovDiffLockMid  , getRenderColor( m ) )
 				setOverlayColor( vehicleControlAddon.ovDiffLockBack , getRenderColor( b ) )
-			
-				local w = 0.025 * vehicleControlAddon.getUiScale()
-				local h = w * g_screenAspectRatio				
-				local x, y = g_currentMission.inGameMenu.hud.speedMeter.gaugeBackgroundElement:getPosition()
-
-				renderOverlay( vehicleControlAddon.ovDiffLockBg   , x, y, w, h )
-				renderOverlay( vehicleControlAddon.ovDiffLockFront, x, y, w, h )
-				renderOverlay( vehicleControlAddon.ovDiffLockMid  , x, y, w, h )
-				renderOverlay( vehicleControlAddon.ovDiffLockBack , x, y, w, h )
+							
+				renderOverlay( vehicleControlAddon.ovDiffLockBg    , posX, posY, width, height )
+				local prevWidth = width 
+				width = math.min( width, height / g_screenAspectRatio )
+				posX = posX + 0.5 * ( prevWidth - width )
+				renderOverlay( vehicleControlAddon.ovDiffLockWheels, posX, posY, width, height )
+				renderOverlay( vehicleControlAddon.ovDiffLockFront , posX, posY, width, height )
+				renderOverlay( vehicleControlAddon.ovDiffLockMid   , posX, posY, width, height )
+				renderOverlay( vehicleControlAddon.ovDiffLockBack  , posX, posY, width, height )
 			end 
 			
 			if      self.spec_vca.minGearSpeed ~= nil
 					and self.spec_vca.maxGearSpeed ~= nil
 					and self.spec_vca.maxGearSpeed ~= 0
-					and self:getGearShiftMode()    ~= VehicleMotor.SHIFT_MODE_AUTOMATIC
-					and not self.spec_vca.autoShift then 
-				renderText(x, y, l, self:vcaSpeedToString( self.spec_vca.minGearSpeed, "%5.1f", true ).." .. "..self:vcaSpeedToString( self.spec_vca.maxGearSpeed, "%5.1f" ))
-				y = y + l * 1.2	
+				--and self:getGearShiftMode()    ~= VehicleMotor.SHIFT_MODE_AUTOMATIC
+				--and not self.spec_vca.autoShift 
+					then 
+				width = g_currentMission.inGameMenu.hud.speedMeter.gaugeBackgroundElement.overlay.width * 0.6
+				
+				renderOverlay( vehicleControlAddon.ovGearSpeedBg, x - 0.5 * width, posY, width, height )
+				setTextColor(unpack(SpeedMeterDisplay.COLOR.GEAR_TEXT))
+				setTextBold(true)
+				renderText( x, posY + 0.5 * height, l,
+										self:vcaSpeedToString( self.spec_vca.minGearSpeed, "%5.1f", true ).." .. "..self:vcaSpeedToString( self.spec_vca.maxGearSpeed, "%5.1f" ))
 			end 			
+			
+			setTextColor(1, 1, 1, 1) 
+			setTextBold(false)
+			
+			if VCAGlobals.snapAngleHudX >= 0 then
+				x = VCAGlobals.snapAngleHudX
+				setTextAlignment( RenderText.ALIGN_LEFT ) 
+			end 
+			if VCAGlobals.snapAngleHudY >= 0 then
+				y = VCAGlobals.snapAngleHudY
+				setTextVerticalAlignment( RenderText.VERTICAL_ALIGN_BASELINE )
+			else 
+				y = y + l * 1.2
+			end 
 			
 			local text = ""
 			if self.spec_vca.keepCamRot then 
@@ -2752,7 +2759,27 @@ function vehicleControlAddon:onDraw()
 				end 
 			end 
 			if text ~= "" then 
-				renderText(x, y, 0.5*l, text)
+				renderText(x, y, 0.75*l, text)
+			end
+			y = y + l * 0.9	
+			
+			if self.spec_vca.ksIsOn and self.spec_drivable.cruiseControl.state == 0 then 
+				renderText(x, y, l, self:vcaSpeedToString( Utils.getNoNil( self.spec_vca.keepSpeedTemp, self.spec_vca.keepSpeed ) / 3.6, "%5.1f" ))
+				y = y + l * 1.2	
+			end
+		
+			if not self:getIsVehicleControlledByPlayer() or self.spec_vca.GPSModActive then
+			elseif self.spec_vca.snapIsOn then 
+				setTextColor(0, 1, 0, 0.5) 
+				if self.spec_vca.snapDistance >= 0.25 then 
+					renderText(x, y, l, string.format( "%4.1f° / %4.1fm", math.deg( math.pi - curSnapAngle ), self.spec_vca.snapDistance))
+				else
+					renderText(x, y, l, string.format( "%4.1f° / %4.1f°", math.deg( math.pi - curSnapAngle ), math.deg( math.pi - d )))
+				end 
+				y = y + l * 1.2	
+				setTextColor(1, 1, 1, 1) 
+			elseif -4 <= self.spec_vca.lastSnapAngle and self.spec_vca.lastSnapAngle <= 4 and not ( self.aiveAutoSteer ) then 
+				renderText(x, y, l, string.format( "%4.1f° / %4.1f°", math.deg( math.pi - curSnapAngle ), math.deg( math.pi - d )))
 				y = y + l * 1.2	
 			end
 			
