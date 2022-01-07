@@ -316,6 +316,7 @@ function vehicleControlAddon.registerEventListeners(vehicleType)
 	SpecializationUtil.registerEventListener(vehicleType, "onPostLoad",             vehicleControlAddon)
 	SpecializationUtil.registerEventListener(vehicleType, "onPreUpdate",            vehicleControlAddon)
 	SpecializationUtil.registerEventListener(vehicleType, "onUpdate",               vehicleControlAddon)
+	SpecializationUtil.registerEventListener(vehicleType, "onUpdateTick",           vehicleControlAddon)
 	SpecializationUtil.registerEventListener(vehicleType, "onPostUpdate",           vehicleControlAddon)
 	SpecializationUtil.registerEventListener(vehicleType, "onDraw",                 vehicleControlAddon)
 	SpecializationUtil.registerEventListener(vehicleType, "onEnterVehicle",         vehicleControlAddon)
@@ -780,6 +781,7 @@ function vehicleControlAddon:vcaSnapReverseRight()
 end 
 
 function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicle)
+	self.spec_vca.activeActionEvents = nil 
 	if self.spec_vca == nil then return end 
 	
 	if self.isClient and self:getIsActiveForInput(true, true) then
@@ -788,6 +790,7 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
 		else	
 			self:clearActionEventsTable( self.spec_vca.actionEvents )
 		end 
+		self.spec_vca.activeActionEvents = {}
 		
 		for _,actionName in pairs({ "vcaSETTINGS",  
 																"vcaGLOBALS",  
@@ -833,44 +836,6 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
 				addThis = vehicleControlAddon.isMPMaster()
 			end 
 			
-			if self.spec_vca.GPSModActive and actionName == "vcaSNAP" then 
-				addThis = false 
-			elseif actionName == "vcaSnapUP"     
-					or actionName == "vcaSnapDOWN"     
-					or actionName == "vcaSnapLEFT"    
-					or actionName == "vcaSnapRIGHT"
-					or actionName == "vcaSNAPPREV"
-					or actionName == "vcaSNAPCONT"
-					or actionName == "vcaSNAPNEXT"
-					or actionName == "vcaSNAPLEFT"
-					or actionName == "vcaSNAPRIGHT"
-					or actionName == "vcaSNAPRESET"
-					or actionName == "vcaSNAPDIST" then 
-				addThis = self.spec_vca.snapPossible
-			end 
-		
---		if      actionName == "vcaGearUp"
---				or  actionName == "vcaGearDown"
---				or  actionName == "vcaRangeUp"
---				or  actionName == "vcaRangeDown"
---				or  actionName == "vcaShifter1"
---				or  actionName == "vcaShifter2"
---				or  actionName == "vcaShifter3"
---				or  actionName == "vcaShifter4"
---				or  actionName == "vcaShifter5"
---				or  actionName == "vcaShifter6"
---				or  actionName == "vcaShifter7"
---				or  actionName == "vcaShifter8"
---				or  actionName == "vcaShifter9"
---				or  actionName == "vcaShifterLH"			
---				or  actionName == "vcaClutch"		
---				or  actionName == "vcaHandMode"		
---				or  actionName == "vcaHandRpm"
---				or  actionName == "vcaManRatio"
---				then 	
---			addThis = self.spec_vca ~= nil and self:vcaGetTransmissionActive()
---		end 
-			
 			if      addThis 
 					and ( isOnActiveVehicle 
 						or  actionName == "vcaUP"
@@ -905,9 +870,32 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
 					triggerAlways  = true 
 				end 
 				
+				if     actionName == "vcaSNAP"
+						or actionName == "vcaSnapUP"     
+						or actionName == "vcaSnapDOWN"     
+						or actionName == "vcaSnapLEFT"    
+						or actionName == "vcaSnapRIGHT"
+						or actionName == "vcaSNAPPREV"
+						or actionName == "vcaSNAPCONT"
+						or actionName == "vcaSNAPNEXT"
+						or actionName == "vcaSNAPLEFT"
+						or actionName == "vcaSNAPRIGHT"
+						or actionName == "vcaSNAPRESET"
+						or actionName == "vcaSNAPDIST" 
+						or actionName == "vcaKSAXIS"
+						or actionName == "vcaDiffLockF"
+						or actionName == "vcaDiffLockM"
+						or actionName == "vcaDiffLockB"
+						then 
+					isActive = false 
+				end 
 				
 				local _, eventName = self:addActionEvent(self.spec_vca.actionEvents, InputAction[actionName], self, vehicleControlAddon.actionCallback, triggerKeyUp, triggerKeyDown, triggerAlways, isActive, nil);
 
+				if not isActive then 
+					self.spec_vca.activeActionEvents[actionName] = false 
+				end 
+				
 				if      g_inputBinding                   ~= nil 
 						and g_inputBinding.events            ~= nil 
 						and g_inputBinding.events[eventName] ~= nil
@@ -920,8 +908,54 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
 				end
 			end
 		end
+		
+	--vehicleControlAddon.updateActionEvents(self)
 	end
 end
+
+function vehicleControlAddon:updateActionEvents()
+	if self.spec_vca == nil or self.spec_vca.activeActionEvents == nil then  
+		return 
+	end 
+	
+	for actionName, wasActive in pairs( self.spec_vca.activeActionEvents ) do
+		local actionEvent = nil
+		if InputAction[actionName] ~= nil then 
+			actionEvent = self.spec_vca.actionEvents[InputAction[actionName]]
+		end 
+		if actionEvent ~= nil then 
+			local isActive = false 
+			if     actionName == "vcaSNAP" then 
+				isActive = not self.spec_vca.GPSModActive
+			elseif actionName == "vcaSnapUP"     
+					or actionName == "vcaSnapDOWN"     
+					or actionName == "vcaSnapLEFT"    
+					or actionName == "vcaSnapRIGHT"
+					or actionName == "vcaSNAPPREV"
+					or actionName == "vcaSNAPCONT"
+					or actionName == "vcaSNAPNEXT"
+					or actionName == "vcaSNAPLEFT"
+					or actionName == "vcaSNAPRIGHT"
+					or actionName == "vcaSNAPRESET"
+					or actionName == "vcaSNAPDIST" 
+					then 
+				isActive = self.spec_vca.snapPossible 
+			elseif actionName == "vcaKSAXIS" then 
+				isActive = self.spec_vca.ksIsOn 
+			elseif actionName == "vcaDiffLockF" then
+				isActive = self:vcaHasDiffFront()
+			elseif actionName == "vcaDiffLockM" then
+				isActive = self:vcaHasDiffAWD()
+			elseif actionName == "vcaDiffLockB" then
+				isActive = self:vcaHasDiffBack()
+			end 
+			
+			self.spec_vca.activeActionEvents[actionName] = isActive
+			
+			g_inputBinding:setActionEventActive(actionEvent.actionEventId, isActive)
+		end 
+	end 
+end 
 
 function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState, isAnalog, isMouse, deviceCategory)
 	
@@ -1508,8 +1542,8 @@ function vehicleControlAddon:onPreUpdate(dt, isActiveForInput, isActiveForInputI
 		self:vcaSetState( "snapIsOn", false )
 	end 
 	
-	local lastGPSModActive = self.spec_vca.GPSModActive 
-	local lastSnapPossible = self.spec_vca.snapPossible
+--local lastGPSModActive = self.spec_vca.GPSModActive 
+--local lastSnapPossible = self.spec_vca.snapPossible
 	self.spec_vca.GPSModActive = false 
 	if self.spec_globalPositioningSystem ~= nil and self.spec_globalPositioningSystem.guidanceIsActive then
 		self.spec_vca.GPSModActive = true 
@@ -1524,10 +1558,10 @@ function vehicleControlAddon:onPreUpdate(dt, isActiveForInput, isActiveForInputI
 		self.spec_vca.snapPossible = true 
 	end 
 
-	if     lastGPSModActive ~= self.spec_vca.GPSModActive
-			or lastSnapPossible ~= self.spec_vca.snapPossible then 
-		self.actionEventUpdateRequested = true 
-	end 
+--if     lastGPSModActive ~= self.spec_vca.GPSModActive
+--		or lastSnapPossible ~= self.spec_vca.snapPossible then 
+--	self.actionEventUpdateRequested = true 
+--end 
 	
 	
 --******************************************************************************************************************************************
@@ -2561,6 +2595,12 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 	end 
 end  
 
+function vehicleControlAddon:onUpdateTick( dt, isActiveForInput, isActiveForInputIgnoreSelection, isSelected )
+	if self.isClient and isActiveForInputIgnoreSelection then
+		vehicleControlAddon.updateActionEvents( self )
+	end 
+end 
+
 function vehicleControlAddon:onPostUpdate( dt, isActiveForInput, isActiveForInputIgnoreSelection, isSelected ) 
 	if self.isServer then 
 		local minGearSpeed, maxGearSpeed = 0, 0
@@ -2672,9 +2712,9 @@ function vehicleControlAddon:onDraw()
 				setOverlayColor( vehicleControlAddon.ovDiffLockBack , getRenderColor( b ) )
 			
 				local w = 0.025 * vehicleControlAddon.getUiScale()
-				local h = w * g_screenAspectRatio
-				local x = g_currentMission.inGameMenu.hud.speedMeter.gaugeCenterX + g_currentMission.inGameMenu.hud.speedMeter.speedIndicatorRadiusX - 0.2 * w
-				local y = g_currentMission.inGameMenu.hud.speedMeter.gaugeCenterY - g_currentMission.inGameMenu.hud.speedMeter.speedIndicatorRadiusY - 1.1 * h
+				local h = w * g_screenAspectRatio				
+				local x, y = g_currentMission.inGameMenu.hud.speedMeter.gaugeBackgroundElement:getPosition()
+
 				renderOverlay( vehicleControlAddon.ovDiffLockBg   , x, y, w, h )
 				renderOverlay( vehicleControlAddon.ovDiffLockFront, x, y, w, h )
 				renderOverlay( vehicleControlAddon.ovDiffLockMid  , x, y, w, h )
