@@ -108,6 +108,9 @@
 		<text name="input_vcaKEEPROT2"    text="VCA: trvalé udržení směru kamery"/>
 		<text name="input_vcaKEEPSPEED"   text="VCA: udržovat rychlost"/>
 		<text name="input_vcaKEEPSPEED2"  text="VCA: trvalé udržování rychlosti"/>
+		<text name="input_vcaKSAXIS"      text="VCA: udržování rychlosti"/>
+		<text name="input_vcaKSAXIS_1"    text="VCA: udržování rychlosti: rychleji"/>
+		<text name="input_vcaKSAXIS_2"    text="VCA: udržování rychlosti: pomaleji"/>																		   
 		<text name="input_vcaSWAPSPEED"   text="VCA: změna rychlosti"/>
 		<text name="input_vcaHandRpm"     text="VCA: otáčky ručního plynu"/>
 		<text name="input_vcaHandRpm_1"   text="VCA: přidat ruční plyn"/>
