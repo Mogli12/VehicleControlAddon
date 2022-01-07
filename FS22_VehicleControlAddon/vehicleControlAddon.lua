@@ -1887,7 +1887,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 			end 
 		end 
 		
-		if self.spec_vca.maxGearSpeed ~= 0 and not self.spec_motorized.motor:getUseAutomaticGearShifting() then 
+		if self.spec_vca.maxGearSpeed ~= 0 and not self.spec_motorized.motor:getUseAutomaticGearShifting() and math.abs( self.spec_vca.keepSpeed ) > 0.5 then 
 			if m < 0 then 
 				slf = math.max( slf,-3.6 * self.spec_vca.maxGearSpeed )
 				slt = math.min( slt,-3.6 * self.spec_vca.minGearSpeed )
@@ -3423,6 +3423,8 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 		end
 		
 		self.spec_vca.useIdleThrottle = false 
+		local lastIdleAcc     = self.spec_vca.idleAcc
+		self.spec_vca.idleAcc = nil 
 		
 		if      self.spec_vca.idleThrottle 
 				and not doHandbrake
@@ -3447,10 +3449,10 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 						 or math.abs( acceleration )       >= 0.001 )
 					then
 
-				local minRpm    = math.max( motor.minRpm, math.min( PowerConsumer.getMaxPtoRpm( self ) * motor.ptoMotorRpmRatio, motor.maxRpm ) )
-
 				self.spec_vca.useIdleThrottle = true 
 
+				local minRpm    = math.max( motor.minRpm + vehicleControlAddon.mbClamp( self.spec_vca.handThrottle, 0, 1 ) * ( motor.maxRpm - motor.minRpm ), 
+																		math.min( vehicleControlAddon.origGetMaxPtoRpm( self ) * motor.ptoMotorRpmRatio, motor.maxRpm ) )
 				local diffRpm   = motor.differentialRotSpeed * 30 / math.pi
 				local motorRpm  = math.abs( diffRpm * motor.gearRatio )
 				local clutchRpm = math.abs( diffRpm * motor.maxGearRatio )
@@ -3483,6 +3485,11 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 				end 
 				acceleration = m * math.max( math.abs( acceleration ), math.min( getClutchMinAcc(), getMotorMaxAcc() ) )
 				
+				if lastIdleAcc ~= nil then 
+					acceleration = lastIdleAcc + 0.1 * ( acceleration - lastIdleAcc )
+				end 
+				self.spec_vca.idleAcc = acceleration
+				self.spec_vca.oldAcc  = self.spec_vca.handThrottle
 			end 
 		end
 	end 
@@ -3619,7 +3626,8 @@ end
 
 --******************************************************************************************************************************************
 -- hand RPM via PowerConsumer.getMaxPtoRpm (only in neutral)
-function vehicleControlAddon:vcaGetMaxPtoRpm( superFunc, ... )
+vehicleControlAddon.origGetMaxPtoRpm = PowerConsumer.getMaxPtoRpm
+PowerConsumer.getMaxPtoRpm = function ( self, ... )
 	if     self.spec_vca              == nil
 			or self.spec_motorized        == nil 
 			or self.spec_motorized.motor  == nil 
@@ -3627,7 +3635,7 @@ function vehicleControlAddon:vcaGetMaxPtoRpm( superFunc, ... )
 			or self.spec_motorized.motor.ptoMotorRpmRatio == nil
 			or self.spec_motorized.motor.ptoMotorRpmRatio <= 0
 			then 
-		return superFunc( self, ... )
+		return vehicleControlAddon.origGetMaxPtoRpm( self, ... )
 	end 
 	
 	if self.spec_vca.useIdleThrottle then 
@@ -3637,7 +3645,7 @@ function vehicleControlAddon:vcaGetMaxPtoRpm( superFunc, ... )
 	
 	local motor = self.spec_motorized.motor 
 	
-	local r0 = superFunc( self, ... )
+	local r0 = vehicleControlAddon.origGetMaxPtoRpm( self, ... )
 	
 	if self.spec_vca.handbrake and self.spec_vca.oldAcc ~= nil and self.spec_vca.oldAcc > 0 then 
 		r0 = math.max( r0, ( motor.minRpm + self.spec_vca.oldAcc * ( motor.maxRpm - motor.minRpm ) ) / motor.ptoMotorRpmRatio )
@@ -3655,7 +3663,6 @@ function vehicleControlAddon:vcaGetMaxPtoRpm( superFunc, ... )
 	
 	return r1
 end 
-PowerConsumer.getMaxPtoRpm = Utils.overwrittenFunction( PowerConsumer.getMaxPtoRpm, vehicleControlAddon.vcaGetMaxPtoRpm )
 
 --******************************************************************************************************************************************
 -- limit maxRpm in case of inching 
