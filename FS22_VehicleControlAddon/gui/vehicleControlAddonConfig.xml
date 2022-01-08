@@ -89,7 +89,7 @@
 					<GuiElement type="text"   profile="multiTextOptionSettingsText" />
 					<GuiElement type="text"   profile="multiTextOptionSettingsTitle" vcaTextID="vcaPEEKLR" text="peekLeftRight"/>
 					<GuiElement type="bitmap" profile="multiTextOptionSettingsBg" />
-					<GuiElement type="text"   profile="multiTextOptionSettingsTooltip" vcaTextID="_vca_tip_PEEKLR" text="peekLeftRight"/>
+					<GuiElement type="text"   profile="multiTextOptionSettingsTooltip" vcaTextID="vca_tip_PEEKLR" text="peekLeftRight"/>
 				</GuiElement>
 
 
