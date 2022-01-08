@@ -3486,10 +3486,11 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 
 				self.spec_vca.useIdleThrottle = true 
 
+				local rpmRange  = motor.maxRpm - motor.minRpm
 				local minRpm    = vehicleControlAddon.mbClamp( vehicleControlAddon.origGetMaxPtoRpm( self ) * motor.ptoMotorRpmRatio, motor.minRpm, motor.maxRpm )
 				if self.spec_vca.handThrottle > 0 then 
 				-- hand throttle overrides PTO RPM
-					minRpm        = motor.minRpm + vehicleControlAddon.mbClamp( self.spec_vca.handThrottle, 0, 1 ) * ( motor.maxRpm - motor.minRpm )
+					minRpm        = motor.minRpm + vehicleControlAddon.mbClamp( self.spec_vca.handThrottle, 0, 1 ) * rpmRange
 				end 													
 				local diffRpm   = motor.differentialRotSpeed * 30 / math.pi
 				local motorRpm  = math.abs( diffRpm * motor.gearRatio )
@@ -3521,13 +3522,26 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 						return ( maxRpm - motorRpm ) / ( maxRpm - minRpm )
 					end 
 				end 
-				acceleration = m * math.max( math.abs( acceleration ), math.min( getClutchMinAcc(), getMotorMaxAcc() ) )
 				
-				-- setting oldAcc for max required RPM
-				if     minRpm >= motor.maxRpm then 
-					self.spec_vca.oldAcc = m 
-				elseif minRpm >  motor.minRpm then 
-					self.spec_vca.oldAcc = m * math.max( math.abs( self.spec_vca.oldAcc ), ( minRpm - motor.minRpm ) / ( motor.maxRpm - motor.minRpm ) )
+				local change = false 
+				local acc    = math.abs( acceleration )
+				local maxRpm = math.max( minRpm, motor.minRpm + vehicleControlAddon.mbClamp( acc - 0.02, 0.2, 1 ) * rpmRange )
+				if 0 < acc and acc < 1 and motorRpm > maxRpm then 
+					if motorRpm >= maxRpm + 0.04 * rpmRange then 
+					  acc      = 0
+					else 
+					  acc      = math.min( acc, 1 - 25 * ( motorRpm - maxRpm ) / rpmRange )
+					end 
+					change     = true 
+				end 
+				local minAcc = math.min( getClutchMinAcc(), getMotorMaxAcc() )
+				if acc < minAcc then 
+					acc        = minAcc
+					change     = true 
+				end  
+				
+				if change then 
+					acceleration = m * acc
 				end 
 			end 
 		end
@@ -3751,14 +3765,9 @@ function vehicleControlAddon:vcaGetRequiredMotorRpmRange( superFunc, ... )
 	lastMinRpm = vehicleControlAddon.mbClamp( lastMinRpm, minRpm, maxRpm )
 	lastMaxRpm = vehicleControlAddon.mbClamp( lastMaxRpm, minRpm, maxRpm )
 	
-	if self.backwardGears or self.forwardGears then 
+	if self.backwardGears or self.forwardGears or self.vehicle.spec_vca.useIdleThrottle then  
 		-- standard transmission 
-		if curBrake > 0 or curAcc >= 1 then  
-			maxRpm = self.maxRpm 
-		else 
-			-- limit maxRpm in case of inching 
-			maxRpm = math.min( maxRpm, math.max( self.minRpm + math.max( 0.2, curAcc ) * rpmRange, motorPtoRpm ) )
-		end 
+		maxRpm = self.maxRpm 
 		if motorPtoRpm > self.minRpm and not self.vehicle.spec_vca.useIdleThrottle then 
 			-- increase RPM in neutral
 			minRpm = motorPtoRpm
