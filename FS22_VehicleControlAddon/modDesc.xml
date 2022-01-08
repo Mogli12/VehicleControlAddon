@@ -5,6 +5,7 @@
 		<en>Vehicle Control Addon</en>
 		<de>Erweiterung zur Fahrzeugkontrolle</de>
 		<fr>Vehicle Control Addon</fr>
+		<tr>Araç Kontrol Eklentisi</tr>
 	</title>
 	<description>
 		<en><![CDATA[Vehicle Control Addon (VCA) combines several functions in one modification. Most functions are turned off per default. VCA can rotate the camera to match the steering angle and direction. This way you always look into the direction your are driving to. With Shift-right and the cursor keys you can peek in the corresponding direction. Shift-right limits throttle, cruise control and maximum rounds per minute to 75%.
@@ -31,14 +32,23 @@ Les fonction du GPS sont accessibles via les raccourcis par défaut suivants :
 [Alt gauche + Z]: Remise à zéro du GPS
 [Shift droit]: Limiteur d'accélérateur / vitesse du régulateur
 [Shift droit + flèches directionnelles]: regarder devant, derrière, à gauche, à droite]]></fr>
+		<tr><![CDATA[Araç Kontrol Eklentisi (VCA) birçok özelliği tek çatı altında toplayan bir moddur. Çoğu özellik varsayılan olarak kapalı ayarlanmıştır. VCA direksiyon açısına ve yönüne göre kamerayı çevirebilir. Böylece her zaman aracın gittiği yöne bakmış olursunuz. Sağ SHIFT + Yön Tuşları ile ileri, geri, sağa, sola bakabilirsiniz. Sağ SHIFT tuşu gazı sınırlayarak hız sabitleyici ve maksimum motor devrini 75%'e limitler.
+Araç Kontrol Eklentisi basit bir kılavuz sistemi içermektedir. Sol CTRL tuşuna W ile birlikte basarsanız aracın sürüş yönü bir hizaya sabitlenir.
+Tüm özellikler aşağıdaki varsayılan tuşlarla değiştirilebilir:
+[Sol CTRL + C]: Ayarlar
+[Sol CTRL + W]: Açıya Hizalan (devam et)
+[Sol ALT + W]: Açıya Hizalan (sıfırdan)
+[Sağ SHIFT]: Gaz Sınırlayıcı / azaltılmış hız sabitleyici hızı
+[Sağ SHIFT + Yön Tuşları]: ileri, geri, sağa, sola bak]]></tr>
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>modIcon.dds</iconFilename>
-	<version>9.0.4.4</version>
+	<version>9.0.4.2</version>
 	<l10n filenamePrefix="l10n/modDesc_l10n">
 		<text name="vcaVERSION">          
 			<en>Vehicle Control Addon</en>
 			<de>Erweiterung zur Fahrzeugkontrolle</de>
+			<tr>Araç Kontrol Eklentisi</tr>
 		</text>
 	</l10n>
 	
