@@ -3423,8 +3423,6 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 		end
 		
 		self.spec_vca.useIdleThrottle = false 
-		local lastIdleAcc     = self.spec_vca.idleAcc
-		self.spec_vca.idleAcc = nil 
 		
 		if      self.spec_vca.idleThrottle 
 				and not doHandbrake
@@ -3485,11 +3483,12 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 				end 
 				acceleration = m * math.max( math.abs( acceleration ), math.min( getClutchMinAcc(), getMotorMaxAcc() ) )
 				
-				if lastIdleAcc ~= nil then 
-					acceleration = lastIdleAcc + 0.1 * ( acceleration - lastIdleAcc )
+				-- setting oldAcc for max required RPM
+				if     minRpm >= motor.maxRpm then 
+					self.spec_vca.oldAcc = m 
+				elseif minRpm >  motor.minRpm then 
+					self.spec_vca.oldAcc = m * math.max( math.abs( self.spec_vca.oldAcc ), ( minRpm - motor.minRpm ) / ( motor.maxRpm - motor.minRpm ) )
 				end 
-				self.spec_vca.idleAcc = acceleration
-				self.spec_vca.oldAcc  = self.spec_vca.handThrottle
 			end 
 		end
 	end 
