@@ -102,6 +102,7 @@
 					<GuiElement type="text"   profile="multiTextOptionSettingsTooltip" vcaTextID="vca_tip_DRAWHUD" text="drawHud"/>
 				</GuiElement>
 
+				<!--
 				<GuiElement type="empty" profile="ingameMenuGameSettingsTextInputWrapper">
 					<GuiElement type="textInput" profile="ingameMenuGameSettingsTextInput" id="snapAngleHudX" onCreate="onCreateSubElement" 
 											imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed" />
@@ -114,7 +115,8 @@
 											imeKeyboardType="normal" onEnterPressed="vcaOnEnterPressed" />
 					<GuiElement type="text" profile="multiTextOptionSettingsTitle" vcaTextID="vcaHudY" text="snapAngleHudY"/>
 					<GuiElement type="text" profile="multiTextOptionSettingsTooltip" vcaTextID="vca_tip_HudY" text="snapAngleHudY (tt)"/>
-				</GuiElement>				
+				</GuiElement>
+				-->				
 				
 				<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="debugPrint" onCreate="onCreateSubElement">
 					<GuiElement type="button" profile="multiTextOptionSettingsLeft" />

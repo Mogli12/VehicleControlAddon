@@ -212,6 +212,11 @@ vehicleControlAddon.snapLinear           = 1.5
 vehicleControlAddon.snapLinearFactor     = math.acos( 1 - vehicleControlAddon.snapLinear / vehicleControlAddon.snapRadius ) / vehicleControlAddon.snapLinear
 vehicleControlAddon.snapNonLinearFactor  = math.acos( 1 - vehicleControlAddon.snapLinear / vehicleControlAddon.snapRadius )
 
+vehicleControlAddon.colorActive          = { 0.0003, 0.5647, 0.9822, 1 }
+vehicleControlAddon.colorInactive        = { 1, 1, 1, 1 }
+vehicleControlAddon.colorNormal          = { 1, 1, 1, 1 }
+vehicleControlAddon.colorBg              = { 0, 0, 0, 0.54 }
+
 vehicleControlAddon.properties = {}
 vehicleControlAddon.propertiesIndex = {}
 
@@ -496,7 +501,7 @@ function vehicleControlAddon:onLoad(savegame)
 	self.spec_vca.keepCamRot    = false 
 	self.spec_vca.kRToggleIn    = false 
 	self.spec_vca.kRToggleOut   = false 
-  self.spec_vca.GPSModActive  = false 
+  self.spec_vca.snapDisabled  = false 
   self.spec_vca.snapPossible  = false 
 
 	self.spec_vca.maxWheelSlip  = 0
@@ -527,12 +532,14 @@ function vehicleControlAddon:onLoad(savegame)
 			vehicleControlAddon.ovDiffLockBack   = createImageOverlay( Utils.getFilename( "diff_back.dds",        g_vehicleControlAddon.vcaDirectory))
 			vehicleControlAddon.ovDiffLockWheels = createImageOverlay( Utils.getFilename( "diff_wheels.dds",      g_vehicleControlAddon.vcaDirectory))
 			vehicleControlAddon.ovDiffLockBg     = createImageOverlay( Utils.getFilename( "diff_bg.dds",      g_vehicleControlAddon.vcaDirectory))
-			local r, g, b, a = unpack(SpeedMeterDisplay.COLOR.GEARS_BG)
+			local r, g, b, a = unpack(vehicleControlAddon.colorBg)
 			setOverlayColor( vehicleControlAddon.ovDiffLockBg, r, g, b, a )
 			vehicleControlAddon.ovGearSpeedBg    = createImageOverlay( Utils.getFilename( "gear_bg.dds",      g_vehicleControlAddon.vcaDirectory))
-			local r, g, b, a = unpack(SpeedMeterDisplay.COLOR.GEARS_BG)
 			setOverlayColor( vehicleControlAddon.ovGearSpeedBg, r, g, b, a )
 			setOverlayUVs( vehicleControlAddon.ovGearSpeedBg, unpack( GuiUtils.getUVs( { 0, 0, 1024, 128 } ) ) )
+			vehicleControlAddon.ovExtraTextBg    = createImageOverlay( Utils.getFilename( "gear_bg.dds",      g_vehicleControlAddon.vcaDirectory))
+			setOverlayColor( vehicleControlAddon.ovExtraTextBg, r, g, b, a )
+			setOverlayUVs( vehicleControlAddon.ovExtraTextBg, unpack( GuiUtils.getUVs( { 0, 0, 1024, 128 } ) ) )
 		end 
 	end 
 end
@@ -932,7 +939,7 @@ function vehicleControlAddon:updateActionEvents()
 		if actionEvent ~= nil then 
 			local isActive = false 
 			if     actionName == "vcaSNAP" then 
-				isActive = not self.spec_vca.GPSModActive
+				isActive = not self.spec_vca.snapDisabled
 			elseif actionName == "vcaSnapUP"     
 					or actionName == "vcaSnapDOWN"     
 					or actionName == "vcaSnapLEFT"    
@@ -1236,10 +1243,22 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 			else 
 				h = 1 + keyStatus
 			end 
-		elseif keyStatus > 0.5 then 
-			h = math.min( 1, h + 0.0005 * self.spec_vca.tickDt )
-		elseif keyStatus < 0.5 then 
-			h = math.max( 0, h - 0.0005 * self.spec_vca.tickDt )
+		else
+			if      h <= 0
+					and type ( self.getMotorRpmPercentage ) == "function"
+					and ( keyStatus > 0.5 
+						or  self.spec_vca.locHandRpmTime == nil 
+						or  g_currentMission.time > self.spec_vca.locHandRpmTime + 2000 )
+					then 
+				h = vehicleControlAddon.mbClamp( self:getMotorRpmPercentage() )
+			end 
+			self.spec_vca.locHandRpmTime = g_currentMission.time
+			
+			if keyStatus > 0.5 then 
+				h = math.min( 1, h + 0.0005 * self.spec_vca.tickDt )
+			elseif keyStatus < 0.5 then 
+				h = math.max( 0, h - 0.0005 * self.spec_vca.tickDt )
+			end 
 		end 
 		
 		self:vcaSetState( "handThrottle", vehicleControlAddon.mbClamp( h, 0, 1 ) )
@@ -1548,27 +1567,22 @@ function vehicleControlAddon:onPreUpdate(dt, isActiveForInput, isActiveForInputI
 		self:vcaSetState( "snapIsOn", false )
 	end 
 	
---local lastGPSModActive = self.spec_vca.GPSModActive 
---local lastSnapPossible = self.spec_vca.snapPossible
-	self.spec_vca.GPSModActive = false 
+	self.spec_vca.snapDisabled = false 
+	self.spec_vca.snapPossible = false 
 	if self.spec_globalPositioningSystem ~= nil and self.spec_globalPositioningSystem.guidanceIsActive then
-		self.spec_vca.GPSModActive = true 
-		self.spec_vca.snapPossible = false 
-		
-		if self.spec_vca.snapIsOn then
-			self:vcaSetState( "snapIsOn", false )
-		end 
+		self.spec_vca.snapDisabled = true 
+	elseif not self:vcaIsVehicleControlledByPlayer()
+			or self.aiveAutoSteer then 
+		self.spec_vca.snapDisabled = true 
 	elseif  -4 <= self.spec_vca.lastSnapAngle and self.spec_vca.lastSnapAngle <= 4
 			and self.spec_vca.snapDistance >= 0.25
 			and vehicleControlAddon.snapAngles[self.spec_vca.snapAngle] ~= nil then 
 		self.spec_vca.snapPossible = true 
 	end 
 
---if     lastGPSModActive ~= self.spec_vca.GPSModActive
---		or lastSnapPossible ~= self.spec_vca.snapPossible then 
---	self.actionEventUpdateRequested = true 
---end 
-	
+	if self.spec_vca.snapDisabled and self.spec_vca.snapIsOn then
+		self:vcaSetState( "snapIsOn", false )
+	end 
 	
 --******************************************************************************************************************************************
 -- adaptive steering 	
@@ -2707,6 +2721,13 @@ function vehicleControlAddon:onDraw()
 				renderOverlay( vehicleControlAddon.ovDiffLockMid   , posX, posY, width, height )
 				renderOverlay( vehicleControlAddon.ovDiffLockBack  , posX, posY, width, height )
 			end 
+
+			width = g_currentMission.inGameMenu.hud.speedMeter.gaugeBackgroundElement.overlay.width * 0.6
+			
+			if height > 1.4 * l then 
+				posY = posY + 0.5 * ( height - 1.4 * l )
+				height = 1.4 * l
+			end 
 			
 			if      self.spec_vca.minGearSpeed ~= nil
 					and self.spec_vca.maxGearSpeed ~= nil
@@ -2714,28 +2735,39 @@ function vehicleControlAddon:onDraw()
 				--and self:getGearShiftMode()    ~= VehicleMotor.SHIFT_MODE_AUTOMATIC
 				--and not self.spec_vca.autoShift 
 					then 
-				width = g_currentMission.inGameMenu.hud.speedMeter.gaugeBackgroundElement.overlay.width * 0.6
 				
 				renderOverlay( vehicleControlAddon.ovGearSpeedBg, x - 0.5 * width, posY, width, height )
-				setTextColor(unpack(SpeedMeterDisplay.COLOR.GEAR_TEXT))
+
+				if vehicleControlAddon.vcaUIShowautoShift( self ) then 
+					if self.spec_vca.autoShift then 
+						setTextColor(unpack(vehicleControlAddon.colorInactive))
+					else
+						setTextColor(unpack(vehicleControlAddon.colorActive))
+					end 
+				else 
+					setTextColor(unpack(vehicleControlAddon.colorActive))
+				end 
+
 				setTextBold(true)
-				renderText( x, posY + 0.5 * height, l,
+				renderText( x, posY + 0.55 * height, height * 0.7142857,
 										self:vcaSpeedToString( self.spec_vca.minGearSpeed, "%5.1f", true ).." .. "..self:vcaSpeedToString( self.spec_vca.maxGearSpeed, "%5.1f" ))
+			elseif vehicleControlAddon.vcaUIShowautoShift( self ) then  
+				renderOverlay( vehicleControlAddon.ovGearSpeedBg, x - 0.5 * width, posY, width, height )
 			end 			
 			
-			setTextColor(1, 1, 1, 1) 
+			setTextColor(unpack(vehicleControlAddon.colorNormal))
 			setTextBold(false)
-			
-			if VCAGlobals.snapAngleHudX >= 0 then
-				x = VCAGlobals.snapAngleHudX
-				setTextAlignment( RenderText.ALIGN_LEFT ) 
-			end 
-			if VCAGlobals.snapAngleHudY >= 0 then
-				y = VCAGlobals.snapAngleHudY
-				setTextVerticalAlignment( RenderText.VERTICAL_ALIGN_BASELINE )
-			else 
+		
+		--if VCAGlobals.snapAngleHudX >= 0 then
+		--	x = VCAGlobals.snapAngleHudX
+		--	setTextAlignment( RenderText.ALIGN_LEFT ) 
+		--end 
+		--if VCAGlobals.snapAngleHudY >= 0 then
+		--	y = VCAGlobals.snapAngleHudY
+		--	setTextVerticalAlignment( RenderText.VERTICAL_ALIGN_BASELINE )
+		--else 
 				y = y + l * 1.2
-			end 
+		--end 
 			
 			local text = ""
 			if self.spec_vca.keepCamRot then 
@@ -2750,14 +2782,25 @@ function vehicleControlAddon:onDraw()
 				if text ~= "" then text = text ..", " end 
 				text = text .. "inching"
 			end 
-			if vehicleControlAddon.vcaUIShowautoShift( self ) then 
-				if text ~= "" then text = text ..", " end 
-				if self.spec_vca.autoShift then 
-					text = text .. "automatic"
-				else
-					text = text .. "manual"
-				end 
+			
+			local i = 0
+			if self.spec_vca.ksIsOn and self.spec_drivable.cruiseControl.state == 0 then 
+				i = i + 1 
 			end 
+			if self.spec_vca.snapPossible then 
+				i = i + 1 
+			end 
+-- ovExtraTextBg
+			if i > 0 or text ~= "" then  
+				local ovY = y 
+				local ovH = l * 1.2 * i + 0.4 * l
+				if text ~= "" then 
+					ovY = ovY - l * 0.75
+					ovH = ovH + l * 0.75
+				end 
+				renderOverlay( vehicleControlAddon.ovExtraTextBg, x - 0.5 * width, ovY, width, ovH )
+			end 
+			
 			if text ~= "" then 
 				renderText(x, y, 0.75*l, text)
 			end
@@ -2768,20 +2811,21 @@ function vehicleControlAddon:onDraw()
 				y = y + l * 1.2	
 			end
 		
-			if not self:getIsVehicleControlledByPlayer() or self.spec_vca.GPSModActive then
+			if not self:getIsVehicleControlledByPlayer() or self.spec_vca.snapDisabled then
 			elseif self.spec_vca.snapIsOn then 
-				setTextColor(0, 1, 0, 0.5) 
+				setTextColor(unpack(vehicleControlAddon.colorActive))
 				if self.spec_vca.snapDistance >= 0.25 then 
 					renderText(x, y, l, string.format( "%4.1f° / %4.1fm", math.deg( math.pi - curSnapAngle ), self.spec_vca.snapDistance))
 				else
 					renderText(x, y, l, string.format( "%4.1f° / %4.1f°", math.deg( math.pi - curSnapAngle ), math.deg( math.pi - d )))
 				end 
 				y = y + l * 1.2	
-				setTextColor(1, 1, 1, 1) 
 			elseif -4 <= self.spec_vca.lastSnapAngle and self.spec_vca.lastSnapAngle <= 4 and not ( self.aiveAutoSteer ) then 
+				setTextColor(unpack(vehicleControlAddon.colorInactive)) 
 				renderText(x, y, l, string.format( "%4.1f° / %4.1f°", math.deg( math.pi - curSnapAngle ), math.deg( math.pi - d )))
 				y = y + l * 1.2	
 			end
+			setTextColor(unpack(vehicleControlAddon.colorNormal)) 
 			
 		end 
 		
@@ -2804,17 +2848,10 @@ function vehicleControlAddon:onDraw()
 		
 		local snapDraw = false
 		
-		if not ( self:getIsVehicleControlledByPlayer() and self.spec_vca.snapPossible ) then 
+		if not self.spec_vca.snapPossible then 
 			self.spec_vca.snapDrawTimer = nil
 			self.spec_vca.snapPosTimer  = nil 
 			self.spec_vca.drawSnapIsOn  = nil 
-		elseif self.aiveAutoSteer or not ( -4 <= self.spec_vca.lastSnapAngle and self.spec_vca.lastSnapAngle <= 4 ) then 		
-			self.spec_vca.snapDrawTimer = nil
-			self.spec_vca.snapPosTimer  = nil 
-			self.spec_vca.drawSnapIsOn  = nil 
-		elseif self.spec_vca.snapDistance  < 0.25 then 
-			snapDraw = false
-			self.spec_vca.snapPosTimer  = nil 
 		elseif self.spec_vca.snapPosTimer ~= nil then 
 			snapDraw = true
 		elseif self.spec_vca.snapDraw <= 0 then 
@@ -2843,10 +2880,11 @@ function vehicleControlAddon:onDraw()
 			
 			local dist  = distX * dz - distZ * dx + curSnapOffset2
 
-			local r, g, b, a = 1, 1, 1, 1
+			local r, g, b, a = unpack(vehicleControlAddon.colorInactive)
 			if self.spec_vca.snapIsOn then 
 				dist = dist + self.spec_vca.snapFactor * self.spec_vca.snapDistance
-				r, g, b, a = 0, 1, 1, 0.5
+				r, g, b, a = unpack(vehicleControlAddon.colorActive)
+
 				if math.abs( dist ) > 1 then 
 					if self.spec_vca.snapPosTimer == nil or self.spec_vca.snapPosTimer < 1000 then 
 						self.spec_vca.snapPosTimer = 1000
@@ -2859,7 +2897,6 @@ function vehicleControlAddon:onDraw()
 				while dist+dist <-self.spec_vca.snapDistance do 
 					dist = dist + self.spec_vca.snapDistance
 				end 
-				r, g, b, a = 1, 0, 0, 1
 			end 
 
 			setTextAlignment( RenderText.ALIGN_CENTER ) 
@@ -3449,8 +3486,11 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 
 				self.spec_vca.useIdleThrottle = true 
 
-				local minRpm    = math.max( motor.minRpm + vehicleControlAddon.mbClamp( self.spec_vca.handThrottle, 0, 1 ) * ( motor.maxRpm - motor.minRpm ), 
-																		math.min( vehicleControlAddon.origGetMaxPtoRpm( self ) * motor.ptoMotorRpmRatio, motor.maxRpm ) )
+				local minRpm    = vehicleControlAddon.mbClamp( vehicleControlAddon.origGetMaxPtoRpm( self ) * motor.ptoMotorRpmRatio, motor.minRpm, motor.maxRpm )
+				if self.spec_vca.handThrottle > 0 then 
+				-- hand throttle overrides PTO RPM
+					minRpm        = motor.minRpm + vehicleControlAddon.mbClamp( self.spec_vca.handThrottle, 0, 1 ) * ( motor.maxRpm - motor.minRpm )
+				end 													
 				local diffRpm   = motor.differentialRotSpeed * 30 / math.pi
 				local motorRpm  = math.abs( diffRpm * motor.gearRatio )
 				local clutchRpm = math.abs( diffRpm * motor.maxGearRatio )
