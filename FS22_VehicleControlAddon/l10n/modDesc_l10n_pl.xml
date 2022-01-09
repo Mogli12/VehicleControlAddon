@@ -12,298 +12,170 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 	</description>
 
 	<texts>
-		<text name="vcaCAMERAI"         text="Obrót kamery wewnętrznej"/>
-		<text name="vcaCAMERAO"         text="Obrót kamery zewnętrznej"/>
-		<text name="vcaEXPONENT"        text="Czułość"/>
-		<text name="vcaSTEERING"        text="Sterowanie adaptacyjne"/>
-		<text name="vcaSHUTTLE"         text="Rewers"/>
-		<text name="vcaREVERSE"         text="Widok do tyłu"/>
-		<text name="vcaREVERSEI"        text="Widok do tyłu (wewnątrz)"/>
-		<text name="vcaREVERSEO"        text="Widok do tyłu (na zewnątrz)"/>
-		<text name="vcaLIMIT"           text="Tempomat"/>
-		<text name="vcaPEEKLR"          text="Zerknięcie w bok"/>
-		<text name="vcaANGLE"           text="Przeskok kątu wyrównania"/>
-		<text name="vcaBRAKE"           text="Niska siła hamowania"/>
-		<text name="vcaTRANSMISSION"    text="Skrzynia biegów"/>
-		<text name="vcaMAXSPEED"        text="Prędkość osi"/>
-		<text name="vcaLIMSPEED"        text="Limit prędkości"/>
-		<text name="vcaAUTOSHIFT"       text="Automat"/>
-		<text name="vcaLAUNCH"          text="Załączony bieg"/>
-		<text name="vcaKEEPSPEED"       text="Stała prędkość tempomatu"/>
-		<text name="vcaNO_ARB"          text="Brak centrowania"/>
-		<text name="vcaHANDTHROTTLE"    text="Gaz ręczny"/>
-		<text name="vcaPITCH"           text="Wysokość dźwięku przy maks. RPM"/>
-		<text name="vcaPITCH_IO"        text="Wysokość dźwięku wewnątrz/na zewnątrz"/>
-		<text name="vcaSETTINGS"        text="Ustawienia"/>
-		<text name="vcaDRAWHUD"         text="HUD skrzyni"/>
+		<text name="vcaCAMERAI"           text="Obrót kamery wewnętrznej"/>
+		<text name="vcaCAMERAO"           text="Obrót kamery zewnętrznej"/>
+		<text name="vcaEXPONENT"          text="Czułość"/>
+		<text name="vcaSTEERING"          text="Sterowanie adaptacyjne"/>
+		<text name="vcaSHUTTLE"           text="Rewers"/>
+		<text name="vcaREVERSE"           text="Widok do tyłu"/>
+		<text name="vcaREVERSEI"          text="Widok do tyłu (wewnątrz)"/>
+		<text name="vcaREVERSEO"          text="Widok do tyłu (na zewnątrz)"/>
+		<text name="vcaLIMIT"             text="Tempomat"/>
+		<text name="vcaPEEKLR"            text="Zerknięcie w bok"/>
+		<text name="vcaANGLE"             text="Przeskok kątu wyrównania"/>
+		<text name="vcaBRAKE"             text="Niska siła hamowania"/>
+		<text name="vcaAUTOSHIFT"         text="Automat"/>
+		<text name="vcaKEEPSPEED"         text="Stała prędkość tempomatu"/>
+		<text name="vcaNO_ARB"            text="Brak centrowania"/>
+		<text name="vcaHANDTHROTTLE"      text="Gaz ręczny"/>
+		<text name="vcaSETTINGS"          text="Ustawienia"/>
+		<text name="vcaDRAWHUD"           text="HUD skrzyni"/>
+				
+		<text name="vcaDISTANCE"          text="Szerokość robocza"/>
+		<text name="vcaOFFSET1"           text="Przesunięcie narzędzia"/>
+		<text name="vcaOFFSET2"           text="Odwróć przesunięcie"/>
+		<text name="vcaSNAP90"            text="Zmień wyrównanie kierunku co 90°"/>
+		<text name="vcaDRAWMARKER"        text="Pokaż linie kierunku jazdy"/>
+		<text name="vcaSNAPLEFT"          text="Zawrót na ścieżkę w lewo"/>
+		<text name="vcaSNAPRIGHT"         text="Zawrót na ścieżkę w prawo"/>
 		
-		<text name="vcaDISTANCE"        text="Szerokość robocza"/>
-		<text name="vcaOFFSET1"         text="Przesunięcie narzędzia"/>
-		<text name="vcaOFFSET2"         text="Odwróć przesunięcie"/>
-		<text name="vcaSNAP90"          text="Zmień wyrównanie kierunku co 90°"/>
-		<text name="vcaDRAWMARKER"      text="Pokaż linie kierunku jazdy"/>
-		<text name="vcaPITCH1"          text="Liniowa wysokość dźwięku"/>
-		<text name="vcaPITCH2"          text="Wysokość dźwięku przy średnich RPM"/>
-		<text name="vcaBLOWOFFVOL"      text="Głośność Wastegate"/>
-		<text name="vcaSINGLEREV"       text="Pojedynczy bieg wsteczny"/>
-		<text name="vcaAUTOCLUTCH"      text="Automatyczne sprzęgło"/>
-		<text name="vcaTURBOCLUTCH"     text="Turbo sprzęgło"/>
-		<text name="vcaGEARRATIOF"      text="Min. prędkość biegu"/>
-		<text name="vcaGEARRATIOT"      text="Max. prędkość biegu"/>
-		<text name="vcaG27MODE"         text="Tryb skrzyni G27/G29"/>
-		<text name="vcaHIREDWORKER"     text="Skrzynia i pracownik"/>
-		<text name="vcaOWNMINSPEED"     text="Prędkość na 1 biegu"/>
-		<text name="vcaOWNMINRANGE"     text="Prędkość na 1 biegu i zakresie -"/>
-		<text name="vcaOWNMAXRANGE"     text="Max. prędkość biegu na zakresie -"/>
-		<text name="vcaOWNGEARS"        text="Ilość biegów"/>
-		<text name="vcaOWNRANGES"       text="Ilość zakresów"/>
-		<text name="vcaOWNGEARTIME"     text="Czas zmiany biegów"/>
-		<text name="vcaOWNRANGETIME"    text="Czas zmiany zakresów"/>
-		<text name="vcaOWNAUTOGEARS"    text="Biegi automatyczne"/>
-		<text name="vcaOWNAUTORANGE"    text="Zakresy automatyczne"/>
-		<text name="vcaOWNREVGEARS"     text="Biegi wsteczne"/>
-		<text name="vcaOWNREVRANGE"     text="Zakresy wsteczne"/>
-		<text name="vcaOWNREVRATIO"     text="Mnożnik wsteczny"/>
-		<text name="vcaOWNSPLITG27"     text="Dzielone biegi w G27"/>
+		<text name="vcaAntiSlip"          text="Kontrola trakcji"/>
+		<text name="vcaDiffManual"        text="Ręczne ustawianie napędów i blokad"/>
+		<text name="vcaDiffFrontAdv"      text="Zwiększanie prędkości przedniej osi"/>
+		<text name="vcaDiffLockSwap"      text="Zamiana blokady dyf. pomiędzy osiami"/>
+		<text name="vcaHudX"              text="Pozycja HUDa X"/>
+		<text name="vcaHudY"              text="Pozycja HUDa Y"/>
+		<text name="vcaHIREDWORKER2"      text="Pracownik i dyferencjały"/>
 		
-		<text name="vcaAntiSlip"        text="Kontrola trakcji"/>
-		<text name="vcaDiffManual"      text="Ręczne ustawianie napędów i blokad"/>
-		<text name="vcaDiffFrontAdv"    text="Zwiększanie prędkości przedniej osi"/>
-		<text name="vcaDiffLockSwap"    text="Zamiana blokady dyf. pomiędzy osiami"/>
-		<text name="vcaHudX"            text="Pozycja HUDa X"/>
-		<text name="vcaHudY"            text="Pozycja HUDa Y"/>
-		<text name="vcaHIREDWORKER2"    text="Pracownik i dyferencjały"/>
-		
-		<text name="vcaSPEEDLIMITF"     text="Limit prędkości do przodu"/>
-		<text name="vcaSPEEDLIMITB"     text="Limit prędkości do tyłu"/>
-		<text name="vcaRATEDPOWER"      text="Moc znamionowa w KM"/>
-		<text name="vcaTORQUECURVE"     text="Bardziej realistyczna krzywa momentu obrotowego"/>
-		<text name="vcaROTACCTIME"      text="Czas rozpędzania silnika"/>
-		<text name="vcaGEARRGMODE"      text="Zamień klawisze biegów i zakresów"/>
-		<text name="vcaSTSPEEDO"        text="Prędkość skrętu"/>
-		<text name="vcaSTSPEEDI"        text="Odwróć prędkość skrętu"/>
+		<text name="vcaGEARRGMODE"        text="Zamień klawisze biegów i zakresów"/>
+		<text name="vcaSTSPEEDO"          text="Prędkość skrętu"/>
+		<text name="vcaSTSPEEDI"          text="Odwróć prędkość skrętu"/>
+		<text name="vcaIDLETHROTTLE"      text="Zmień obroty silnika"/>
+		<text name="vcaDEBUG"             text="Debugowanie"/>
 
-		<text name="vca_tip_CAMERAI"    text="Kamera wewnętrzna obraca się automatycznie zgodnie z kątem skrętu"/>
-		<text name="vca_tip_CAMERAO"    text="Kamera zewnętrzna obraca się automatycznie zgodnie z kątem skrętu"/>
-		<text name="vca_tip_EXPONENT"   text="Czułość sterowania adaptacyjnego w odniesieniu do prędkości jazdy"/>
-		<text name="vca_tip_STEERING"   text="Sterowanie adaptacyjne automatycznie dostosowuje centrowanie kół i maksymalny kąt skrętu"/>
-		<text name="vca_tip_SHUTTLE"    text="Zmiana kierunku jazdy (Spacja)"/>
-		<text name="vca_tip_REVERSEI"   text="Przy zmianie kierunku jazdy do tyłu, kamera wewnętrzna zostaje obrócona o 180°"/>
-		<text name="vca_tip_REVERSEO"   text="Przy zmianie kierunku jazdy do tyłu, kamera zewnętrzna zostaje obrócona o 180°"/>
-		<text name="vca_tip_LIMIT"      text="Kontrola prędkości tempomatu (bez/z Lewy Shift)"/>
-		<text name="vca_tip_PEEKLR"     text="Zerknij szybko w bok (Prawy Shift + strzałki w bok)"/>
-		<text name="vca_tip_ANGLE"      text="Najnowsza funkcja"/>
-		<text name="vca_tip_BRAKE"      text="Procentowo najniższa siła hamowania, czyli opór toczenia"/>
-		<text name="vca_tip_TRANSMISSION" text="Rodzaj skrzyni biegów; Przekładnia bezstopniowa (IVT), wszystkie pozostałe mają 12 różnych biegów, 2x6 jest najlepszą dla samochodów ciężarowych"/>
-		<text name="vca_tip_MAXSPEED"   text="Maksymalna prędkość najwyższego biegu, może być większa niż maksymalna prędkość pojazdu"/>
-		<text name="vca_tip_LIMSPEED"   text="Ogranicza maksymalną prędkość pojazdu do wartości domyślnej"/>
-		<text name="vca_tip_AUTOSHIFT"  text="Automatyczna zmiana biegów i zakresów"/>
-		<text name="vca_tip_LAUNCH"     text="Prędkość znamionowa włączenia biegu"/>
-		<text name="vca_tip_KEEPSPEED"  text="Jeśli włączona jest stała prędkość tempomatu, pedał przyspieszenia zachowuje się jak joystick. Podobnie jak jazda z tempomatem."/>
-		<text name="vca_tip_NO_ARB"     text="Jeśli włączone, koła nie będą powracały do pozycji prostej."/>
+		<text name="vca_tip_CAMERAI"      text="Kamera wewnętrzna obraca się automatycznie zgodnie z kątem skrętu"/>
+		<text name="vca_tip_CAMERAO"      text="Kamera zewnętrzna obraca się automatycznie zgodnie z kątem skrętu"/>
+		<text name="vca_tip_EXPONENT"     text="Czułość sterowania adaptacyjnego w odniesieniu do prędkości jazdy"/>
+		<text name="vca_tip_STEERING"     text="Sterowanie adaptacyjne automatycznie dostosowuje centrowanie kół i maksymalny kąt skrętu"/>
+		<text name="vca_tip_SHUTTLE"      text="Zmiana kierunku jazdy (Spacja)"/>
+		<text name="vca_tip_REVERSEI"     text="Przy zmianie kierunku jazdy do tyłu, kamera wewnętrzna zostaje obrócona o 180°"/>
+		<text name="vca_tip_REVERSEO"     text="Przy zmianie kierunku jazdy do tyłu, kamera zewnętrzna zostaje obrócona o 180°"/>
+		<text name="vca_tip_LIMIT"        text="Kontrola prędkości tempomatu (bez/z Lewy Shift)"/>
+		<text name="vca_tip_PEEKLR"       text="Zerknij szybko w bok (Prawy Shift + strzałki w bok)"/>
+		<text name="vca_tip_ANGLE"        text="Najnowsza funkcja"/>
+		<text name="vca_tip_BRAKE"        text="Procentowo najniższa siła hamowania, czyli opór toczenia"/>
+		<text name="vca_tip_AUTOSHIFT"    text="Automatyczna zmiana biegów i zakresów"/>
+		<text name="vca_tip_KEEPSPEED"    text="Jeśli włączona jest stała prędkość tempomatu, pedał przyspieszenia zachowuje się jak joystick. Podobnie jak jazda z tempomatem."/>
+		<text name="vca_tip_NO_ARB"       text="Jeśli włączone, koła nie będą powracały do pozycji prostej."/>
 		<text name="vca_tip_HANDTHROTTLE" text="Silnik automatycznie osiąga ustalone obroty."/>
-		<text name="vca_tip_PITCH"      text="Wysokość dźwięku przy maksymalnych obrotach silnika"/>
-		<text name="vca_tip_PITCH_IO"   text="Wysokość dźwięku wewnątrz/na zewnątrz"/>
-		<text name="vca_tip_DRAWHUD"    text="Pokazuje lub ukrywa HUD skrzyni"/>
+		<text name="vca_tip_DRAWHUD"      text="Pokazuje lub ukrywa HUD skrzyni"/>
 		
 		<text name="vca_tip_DISTANCE"     text="Odległość pomiędzy kolejnymi ścieżkami"/>
 		<text name="vca_tip_OFFSET1"      text="Przesunięcie względem obecnej ścieżki"/>
 		<text name="vca_tip_OFFSET2"      text="Odwraca przesunięcie na obecnej ścieżce"/>
 		<text name="vca_tip_SNAP90"       text="Automatycznie obraca wyrównanie kierunku jazdy co 90°"/>
 		<text name="vca_tip_DRAWMARKER"   text="Pokazuje ścieżkę jazdy"/>
-		<text name="vca_tip_PITCH1"       text="Modyfikacja wysokości dźwięku aby stworzyć go bardziej liniowym"/>
-		<text name="vca_tip_PITCH2"       text="Wysokość dźwięku przy średnich RPM"/>
-		<text name="vca_tip_BLOWOFFVOL"   text="Głośność dźwięki zaworu wastegate"/>
-		<text name="vca_tip_SINGLEREV"    text="W przypadku pojedynczego biegu wstecznego skrzynia biegów używa jednego biegu wstecznego lub zakresu biegu wstecznego zamiast rewersu"/>
-		<text name="vca_tip_AUTOCLUTCH"   text="Automatyczne sprzęgło"/>
-		<text name="vca_tip_TURBOCLUTCH"  text="Dodatkowe turbo sprzęgło"/>
-		<text name="vca_tip_GEARRATIOF"   text="Minimalna prędkość na biegu"/>
-		<text name="vca_tip_GEARRATIOT"   text="Maksymalna prędkość na biegu"/>
-		<text name="vca_tip_G27MODE"      text="Skrzynia biegów G27/G29"/>
-		<text name="vca_tip_HIREDWORKER"  text="Ustawia z jaką skrzynią biegów ma pracować pracownik (domyślną czy zmodyfikowaną)"/>
-		<text name="vca_tip_OWNMINSPEED"  text="Prędkość na 1 biegu na najwyższym zakresie"/>
-		<text name="vca_tip_OWNMINRANGE"  text="Prędkość na 1 biegu na drugim najwyższym zakresie"/>
-		<text name="vca_tip_OWNMAXRANGE"  text="Prędkość na najwyższym biegu na drugim najwyższym zakresie"/>
-		<text name="vca_tip_OWNGEARS"     text="Ilość rang"/>
-		<text name="vca_tip_OWNRANGES"    text="Ilość zakresów"/>
-		<text name="vca_tip_OWNGEARTIME"  text="Czas pomiędzy przełączeniem biegów"/>
-		<text name="vca_tip_OWNRANGETIME" text="Czas pomiędzy przełączeniem zakresów"/>
-		<text name="vca_tip_OWNAUTOGEARS" text="Automatyczna zmiana biegów i dopasowanie prędkości"/>
-		<text name="vca_tip_OWNAUTORANGE" text="Automatyczna zmiana zakresów i dopasowanie prędkości"/>
-		<text name="vca_tip_OWNREVGEARS"  text="Biegi wsteczne, jeśli nieustalone to będą nimi wszystkie"/>
-		<text name="vca_tip_OWNREVRANGE"  text="Zakresy wsteczne, jeśli nieustalone to będą nimi wszystkie"/>
-		<text name="vca_tip_OWNREVRATIO"  text="Mnożnik dla biegów wstecznych"/>
-		<text name="vca_tip_OWNSPLITG27"  text="Dzielenie biegów w Shifterze G27. Jeśli masz 12 biegów wtedy dzielnik może przełączać pomiędzy biegami parzystymi i nieparzystymi."/>
-		
+		<text name="vca_tip_SNAPLEFT"     text="Numer ścieżki podczas skrętu w lewo"/>
+		<text name="vca_tip_SNAPRIGHT"    text="Numer ścieżki podczas skrętu w prawo"/>
+
 		<text name="vca_tip_AntiSlip"     text="Kontrola trakcji automatycznie blokuje koła obracające się bez oporów"/>
-		<text name="vca_tip_DiffManual"   text="Ręczne przełączanie napędów i blokad dyferenecjałów"/>
+		<text name="vca_tip_DiffManual"   text="Ręczne przełączanie napędów i blokad dyferencjałów"/>
 		<text name="vca_tip_DiffFrontAdv" text="Zwiększa prędkość przedniej osi, jeśli włączony jest napęd na wszystkie koła"/>
 		<text name="vca_tip_DiffLockSwap" text="Zamienia blokady dyferencjału pomiędzy przednią a tylną osią"/>
 		<text name="vca_tip_HudX"         text="Pozycja HUDa w osi poziomej"/>
 		<text name="vca_tip_HudY"         text="Pozycja HUDa w osi pionowej"/>
 		<text name="vca_tip_HIREDWORKER2" text="Ustala, czy wynajęty pracownik używa domyślnych czy zmodyfikowanych dyferencjałów"/>
-		
-		<text name="vca_tip_SPEEDLIMITF"  text="Maksymalny limit prędkości jazdy w przód pojazdu"/>
-		<text name="vca_tip_SPEEDLIMITB"  text="Maksymalny limit prędkości jazdy wstecz pojazdu"/>
-		<text name="vca_tip_RATEDPOWER"   text="Moc w KM przy znamionowej prędkości RPM"/>
-		<text name="vca_tip_TORQUECURVE"  text="Bardziej realistyczna krzywa momentu obrotowego"/>
-		<text name="vca_tip_ROTACCTIME"   text="Czas w ms jaki potrzebuje silnik na rozpędzenie się od min RPM do max RPM"/>
+
 		<text name="vca_tip_GEARRGMODE"   text="Zamienia klawisze pomiędzy biegami a zakresami"/>
 		<text name="vca_tip_STSPEEDO"     text="Prędkość skrętu"/>
-		<text name="vca_tip_STSPEEDI"     text="odwraca prędkość skrętu"/>
+		<text name="vca_tip_STSPEEDI"     text="Odwraca prędkość skrętu"/>
+		<text name="vca_tip_IDLETHROTTLE" text="Silnik przyspiesza niezależnie, aby utrzymać obroty biegu jałowego, a skrzynia CVT dostosowuje RPM"/>
+		<text name="vca_tip_DEBUG"        text="Dodatkowe informacje zapisywane w pliku log"/>
 		
-		<text name="input_vcaSETTINGS"  text="VCA: Ustawienia"/>
-		<text name="input_vcaUP"        text="VCA: Zmiana widok / Widok w przód"/>
-		<text name="input_vcaDOWN"      text="VCA: Zmiana zerknięcia / Widok w tył"/>
-		<text name="input_vcaLEFT"      text="VCA: Widok w lewo"/>
-		<text name="input_vcaRIGHT"     text="VCA: Widok w prawo"/>
-		<text name="input_vcaDIRECTION" text="VCA: Zmiana kierunku jazdy"/>
-		<text name="input_vcaFORWARD"   text="VCA: Jazda w przód"/>
-		<text name="input_vcaREVERSE"   text="VCA: Jazda w tył"/>
-		<text name="input_vcaSNAP"      text="VCA: Wyrównanie kierunku jazdy"/>
-		<text name="input_vcaSNAPRESET" text="VCA: Reset wyrównania kierunku jazdy"/>
-		<text name="input_vcaSNAPDIST"  text="VCA: Ustalenie szerokości roboczej wyrównania kierunku jazdy"/>
-		<text name="input_vcaSnapUP"    text="VCA: Przesuń w przód"/>
-		<text name="input_vcaSnapDOWN"  text="VCA: Przesuń w tył"/>
-		<text name="input_vcaSnapLEFT"  text="VCA: Przesuń w lewo"/>
-		<text name="input_vcaSnapRIGHT" text="VCA: Przesuń w prawo"/>
-		<text name="input_vcaNO_ARB"    text="VCA: Wył. centrowanie kół"/>
-		<text name="input_vcaINCHING"   text="VCA: Kontroler tempomatu"/>
-		<text name="input_vcaKEEPROT"   text="VCA: Utrzymywanie globalnego kierunku kamery"/>
-		<text name="input_vcaKEEPROT2"  text="VCA: Permanentne utrzymywanie kierunku kamery"/>
-		<text name="input_vcaKEEPSPEED" text="VCA: Utrzymywanie prędkości"/>
-		<text name="input_vcaKEEPSPEED2" text="VCA: Permanentne utrzymanie prędkości"/>
-		<text name="input_vcaSWAPSPEED" text="VCA: Wyrównanie prędkości"/>
-		<text name="input_vcaGearUp"    text="VCA: Bieg w górę"/>
-		<text name="input_vcaGearDown"  text="VCA: Bieg w dół"/>
-		<text name="input_vcaRangeUp"   text="VCA: Zakres w górę"/>
-		<text name="input_vcaRangeDown" text="VCA: Zakres w dół"/>
-		<text name="input_vcaNeutral"   text="VCA: Luz"/>
-		<text name="input_vcaNeutral0"  text="VCA: Wyłącz luz"/>
-		<text name="input_vcaNeutral1"  text="VCA: Włącz luz"/>
-		<text name="input_vcaClutch"    text="VCA: Sprzęgło"/>
-		<text name="input_vcaShifter1"  text="VCA: G27/G29 bieg 1"/>
-		<text name="input_vcaShifter2"  text="VCA: G27/G29 bieg 2"/>
-		<text name="input_vcaShifter3"  text="VCA: G27/G29 bieg 3"/>
-		<text name="input_vcaShifter4"  text="VCA: G27/G29 bieg 4"/>
-		<text name="input_vcaShifter5"  text="VCA: G27/G29 bieg 5 / Zakres w dół"/>
-		<text name="input_vcaShifter6"  text="VCA: G27/G29 bieg 6 / Zakres w górę"/>
-		<text name="input_vcaShifter7"  text="VCA: G27/G29 bieg 7 / bieg wsteczny"/>		
-		<text name="input_vcaShifter8"  text="VCA: G27/G29 bieg 8"/>
-		<text name="input_vcaShifter9"  text="VCA: G27/G29 bieg 9 / bieg wsteczny"/>
-		<text name="input_vcaShifterLH" text="VCA: G27/G29 rozdzielacz biegów"/>
-		<text name="input_vcaHandRpm"   text="VCA: RPM gazu ręcznego"/>
-		<text name="input_vcaHandRpm_1" text="VCA: Dodaj gazu ręcznie"/>
-		<text name="input_vcaHandRpm_2" text="VCA: Odejmij gazu ręcznie"/>
-		<text name="input_vcaHandMode"  text="VCA: Tryb gazu ręcznego"/>
-		<text name="input_vcaManRatio"   text="VCA: Ręczne Vario"/>
-		<text name="input_vcaManRatio_1" text="VCA: Przyspiesz Vario"/>
-		<text name="input_vcaManRatio_2" text="VCA: Zwolnij Vario"/>
-		<text name="input_vcaAutoShift" text="VCA: Wł./Wył. automatyczną zmianę biegów"/>
-		<text name="input_vcaDiffLockF" text="VCA: Ster. blokadą przedniego dyf."/>
-		<text name="input_vcaDiffLockM" text="VCA: Ster. napędem na wszystkie koła"/>
-		<text name="input_vcaDiffLockB" text="VCA: Ster. blokadą tylnego dyf."/>
-		<text name="input_vcaLowerF"    text="VCA: Opuść/Podnieś przednie narzędzie"/>
-		<text name="input_vcaLowerB"    text="VCA: Opuść/Podnieś tylne narzędzie"/>
-		<text name="input_vcaActivateF" text="VCA: Włącz/Wyłącz przednie narzędzie"/>
-		<text name="input_vcaActivateB" text="VCA: Włącz/Wyłącz tylne narzędzie"/>
-		<text name="input_vcaMenuAction1" text="VCA: Przycisk menu S"/>
-		<text name="input_vcaMenuAction2" text="VCA: Przycisk menu L"/>
-		<text name="input_vcaMenuAction3" text="VCA: Przycisk menu D"/>
-		<text name="input_vcaMenuAction4" text="VCA: Przycisk menu X"/>
+		<text name="input_vcaSETTINGS"    text="Ustawienia VCA"/>
+		<text name="input_vcaGLOBALS"     text="Ustawienia globalne VCA"/>
+		<text name="input_vcaUP"          text="Zmiana widok / Widok w przód"/>
+		<text name="input_vcaDOWN"        text="Zmiana zerknięcia / Widok w tył"/>
+		<text name="input_vcaLEFT"        text="Widok w lewo"/>
+		<text name="input_vcaRIGHT"       text="Widok w prawo"/>
+		<text name="input_vcaSNAP"        text="Wyrównanie kierunku jazdy"/>
+		<text name="input_vcaSNAPLEFT"    text="Zawróć na ścieżkę po lewej"/>
+		<text name="input_vcaSNAPRIGHT"   text="Zawróć na ścieżkę po prawej"/>
+		<text name="input_vcaSNAPPREV"    text="Poprzednia ścieżka"/>
+		<text name="input_vcaSNAPNEXT"    text="Następna ścieżka"/>
+		<text name="input_vcaSNAPCONT"    text="Ponowne utrzymanie ścieżki jazdy"/>
+		<text name="input_vcaSNAPRESET"   text="Reset wyrównania kierunku jazdy"/>
+		<text name="input_vcaSNAPDIST"    text="Ustalenie szerokości roboczej wyrównania kierunku jazdy"/>
+		<text name="input_vcaSnapUP"      text="Przesuń w przód"/>
+		<text name="input_vcaSnapDOWN"    text="Przesuń w tył"/>
+		<text name="input_vcaSnapLEFT"    text="Przesuń w lewo"/>
+		<text name="input_vcaSnapRIGHT"   text="Przesuń w prawo"/>
+		<text name="input_vcaNO_ARB"      text="Wył. centrowanie kół"/>
+		<text name="input_vcaINCHING"     text="Kontroler tempomatu"/>
+		<text name="input_vcaKEEPROT"     text="Utrzymywanie globalnego kierunku kamery"/>
+		<text name="input_vcaKEEPROT2"    text="Permanentne utrzymywanie kierunku kamery"/>
+		<text name="input_vcaKEEPSPEED"   text="Utrzymywanie prędkości"/>
+		<text name="input_vcaKEEPSPEED2"  text="Permanentne utrzymanie prędkości"/>
+		<text name="input_vcaKSAXIS"      text="Permanentne utrzymanie prędkości osi"/>
+		<text name="input_vcaKSAXIS_1"    text="Permanentne utrzymanie prędkości: Szybciej"/>
+		<text name="input_vcaKSAXIS_2"    text="Permanentne utrzymanie prędkości: Wolniej"/>
+		<text name="input_vcaSWAPSPEED"   text="Wyrównanie prędkości"/>
+		<text name="input_vcaHandRpm"     text="RPM gazu ręcznego"/>
+		<text name="input_vcaHandRpm_1"   text="Dodaj gazu ręcznie"/>
+		<text name="input_vcaHandRpm_2"   text="Odejmij gazu ręcznie"/>
+		<text name="input_vcaHandbrake"   text="Hamulec ręczny"/>
+		<text name="input_vcaAutoShift"   text="Wł./Wył. automatyczną zmianę biegów"/>
+		<text name="input_vcaDiffLockF"   text="Ster. blokadą przedniego dyf."/>
+		<text name="input_vcaDiffLockM"   text="Ster. napędem na wszystkie koła"/>
+		<text name="input_vcaDiffLockB"   text="Ster. blokadą tylnego dyf."/>
+		<text name="input_vcaLowerF"      text="Opuść/Podnieś przednie narzędzie"/>
+		<text name="input_vcaLowerB"      text="Opuść/Podnieś tylne narzędzie"/>
+		<text name="input_vcaActivateF"   text="Włącz/Wyłącz przednie narzędzie"/>
+		<text name="input_vcaActivateB"   text="Włącz/Wyłącz tylne narzędzie"/>
 		
-		<text name="vcaValueOn"         text="włączone"/>
-		<text name="vcaValueOff"        text="wyłączone"/>
-		<text name="vcaValueNever"      text="nigdy"/>
-		<text name="vcaValueAlways"     text="zawsze"/>
-		<text name="vcaValueAlwaysH"    text="zawsze (wysoko)"/>
-		<text name="vcaValueNormal"     text="normalny"/>
-		<text name="vcaValueLight"      text="słaby"/>
-		<text name="vcaValueStrong"     text="mocny"/>
-		<text name="vcaValueEntered"    text="jeśli w środku"/>
-		<text name="vcaValueInactive"   text="jeśli nieaktywny"/>
-		<text name="vcaValueInactiveH"  text="jeśli nieaktywny (wysoko)"/>
-		<text name="vcaValueRPM"        text="RPM"/>
+		<text name="vcaValueOn"           text="Włączone"/>
+		<text name="vcaValueOff"          text="Wyłączone"/>
+		<text name="vcaValueNever"        text="Nigdy"/>
+		<text name="vcaValueAlways"       text="Zawsze"/>
+		<text name="vcaValueAlwaysH"      text="Zawsze (wysoko)"/>
+		<text name="vcaValueNormal"       text="Normalny"/>
+		<text name="vcaValueLight"        text="Słaby"/>
+		<text name="vcaValueStrong"       text="Mocny"/>
+		<text name="vcaValueEntered"      text="Jeśli w środku"/>
+		<text name="vcaValueInactive"     text="Jeśli nieaktywny"/>
+		<text name="vcaValueInactiveH"    text="Jeśli nieaktywny (wysoko)"/>
+		<text name="vcaValueRPM"          text="RPM"/>
 		
-		<text name="vcaClutchMode_0"    text="Automatyczne"/>
-		<text name="vcaClutchMode_1"    text="Auto (szybkie)"/>
-		<text name="vcaClutchMode_2"    text="Ręczne"/>
-		<text name="vcaClutchMode_3"    text="Turbo (szybkie)"/>
-		<text name="vcaClutchMode_4"    text="Turbo (wolne)"/>
-		<text name="vcaClutchMode_5"    text="Turbo (otwarte)"/>
-		<text name="vcaClutchMode_6"    text="Turbo (ręcznie)"/>
+		<text name="vcaSnapArtAxis"       text="Naprowadzanie na ścieżkę nie jest obsługiwane w pojazdach przegubowych"/>
 		
-		<text name="vcaTorqueCurve_0"   text="Domyślna"/>
-		<text name="vcaTorqueCurve_1"   text="Nowoczesna (wzrost 40%)"/>
-		<text name="vcaTorqueCurve_2"   text="Nowoczesna (wzrost 50%)"/>
-		<text name="vcaTorqueCurve_3"   text="Silnik ciężarówki (wzrost 60%)"/>
-		<text name="vcaTorqueCurve_4"   text="Klasyczna (wzrost 20%)"/>
-		<text name="vcaTorqueCurve_5"   text="Klasyczna (wzrost 30%)"/>
+		<text name="vcaButtonSnapWidth"   text="Wykryj szerokość"/>
+		<text name="vcaButtonSnapOffset"  text="Wyrównaj przesunięcie"/>
+
+		<text name="vcaTitleIntro"        text="Wstęp"/>
+		<text name="vcaTitleCam"          text="Kamera"/>
+		<text name="vcaTitleSteering"     text="Sterowanie"/>
+		<text name="vcaTitleGPS"          text="Naprowadzanie"/>
+		<text name="vcaTitleThrottle"     text="Gaz, Hamulce, Skrzynia biegów"/>
+		<text name="vcaTitleDiff"         text="Załączanie napędów i dyferencjałów"/>
+		<text name="vcaTitleMisc"         text="Różne ustawienia"/>
 		
-		<text name="vcaPowerShift"      text="Power Shift"/>
-		
-		<text name="vcaButtonSnapWidth"  text="Wykryj szerokość"/>
-		<text name="vcaButtonSnapOffset" text="Wyrównaj przesunięcie"/>
-		<text name="vcaButtonLoadPreset" text="Wczytaj skrzynię"/>
-		<text name="vcaButtonSavePreset" text="Zapisz skrzynię"/>
-		<text name="vcaButtonDelPreset"  text="Usuń skrzynię"/>
+		<text name="vcaHelpIntro_1"       text="Vehicle Control Addon zawiera wiele funkcji w jednym modzie. Większość z nich jest domyślnie wyłączona." />
+		<text name="vcaHelpIntro_2"       text="Domyślny skrót klawiszowy otwierający menu ustawień to Lewy Ctrl + C. Proponuję sprawdzić skróty klawiszowe dla Vehicle Control Addon w menu klawiszy w ustawieniach gry." />
+		<text name="vcaHelpIntro_3"       text="Skrót klawiszowy Lewy Ctrl + Lewy Alt + C otwiera menu ustawień globalnych. Tutaj możesz dostosować ustawienia domyślne, które są używane we wszystkich (przyszłych) pojazdach." />
+		<text name="vcaHelpCam_1"         text="Vehicle Control Addon może obracać kamerę, aby dopasować kąt skrętu i kierunek. W ten sposób zawsze patrzysz w kierunku, w którym jedziesz." />
+		<text name="vcaHelpCam_2"         text="Możesz włączyć obrót kamery w menu ustawień. Możesz wybierać pomiędzy wartościami &quot;Wyłączone&quot;, &quot;Słaby&quot;, &quot;Normalny&quot; i &quot;Mocny&quot;.Istnieją osobne ustawienia dla kamer wewnętrznych i zewnętrznych. Dodatkowo możesz włączyć/wyłączyć automatyczne cofanie kamery." />
+		<text name="vcaHelpCam_3"         text="Za pomocą prawego Shift i klawiszy strzałek możesz spojrzeć w odpowiednim kierunku. Istnieją dwa tryby. Jeśli zerknięcie jest włączone, kierunek kamery jest przełączany z powrotem do poprzedniego widoku zaraz po puszczeniu klawisza. Jeśli zerknięcie jest wyłączone, ten sam klawisz zmienia kierunek kamery bez przełączania z powrotem." />
+		<text name="vcaHelpSteering_1"    text="Vehicle Control Addon zmienia prędkość kierowania w zależności od prędkości, którą jedziesz." />
+		<text name="vcaHelpSteering_2"    text="Menu ustawień daje możliwość dostosowania układu kierowniczego. Jeśli adaptacyjne kierowanie jest wyłączone, Vehicle Control Addon nie zmienia zachowania układu kierowniczego. Ustawienia prędkości kierowania mają znaczenie tylko wtedy, gdy włączone jest adaptacyjne kierowanie. Swobodne kierowanie całkowicie wyłącza automatyczną rotację wsteczną." />
+		<text name="vcaHelpSteering_3"    text="Adaptacyjne sterowanie zostało zaprojektowane z myślą o użytkownikach klawiatury. Prędkość automatycznego centrowania zależy od tego, jak dawno puściłeś klawisz A lub D. W ten sposób możesz zachować aktualny obrót kierownicy, naciskając krótko klawisz A lub D. Powrót do pozycji środkowej jest szybszy, jeśli naciśniesz odpowiedni klawisz. To jest jak tryb awaryjny. Jeśli sterowałeś za bardzo, próbujesz skierować się w przeciwnym kierunku. Idzie to znacznie szybciej, ale tylko do momentu, gdy kierownica znajdzie się w pozycji środkowej." />
+		<text name="vcaHelpGPS_1"         text="Vehicle Control Addon zawiera uproszczonego GPSa." />
+		<text name="vcaHelpGPS_2"         text="Naprowadzanie na ścieżkę można uruchomić tylko wtedy, gdy szerokość ścieżki jest większa niż 0,5 m. Bieżącą szerokość narzędzia można odczytać w menu ustawień lub za pomocą domyślnego skrótu klawiszowego Lewy Ctrl + Lewy Alt + W. Prowadzenie po ścieżce jest uruchamiane z domyślnym skrótem klawiszowym Lewy Ctrl + W. Jest ono automatycznie wyłączane, jeśli użyjesz przycisków skrętu lub kontrolera." />
+		<text name="vcaHelpGPS_3"         text="W pojeździe możesz przesuwać lub obracać ścieżki za pomocą domyślnych skrótów klawiszowych Lewy Ctrl + klawisz strzałki. Dzięki domyślnym skrótom klawiszowym Lewy Alt + A i Lewy Alt + D możesz skręcić na lewa lub prawą ścieżkę przy zawracaniu. Możesz określić liczbę ścieżki, na którą wjechać po zawróceniu w menu ustawień. Jeśli chcesz pracować na polu po lewej stronie, możesz określić numer ścieżki po lewej stronie o jeden większy niż numery ścieżki po prawej stronie. Z każdą zmianą ścieżki Vehicle Control Addon zamienia numery lewej i prawej ścieżki." />
+		<text name="vcaHelpThrottle_1"    text="Vehicle Control Addon oferuje kilka drobnych ulepszeń gazu ręcznego i hamowania. Większość z nich przeznaczona jest dla graczy korzystających z klawiatury." />
+		<text name="vcaHelpThrottle_2"    text="Wartości gazu ręcznego są używane z dodatkowym klawiszem. Pierwsza wartość jest używana bez klawisza, druga wartość jest używana po naciśnięciu klawisza. Niższa wartość procentowa dotyczy prędkości tempomatu, jeśli naciśnięty jest przycisk. Niska siła hamowania to siła hamowania, którą pojazd stosuje automatycznie, jeśli nie zostanie wciśnięty pedał przyspieszenia ani hamulca. Zmniejszenie siły hamowania pozwala na dłuższe toczenie się pojazdu bez zmniejszania prędkości." />
+		<text name="vcaHelpThrottle_3"    text="Lewy Shift ogranicza tempomat i gaz ręczny do 75%. Jeśli naciśniesz Delete, pojazd utrzyma swoją prędkość. Pedał przyspieszenia i hamulca zwiększa i zmniejsza prędkość. Pojazd prowadzi się jak nowoczesny traktor z joystickiem. Możesz przełączać automatyczną skrzynię domyślnym skrótem klawiszowym Lewy Ctrl + (." />
+		<text name="vcaHelpDiff_1"        text="Jeśli Vehicle Control Addon może zidentyfikować dyferencjały, masz możliwość ręcznego sterowania nimi." />
+		<text name="vcaHelpDiff_2"        text="Domyślnie Vehicle Control Addon nie zmienia dyferencjałów. Gdy napęd na wszystkie koła jest włączony, przednie koła standardowych ciągników obracają się szybciej niż tylne koła. Możesz to włączyć za pomocą zaawansowanych ustawień prędkości. W takim przypadku Vehicle Control Addon automatycznie dezaktywuje napęd na wszystkie koła powyżej 30 km/h." />
+		<text name="vcaHelpDiff_3"        text="Domyślne skróty klawiszowe do obsługi dyferencjałów to Lewy Ctrl + ), Lewy Ctrl + ' i Lewy Ctrl + \." />
 	</texts>
-	
-	<longTexts>
-		<longText name="vca_Help_1">
-<![CDATA[Sterowanie i kamera
-
-Skrypt ten zmienia prędkość skrętu, centrowania kół i maksymalny kąt skrętu w zależności od aktualnej prędkości pojazdu. Ponadto kamera jest obracana zgodnie z kątem skrętu i kierunkiem jazdy.
-Za pomocą prawego Shifta i klawiszy strzałki możesz zerknąć w odpowiednim kierunku.
-Jeśli naciśniesz lewy Ctrl + W, wówczas kierunek jazdy zostanie ustawiony do ustalonego kierunku.
-Wszystkie te funkcje można wyłączyć.]]>
-		</longText>
-		<longText name="vca_Help_2">
-<![CDATA[Kontrola gazu i wyrównanie kierunku jazdy
-
-Lewy Shift ogranicza przepustnicę, tempomat i max RPM do 75%.
-Jeśli naciśniesz Delete, pojazd utrzyma stałą prędkość. Wciśnięcie pedału gazu lub hamulca zwiększy lub zmniejszy prędkość. Pojazd jeździ jak nowoczesny ciągnik z joystickiem.
-Liniowa modyfikacja wysokości dźwięku ułatwia usłyszenie RPM.]]>
-		</longText>
-		<longText name="vca_Help_3">
-<![CDATA[Skrzynia biegów
-
-off: Standardowa skrzynia biegów bez żadnych zmian
-IVT: Nadal standardowa skrzynia biegów, ale z niewielkimi zmianami dopuszczalnego zakresu obrotów. Więcej w przyszłości...
-4X4: Staromodna skrzynia biegów z 4 biegami w 4 grupach i rewersem. Zmiana biegów wymaga czasu i możesz stracić rozpęd.
-4PS: Ta sama skrzynia biegów jak powyżej, ale z przesunięciem mocy dla biegów
-2X6: Dwie grupy z 6 biegami. Ta przekładnia jest przydatna w przypadku dźwigni zmiany biegów G27/G29. Istnieje niski i wysoki zakres. 6 biegów w jednym zakresie nie pokrywa się z 6 biegami w innym zakresie
-FPS: Skrzynia Full Power Shift: Ma 12 biegów które można zmieniać bez sprzęgła.
-6PS: Skrzynia John Deere AutoQuad. Ma 6 biegów, a każdy z nich można zredukować o około 80%
-PKW: 6-biegowa skrzynia biegów do samochodów o niskim zasięgu
-VARIO: Skrzynia Fendt Vario. Jest bardzo podobna do IVT, ale ma niski i wysoki zakres
-46A: Skrzynia Class HexaShift. Ma 4 ręczne zakresy i 6 automatycznych biegów
-OWN: Stwórz własną skrzynię biegów]]>
-		</longText>
-		<longText name="vca_Help_4">
-<![CDATA[Ustawienia globalne
-
-Zmiany w ustawieniach globalnych nie mają wpływu na bieżący pojazd. Są zapisywane w modsSettings/FS19_VehicleControlAddon/config.xml.]]>
-		</longText>
-		<longText name="vca_Help_5">
-<![CDATA[Stwórz własną skrzynię biegów
-
-Tutaj możesz stworzyć własną skrzynię biegów. Przełożenia mogą być przełączane automatycznie.
-Maksymalna prędkość na najwyższym biegu może być tylko teoretyczna. Możesz ją osiągnąć tylko bez ogranicznika prędkości. Przełożenia między biegami są obliczane na podstawie maksymalnej prędkości 1. biegu.
-Dwie maksymalne prędkości drugiego najwyższego zakresu są zbędne. Jeśli wpiszesz jedną wartość, druga zostanie odpowiednio zmieniona.]]>
-		</longText>
-		<longText name="vca_Help_6">
-<![CDATA[Dyferencjały i napęd na wszystkie koła
-
-Jeśli VCA może zidentyfikować dyferencjały to masz możliwość ich ręcznej obsługi.
-Możesz nadpisać ograniczenia prędkości dla jazdy do przodu i do tyłu.
-Jeśli krzywa mocy i momentu obrotowego nie jest wystarczająco dokładna, możesz ją tutaj nadpisać.
-- Domyślna - wykorzystuje domyślną krzywą momentu obrotowego pojazdu
-- Nowoczesna - z 40% wzrostem momentu obrotowego i większym o 4% szczytem niż moc znamionowa
-- Nowoczesna - z 60% wzrostem momentu obrotowego i większym o 5% szczytem niż moc znamionowa
-- Silnik ciężarówki - z 55% wzrostem momentu obrotowego i mocy szczytowej od momentu maksymalnego przy znamionowych RPM
-- Klasyczna - tylko 20% wzrost momentu obrotowego i mocy szczytowej przy znamionowych RPM
-- Klasyczna - ale 30% wzrost momentu obrotowego i mocy szczytowej przy znamionowych RPM]]>
-		</longText>
-	</longTexts>
 </l10n>
