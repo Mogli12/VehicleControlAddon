@@ -1652,7 +1652,56 @@ function vehicleControlAddon:onPreUpdate(dt, isActiveForInput, isActiveForInputI
 			if math.abs( self.spec_vca.rotSpeedIn - self.spec_vca.rotSpeedOut ) > 0.01 then 
 				rsi = vehicleControlAddon.mbClamp( self.spec_vca.rotSpeedIn + self.spec_vca.rotSpeedIn, 0.01, 2 ) / rso 
 			end 
-			
+		
+----******************************************************************************************************************************************
+---- old adaptive steering 	
+--	if self.vcaSteeringIsOn and not ( self.spec_vca.snapIsOn ) and self:vcaIsActive() then 
+--		local f = 1
+--		if     s <= 12.5 then 
+--		  f = 2 - 0.8 * s / 12.5
+--		elseif s <= 25 then 
+--			f = 1.2 - 0.5 * ( s - 12.5 ) / 12.5 
+--		elseif s <= 50 then 
+--			f = 0.7 - 0.3 * ( s - 25 ) / 25 
+--		elseif s <= 100 then 
+--			f = 0.4 - 0.3 * ( s - 50 ) / 50 
+--		else 
+--			f = 0.1
+--		end 
+--		
+--		self.vcaRotSpeedFactor = f
+--		
+--		for i,w in pairs( self.spec_wheels.wheels ) do 
+--			if w.rotSpeed ~= nil then 
+--				if w.vcaRotSpeed == nil then 
+--					w.vcaRotSpeed = w.rotSpeed 
+--				end 				
+--				w.rotSpeed = w.vcaRotSpeed * f
+--			end 
+--			
+--			if w.rotSpeedNeg ~= nil then 
+--				if w.vcaRotSpeedNeg == nil then 
+--					w.vcaRotSpeedNeg = w.rotSpeedNeg 
+--				end 				
+--				w.rotSpeedNeg = w.vcaRotSpeedNeg * f
+--			end 
+--		end 
+--	elseif self.vcaRotSpeedFactor ~= nil then
+--		for i,w in pairs( self.spec_wheels.wheels ) do 
+--			if w.rotSpeed ~= nil and w.vcaRotSpeed ~= nil then 
+--				w.rotSpeed = w.vcaRotSpeed
+--			end 
+--			
+--			if w.rotSpeedNeg ~= nil and w.vcaRotSpeedNeg ~= nil then 
+--				w.rotSpeedNeg = w.vcaRotSpeedNeg
+--			end 
+--		end 
+--	
+--		self.vcaRotSpeedFactor = nil 
+--	end 
+--	
+----******************************************************************************************************************************************
+		
 			if noARB or ( not self.spec_vca.lastAxisSteerAnalog and math.abs( self.spec_drivable.lastInputValues.axisSteer ) > 0.01 ) then 
 				local f = dt * 0.0005
 				if self.spec_vca.lastAxisSteerAnalog then 
