@@ -3,7 +3,7 @@
 	<author>mogli</author>
 	<title>
 		<en>Vehicle Control Addon</en>
-		<de>Erweiterung zur Fahrzeugkontrolle</de>
+		<de>Erweiterung Zur Fahrzeugkontrolle</de>
 		<tr>Araç Kontrol Eklentisi</tr>
 	</title>
 	<description>
@@ -42,11 +42,11 @@ Tüm özellikler aşağıdaki varsayılan tuşlarla değiştirilebilir:
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>modIcon.dds</iconFilename>
-	<version>9.0.4.6</version>
+	<version>9.1.0.1</version>
 	<l10n filenamePrefix="l10n/modDesc_l10n">
 		<text name="vcaVERSION">          
 			<en>Vehicle Control Addon</en>
-			<de>Erweiterung zur Fahrzeugkontrolle</de>
+			<de>Erweiterung Zur Fahrzeugkontrolle</de>
 			<tr>Araç Kontrol Eklentisi</tr>
 		</text>
 	</l10n>

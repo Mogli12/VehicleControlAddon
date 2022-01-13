@@ -70,7 +70,7 @@
 
 				<GuiElement type="text" profile="settingsMenuSubtitle" vcaTextID="vcaTitleSteering" text="Steering"/> 
 
-				<GuiElement type="checkedOption" profile="vcaMTOSettings" id="steeringIsOn" onCreate="onCreateSubElement">
+				<GuiElement type="multiTextOption" profile="vcaMTOSettings" id="steeringIsOn" onCreate="onCreateSubElement" onCreateArgs="list">
 					<GuiElement type="button" profile="multiTextOptionSettingsLeft" />
 					<GuiElement type="button" profile="multiTextOptionSettingsRight" />
 					<GuiElement type="text"   profile="multiTextOptionSettingsText" />

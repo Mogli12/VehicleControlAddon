@@ -40,7 +40,7 @@ local function init()
 	addConfigItem( "mouseAutoRotateBack" , VCAValueType.bool  , false )
 	addConfigItem( "turnOffAWDSpeed"     , VCAValueType.int16 , 30    ) -- km/h -->
 	-- defaults --
-	addConfigItem( "adaptiveSteering"    , VCAValueType.bool  , false )
+	addConfigItem( "adaptiveSteering"    , VCAValueType.string, "false" )
 	addConfigItem( "camOutsideRotation"  , VCAValueType.int16 , 0     )
 	addConfigItem( "camInsideRotation"   , VCAValueType.int16 , 0     )
 	addConfigItem( "camReverseRotation"  , VCAValueType.bool  , false )
