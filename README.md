@@ -1,7 +1,6 @@
 # VehicleControlAddon for Farming Simulator 2022
 
 ## Status
-Review by ModHub team was rejected again. I give up.
 
 I moved several issues to the new discussion forum. Please use the disucssion forum for questions and ideas. 
 
