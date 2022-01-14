@@ -24,12 +24,12 @@
 		<text name="vcaDRAWHUD"           text="Okno Převodovky"/>
 		
 		<text name="vcaDISTANCE"          text="Pracovní šířka"/>
-		<text name="vcaOFFSET1"           text="Ofset nástroje"/>
-		<text name="vcaOFFSET2"           text="Převrátit offset"/>
+		<text name="vcaOFFSET1"           text="Odsazení nástroje"/>
+		<text name="vcaOFFSET2"           text="Převrátit odsazení"/>
 		<text name="vcaSNAP90"            text="Navádění každých 90°"/>
 		<text name="vcaDRAWMARKER"        text="Nakreslit značku navádění"/>
-		<text name="vcaSNAPLEFT"          text="Levé zpětné naváděcí pruhy"/>
-		<text name="vcaSNAPRIGHT"         text="Pravé zpětné naváděcí pruhy"/>
+		<text name="vcaSNAPLEFT"          text="Levé naváděcí pruhy"/>
+		<text name="vcaSNAPRIGHT"         text="Pravé naváděcí pruhy"/>
 
 		<text name="vcaAntiSlip"          text="Trakční kontrola"/>
 		<text name="vcaDiffManual"        text="Manuální pohon všech kol a diferenciálu"/>
