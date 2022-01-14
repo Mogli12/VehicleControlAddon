@@ -37,7 +37,9 @@ local function init()
 	addConfigItem( "snapAngleHudX"       , VCAValueType.float , -1    ) -- any value >= 0 => position of bottom left corner / -1 above HUD -->
 	addConfigItem( "snapAngleHudY"       , VCAValueType.float , -1    ) -- any value >= 0 => position of bottom left corner / -1 above HUD -->
 	addConfigItem( "drawHud"             , VCAValueType.bool  , true  )
-	addConfigItem( "mouseAutoRotateBack" , VCAValueType.bool  , false )
+	addConfigItem( "mouseAutoRotateBack" , VCAValueType.bool  , true )
+	addConfigItem( "analogSteering"      , VCAValueType.bool  , false )
+	addConfigItem( "rotateHeadTracking"  , VCAValueType.bool  , true )
 	addConfigItem( "turnOffAWDSpeed"     , VCAValueType.int16 , 30    ) -- km/h -->
 	-- defaults --
 	addConfigItem( "adaptiveSteering"    , VCAValueType.string, "false" )

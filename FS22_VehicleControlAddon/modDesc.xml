@@ -42,7 +42,7 @@ Tüm özellikler aşağıdaki varsayılan tuşlarla değiştirilebilir:
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>modIcon.dds</iconFilename>
-	<version>9.1.0.1</version>
+	<version>9.1.0.2</version>
 	<l10n filenamePrefix="l10n/modDesc_l10n">
 		<text name="vcaVERSION">          
 			<en>Vehicle Control Addon</en>

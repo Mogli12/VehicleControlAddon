@@ -118,6 +118,24 @@
 				</GuiElement>
 				-->				
 				
+				<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="analogSteering" onCreate="onCreateSubElement">
+					<GuiElement type="button" profile="multiTextOptionSettingsLeft" />
+					<GuiElement type="button" profile="multiTextOptionSettingsRight" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsText" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsTitle" vcaTextID="vcaANALOG" text="analogSteering"/>
+					<GuiElement type="bitmap" profile="multiTextOptionSettingsBg" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsTooltip" vcaTextID="vca_tip_ANALOG" text="analogSteering"/>
+				</GuiElement>
+
+				<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="rotateHeadTracking" onCreate="onCreateSubElement">
+					<GuiElement type="button" profile="multiTextOptionSettingsLeft" />
+					<GuiElement type="button" profile="multiTextOptionSettingsRight" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsText" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsTitle" vcaTextID="vcaROTATEHT" text="rotateHeadTracking"/>
+					<GuiElement type="bitmap" profile="multiTextOptionSettingsBg" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsTooltip" vcaTextID="vca_tip_ROTATEHT" text="rotateHeadTracking"/>
+				</GuiElement>
+
 				<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="debugPrint" onCreate="onCreateSubElement">
 					<GuiElement type="button" profile="multiTextOptionSettingsLeft" />
 					<GuiElement type="button" profile="multiTextOptionSettingsRight" />
