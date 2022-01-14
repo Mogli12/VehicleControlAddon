@@ -4,46 +4,49 @@
 	<description><![CDATA[Přidává specializaci pro řízení s adaptivní klávesnicí]]></description>
 
 	<texts>
-		<text name="vcaCAMERAI"         text="Rotace vnitřní kamery"/>
-		<text name="vcaCAMERAO"         text="Rotace venkovní kamery"/>
-		<text name="vcaEXPONENT"        text="Citlivost"/>
-		<text name="vcaSTEERING"        text="Adaptivní řízení"/>
-		<text name="vcaSHUTTLE"         text="Plyn"/>
-		<text name="vcaREVERSE"         text="Pohled dozadu"/>
-		<text name="vcaREVERSEI"        text="Pohled dozadu(uvnitř)"/>
-		<text name="vcaREVERSEO"        text="Pohled dozadu(venku)"/>
-		<text name="vcaLIMIT"           text="Omezovač plynu"/>
-		<text name="vcaPEEKLR"          text="Náhled do boku"/>
-		<text name="vcaANGLE"           text="Úhel záběru"/>
-		<text name="vcaBRAKE"           text="Nízká brzdná síla"/>
-		<text name="vcaAUTOSHIFT"       text="Automat"/>
-		<text name="vcaKEEPSPEED"       text="Trvalé udržení rychlosti"/>
-		<text name="vcaNO_ARB"          text="Volné řízení"/>
-		<text name="vcaHANDTHROTTLE"    text="Ruční plyn"/>
-		<text name="vcaSETTINGS"        text="Globální nastavení"/>
-		<text name="vcaDRAWHUD"         text="Okno Převodovky"/>
+		<text name="vcaCAMERAI"           text="Rotace vnitřní kamery"/>
+		<text name="vcaCAMERAO"           text="Rotace venkovní kamery"/>
+		<text name="vcaEXPONENT"          text="Citlivost"/>
+		<text name="vcaSTEERING"          text="Adaptivní řízení"/>
+		<text name="vcaSHUTTLE"           text="Plyn"/>
+		<text name="vcaREVERSE"           text="Pohled dozadu"/>
+		<text name="vcaREVERSEI"          text="Pohled dozadu(uvnitř)"/>
+		<text name="vcaREVERSEO"          text="Pohled dozadu(venku)"/>
+		<text name="vcaLIMIT"             text="Omezovač plynu"/>
+		<text name="vcaPEEKLR"            text="Náhled do boku"/>
+		<text name="vcaANGLE"             text="Úhel záběru"/>
+		<text name="vcaBRAKE"             text="Nízká brzdná síla"/>
+		<text name="vcaAUTOSHIFT"         text="Automat"/>
+		<text name="vcaKEEPSPEED"         text="Trvalé udržení rychlosti"/>
+		<text name="vcaNO_ARB"            text="Volné řízení"/>
+		<text name="vcaHANDTHROTTLE"      text="Ruční plyn"/>
+		<text name="vcaSETTINGS"          text="Globální nastavení"/>
+		<text name="vcaDRAWHUD"           text="Okno Převodovky"/>
 		
-		<text name="vcaDISTANCE"        text="Pracovní šířka"/>
-		<text name="vcaOFFSET1"         text="Offset nástroje"/>
-		<text name="vcaOFFSET2"         text="Převrátit offset"/>
-		<text name="vcaSNAP90"          text="Navádění každých 90°"/>
-		<text name="vcaDRAWMARKER"      text="Nakreslete značku navádění"/>
-		<text name="vcaSNAPLEFT"        text="Levé zpětné naváděcí pruhy"/>
-		<text name="vcaSNAPRIGHT"       text="Pravé zpětné naváděcí pruhy"/>
+		<text name="vcaDISTANCE"          text="Pracovní šířka"/>
+		<text name="vcaOFFSET1"           text="Odsazení nástroje"/>
+		<text name="vcaOFFSET2"           text="Převrátit odsazení"/>
+		<text name="vcaSNAP90"            text="Navádění každých 90°"/>
+		<text name="vcaDRAWMARKER"        text="Nakreslit značku navádění"/>
+		<text name="vcaSNAPLEFT"          text="Levé naváděcí pruhy"/>
+		<text name="vcaSNAPRIGHT"         text="Pravé naváděcí pruhy"/>
 
-		<text name="vcaAntiSlip"        text="Trakční kontrola"/>
-		<text name="vcaDiffManual"      text="Manuální pohon všech kol a diferenciálu"/>
-		<text name="vcaDiffFrontAdv"    text="Rychlost přední nápravy"/>
-		<text name="vcaDiffLockSwap"    text="Zaměnit přední a zadní nápravu"/>
-		<text name="vcaHudX"            text="Hud pozice x"/>
-		<text name="vcaHudY"            text="Hud pozice y"/>
-		<text name="vcaHIREDWORKER2"    text="Diferenciál a najatý pracovník"/>
+		<text name="vcaAntiSlip"          text="Trakční kontrola"/>
+		<text name="vcaDiffManual"        text="Manuální pohon všech kol a diferenciálu"/>
+		<text name="vcaDiffFrontAdv"      text="Rychlost přední nápravy"/>
+		<text name="vcaDiffLockSwap"      text="Zaměnit přední a zadní nápravu"/>
+		<text name="vcaHudX"              text="Hud pozice x"/>
+		<text name="vcaHudY"              text="Hud pozice y"/>
+		<text name="vcaHIREDWORKER2"      text="Diferenciál a najatý pracovník"/>
 		
-		<text name="vcaGEARRGMODE"      text="Vyměňte klíče řazení a rozsahu"/>
-		<text name="vcaSTSPEEDO"        text="Rychlost řízení"/>
-		<text name="vcaSTSPEEDI"        text="Obrácená rychlost řízení"/>
-		<text name="vcaIDLETHROTTLE"    text="Chování volnoběhu"/>
-		<text name="vcaDEBUG"           text="Ladění"/>
+		<text name="vcaGEARRGMODE"        text="Vymění klíče řazení a rozsahu"/>
+		<text name="vcaSTSPEEDO"          text="Rychlost řízení"/>
+		<text name="vcaSTSPEEDI"          text="Obrácená rychlost řízení"/>
+		<text name="vcaIDLETHROTTLE"      text="Chování volnoběhu"/>
+		<text name="vcaMOUSEARB"          text="Myš a automatické oáčení dozadu"/>
+		<text name="vcaANALOG"            text="Adaptivní řízení a analogový ovladač"/>
+		<text name="vcaROTATEHT"          text="Kamera a sledování hlavy"/>		
+		<text name="vcaDEBUG"             text="Ladění"/>
 		
 		<text name="vca_tip_CAMERAI"      text="Vnitřní kamera se otáčí automaticky podle volantu"/>
 		<text name="vca_tip_CAMERAO"      text="Vnější kamera se otáčí automaticky podle volantu"/>
@@ -72,7 +75,7 @@
 		
 		<text name="vca_tip_AntiSlip"     text="Kontrola trakce přibrzdí jednotlivá kola v případě prokluzu"/>
 		<text name="vca_tip_DiffManual"   text="Manuální ovládání pohonu všech kol a předního a zadního diferenciálu"/>
-		<text name="vca_tip_DiffFrontAdv" text="Zvyšte rychlost přední nápravy, pokud je zapnutý pohon všech kol"/>
+		<text name="vca_tip_DiffFrontAdv" text="Zvýší rychlost přední nápravy, pokud je zapnutý pohon všech kol"/>
 		<text name="vca_tip_DiffLockSwap" text="Zaměnit přední a zadní nápravu"/>
 		<text name="vca_tip_HudX"         text="Pozice okna x"/>
 		<text name="vca_tip_HudY"         text="Pozice okna y"/>
@@ -82,6 +85,9 @@
 		<text name="vca_tip_STSPEEDO"     text="Rychlost volantu"/>
 		<text name="vca_tip_STSPEEDI"     text="Obrácená rychlost volantu"/>
 		<text name="vca_tip_IDLETHROTTLE" text="Motor nezávisle zrychluje, aby udržoval volnoběžné otáčky"/>
+		<text name="vca_tip_MOUSEARB"     text="Automatické otočení zpátky při řízení myši"/>
+		<text name="vca_tip_ANALOG"       text="Podpora adaptivního řízení pro analogové ovladače"/>
+		<text name="vca_tip_ROTATEHT"     text="Otáčí kameru, i když je povoleno sledování hlavy"/>		
 		<text name="vca_tip_DEBUG"        text="Do protokolu se zapisují další zprávy"/>
 		                               
 		<text name="input_vcaSETTINGS"    text="VCA: nastavení"/>
@@ -91,8 +97,8 @@
 		<text name="input_vcaLEFT"        text="VCA: pohled doleva"/>
 		<text name="input_vcaRIGHT"       text="VCA: pohled doprava"/>
 		<text name="input_vcaSNAP"        text="VCA: navádění do jízdních pruhů"/>
-		<text name="input_vcaSNAPLEFT"    text="VCA: levý zpětný naváděcí pruh"/>
-		<text name="input_vcaSNAPRIGHT"   text="VCA: pravý zpětný naváděcí pruh"/>
+		<text name="input_vcaSNAPLEFT"    text="VCA: otočka doleva"/>
+		<text name="input_vcaSNAPRIGHT"   text="VCA: otočka doprava"/>
 		<text name="input_vcaSNAPPREV"    text="VCA: předchozí naváděcí pruh"/>
 		<text name="input_vcaSNAPNEXT"    text="VCA: další naváděcí pruh"/>
 		<text name="input_vcaSNAPCONT"    text="VCA: znovu aktivovat naváděcí pruh"/>
