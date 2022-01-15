@@ -37,12 +37,15 @@
 		<text name="vcaDiffLockSwap"      text="Basculement des différentiels"/>
 		<text name="vcaHudX"              text="Position x ATH "/>
 		<text name="vcaHudY"              text="Position y ATH"/>
-		<text name="vcaHIREDWORKER2"      text="Usage des différentiels par les ouvriers"/>
+		<text name="vcaHIREDWORKER2"      text="Utilisation des différentiels par les ouvriers"/>
 		
 		<text name="vcaGEARRGMODE"        text="Echange des touches vitesse/groupe"/>
 		<text name="vcaSTSPEEDO"          text="Vitesse de la direction"/>
 		<text name="vcaSTSPEEDI"          text="Vitesse de retour de la direction"/>
 		<text name="vcaIDLETHROTTLE"      text="Modification du régime moteur"/>
+		<text name="vcaMOUSEARB"          text="Direction à la souris et retour"/>
+		<text name="vcaANALOG"            text="Direction adaptative et contrôleurs"/>
+		<text name="vcaROTATEHT"          text="Caméra et suivi de la tête"/>																		  
 		<text name="vcaDEBUG"             text="Deboggage"/>
 		
 		<text name="vca_tip_CAMERAI"      text="La caméra intérieure tourne automatiquement en fonction de l'angle de direction."/>
@@ -77,13 +80,16 @@
 		<text name="vca_tip_HudX"         text="Position horizontale de l'ATH"/>
 		<text name="vca_tip_HudY"         text="Position verticale de l'ATH"/>
 		<text name="vca_tip_HIREDWORKER2" text="Indique si l'ouvrier utilise le differentiel de base ou le modifié"/>
-		
+
 		<text name="vca_tip_GEARRGMODE"   text="Permet d'inverser la commande de montée/descente des vitesses/groupes"/>
 		<text name="vca_tip_STSPEEDO"     text="Vitesse de la direction"/>
 		<text name="vca_tip_STSPEEDI"     text="Vitesse de retour de la direction"/>
 		<text name="vca_tip_IDLETHROTTLE" text="Le moteur maintient le régime moteur indépendamment de la vitesse"/>
+		<text name="vca_tip_MOUSEARB"     text="Retour automatique de la direction lors du contrôle de celle-ci par la souris"/>
+		<text name="vca_tip_ANALOG"       text="Gestion de la direction adaptative pour les contrôleurs de jeu (manettes)"/>
+		<text name="vca_tip_ROTATEHT"     text="Tourne la caméra même si le suivi de la tête est activé"/>
 		<text name="vca_tip_DEBUG"        text="Informations supplémentaires dans le fichier journal"/>
-		
+								 
 		<text name="input_vcaSETTINGS"    text="VCA: Paramètres"/>
 		<text name="input_vcaGLOBALS"     text="VCA: Paramètres globaux"/>
 		<text name="input_vcaUP"          text="VCA: Basculer entre vue avant et arrière"/>
@@ -139,7 +145,7 @@
 		<text name="vcaValueRPM"          text="RPM"/>
 
 		<text name="vcaSnapArtAxis"       text="Le GPS n'est pas compatible avec les véhicules articulés"/>		
-		
+			
 		<text name="vcaButtonSnapWidth"   text="Détection de la largeur de travail"/>
 		<text name="vcaButtonSnapOffset"  text="Inversion du décalage de l'outil"/>
 		
