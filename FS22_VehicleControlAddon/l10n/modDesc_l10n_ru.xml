@@ -14,6 +14,7 @@
 		<text name="vcaANGLE"               text="Привязка к сетке"/>
 		<text name="vcaBRAKE"               text="Сопротивление качению"/>
 		<text name="vcaAUTOSHIFT"           text="Автомат"/>
+		<text name="vcaLAUNCH"              text="Начальная скорость"/>
 		<text name="vcaKEEPSPEED"           text="Удерживать скорость"/>
 		<text name="vcaNO_ARB"              text="Свободное руление"/>
 		<text name="vcaHANDTHROTTLE"        text="Ручной дроссель"/>
