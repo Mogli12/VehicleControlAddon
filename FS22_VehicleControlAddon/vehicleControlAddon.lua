@@ -3429,7 +3429,28 @@ function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, ax
 		self.spec_vca.axisSideLast   = axisSideLast
 	end 				
 	
-	return superFunc( self, axisForward, axisSide, doHandbrake, dt )
+-- remember and restore cruise control state when accelerating
+	local ccState = nil
+	local spec = self.spec_drivable
+	if      self.spec_vca ~= nil
+			and self:vcaIsVehicleControlledByPlayer()
+			and spec.cruiseControl.state ~= Drivable.CRUISECONTROL_STATE_OFF
+			and ( self:vcaGetShuttleCtrl() or self.movingDirection > 0 )
+			and axisForward > 0 then 
+		local speed,_ = self:getSpeedLimit(true)			
+		ccState = spec.cruiseControl.state
+		spec.cruiseControl.state = Drivable.CRUISECONTROL_STATE_OFF
+		self:getMotor():setSpeedLimit( speed )
+	end 
+	
+	local res = { superFunc( self, axisForward, axisSide, doHandbrake, dt ) }
+	
+	if ccState ~= nil and spec.cruiseControl.state == Drivable.CRUISECONTROL_STATE_OFF then 
+		self:setCruiseControlState(ccState)
+	end 
+	
+	return unpack( res )
+
 end 
 
 Drivable.updateVehiclePhysics = Utils.overwrittenFunction( Drivable.updateVehiclePhysics, vehicleControlAddon.vcaUpdateVehiclePhysics )
