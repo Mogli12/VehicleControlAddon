@@ -111,9 +111,9 @@
 		<text name="input_vcaKEEPROT2"      text="Постоянно держать направление камеры"/>
 		<text name="input_vcaKEEPSPEED"     text="Удерживать постоянную скорость"/>
 		<text name="input_vcaKEEPSPEED2"    text="Всегда удерживать постоянную скорость"/>
-		<text name="input_vcaKSAXIS"        text="Постоянный сохранять скорость"/>
-		<text name="input_vcaKSAXIS_1"      text="Постоянный сохранять скорость: быстрее"/>
-		<text name="input_vcaKSAXIS_2"      text="Постоянный сохранять скорость: медленее"/>
+		<text name="input_vcaKSAXIS"        text="Постоянно сохранять скорость"/>
+		<text name="input_vcaKSAXIS_1"      text="Постоянно сохранять скорость: быстрее"/>
+		<text name="input_vcaKSAXIS_2"      text="Постоянно сохранять скорость: медленее"/>
 		<text name="input_vcaSWAPSPEED"     text="Изменить скорость круиз-контроля"/>
 		<text name="input_vcaHandRpm"       text="Обороты ручного дросселя"/>
 		<text name="input_vcaHandRpm_1"     text="Увеличить ручной дроссель"/>
