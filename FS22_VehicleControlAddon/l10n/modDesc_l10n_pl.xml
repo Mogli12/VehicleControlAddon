@@ -51,6 +51,9 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vcaSTSPEEDO"          text="Prędkość skrętu"/>
 		<text name="vcaSTSPEEDI"          text="Odwróć prędkość skrętu"/>
 		<text name="vcaIDLETHROTTLE"      text="Zmień obroty silnika"/>
+		<text name="vcaMOUSEARB"          text="Myszka i autocentrowanie"/>
+		<text name="vcaANALOG"            text="Sterowanie adaptacyjne i kontroler analogowy"/>
+		<text name="vcaROTATEHT"          text="Kamera i śledzenie głowy"/>
 		<text name="vcaDEBUG"             text="Debugowanie"/>
 
 		<text name="vca_tip_CAMERAI"      text="Kamera wewnętrzna obraca się automatycznie zgodnie z kątem skrętu"/>
@@ -90,6 +93,9 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vca_tip_STSPEEDO"     text="Prędkość skrętu"/>
 		<text name="vca_tip_STSPEEDI"     text="Odwraca prędkość skrętu"/>
 		<text name="vca_tip_IDLETHROTTLE" text="Silnik przyspiesza niezależnie, aby utrzymać obroty biegu jałowego, a skrzynia CVT dostosowuje RPM"/>
+		<text name="vca_tip_MOUSEARB"     text="Automatyczne centrowanie kół dla sterowania myszką"/>
+		<text name="vca_tip_ANALOG"       text="Wsparcie dla sterowania adaptacyjnego z kontroleramia analogowymi"/>
+		<text name="vca_tip_ROTATEHT"     text="Obracanie kamery nawet, gdy śledzenie głowy jest włączone"/>
 		<text name="vca_tip_DEBUG"        text="Dodatkowe informacje zapisywane w pliku log"/>
 		
 		<text name="input_vcaSETTINGS"    text="Ustawienia VCA"/>
@@ -169,7 +175,7 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vcaHelpSteering_2"    text="Menu ustawień daje możliwość dostosowania układu kierowniczego. Jeśli adaptacyjne kierowanie jest wyłączone, Vehicle Control Addon nie zmienia zachowania układu kierowniczego. Ustawienia prędkości kierowania mają znaczenie tylko wtedy, gdy włączone jest adaptacyjne kierowanie. Swobodne kierowanie całkowicie wyłącza automatyczną rotację wsteczną." />
 		<text name="vcaHelpSteering_3"    text="Adaptacyjne sterowanie zostało zaprojektowane z myślą o użytkownikach klawiatury. Prędkość automatycznego centrowania zależy od tego, jak dawno puściłeś klawisz A lub D. W ten sposób możesz zachować aktualny obrót kierownicy, naciskając krótko klawisz A lub D. Powrót do pozycji środkowej jest szybszy, jeśli naciśniesz odpowiedni klawisz. To jest jak tryb awaryjny. Jeśli sterowałeś za bardzo, próbujesz skierować się w przeciwnym kierunku. Idzie to znacznie szybciej, ale tylko do momentu, gdy kierownica znajdzie się w pozycji środkowej." />
 		<text name="vcaHelpGPS_1"         text="Vehicle Control Addon zawiera uproszczonego GPSa." />
-		<text name="vcaHelpGPS_2"         text="Naprowadzanie na ścieżkę można uruchomić tylko wtedy, gdy szerokość ścieżki jest większa niż 0,5 m. Bieżącą szerokość narzędzia można odczytać w menu ustawień lub za pomocą domyślnego skrótu klawiszowego Lewy Ctrl + Lewy Alt + W. Prowadzenie po ścieżce jest uruchamiane z domyślnym skrótem klawiszowym Lewy Ctrl + W. Jest ono automatycznie wyłączane, jeśli użyjesz przycisków skrętu lub kontrolera." />
+		<text name="vcaHelpGPS_2"         text="Naprowadzanie na ścieżkę można uruchomić tylko wtedy, gdy szerokość ścieżki jest większa niż 0,5 m. Bieżącą szerokość narzędzia można odczytać w menu ustawień lub za pomocą domyślnego skrótu klawiszowego Lewy Ctrl + Lewy Alt + W. Jeśli naprowadzanie zostało wyłączone, możesz włączyć je ponownie na przedniej ścieżce domyślnym skrótem klawiszowym Lewy Alt + S. Prowadzenie po ścieżce jest uruchamiane z domyślnym skrótem klawiszowym Lewy Ctrl + W. Jest ono automatycznie wyłączane, jeśli użyjesz przycisków skrętu lub kontrolera." />
 		<text name="vcaHelpGPS_3"         text="W pojeździe możesz przesuwać lub obracać ścieżki za pomocą domyślnych skrótów klawiszowych Lewy Ctrl + klawisz strzałki. Dzięki domyślnym skrótom klawiszowym Lewy Alt + A i Lewy Alt + D możesz skręcić na lewa lub prawą ścieżkę przy zawracaniu. Możesz określić liczbę ścieżki, na którą wjechać po zawróceniu w menu ustawień. Jeśli chcesz pracować na polu po lewej stronie, możesz określić numer ścieżki po lewej stronie o jeden większy niż numery ścieżki po prawej stronie. Z każdą zmianą ścieżki Vehicle Control Addon zamienia numery lewej i prawej ścieżki." />
 		<text name="vcaHelpThrottle_1"    text="Vehicle Control Addon oferuje kilka drobnych ulepszeń gazu ręcznego i hamowania. Większość z nich przeznaczona jest dla graczy korzystających z klawiatury." />
 		<text name="vcaHelpThrottle_2"    text="Wartości gazu ręcznego są używane z dodatkowym klawiszem. Pierwsza wartość jest używana bez klawisza, druga wartość jest używana po naciśnięciu klawisza. Niższa wartość procentowa dotyczy prędkości tempomatu, jeśli naciśnięty jest przycisk. Niska siła hamowania to siła hamowania, którą pojazd stosuje automatycznie, jeśli nie zostanie wciśnięty pedał przyspieszenia ani hamulca. Zmniejszenie siły hamowania pozwala na dłuższe toczenie się pojazdu bez zmniejszania prędkości." />
