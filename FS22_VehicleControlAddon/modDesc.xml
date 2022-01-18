@@ -42,12 +42,12 @@ Tüm özellikler aşağıdaki varsayılan tuşlarla değiştirilebilir:
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>modIcon.dds</iconFilename>
-	<version>9.1.0.3</version>
+	<version>9.1.0.4</version>
 	<l10n filenamePrefix="l10n/modDesc_l10n">
 		<text name="vcaVERSION">          
-									<en>Vehicle Control Addon b103</en>
-			<de>Erweiterung Zur Fahrzeugkontrolle b103</de>
-			           <tr>Araç Kontrol Eklentisi b103</tr>
+									<en>Vehicle Control Addon b104</en>
+			<de>Erweiterung Zur Fahrzeugkontrolle b104</de>
+			           <tr>Araç Kontrol Eklentisi b104</tr>
 		</text>
 	</l10n>
 	
