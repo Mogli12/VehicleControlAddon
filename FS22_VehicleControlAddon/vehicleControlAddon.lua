@@ -478,31 +478,31 @@ function vehicleControlAddon:onLoad(savegame)
 
 	if self.isClient then 
 		if vehicleControlAddon.snapOnSample == nil then 
-			local fileName = Utils.getFilename( "GPS_on.ogg", g_vehicleControlAddon.vcaDirectory)
+			local fileName = Utils.getFilename( "ogg/GPS_on.ogg", g_vehicleControlAddon.vcaDirectory)
 			vehicleControlAddon.snapOnSample = createSample("AutoSteerOnSound")
 			loadSample(vehicleControlAddon.snapOnSample, fileName, false)
 		end 
 		
 		if vehicleControlAddon.snapOffSample == nil then 
-			local fileName = Utils.getFilename( "GPS_off.ogg", g_vehicleControlAddon.vcaDirectory)
+			local fileName = Utils.getFilename( "ogg/GPS_off.ogg", g_vehicleControlAddon.vcaDirectory)
 			vehicleControlAddon.snapOffSample = createSample("AutoSteerOffSound")
 			loadSample(vehicleControlAddon.snapOffSample, fileName, false)
 		end 
 
 		if vehicleControlAddon.ovDiffLockFront == nil then
-			vehicleControlAddon.ovDiffLockFront  = createImageOverlay( Utils.getFilename( "diff_front.dds",       g_vehicleControlAddon.vcaDirectory))
-			vehicleControlAddon.ovDiffLockMid    = createImageOverlay( Utils.getFilename( "diff_middle.dds",      g_vehicleControlAddon.vcaDirectory))
-			vehicleControlAddon.ovDiffLockBack   = createImageOverlay( Utils.getFilename( "diff_back.dds",        g_vehicleControlAddon.vcaDirectory))
-			vehicleControlAddon.ovDiffLockWheels = createImageOverlay( Utils.getFilename( "diff_wheels.dds",      g_vehicleControlAddon.vcaDirectory))
-			vehicleControlAddon.ovDiffLockBg     = createImageOverlay( Utils.getFilename( "diff_bg.dds",      g_vehicleControlAddon.vcaDirectory))
+			vehicleControlAddon.ovDiffLockFront  = createImageOverlay( Utils.getFilename( "dds/diff_front.dds",       g_vehicleControlAddon.vcaDirectory))
+			vehicleControlAddon.ovDiffLockMid    = createImageOverlay( Utils.getFilename( "dds/diff_middle.dds",      g_vehicleControlAddon.vcaDirectory))
+			vehicleControlAddon.ovDiffLockBack   = createImageOverlay( Utils.getFilename( "dds/diff_back.dds",        g_vehicleControlAddon.vcaDirectory))
+			vehicleControlAddon.ovDiffLockWheels = createImageOverlay( Utils.getFilename( "dds/diff_wheels.dds",      g_vehicleControlAddon.vcaDirectory))
+			vehicleControlAddon.ovDiffLockBg     = createImageOverlay( Utils.getFilename( "dds/diff_bg.dds",      g_vehicleControlAddon.vcaDirectory))
 			local r, g, b, a = unpack(vehicleControlAddon.colorBg)
 			setOverlayColor( vehicleControlAddon.ovDiffLockBg, r, g, b, a )
-			vehicleControlAddon.ovGearSpeedBg    = createImageOverlay( Utils.getFilename( "gear_bg.dds",      g_vehicleControlAddon.vcaDirectory))
+			vehicleControlAddon.ovGearSpeedBg    = createImageOverlay( Utils.getFilename( "dds/gear_bg.dds",      g_vehicleControlAddon.vcaDirectory))
 			setOverlayColor( vehicleControlAddon.ovGearSpeedBg, r, g, b, a )
 			setOverlayUVs( vehicleControlAddon.ovGearSpeedBg, unpack( GuiUtils.getUVs( { 0, 0, 1024, 128 } ) ) )
-			vehicleControlAddon.ovExtraTextBg    = createImageOverlay( Utils.getFilename( "gear_bg.dds",      g_vehicleControlAddon.vcaDirectory))
+			vehicleControlAddon.ovExtraTextBg    = createImageOverlay( Utils.getFilename( "dds/gear_bg.dds",      g_vehicleControlAddon.vcaDirectory))
 			setOverlayColor( vehicleControlAddon.ovExtraTextBg, r, g, b, a )
-			setOverlayUVs( vehicleControlAddon.ovExtraTextBg, unpack( GuiUtils.getUVs( { 0, 0, 1024, 128 } ) ) )
+			setOverlayUVs( vehicleControlAddon.ovExtraTextBg, unpack( GuiUtils.getUVs( { 0, 129, 1024, 256 } ) ) )
 		end 
 	end 
 end
@@ -3467,6 +3467,8 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 	
 	local lastKSBrakeTime = self.spec_vca.ksBrakeTime
 	self.spec_vca.ksBrakeTime = nil 
+	local lastIdleThrottleTime = self.spec_vca.idleThrottleTime
+	self.spec_vca.idleThrottleTime = nil 
 	
 	if self:vcaIsVehicleControlledByPlayer() then
 		if self.spec_vca.ksIsOn then 
@@ -3551,6 +3553,14 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 				m = 1 
 			end 
 			
+			local noAutoBrake = false 
+			if self:vcaGetShuttleCtrl() and lastIdleThrottleTime ~= nil and self.spec_vca.isEnteredMP and not self.spec_vca.isBlocked then 
+				self.spec_vca.idleThrottleTime = lastIdleThrottleTime
+				if g_currentMission.time < lastIdleThrottleTime then 
+					noAutoBrake = true 
+				end 
+			end 
+			
 			if      self:getIsMotorStarted()
 					and ( ( m > 0 and acceleration > -0.01 ) or ( m < 0 and acceleration < 0.01 ) )
 				--and motor.gearShiftMode ~= VehicleMotor.SHIFT_MODE_MANUAL_CLUTCH 
@@ -3558,10 +3568,12 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 					and motor.gearRatio ~= 0 
 					and motor.maxGearRatio ~= 0 
 					and ( math.abs( self.lastSpeedReal ) >= motor.lowBrakeForceSpeedLimit
-						 or math.abs( acceleration )       >= 0.001 )
+						 or math.abs( acceleration )       >= 0.001
+						 or noAutoBrake )
 					then
 
-				self.spec_vca.useIdleThrottle = true 
+				self.spec_vca.useIdleThrottle  = true 
+				self.spec_vca.idleThrottleTime = g_currentMission.time + 2000
 
 				local rpmRange  = motor.maxRpm - motor.minRpm
 				local minRpm    = vehicleControlAddon.mbClamp( vehicleControlAddon.origGetMaxPtoRpm( self ) * motor.ptoMotorRpmRatio, motor.minRpm, motor.maxRpm )
@@ -3572,12 +3584,7 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 				local diffRpm   = motor.differentialRotSpeed * 30 / math.pi
 				local motorRpm  = math.abs( diffRpm * motor.gearRatio )
 				local clutchRpm = math.abs( diffRpm * motor.maxGearRatio )
-				
-				local delta  = vehicleControlAddon.mbClamp( 1 - self.spec_vca.handThrottle, 0, 0.1 )
-				local t = self.spec_vca.handThrottle
-				if motor:getClutchPedal() < 0.1 then 
-					t = math.max( t, 0.03 )
-				end 
+				local delta     = vehicleControlAddon.mbClamp( 1 - self.spec_vca.handThrottle, 0, 0.1 )
 				
 				-- accelerate
 				local function getClutchMinAcc()
@@ -3612,13 +3619,30 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 					change     = true 
 				end 
 				local minAcc = math.min( getClutchMinAcc(), getMotorMaxAcc() )
+				if math.abs( self.lastSpeedReal ) < motor.lowBrakeForceSpeedLimit then 
+					minAcc     = math.max( 0.0015, minAcc )
+				end 
 				if acc < minAcc then 
 					acc        = minAcc
 					change     = true 
-				end  
+				end 
 				
 				if change then 
 					acceleration = m * acc
+				end 
+			elseif  self:getIsMotorStarted()
+					and self:vcaGetShuttleCtrl()
+					and acceleration > -0.01 
+					and motor.backwardGears == nil and motor.forwardGears == nil  
+					and ( math.abs( self.lastSpeedReal ) >= motor.lowBrakeForceSpeedLimit
+						 or math.abs( acceleration )       >= 0.001
+						 or noAutoBrake )
+					then
+			-- turn off automatic brake in WheelsUtil:updateWheelsPhysics 
+			-- you have to push the brake for at least one sceond below lowBrakeForceSpeedLimit, i.e. 3.6 km/h
+				self.spec_vca.idleThrottleTime = g_currentMission.time + 1000
+				if math.abs( self.lastSpeedReal ) < motor.lowBrakeForceSpeedLimit then 
+					acceleration = math.max( 0.0015, acceleration )
 				end 
 			end 
 		end
@@ -4407,6 +4431,14 @@ function vehicleControlAddon:vcaUIShowidleThrottle()
 	return false
 end 
 
-		
+function vehicleControlAddon:vcaUIShowrotSpeedIn()
+	return self.spec_vca.steeringIsOn == vehicleControlAddon.steeringTrue
+end 
 
+function vehicleControlAddon:vcaUIShowrotSpeedOut()
+	return self.spec_vca.steeringIsOn == vehicleControlAddon.steeringTrue
+end 
+ 
+ 
+ 
 vehicleControlAddon.createStates()

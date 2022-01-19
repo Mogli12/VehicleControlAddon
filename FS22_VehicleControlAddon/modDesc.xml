@@ -14,15 +14,23 @@ All functions are switchable with the following default key combinations:
 [Ctrl Left + W]: Snap Angle (continue)
 [Alt Left + W]: Snap Angle (restart)
 [Shift Right]: Throttle limiter / reduced cruise control speed
-[Shift Right + Cursor]: look forward, backwards, left right]]></en>
-		<de><![CDATA[Vehicle Control Addon (VCA) kombiniert viele Funktionen in einer Modifikation. Die meisten Funktionen sind standardmäßig ausgeschaltet. VCA kann die Kamerarichtung automatische dem Lenkwinkel und der Fahrtrichtung anpassen. So schaut man immer in die Richtung in die man fährt. Mit den Standardtastenkombinationen RShift und den Pfeiltasten kann man kurz in die entsprechende Richtung blicken. Die adaptive Lenkung ist gedacht für Tastaturspieler. VCA kann die Lenkgeschwindigkeit der Geschwindigkeit des Fahrzeugs anpassen.
-Vehicle Control Addon beinhaltet auch eine einfache Spurführung. Drückt man Strg Links zusammen mit W, dann richtet sich die Fahrtrichtung an festen Richtungen aus.
+[Shift Right + Cursor]: look forward, backwards, left right
+
+Changelog version 1.1.0.0:
+- Fix showing help images on mod maps
+- Keep cruise control if acceleration pedal is pressed]]></en>
+		<de><![CDATA[Die Erweiterung zur Fahrzeugkontrolle (VCA) kombiniert viele Funktionen in einer Modifikation. Die meisten Funktionen sind standardmäßig ausgeschaltet. VCA kann die Kamerarichtung automatische dem Lenkwinkel und der Fahrtrichtung anpassen. So schaut man immer in die Richtung in die man fährt. Mit den Standardtastenkombinationen RShift und den Pfeiltasten kann man kurz in die entsprechende Richtung blicken. Die adaptive Lenkung ist gedacht für Tastaturspieler. VCA kann die Lenkgeschwindigkeit der Geschwindigkeit des Fahrzeugs anpassen.
+Die Erweiterung zur Fahrzeugkontrolle beinhaltet auch eine einfache Spurführung. Drückt man Strg Links zusammen mit W, dann richtet sich die Fahrtrichtung an festen Richtungen aus.
 Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tasten:
 [Strg Links + C]: Einstellungen
 [Strg Links + W]: Rastersteuerung fortsetzen
 [Alt Links + W]: Rastersteuerung neu starten
 [Umschalt Rechts]: Gaspedalbegrenzer / verringerter Tempomatgeschwindigkeit
-[Umschalt Rechts + Pfeiltaste]: Nach vorne, hinten, links, rechts blicken]]></de>
+[Umschalt Rechts + Pfeiltaste]: Nach vorne, hinten, links, rechts blicken
+
+Changelog version 1.1.0.0:
+- Korrektur der Anzeige von Hilfe-Bildern bei Mod-Karten
+- Tempomat bleibt an auch wenn das Gaspedal gedrückt wird]]></de>
 		<fr><![CDATA[Le Vehicle Control Addon (VCA) est un ensemble d'améliorations destiné à améliorer votre expérience de conduite des véhicules. Par défaut, la plupart des fonctions sont désactivées. Le VCA peut ajuster automatiquement l'orientation la caméra intérieure et extérieure en fonction de l'angle du volant afin de toujours voir où vous vous dirigez. Vous pouvez également paramétrer des raccourcis pour des coups d'oeil rapides (par défaut Shift droit + flèches de direction). Vous pouvez aussi bloquer l'accélérateur, le limiteur de vitesse et le régime moteur à 75% avec la touche Shift droit.
 Le Vehicle Control Addon intègre également un GPS très facilement utilisable. Il vous suffit de l'activer en appuyant sur Ctrl (gauche) + Z pour bloquer la direction du véhicule dans son couloir de travail.
 Les fonction du GPS sont accessibles via les raccourcis par défaut suivants :
@@ -30,7 +38,11 @@ Les fonction du GPS sont accessibles via les raccourcis par défaut suivants :
 [Ctrl gauche + Z]: Activation du GPS
 [Alt gauche + Z]: Remise à zéro du GPS
 [Shift droit]: Limiteur d'accélérateur / vitesse du régulateur
-[Shift droit + flèches directionnelles]: regarder devant, derrière, à gauche, à droite]]></fr>
+[Shift droit + flèches directionnelles]: regarder devant, derrière, à gauche, à droite
+
+Changelog version 1.1.0.0 :
+- Correction de l'affichage des images d'aide pour les cartes de mods
+- Le régulateur de vitesse reste activé même si l'on appuie sur l'accélérateur]]></fr>
 		<tr><![CDATA[Araç Kontrol Eklentisi (VCA) birçok özelliği tek çatı altında toplayan bir moddur. Çoğu özellik varsayılan olarak kapalı ayarlanmıştır. VCA direksiyon açısına ve yönüne göre kamerayı çevirebilir. Böylece her zaman aracın gittiği yöne bakmış olursunuz. Sağ SHIFT + Yön Tuşları ile ileri, geri, sağa, sola bakabilirsiniz. Sağ SHIFT tuşu gazı sınırlayarak hız sabitleyici ve maksimum motor devrini 75%'e limitler.
 Araç Kontrol Eklentisi basit bir kılavuz sistemi içermektedir. Sol CTRL tuşuna W ile birlikte basarsanız aracın sürüş yönü bir hizaya sabitlenir.
 Tüm özellikler aşağıdaki varsayılan tuşlarla değiştirilebilir:
@@ -42,12 +54,12 @@ Tüm özellikler aşağıdaki varsayılan tuşlarla değiştirilebilir:
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>modIcon.dds</iconFilename>
-	<version>9.1.0.4</version>
+	<version>9.1.0.5</version>
 	<l10n filenamePrefix="l10n/modDesc_l10n">
 		<text name="vcaVERSION">          
-									<en>Vehicle Control Addon b104</en>
-			<de>Erweiterung Zur Fahrzeugkontrolle b104</de>
-			           <tr>Araç Kontrol Eklentisi b104</tr>
+									<en>Vehicle Control Addon b105</en>
+			<de>Erweiterung Zur Fahrzeugkontrolle b105</de>
+			           <tr>Araç Kontrol Eklentisi b105</tr>
 		</text>
 	</l10n>
 	

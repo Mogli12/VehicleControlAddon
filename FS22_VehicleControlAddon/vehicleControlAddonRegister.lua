@@ -200,42 +200,43 @@ function vehicleControlAddonRegister:update(dt)
 					{ title = "vcaTitleIntro",
 						paragraphs = { 
 							{ text = "vcaHelpIntro_1" },
-							{ text = "vcaHelpIntro_2", image = "l10n/help_intro.dds", imageUVs="0px 0px 1024px 1024px" },
+							{ text = "vcaHelpIntro_2", image = "dds/help_intro.dds", imageUVs="0px 0px 1024px 736px" },
 							{ text = "vcaHelpIntro_3" },
 						},
 					},
 					{ title = "vcaTitleCam",
 						paragraphs = { 
 							{ text = "vcaHelpCam_1" },
-							{ text = "vcaHelpCam_2", image = "l10n/help_camera_en.dds", imageUVs="0px 0px 1024px 624px" },
+							{ text = "vcaHelpCam_2", image = "dds/help_camera_en.dds", imageUVs="0px 0px 1024px 736px" }, -- 624px" },
 							{ text = "vcaHelpCam_3" },
 						},
 					},
 					{ title = "vcaTitleSteering",
 						paragraphs = { 
 							{ text = "vcaHelpSteering_1" },
-							{ text = "vcaHelpSteering_2", image = "l10n/help_steering_en.dds", imageUVs="0px 0px 1024px 480px" },
+							{ text = "vcaHelpSteering_2", image = "dds/help_steering_en.dds", imageUVs="0px 0px 1024px 736px" }, -- 480px" },
 							{ text = "vcaHelpSteering_3" },
 						},
 					},
 					{ title = "vcaTitleGPS",
 						paragraphs = { 
 							{ text = "vcaHelpGPS_1" },
-							{ text = "vcaHelpGPS_2", image = "l10n/help_gps_en.dds", imageUVs="0px 0px 1024px 840px" },
+							{ text = "vcaHelpGPS_2", image = "dds/help_gps_en.dds", imageUVs="0px 0px 1024px 840px" },
 							{ text = "vcaHelpGPS_3" },
 						},
 					},
 					{ title = "vcaTitleThrottle",
 						paragraphs = { 
 							{ text = "vcaHelpThrottle_1" },
-							{ text = "vcaHelpThrottle_2", image = "l10n/help_throttle_en.dds", imageUVs="0px 0px 1024px 624px" },
+							{ text = "vcaHelpThrottle_2", image = "dds/help_throttle_en.dds", imageUVs="0px 0px 1024px 736px" }, -- 624px" },
 							{ text = "vcaHelpThrottle_3" },
+							{ text = "vcaHelpThrottle_4" },
 						},
 					},
 					{ title = "vcaTitleDiff",
 						paragraphs = { 
 							{ text = "vcaHelpDiff_1" },
-							{ text = "vcaHelpDiff_2", image = "l10n/help_diff_en.dds", imageUVs="0px 0px 1024px 624px" },
+							{ text = "vcaHelpDiff_2", image = "dds/help_diff_en.dds", imageUVs="0px 0px 1024px 736px" }, -- 624px" },
 							{ text = "vcaHelpDiff_3" },
 						},
 					},
@@ -249,7 +250,7 @@ function vehicleControlAddonRegister:update(dt)
 				local paragraph = { text = self.i18n:getText( p1.text ) }
 				if p1.image ~= nil then 
 					paragraph.image = {
-						filename = Utils.getFilename(p1.image, self.vcaDirectory),
+						filename = "$"..self.vcaDirectory..p1.image,
 						uvs = GuiUtils.getUVs(Utils.getNoNil( p1.imageUVs, "0px 0px 750px 500px" ), {1024,1024}),
 						size = {1024,1024},
 						heightScale = Utils.getNoNil( p1.heightScale, 1 ),
@@ -263,10 +264,6 @@ function vehicleControlAddonRegister:update(dt)
 		table.insert( g_helpLineManager.categories, category )
 	end 
 end
-
-function vehicleControlAddonRegister:draw()
-  
-end;
 
 function vehicleControlAddonRegister:draw()
   
