@@ -5,6 +5,7 @@
 		<en>Vehicle Control Addon</en>
 		<de>Erweiterung Zur Fahrzeugkontrolle</de>
 		<tr>Araç Kontrol Eklentisi</tr>
+		<cz>Vehicle Control Addon</cz>
 	</title>
 	<description>
 		<en><![CDATA[Vehicle Control Addon (VCA) combines several functions in one modification. Most functions are turned off per default. VCA can rotate the camera to match the steering angle and direction. This way you always look into the direction your are driving to. With Shift-right and the cursor keys you can peek in the corresponding direction. Shift-right limits throttle, cruise control and maximum rounds per minute to 75%.
@@ -51,6 +52,18 @@ Tüm özellikler aşağıdaki varsayılan tuşlarla değiştirilebilir:
 [Sol ALT + W]: Açıya Hizalan (sıfırdan)
 [Sağ SHIFT]: Gaz Sınırlayıcı / azaltılmış hız sabitleyici hızı
 [Sağ SHIFT + Yön Tuşları]: ileri, geri, sağa, sola bak]]></tr>
+		<cz><![CDATA[Vehicle Control Addon (VCA) kombinuje několik funkcí v jedné modifikaci. Většina funkcí je ve výchozím nastavení vypnuta. VCA dokáže otočit kameru tak, aby odpovídala úhlu a směru řízení. Tímto způsobem se vždy díváte směrem, kterým jedete. Pomocí pravého Shift a kurzorových kláves můžete nahlížet v odpovídajícím směru. Pravý Shift omezuje plyn, tempomat a maximální počet otáček za minutu na 75 %.
+Vehicle Control Addon obsahuje jednoduché navádění do jízdních pruhů. Pokud stisknete Levé Ctrl spolu s W, směr jízdy se přichytí k pevným směrům.
+Všechny funkce lze přepínat pomocí následujících výchozích kombinací kláves:
+[Levé Ctrl + C]: Nastavení
+[Levé Ctrl + W]: Přichycení k úhlu
+[Levý Alt + W]: Restart přichycení
+[Pravý Shift]: Omezovač plynu / zpomaluje rychlost vozidla
+[Pravý Shift + šipka]: pohled dopředu, dozadu, doleva nebo doprava
+
+Změny ve verzi 1.1.0.0:
+- Oprava zobrazování obrázků nápovědy na neoriginálních mapách
+- Nevypíná tempomat při sešlápnutí plynu]]></cz>
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>modIcon.dds</iconFilename>
