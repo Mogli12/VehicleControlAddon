@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <l10n>
 	<!-- Note that 'description' is only here for easier translations. It needs to be manually copied to ModDesc.XML later. -->
-	<description><![CDATA[Přidává specializaci pro řízení s adaptivní klávesnicí]]></description>
+	<description><![CDATA[Přidává specializaci pro ovládání vozidla]]></description>
 
 	<texts>
 		<text name="vcaCAMERAI"           text="Rotace vnitřní kamery"/>
@@ -166,13 +166,14 @@
 		<text name="vcaHelpCam_3"         text="Pomocí PShift a kurzorových kláves můžete nahlížet v odpovídajícím směru." />
 		<text name="vcaHelpSteering_1"    text="Tento skript mění rychlost řízení v závislosti na rychlosti, kterou jedete, a otáčí kameru tak, aby odpovídala úhlu a směru řízení. Pomocí Pravého Shift a kurzorových kláves můžete nahlížet v odpovídajícím směru." />
 		<text name="vcaHelpSteering_2"    text="Nabídka nastavení vám dává možnost upravit řízení. Pokud je adaptivní řízení vypnuto, pak VCA nezmění chování řízení. Nastavení rychlosti řízení je relevantní pouze v případě, že je zapnuté adaptivní řízení. Volné řízení zcela vyřadí automatické otáčení dozadu." />
-		<text name="vcaHelpSteering_3"    text="Adaptivní řízení bylo navrženo pro uživatele klávesnice. Rychlost automatické zpětné rotace závisí na tom, jak dlouho jste pustili klávesy A nebo D. Tímto způsobem můžete zachovat aktuální natočení volantu krátkým klepnutím na klávesy A nebo D. Otočení zpět do středové polohy je rychlejší, pokud stisknete odpovídající klávesu. Je to jako nouzový režim. Pokud jste zamířili příliš, zkuste zatočit opačným směrem. Jde to mnohem rychleji, ale jen do té doby, než volant dosáhne střední polohy." />
+		<text name="vcaHelpSteering_3"    text="Adaptivní řízení bylo navrženo pro uživatele klávesnice. Rychlost automatické zpětné rotace závisí na tom, jak dlouho jste pustili klávesy A nebo D. Tímto způsobem můžete zachovat aktuální natočení volantu krátkým klepnutím na klávesy A nebo D. Otočení zpět do středové polohy je rychlejší, pokud stisknete odpovídající klávesu. Je to jako nouzový režim. Pokud jste zamířili příliš, zkuste zatočit opačným směrem. Jde to mnohem rychleji, ale jen do té doby, než volant dosáhne střední polohy. K dispozici je odlehčená verze adaptivního řízení, která pouze snižuje rychlost otáčení." />
 		<text name="vcaHelpGPS_1"         text="VCA obsahuje jednoduché navádění do jízdních pruhů." />
 		<text name="vcaHelpGPS_2"         text="Navádění jízdními pruhy lze spustit pouze v případě, že je šířka jízdního pruhu větší než 0,5 m. Aktuální šířku nástroje můžete zjistit v nabídce nastavení nebo s výchozí klávesovou zkratkou LCtrl+LAlt+W. Navádění jízdními pruhy se spustí s výchozí klávesovou zkratkou LCtrl+W. Při použití ovládacích tlačítek nebo kolečka je automaticky deaktivováno." />
 		<text name="vcaHelpGPS_3"         text="Ve vozidle můžete posouvat nebo otáčet naváděcí pruhy pomocí výchozích kláves LCtrl + šipka. S výchozím vázáním kláves LAlt+A a LAlt+D můžete přepnout do levého nebo pravého couvacího pruhu. V nabídce nastavení můžete určit počet pruhů, které se mají přepnout. Pokud chcete pracovat na poli vlevo, můžete zadat čísla levého jízdního pruhu o jedno větší než čísla pravého jízdního pruhu. Při každém obrácení jízdního pruhu doplněk VCA vymění číslo levého a pravého jízdního pruhu." />
 		<text name="vcaHelpThrottle_1"    text="VCA nabízí malá vylepšení plynu a brzdění. Většina z nich je určena pro hráče používající klávesnici." />
 		<text name="vcaHelpThrottle_2"    text="Hodnoty omezovače rychlosti. 1. hodnota je použita bez stisku klávesy. 2. hodnota je použita při stisku klávesy. Nižší procentuální hodnota se vztahuje na rychlost tempomatu, pokud je stisknuto posouvání. Nízká brzdná síla je brzdná síla, kterou vozidlo automaticky použije, pokud není sešlápnut pedál akcelerace ani brzdový pedál. Snížení brzdné síly umožní vozidlu jet déle bez snížení rychlosti." />
 		<text name="vcaHelpThrottle_3"    text="LShift omezuje plyn, tempomat a maximální počet otáček za minutu na 75 %. Pokud stisknete Delete, vozidlo si zachová svou rychlost. Akcelerační a brzdový pedál zvyšují a snižují rychlost. Vozidlo jede jako moderní traktor s joystickem. Automatické řazení můžete přepínat pomocí výchozí klávesové zkratky LCtrl (." />
+		<text name="vcaHelpThrottle_4"    text="Symbol pro úpravy motoru" />		
 		<text name="vcaHelpDiff_1"        text="Pokud VCA dokáže identifikovat diferenciály, máte možnost je ovládat ručně." />
 		<text name="vcaHelpDiff_2"        text="Ve výchozím nastavení VCA nemění diferenciály. Když je aktivován pohon všech kol, přední kola standardních traktorů se otáčejí rychleji než zadní kola. Můžete to povolit pomocí pokročilého nastavení rychlosti. V tomto případě VCA automaticky deaktivuje pohon všech kol nad 30 km/h." />
 		<text name="vcaHelpDiff_3"        text="Výchozí klávesové zkratky pro ovládání rozdílů jsou LCtrl ), LCtrl ' a LCtrl \." />
