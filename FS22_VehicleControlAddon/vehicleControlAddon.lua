@@ -3627,6 +3627,12 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 					change     = true 
 				end 
 				
+				local speed = math.abs( self.lastSpeedReal )
+				if 0.01 < speed and speed <= motor.lowBrakeForceSpeedLimit and acc <= 0.0015 then 
+					acc    = - math.max( 0.0015, motor.lowBrakeForceScale ) 
+					change = true 
+				end 
+				
 				if change then 
 					acceleration = m * acc
 				end 
@@ -3641,8 +3647,9 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 			-- turn off automatic brake in WheelsUtil:updateWheelsPhysics 
 			-- you have to push the brake for at least one sceond below lowBrakeForceSpeedLimit, i.e. 3.6 km/h
 				self.spec_vca.idleThrottleTime = g_currentMission.time + 1000
-				if math.abs( self.lastSpeedReal ) < motor.lowBrakeForceSpeedLimit then 
-					acceleration = math.max( 0.0015, acceleration )
+				local speed = math.abs( self.lastSpeedReal )
+				if 0.01 < speed and speed <= motor.lowBrakeForceSpeedLimit and math.abs( acceleration ) <= 0.0015 then 
+					acceleration = - math.max( 0.0015, motor.lowBrakeForceScale )
 				end 
 			end 
 		end
