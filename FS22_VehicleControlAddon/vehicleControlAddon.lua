@@ -466,6 +466,7 @@ function vehicleControlAddon:onLoad(savegame)
 	self.spec_vca.kRToggleOut   = false 
   self.spec_vca.snapDisabled  = false 
   self.spec_vca.snapPossible  = false 
+  self.spec_vca.gpsProSeed    = false 
 
 	self.spec_vca.maxWheelSlip  = 0
 	self.spec_vca.maxBrakePedal = 1
@@ -1515,6 +1516,85 @@ function vehicleControlAddon:vcaGetDiffState()
 	return f, m, b
 end 
 
+--******************************************************************************************************************************************
+-- ProSeed
+function vehicleControlAddon:vcaGetHasGuidanceSystem( superFunc )
+	if self ~= nil and self.spec_vca ~= nil and self.spec_vca.snapPossible then 
+		return true 
+	end 
+	if superFunc ~= nil then 
+		return superFunc( self )
+	end 
+	return false 
+end 
+function vehicleControlAddon:vcaGetGuidanceData( superFunc )
+	if not ( self ~= nil and self.spec_vca ~= nil and self.spec_vca.snapPossible ) then 
+		if superFunc ~= nil then 
+			return superFunc( self )
+		end 
+		return
+	end 
+
+	local data = {}
+	
+  data.width            = 3
+  data.offsetWidth      = 0
+  data.movingDirection  = 1
+  data.isReverseDriving = false
+  data.movingForwards   = false
+  data.snapDirectionMultiplier = 1
+  data.alphaRad         = 0
+  data.currentLane      = 0
+	data.snapDirection    = { 0, 0, 0, 0 }
+  data.driveTarget      = { 0, 0, 0, 0, 0 }
+	data.width            = self.spec_vca.snapDistance
+
+	local wx,wy,wz = getWorldTranslation( self:vcaGetSteeringNode() )
+	local lx,_,lz = localDirectionToWorld( self:vcaGetSteeringNode(), 0, 0, 1 )			
+	local d = 0
+	if lx*lx+lz*lz > 1e-6 then 
+		d = math.atan2( lx, lz )
+	end 
+	if not self.spec_vca.snapIsOn then 
+		d = math.atan2( lx, lz )
+	elseif self.spec_vca.snapDirection == 1 then 
+		d = self.spec_vca.lastSnapAngle 
+	elseif self.spec_vca.snapDirection == 2 then 
+		d = self.spec_vca.lastSnapAngle + 0.5 * math.pi 
+	elseif self.spec_vca.snapDirection == 3 then 
+		d = self.spec_vca.lastSnapAngle + math.pi 
+	elseif self.spec_vca.snapDirection == 4 then 
+		d = self.spec_vca.lastSnapAngle - 0.5 * math.pi 
+	else
+		d = math.atan2( lx, lz )
+	end 
+	local curSnapAngle, curSnapOffset1, curSnapOffset2 = self:vcaGetCurrentSnapAngle( d )
+	local dx    = math.sin( curSnapAngle )
+	local dz    = math.cos( curSnapAngle )			
+
+	data.snapDirection = { dz, dx, self.spec_vca.lastSnapPosX, self.spec_vca.lastSnapPosZ }
+
+	if self.spec_vca.snapIsOn then 
+		data.currentLane = self.spec_vca.snapFactor
+	else
+		data.currentLane = 0
+		if self.spec_vca.snapDistance >= 0.25 then 
+			local distX = wx - self.spec_vca.lastSnapPosX
+			local distZ = wz - self.spec_vca.lastSnapPosZ 	
+			local dist  = distX * dz - distZ * dx + curSnapOffset2
+			while dist+dist > self.spec_vca.snapDistance do 
+				dist = dist - self.spec_vca.snapDistance
+				data.currentLane = data.currentLane - 1 
+			end 
+			while dist+dist <-self.spec_vca.snapDistance do 
+				dist = dist + self.spec_vca.snapDistance
+				data.currentLane = data.currentLane + 1 
+			end 
+		end 
+	end 
+	
+	return data 
+end 
 
 function vehicleControlAddon:onPreUpdate(dt, isActiveForInput, isActiveForInputIgnoreSelection, isSelected)
 --******************************************************************************************************************************************
@@ -2669,6 +2749,23 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 			end 
 		end 
 	end 
+	
+--******************************************************************************************************************************************
+-- ProSeed 
+
+	if self.spec_vca.snapPossible and not self.spec_vca.gpsProSeed then  
+		self.spec_vca.gpsProSeed  = true 
+		if self.getHasGuidanceSystem == nil then 
+			self.getHasGuidanceSystem = vehicleControlAddon.vcaGetHasGuidanceSystem
+		else 
+			self.getHasGuidanceSystem = Utils.overwrittenFunction( self.getHasGuidanceSystem, vehicleControlAddon.vcaGetHasGuidanceSystem )
+		end 
+		if self.getGuidanceData == nil then 
+			self.getGuidanceData = vehicleControlAddon.vcaGetGuidanceData
+		else 
+			self.getGuidanceData = Utils.overwrittenFunction( self.getGuidanceData,      vehicleControlAddon.vcaGetGuidanceData )
+		end 
+	end 	
 end  
 
 function vehicleControlAddon:onUpdateTick( dt, isActiveForInput, isActiveForInputIgnoreSelection, isSelected )
