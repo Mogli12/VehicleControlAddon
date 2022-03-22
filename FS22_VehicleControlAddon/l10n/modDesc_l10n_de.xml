@@ -97,7 +97,7 @@
 		<text name="vca_tip_MOUSEARB"     text="Automatisches Zurückstellen beim Lenken mit der Maus"/>
 		<text name="vca_tip_ANALOG"       text="Unterstützung der adaptiven Lenkung in Kombination mit analogen Controllern"/>
 		<text name="vca_tip_ROTATEHT"     text="Die Kamera dreht sich auch wenn Head Tracking eingeschaltet ist"/>
-		<text name="vca_tip_DEBUG"        text="Er werden zusätzliche Meldungen ins Log geschrieben"/>
+		<text name="vca_tip_DEBUG"        text="Es werden zusätzliche Meldungen ins Log geschrieben"/>
 		
 		<text name="input_vcaSETTINGS"    text="VCA: Einstellungen"/>
 		<text name="input_vcaGLOBALS"     text="VCA: Globale Einstellungen"/>
