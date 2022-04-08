@@ -4007,7 +4007,7 @@ function vehicleControlAddon:vcaGetRequiredMotorRpmRange( superFunc, ... )
 		else 
 			-- variable transmission and variable RPM; e.g. Fendt TMS
 	
-			local idleRpm = math.min( math.max( minRpm, self.minRpm + 0.15 * rpmRange ), maxRpm )
+			local idleRpm = math.min( math.max( minRpm, self.minRpm + 0.1 * rpmRange ), maxRpm )
 
 			if self.vehicle.spec_combine ~= nil then 
 				-- increase RPM for combine
@@ -4068,12 +4068,15 @@ function vehicleControlAddon:vcaGetRequiredMotorRpmRange( superFunc, ... )
 		
 			if hasActiveWorkArea then 
 				idleRpm = math.min( math.max( minRpm, self.minRpm + 0.4 * rpmRange ), maxRpm )
+			end 		
+			if self.smoothedLoadPercentage > 0.8 then 	
+				idleRpm = math.min( maxRpm,math.max( minRpm, idleRpm, peakPowerRpm - 0.1 * rpmRange ) )
 			end 
-						
+			
 			if self.smoothedLoadPercentage > 0.9 then 	
 			-- reduce maxRpm under full load
 				local f = 10 * self.smoothedLoadPercentage - 9
-				maxRpm = math.min( maxRpm,math.max( minRpm, idleRpm, peakPowerRpm - 0.1 * f * rpmRange, speedMinRpm ) )
+				maxRpm  = math.min( maxRpm,math.max( minRpm, idleRpm, peakPowerRpm - 0.1 * f * rpmRange, speedMinRpm ) )
 			else
 				local r = self.maxRpm 
 				if self.smoothedLoadPercentage < 0.7 then 
@@ -4084,13 +4087,43 @@ function vehicleControlAddon:vcaGetRequiredMotorRpmRange( superFunc, ... )
 			end 
 			
 			if self.vcaIncreaseRpm ~= nil and g_currentMission.time < self.vcaIncreaseRpm then 
-				minRpm = math.max( minRpm, idleRpm, self:getNonClampedMotorRpm() - self.vehicle.spec_vca.tickDt * 0.0005 * rpmRange )
+				minRpm = math.max( minRpm, math.min( idleRpm, maxRpm ) )
 			end		
 		end 
 	end 
 	
-	minRpm = vehicleControlAddon.mbClamp( minRpm, lastMinRpm - self.vehicle.spec_vca.tickDt * 0.0005 * rpmRange, lastMinRpm + self.vehicle.spec_vca.tickDt * 0.0005 * rpmRange )
-	maxRpm = vehicleControlAddon.mbClamp( maxRpm, lastMaxRpm - self.vehicle.spec_vca.tickDt * 0.0005 * rpmRange, lastMaxRpm + self.vehicle.spec_vca.tickDt * 0.0005 * rpmRange )
+	local r = nil 
+	if self.vehicle.lastSpeedReal < 0.001 then 
+		self.vcaSpeedFactor = nil 
+	else 
+		local sf = self:getNonClampedMotorRpm() / self.vehicle.lastSpeedReal
+		if self.vcaSpeedFactor == nil then 
+			self.vcaSpeedFactor = sf 
+		else 
+			self.vcaSpeedFactor = self.vcaSpeedFactor + 0.01 * ( sf - self.vcaSpeedFactor )
+			r = self.vcaSpeedFactor * self.vehicle.lastSpeedReal
+		end 
+	end 
+	
+	local smooth = self.vehicle.spec_vca.tickDt * rpmRange
+	if self.backwardGears or self.forwardGears or self.vehicle.spec_vca.useIdleThrottle then  
+		smooth = smooth * 0.0005
+	else 
+		smooth = smooth * 0.0001
+		if r ~= nil then 
+			local m1, m2 = minRpm, maxRpm
+			minRpm = math.max( m1, math.min( self:getNonClampedMotorRpm() - self.vehicle.spec_vca.tickDt * 0.00025 * rpmRange, r, m2 ) )
+			maxRpm = math.min( m2, math.max( self:getNonClampedMotorRpm() + self.vehicle.spec_vca.tickDt * 0.00025 * rpmRange, r, m1 ) )
+		end 
+	end 
+	
+	if r == nil then 
+		minRpm = vehicleControlAddon.mbClamp( minRpm, lastMinRpm - smooth, lastMinRpm + smooth )
+		maxRpm = vehicleControlAddon.mbClamp( maxRpm, lastMaxRpm - smooth, lastMaxRpm + smooth )
+	else 
+		minRpm = vehicleControlAddon.mbClamp( minRpm, math.min( lastMinRpm - smooth, r ), lastMinRpm + smooth )
+		maxRpm = vehicleControlAddon.mbClamp( maxRpm, lastMaxRpm - smooth, math.max( lastMaxRpm + smooth, r ) )
+	end 
 	
 	self.vcaMinRpm = minRpm 
 	self.vcaMaxRpm = maxRpm 
