@@ -3528,16 +3528,36 @@ function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, ax
 	
 -- remember and restore cruise control state when accelerating
 	local ccState = nil
-	local spec = self.spec_drivable
+	local limit,_ = self:getSpeedLimit(true)
+	local speed   = math.min( limit, self.lastSpeed * 3600 )
+	local spec    = self.spec_drivable
 	if      self.spec_vca ~= nil
 			and self:vcaIsVehicleControlledByPlayer()
 			and spec.cruiseControl.state ~= Drivable.CRUISECONTROL_STATE_OFF
 			and ( self:vcaGetShuttleCtrl() or self.movingDirection > 0 )
 			and axisForward > 0 then 
-		local speed,_ = self:getSpeedLimit(true)			
 		ccState = spec.cruiseControl.state
 		spec.cruiseControl.state = Drivable.CRUISECONTROL_STATE_OFF
-		self:getMotor():setSpeedLimit( speed )
+		self:getMotor():setSpeedLimit( limit )
+	end 
+	
+	local lastBrakeCruiseSpeed = self.spec_vca.brakeCruiseSpeed
+	self.spec_vca.brakeCruiseSpeed = nil 
+	if spec.cruiseControl.state == Drivable.CRUISECONTROL_STATE_OFF then 
+		if speed > 3 then 
+			self.spec_vca.brakeCruiseSpeed       = speed
+			spec.cruiseControl.speedInterpolated = speed
+		end 
+	elseif speed > 3 and self.spec_vca.idleThrottle and spec.cruiseControl.speedInterpolated ~= nil then  
+		if lastBrakeCruiseSpeed == nil then   
+			self.spec_vca.brakeCruiseSpeed = speed
+		else 
+			self.spec_vca.brakeCruiseSpeed = math.min( limit, speed + 1, math.max( spec.cruiseControl.speedInterpolated, lastBrakeCruiseSpeed - 0.003 * dt ) )
+		end 
+		spec.cruiseControl.speedInterpolated = self.spec_vca.brakeCruiseSpeed
+	end 
+	if spec.cruiseControl.speedInterpolated ~= nil then 
+		spec.cruiseControl.speedInterpolated = math.min( spec.cruiseControl.speedInterpolated, limit	)	
 	end 
 	
 	local res = { superFunc( self, axisForward, axisSide, doHandbrake, dt ) }
