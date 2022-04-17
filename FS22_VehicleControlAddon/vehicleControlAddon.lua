@@ -4113,9 +4113,9 @@ function vehicleControlAddon:vcaGetRequiredMotorRpmRange( superFunc, ... )
 	end 
 	
 	local r = nil 
-	if self.vehicle.lastSpeedReal < 0.001 then 
+	if self.vehicle.lastSpeedReal < 0.001 or self:getDrivingDirection() <= 0 then 
 		self.vcaSpeedFactor = nil 
-	else 
+	else
 		local sf = self:getNonClampedMotorRpm() / self.vehicle.lastSpeedReal
 		if self.vcaSpeedFactor == nil then 
 			self.vcaSpeedFactor = sf 
