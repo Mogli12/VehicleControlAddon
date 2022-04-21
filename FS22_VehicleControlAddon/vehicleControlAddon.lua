@@ -3543,7 +3543,8 @@ function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, ax
 	
 	local lastBrakeCruiseSpeed = self.spec_vca.brakeCruiseSpeed
 	self.spec_vca.brakeCruiseSpeed = nil 
-	if spec.cruiseControl.state == Drivable.CRUISECONTROL_STATE_OFF then 
+	
+	if ccState ~= nil and spec.cruiseControl.state == Drivable.CRUISECONTROL_STATE_OFF then
 		if speed > 3 then 
 			self.spec_vca.brakeCruiseSpeed       = speed
 			spec.cruiseControl.speedInterpolated = speed
@@ -3555,9 +3556,6 @@ function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, ax
 			self.spec_vca.brakeCruiseSpeed = math.min( limit, speed + 1, math.max( spec.cruiseControl.speedInterpolated, lastBrakeCruiseSpeed - 0.003 * dt ) )
 		end 
 		spec.cruiseControl.speedInterpolated = self.spec_vca.brakeCruiseSpeed
-	end 
-	if spec.cruiseControl.speedInterpolated ~= nil then 
-		spec.cruiseControl.speedInterpolated = math.min( spec.cruiseControl.speedInterpolated, limit	)	
 	end 
 	
 	local res = { superFunc( self, axisForward, axisSide, doHandbrake, dt ) }
@@ -3957,10 +3955,13 @@ function vehicleControlAddon:vcaGetRequiredMotorRpmRange( superFunc, ... )
 	if self.vcaMaxRpm ~= nil then 
 		lastMaxRpm = self.vcaMaxRpm
 	end 
+	local lastSpeedFactor = self.vcaSpeedFactor
 	
 	self.vcaIncreaseRpm = nil 
 	self.vcaMinRpm      = nil 
   self.vcaMaxRpm      = nil 
+	self.vcaSpeedFactor = nil 
+
 
 	if not ( self.vehicle ~= nil 
 			 and self.vehicle.spec_vca ~= nil 
@@ -4113,14 +4114,12 @@ function vehicleControlAddon:vcaGetRequiredMotorRpmRange( superFunc, ... )
 	end 
 	
 	local r = nil 
-	if self.vehicle.lastSpeedReal < 0.001 or self:getDrivingDirection() <= 0 then 
-		self.vcaSpeedFactor = nil 
-	else
+	if self.vehicle.lastSpeedReal > 0.001 then 
 		local sf = self:getNonClampedMotorRpm() / self.vehicle.lastSpeedReal
-		if self.vcaSpeedFactor == nil then 
+		if lastSpeedFactor == nil then 
 			self.vcaSpeedFactor = sf 
 		else 
-			self.vcaSpeedFactor = self.vcaSpeedFactor + 0.01 * ( sf - self.vcaSpeedFactor )
+			self.vcaSpeedFactor = lastSpeedFactor + 0.01 * ( sf - lastSpeedFactor )
 			r = self.vcaSpeedFactor * self.vehicle.lastSpeedReal
 		end 
 	end 
