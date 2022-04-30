@@ -3669,23 +3669,27 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 			end 
 			
 			local noAutoBrake = false 
-			if self:vcaGetShuttleCtrl() and lastIdleThrottleTime ~= nil and self.spec_vca.isEnteredMP and not self.spec_vca.isBlocked then 
+			if      motor.gearShiftMode           == VehicleMotor.SHIFT_MODE_MANUAL_CLUTCH
+					and motor.manualClutchValue       <  0.9 then 
+				noAutoBrake     = true 
+			elseif motor.stallTimer               >  0 then 
+				noAutoBrake     = true 
+			elseif math.abs( self.lastSpeedReal ) >= motor.lowBrakeForceSpeedLimit
+					or math.abs( acceleration )       >= 0.001 then 
+				noAutoBrake     = true 
+			elseif self:vcaGetShuttleCtrl() and lastIdleThrottleTime ~= nil and self.spec_vca.isEnteredMP and not self.spec_vca.isBlocked then 
 				self.spec_vca.idleThrottleTime = lastIdleThrottleTime
 				if g_currentMission.time < lastIdleThrottleTime then 
-					noAutoBrake = true 
+					noAutoBrake   = true 
 				end 
 			end 
 			
 			if      self:getIsMotorStarted()
 					and ( ( m > 0 and acceleration > -0.01 ) or ( m < 0 and acceleration < 0.01 ) )
-				--and motor.gearShiftMode ~= VehicleMotor.SHIFT_MODE_MANUAL_CLUTCH 
 					and (motor.backwardGears or motor.forwardGears) 
 					and motor.gearRatio ~= 0 
 					and motor.maxGearRatio ~= 0 
-					and ( math.abs( self.lastSpeedReal ) >= motor.lowBrakeForceSpeedLimit
-						 or math.abs( acceleration )       >= 0.001
-						 or noAutoBrake )
-					then
+					and noAutoBrake then
 
 				self.spec_vca.useIdleThrottle  = true 
 				self.spec_vca.idleThrottleTime = g_currentMission.time + 2000
@@ -3755,10 +3759,7 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 					and self:vcaGetShuttleCtrl()
 					and acceleration > -0.01 
 					and motor.backwardGears == nil and motor.forwardGears == nil  
-					and ( math.abs( self.lastSpeedReal ) >= motor.lowBrakeForceSpeedLimit
-						 or math.abs( acceleration )       >= 0.001
-						 or noAutoBrake )
-					then
+					and noAutoBrake then
 			-- turn off automatic brake in WheelsUtil:updateWheelsPhysics 
 			-- you have to push the brake for at least one sceond below lowBrakeForceSpeedLimit, i.e. 3.6 km/h
 				self.spec_vca.idleThrottleTime = g_currentMission.time + 1000
