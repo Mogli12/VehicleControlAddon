@@ -174,6 +174,8 @@ vehicleControlAddon.snapNonLinearFactor  = math.acos( 1 - vehicleControlAddon.sn
 vehicleControlAddon.colorActive          = { 0.0003, 0.5647, 0.9822, 1 }
 vehicleControlAddon.colorInactive        = { 1, 1, 1, 1 }
 vehicleControlAddon.colorNormal          = { 1, 1, 1, 1 }
+vehicleControlAddon.colorWarning         = { 1, 1, 0, 1 }
+vehicleControlAddon.colorError           = { 1, 0, 0, 1 }
 vehicleControlAddon.colorBg              = { 0, 0, 0, 0.54 }
 
 vehicleControlAddon.properties = {}
@@ -291,6 +293,8 @@ function vehicleControlAddon.registerEventListeners(vehicleType)
 	SpecializationUtil.registerEventListener(vehicleType, "onLeaveVehicle",         vehicleControlAddon)
 	SpecializationUtil.registerEventListener(vehicleType, "onReadStream",           vehicleControlAddon)
 	SpecializationUtil.registerEventListener(vehicleType, "onWriteStream",          vehicleControlAddon)
+	SpecializationUtil.registerEventListener(vehicleType, "onReadUpdateStream",     vehicleControlAddon)
+	SpecializationUtil.registerEventListener(vehicleType, "onWriteUpdateStream",    vehicleControlAddon)
 	SpecializationUtil.registerEventListener(vehicleType, "saveToXMLFile",          vehicleControlAddon)
 	SpecializationUtil.registerEventListener(vehicleType, "onRegisterActionEvents", vehicleControlAddon)
 end 
@@ -472,6 +476,8 @@ function vehicleControlAddon:onLoad(savegame)
 	self.spec_vca.maxBrakePedal = 1
 	self.spec_vca.maxThrottle   = 1
 	self.spec_vca.maxThrottleT  = 0
+	
+	self.spec_vca.lasWheelSlip  = 0
 	
 	self.spec_vca.keepRotPressed   = false 
 	self.spec_vca.inchingPressed   = false 
@@ -2873,7 +2879,41 @@ function vehicleControlAddon:onDraw()
 				renderOverlay( vehicleControlAddon.ovDiffLockFront , posX, posY, width, height )
 				renderOverlay( vehicleControlAddon.ovDiffLockMid   , posX, posY, width, height )
 				renderOverlay( vehicleControlAddon.ovDiffLockBack  , posX, posY, width, height )
+			else 
+				local prevWidth = width 
+				width = math.min( width, height / g_screenAspectRatio )
+				posX = posX + 0.5 * ( prevWidth - width )
 			end 
+			
+			setTextBold(false)
+
+			if self.lastSpeed > 0.0003 then 
+				local ws = 0
+				if self.spec_vca.wheelSlip ~= nil then 
+					ws = math.max( 0, math.min( math.floor( 100 * ( self.spec_vca.wheelSlip - 1 ) + 0.5 ), 100 ) )
+				end 
+				
+				local g, b = 1, 1
+				if     ws >= 25 then
+					g = 0 
+					b = 0 
+				elseif ws >= 15 then 
+					g = 1 - 0.1 * ( ws - 15 )
+					b = 0
+				elseif ws >=  5 then 
+					g = 1 
+					b = 1 - 0.1 * ( ws - 5 ) 
+				end 
+				setTextColor(1,g,b,1)
+				
+				if ws > 99 then 	
+					renderText( 0.5 * ( posX + width + 1 ), posY + 0.5 * height, l, ">99%" )
+				else 
+					renderText( 0.5 * ( posX + width + 1 ), posY + 0.5 * height, l, string.format( "%2.0f%%", ws ) )
+				end 
+			end 
+
+			setTextColor(unpack(vehicleControlAddon.colorNormal))
 
 			width = g_currentMission.inGameMenu.hud.speedMeter.gaugeBackgroundElement.overlay.width * 0.6
 			
@@ -3149,6 +3189,35 @@ function vehicleControlAddon:onWriteStream(streamId, connection)
 	end 
 
 end 
+
+function vehicleControlAddon:onReadUpdateStream(streamId, timestamp, connection)
+	if connection.isServer then
+		if streamReadBool(streamId) then
+			local wheelSlip = streamReadUInt8(streamId)
+			if wheelSlip <= 0 then 
+				self.spec_vca.wheelSlip = nil 
+			else 
+				self.spec_vca.wheelSlip = 1 + wheelSlip / 255
+			end 
+		end 
+	end 
+end
+
+function vehicleControlAddon:onWriteUpdateStream(streamId, connection, dirtyMask)
+	if not connection.isServer then
+		local wheelSlip = 0
+		if self.spec_vca ~= nil and self.spec_vca.wheelSlip ~= nil and self.spec_vca.wheelSlip > 1 then  
+			wheelSlip = math.max( 0, math.min( math.floor( ( self.spec_vca.wheelSlip - 1 ) * 255 + 0.5 ), 255 ) )
+		end 
+		if self.spec_vca ~= nil and wheelSlip ~= self.spec_vca.lastWheelSlip then 
+			self.spec_vca.lastWheelSlip = wheelSlip
+			streamWriteBool(streamId, true )
+			streamWriteUInt8(streamId, wheelSlip )
+		else 
+			streamWriteBool(streamId, false )
+		end 
+	end
+end
 
 function vehicleControlAddon:vcaGetSteeringNode()
 	local n
@@ -3576,6 +3645,9 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 	if not ( self.spec_vca ~= nil and self.spec_vca.isInitialized ) then  
 		return superFunc( self, dt, currentSpeed, acceleration, doHandbrake, stopAndGoBraking )
 	end 
+	
+	local lastWheelSlip        = self.spec_vca.wheelSlip
+	self.spec_vca.wheelSlip    = nil
 
 	self.spec_vca.oldAcc       = acceleration
 	self.spec_vca.oldHandbrake = doHandbrake
@@ -3607,6 +3679,21 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 		end 
 
 		local motor = self.spec_motorized.motor 
+		
+		
+		local wheelSlip  = 1
+		local speedMS    = self.lastSpeedReal * 1000
+		local wheelSpeed = motor.differentialRotSpeed
+		if motor.maxGearRatio < 0 then 
+			wheelSpeed = -wheelSpeed
+		end 
+		if wheelSpeed > speedMS and speedMS > 0.3 then 
+			wheelSlip = wheelSpeed / speedMS 
+		end 
+		if lastWheelSlip == nil then 
+			lastWheelSlip = 1
+		end 
+		self.spec_vca.wheelSlip = lastWheelSlip + 0.03 * ( wheelSlip - lastWheelSlip )
 	
 		if not self:getIsMotorStarted() then 
 			acceleration = 0
@@ -3801,6 +3888,18 @@ end
 WheelsUtil.getSmoothedAcceleratorAndBrakePedals = Utils.overwrittenFunction( WheelsUtil.getSmoothedAcceleratorAndBrakePedals, vehicleControlAddon.vcaGetSmoothedAccBrake )
 
 --******************************************************************************************************************************************
+function vehicleControlAddon.vcaMotorGetSpeedLimit( motor, superFunc, ... )
+	local self = motor.vehicle 
+	if      self                    ~= nil 
+			and self.spec_vca           ~= nil 
+			and self.spec_vca.wheelSlip ~= nil then 
+		return self.spec_vca.wheelSlip * superFunc( motor, ... )
+	end 
+	return superFunc( motor, ... )
+end 
+VehicleMotor.getSpeedLimit = Utils.overwrittenFunction( VehicleMotor.getSpeedLimit, vehicleControlAddon.vcaMotorGetSpeedLimit )
+
+--******************************************************************************************************************************************
 function vehicleControlAddon.vcaGetManualClutchPedal( motor, superFunc, ... )
 	local self = motor.vehicle 
 	if      self          ~= nil 
@@ -3838,6 +3937,26 @@ function vehicleControlAddon:getCruiseControlSpeed( superFunc )
 	return superFunc( self )
 end 
 Drivable.getCruiseControlSpeed = Utils.overwrittenFunction( Drivable.getCruiseControlSpeed, vehicleControlAddon.getCruiseControlSpeed ) 
+
+function vehicleControlAddon:getAccelerationAxis( superFunc )
+	if self.spec_vca ~= nil and self.spec_vca.handThrottle > 0 then 
+		return math.max( superFunc( self ), self.spec_vca.handThrottle )
+	end 
+	return superFunc( self )
+end 
+Drivable.getAccelerationAxis   = Utils.overwrittenFunction( Drivable.getAccelerationAxis,   vehicleControlAddon.getAccelerationAxis )
+
+function vehicleControlAddon:getCruiseControlAxis( superFunc )
+	if      self.spec_drivable.cruiseControl.state == Drivable.CRUISECONTROL_STATE_OFF
+			and self.spec_vca ~= nil 
+			and self.spec_vca.ksIsOn 
+			and math.abs( self.spec_vca.keepSpeed ) >= 0.5 then  
+		return 1
+	end 
+	return superFunc( self )
+end 
+Drivable.getCruiseControlAxis  = Utils.overwrittenFunction( Drivable.getCruiseControlAxis,  vehicleControlAddon.getCruiseControlAxis )
+
 --******************************************************************************************************************************************
 --******************************************************************************************************************************************
 
