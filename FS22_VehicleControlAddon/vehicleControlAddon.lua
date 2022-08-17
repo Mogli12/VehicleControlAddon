@@ -497,11 +497,14 @@ function vehicleControlAddon:onLoad(savegame)
 		end 
 
 		if vehicleControlAddon.ovDiffLockFront == nil then
-			vehicleControlAddon.ovDiffLockFront  = createImageOverlay( Utils.getFilename( "dds/diff_front.dds",       g_vehicleControlAddon.vcaDirectory))
-			vehicleControlAddon.ovDiffLockMid    = createImageOverlay( Utils.getFilename( "dds/diff_middle.dds",      g_vehicleControlAddon.vcaDirectory))
-			vehicleControlAddon.ovDiffLockBack   = createImageOverlay( Utils.getFilename( "dds/diff_back.dds",        g_vehicleControlAddon.vcaDirectory))
-			vehicleControlAddon.ovDiffLockWheels = createImageOverlay( Utils.getFilename( "dds/diff_wheels.dds",      g_vehicleControlAddon.vcaDirectory))
-			vehicleControlAddon.ovDiffLockBg     = createImageOverlay( Utils.getFilename( "dds/diff_bg.dds",      g_vehicleControlAddon.vcaDirectory))
+			vehicleControlAddon.ovDiffLockFront  = createImageOverlay( Utils.getFilename( "dds/diff_front.dds",     g_vehicleControlAddon.vcaDirectory))
+			vehicleControlAddon.ovDiffLockMid    = createImageOverlay( Utils.getFilename( "dds/diff_middle.dds",    g_vehicleControlAddon.vcaDirectory))
+			vehicleControlAddon.ovDiffLockBack   = createImageOverlay( Utils.getFilename( "dds/diff_back.dds",      g_vehicleControlAddon.vcaDirectory))
+			vehicleControlAddon.ovDiffLockFL     = createImageOverlay( Utils.getFilename( "dds/diff_wheels_fl.dds", g_vehicleControlAddon.vcaDirectory))
+			vehicleControlAddon.ovDiffLockFR     = createImageOverlay( Utils.getFilename( "dds/diff_wheels_fr.dds", g_vehicleControlAddon.vcaDirectory))
+			vehicleControlAddon.ovDiffLockRL     = createImageOverlay( Utils.getFilename( "dds/diff_wheels_rl.dds", g_vehicleControlAddon.vcaDirectory))
+			vehicleControlAddon.ovDiffLockRR     = createImageOverlay( Utils.getFilename( "dds/diff_wheels_rr.dds", g_vehicleControlAddon.vcaDirectory))
+			vehicleControlAddon.ovDiffLockBg     = createImageOverlay( Utils.getFilename( "dds/diff_bg.dds",        g_vehicleControlAddon.vcaDirectory))
 			local r, g, b, a = unpack(vehicleControlAddon.colorBg)
 			setOverlayColor( vehicleControlAddon.ovDiffLockBg, r, g, b, a )
 			vehicleControlAddon.ovGearSpeedBg    = createImageOverlay( Utils.getFilename( "dds/gear_bg.dds",      g_vehicleControlAddon.vcaDirectory))
@@ -538,6 +541,10 @@ function vehicleControlAddon:onPostLoad(savegame)
 	self.spec_vca.diffHasM = false 
 	self.spec_vca.diffHas2 = false 
 	self.spec_vca.diffHasB = false 
+	self.spec_vca.wheelIndexFL = -1
+	self.spec_vca.wheelIndexFR = -1
+	self.spec_vca.wheelIndexRL = -1
+	self.spec_vca.wheelIndexRR = -1
 	
 	if type( self.functionStatus ) == "function" and self:functionStatus("differential") then 
 	-- TSX diffs ...
@@ -666,12 +673,46 @@ function vehicleControlAddon:onPostLoad(savegame)
 		
 		for k,differential in pairs(spec.differentials) do
 			local rMin1, rMax1 = getMinMaxRotSpeed( k-1, false )
+			
+			local lx1, lx2 = nil, nil 
+			if differential.diffIndex1IsWheel and differential.diffIndex2IsWheel then 
+				local wx, wy, wz
+				wx, wy, wz = getWorldTranslation( self:getWheelFromWheelIndex( differential.diffIndex1 ).node )
+				lx1,_,_ = worldToLocal(self:vcaGetSteeringNode(), wx, wy, wz)
+				wx, wy, wz = getWorldTranslation( self:getWheelFromWheelIndex( differential.diffIndex2 ).node )
+				lx2,_,_ = worldToLocal(self:vcaGetSteeringNode(), wx, wy, wz)
+			end 
+			
 			if    rMax1 < 0.1 then 
 				differential.vcaMode = 'B' -- back axle, no steering
 				self.spec_vca.diffHasB = true 
+
+				if lx1 == nil or lx2 == nil then 
+					self.spec_vca.wheelIndexRL = -1
+					self.spec_vca.wheelIndexRR = -1
+				elseif lx1 > lx2 then 
+					self.spec_vca.wheelIndexRL = differential.diffIndex1
+					self.spec_vca.wheelIndexRR = differential.diffIndex2
+				else
+					self.spec_vca.wheelIndexRL = differential.diffIndex2
+					self.spec_vca.wheelIndexRR = differential.diffIndex1 
+				end 
+
 			elseif rMin1 > 0.1 then 
 				differential.vcaMode = 'F' -- front axle, with steering
 				self.spec_vca.diffHasF = true 
+
+				if lx1 == nil or lx2 == nil then 
+					self.spec_vca.wheelIndexFL = -1
+					self.spec_vca.wheelIndexFR = -1
+				elseif lx1 > lx2 then 
+					self.spec_vca.wheelIndexFL = differential.diffIndex1
+					self.spec_vca.wheelIndexFR = differential.diffIndex2
+				else
+					self.spec_vca.wheelIndexFL = differential.diffIndex2
+					self.spec_vca.wheelIndexFR = differential.diffIndex1 
+				end 
+
 			elseif not differential.diffIndex1IsWheel and not differential.diffIndex2IsWheel then 
 				differential.vcaMode = 'M' -- mid differential, between front and back
 				self.spec_vca.diffHasM = true 
@@ -2870,15 +2911,62 @@ function vehicleControlAddon:onDraw()
 				setOverlayColor( vehicleControlAddon.ovDiffLockFront, getRenderColor( f ) )
 				setOverlayColor( vehicleControlAddon.ovDiffLockMid  , getRenderColor( m ) )
 				setOverlayColor( vehicleControlAddon.ovDiffLockBack , getRenderColor( b ) )
-							
+				
+				local vehicleSpeed = self.lastSpeed * 1000 
+				local function setWheelColor( idx, ov )
+					local ws = nil 
+					if idx ~= nil and self.spec_wheels ~= nil and self.spec_wheels.wheels ~= nil and self.spec_wheels.wheels[idx] ~= nil then 
+						ws = self.spec_wheels.wheels[idx].vcaSpeed
+						if self:vcaGetShuttleCtrl() then 
+							if self.spec_motorized.motor.currentDirection < 0 then 
+								ws = -ws 
+							end 
+						else 
+							if self.movingDirection < 0 then 
+								ws = -ws 
+							end 
+						end 
+					end 
+					local r,g,b = 0.35,0.35,0.35
+					if ws ~= nil then 
+						if     ws >= 1.25 * vehicleSpeed then 
+							r = 1
+							g = 0 
+							b = 0
+						elseif ws <= vehicleSpeed then 
+							r = 1
+							g = 1
+							b = 1
+						elseif 0  >= vehicleSpeed then 
+						elseif ws >= 1.15 * vehicleSpeed then  
+							r = 1
+							g = 1 - 10 * ( ws / vehicleSpeed - 1.15 )
+							b = 0
+						else 
+							r = 1
+							g = 1 
+							b = 1 - 10 * ( ws / vehicleSpeed - 1.05 )
+						end 
+					end 
+					setOverlayColor( ov, r,g,b, 1 )
+				end 
+				
+				setWheelColor( self.spec_vca.wheelIndexFL, vehicleControlAddon.ovDiffLockFL )
+				setWheelColor( self.spec_vca.wheelIndexFR, vehicleControlAddon.ovDiffLockFR )
+				setWheelColor( self.spec_vca.wheelIndexRL, vehicleControlAddon.ovDiffLockRL )
+				setWheelColor( self.spec_vca.wheelIndexRR, vehicleControlAddon.ovDiffLockRR )
+				
 				renderOverlay( vehicleControlAddon.ovDiffLockBg    , posX, posY, width, height )
 				local prevWidth = width 
 				width = math.min( width, height / g_screenAspectRatio )
 				posX = posX + 0.5 * ( prevWidth - width )
-				renderOverlay( vehicleControlAddon.ovDiffLockWheels, posX, posY, width, height )
-				renderOverlay( vehicleControlAddon.ovDiffLockFront , posX, posY, width, height )
-				renderOverlay( vehicleControlAddon.ovDiffLockMid   , posX, posY, width, height )
-				renderOverlay( vehicleControlAddon.ovDiffLockBack  , posX, posY, width, height )
+				renderOverlay( vehicleControlAddon.ovDiffLockFL   , posX, posY, width, height )
+				renderOverlay( vehicleControlAddon.ovDiffLockFR   , posX, posY, width, height )
+				renderOverlay( vehicleControlAddon.ovDiffLockRL   , posX, posY, width, height )
+				renderOverlay( vehicleControlAddon.ovDiffLockRR   , posX, posY, width, height )
+				renderOverlay( vehicleControlAddon.ovDiffLockFront, posX, posY, width, height )
+				renderOverlay( vehicleControlAddon.ovDiffLockMid  , posX, posY, width, height )
+				renderOverlay( vehicleControlAddon.ovDiffLockBack , posX, posY, width, height )
 			else 
 				local prevWidth = width 
 				width = math.min( width, height / g_screenAspectRatio )
