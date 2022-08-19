@@ -166,10 +166,7 @@ vehicleControlAddon.speedRatioClosed1    = 1.1  -- maxSpeedRatio of diff of whee
 vehicleControlAddon.speedRatioClosed2    = 1.2  -- at least 20% difference 
 vehicleControlAddon.distributeTorqueOpen = false  
 vehicleControlAddon.minTorqueRatio       = 0.3
-vehicleControlAddon.snapRadius           = 7
-vehicleControlAddon.snapLinear           = 1.5
-vehicleControlAddon.snapLinearFactor     = math.acos( 1 - vehicleControlAddon.snapLinear / vehicleControlAddon.snapRadius ) / vehicleControlAddon.snapLinear
-vehicleControlAddon.snapNonLinearFactor  = math.acos( 1 - vehicleControlAddon.snapLinear / vehicleControlAddon.snapRadius )
+vehicleControlAddon.snapRadius           = 10
 
 vehicleControlAddon.colorActive          = { 0.0003, 0.5647, 0.9822, 1 }
 vehicleControlAddon.colorInactive        = { 1, 1, 1, 1 }
@@ -471,6 +468,7 @@ function vehicleControlAddon:onLoad(savegame)
   self.spec_vca.snapDisabled  = false 
   self.spec_vca.snapPossible  = false 
   self.spec_vca.gpsProSeed    = false 
+	self.spec_vca.snapNoDisableTimer = 0
 
 	self.spec_vca.maxWheelSlip  = 0
 	self.spec_vca.maxBrakePedal = 1
@@ -783,6 +781,7 @@ function vehicleControlAddon:vcaSnapReverseLeft()
 	self:vcaSetState( "snapLeft", r )
 	self:vcaSetState( "snapRight", l )
 	self.spec_vca.snapPosTimer = math.max( Utils.getNoNil( self.spec_vca.snapPosTimer , 0 ), 3000 )
+	self.spec_vca.snapNoDisableTimer = g_currentMission.time + 2000
 end 
 
 function vehicleControlAddon:vcaSnapReverseRight()
@@ -802,6 +801,7 @@ function vehicleControlAddon:vcaSnapReverseRight()
 	self:vcaSetState( "snapLeft", r )
 	self:vcaSetState( "snapRight", l )
 	self.spec_vca.snapPosTimer = math.max( Utils.getNoNil( self.spec_vca.snapPosTimer , 0 ), 3000 )
+	self.spec_vca.snapNoDisableTimer = g_currentMission.time + 2000
 end 
 
 function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicle)
@@ -1653,7 +1653,8 @@ function vehicleControlAddon:onPreUpdate(dt, isActiveForInput, isActiveForInputI
 			and self.spec_drivable ~= nil
 			and self:getIsActiveForInput(true, true)
 			and self:getIsVehicleControlledByPlayer()
-			and math.abs( self.spec_drivable.lastInputValues.axisSteer ) > 0.15 then 
+			and math.abs( self.spec_drivable.lastInputValues.axisSteer ) > 0.15
+			and self.spec_vca.snapNoDisableTimer < g_currentMission.time then 
 		self:vcaSetState( "snapIsOn", false )
 	end 
 	
@@ -2929,15 +2930,15 @@ function vehicleControlAddon:onDraw()
 					end 
 					local r,g,b = 0.35,0.35,0.35
 					if ws ~= nil then 
-						if     ws >= 1.25 * vehicleSpeed then 
-							r = 1
-							g = 0 
-							b = 0
-						elseif ws <= vehicleSpeed then 
+						if     ws <= vehicleSpeed then 
 							r = 1
 							g = 1
 							b = 1
 						elseif 0  >= vehicleSpeed then 
+						elseif ws >= 1.25 * vehicleSpeed then 
+							r = 1
+							g = 0 
+							b = 0
 						elseif ws >= 1.15 * vehicleSpeed then  
 							r = 1
 							g = 1 - 10 * ( ws / vehicleSpeed - 1.15 )
@@ -3616,32 +3617,31 @@ function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, ax
 
 			if vehicleControlAddon.snapCurve == nil then 
 				vehicleControlAddon.snapCurve = AnimCurve.new(linearInterpolator1)
+
+				local kf = {{x=0.01, y=0.01},
+										{x=0.02, y=0.02},
+										{x=0.05, y=0.08},
+										{x=0.10, y=0.25},
+										{x=0.12, y=0.42},
+										{x=0.15, y=0.52},
+										{x=0.20, y=0.66},
+										{x=0.30, y=0.82},
+										{x=0.40, y=0.95},
+										{x=0.50, y=1.07},
+										{x=0.60, y=1.18},
+										{x=0.80, y=1.40},
+										{x=0.90, y=1.50}}
+
+				local iMax = table.getn( kf )
+
 				vehicleControlAddon.snapCurve:addKeyframe({-math.pi*0.5,time=-1 }) 
-				vehicleControlAddon.snapCurve:addKeyframe({ -1.37 ,time=-0.8  }) 
-				vehicleControlAddon.snapCurve:addKeyframe({ -1.16 ,time=-0.6  })
-				vehicleControlAddon.snapCurve:addKeyframe({ -0.86 ,time=-0.4  })
-				vehicleControlAddon.snapCurve:addKeyframe({ -0.66 ,time=-0.3  })
-				vehicleControlAddon.snapCurve:addKeyframe({ -0.53 ,time=-0.25 })
-				vehicleControlAddon.snapCurve:addKeyframe({ -0.35 ,time=-0.2  })
-				vehicleControlAddon.snapCurve:addKeyframe({ -0.20 ,time=-0.15 })
-				vehicleControlAddon.snapCurve:addKeyframe({ -0.10 ,time=-0.1  })
-				vehicleControlAddon.snapCurve:addKeyframe({ -0.07 ,time=-0.075})
-				vehicleControlAddon.snapCurve:addKeyframe({ -0.04 ,time=-0.05 })
-				vehicleControlAddon.snapCurve:addKeyframe({ -0.02 ,time=-0.025})
-				vehicleControlAddon.snapCurve:addKeyframe({ -0.005,time=-0.01 })
-				vehicleControlAddon.snapCurve:addKeyframe({  0    ,time= 0    })
-				vehicleControlAddon.snapCurve:addKeyframe({  0.005,time= 0.01 })
-				vehicleControlAddon.snapCurve:addKeyframe({  0.02 ,time= 0.025})
-				vehicleControlAddon.snapCurve:addKeyframe({  0.04 ,time= 0.05 })
-				vehicleControlAddon.snapCurve:addKeyframe({  0.07 ,time= 0.075})
-				vehicleControlAddon.snapCurve:addKeyframe({  0.10 ,time= 0.1  })
-				vehicleControlAddon.snapCurve:addKeyframe({  0.20 ,time= 0.15 })
-				vehicleControlAddon.snapCurve:addKeyframe({  0.35 ,time= 0.2  })
-				vehicleControlAddon.snapCurve:addKeyframe({  0.53 ,time= 0.25 })
-				vehicleControlAddon.snapCurve:addKeyframe({  0.66 ,time= 0.3  })
-				vehicleControlAddon.snapCurve:addKeyframe({  0.86 ,time= 0.4  })
-				vehicleControlAddon.snapCurve:addKeyframe({  1.16 ,time= 0.6  })
-				vehicleControlAddon.snapCurve:addKeyframe({  1.37 ,time= 0.8  })   
+				for i=iMax,1,-1 do 
+					vehicleControlAddon.snapCurve:addKeyframe({-kf[i].y, time=-kf[i].x})
+				end 
+				vehicleControlAddon.snapCurve:addKeyframe({0 ,time=0})
+				for i=1,iMax,1 do 
+					vehicleControlAddon.snapCurve:addKeyframe({kf[i].y, time=kf[i].x})
+				end 
 				vehicleControlAddon.snapCurve:addKeyframe({ math.pi*0.5,time=1 })   
 			end 
 			
@@ -3652,9 +3652,7 @@ function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, ax
 				local distZ = wz - self.spec_vca.lastSnapPosZ 			
 				local dist  = dist + distX * dz - distZ * dx + self.spec_vca.snapFactor * self.spec_vca.snapDistance
 				local d2    = vehicleControlAddon.mbClamp( dist / vehicleControlAddon.snapRadius, -1, 1 )
-			--local alpha = d2 * 0.5 * math.pi
 				local alpha = vehicleControlAddon.snapCurve:get( d2 )
-
 				diffR = diffR + alpha				
 			end 
 			local a = vehicleControlAddon.mbClamp( vehicleControlAddon.normalizeAngle( diffR ) * 6, -1, 1 )
@@ -3663,8 +3661,8 @@ function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, ax
 				a = -a 
 			end
 
-			d = 0.0005 * ( 2 + math.min( 18, self.lastSpeed * 3600 ) ) * dt
-		--d = 1
+			local d
+			d = 0.0002 * dt * ( 2 + math.min( 18, self.lastSpeed * 3600 ) )
 			
 			if axisSideLast == nil then 
 				axisSideLast = axisSide
