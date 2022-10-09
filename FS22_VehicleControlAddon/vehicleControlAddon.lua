@@ -1427,6 +1427,7 @@ function vehicleControlAddon:onLeaveVehicle()
 		self:vcaSetState( "snapIsOn", false )
 		self:vcaSetState( "inchingIsOn", false )
 		self:vcaSetState( "ksIsOn", false )
+		self:vcaSetState( "keepSpeed", 0 )
 		self:vcaSetState( "isEnteredMP", false )
 		self:vcaSetState( "isBlocked", false )
 		self:vcaSetState( "isForward", true )
@@ -1965,14 +1966,15 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 		end 
 		self:vcaSetState( "ksIsOn", isPressed )
 
-		self.spec_vca.keepRotPressed   = false 
-		self.spec_vca.inchingPressed   = false 
-		self.spec_vca.keepSpeedPressed = false 	
 	elseif not self.spec_vca.isEnteredMP then 
 		self.spec_vca.keepCamRot = false 
 		self:vcaSetState( "inchingIsOn", false )
 		self:vcaSetState( "ksIsOn", false )
 	end 
+
+	self.spec_vca.keepRotPressed   = false 
+	self.spec_vca.inchingPressed   = false 
+	self.spec_vca.keepSpeedPressed = false 	
 	
 	--*******************************************************************
 	if not ( self.spec_vca.isEntered ) then 
@@ -2453,6 +2455,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 		
 		local function updateWheelSpeed( wheel )
 			local s = getWheelShapeAxleSpeed(wheel.node, wheel.wheelShape) * wheel.radius 
+			wheel.vcaNoPower = false 
 			if wheel.vcaSpeed == nil then 
 				wheel.vcaSpeed = s 
 			else 
@@ -2527,7 +2530,10 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
     end
 		
 		local function disableDiff( index, isWheel )
-			if not isWheel then
+			if isWheel then
+				local wheel = self:getWheelFromWheelIndex( index )
+				wheel.vcaNoPower = true 
+			else 
 			--vcaDebugPrint( "Disabling diff(3) "..tostring(index) )
 				local diff = spec.differentials[index+1]
 				diff.vcaEnabled = 0
@@ -2913,10 +2919,16 @@ function vehicleControlAddon:onDraw()
 				setOverlayColor( vehicleControlAddon.ovDiffLockMid  , getRenderColor( m ) )
 				setOverlayColor( vehicleControlAddon.ovDiffLockBack , getRenderColor( b ) )
 				
-				local vehicleSpeed = self.lastSpeed * 1000 
+				local vehicleSpeed = math.max( self.lastSpeed * 1000, 0.277 )
 				local function setWheelColor( idx, ov )
 					local ws = nil 
-					if idx ~= nil and self.spec_wheels ~= nil and self.spec_wheels.wheels ~= nil and self.spec_wheels.wheels[idx] ~= nil then 
+					if      idx ~= nil
+							and self.spec_wheels ~= nil
+							and self.spec_wheels.wheels ~= nil
+							and self.spec_wheels.wheels[idx] ~= nil
+							and self.spec_wheels.wheels[idx].vcaSpeed   ~= nil 
+							and self.spec_wheels.wheels[idx].vcaNoPower ~= nil 
+							and self.spec_wheels.wheels[idx].vcaNoPower ~= true then 
 						ws = self.spec_wheels.wheels[idx].vcaSpeed
 						if self:vcaGetShuttleCtrl() then 
 							if self.spec_motorized.motor.currentDirection < 0 then 
@@ -3742,6 +3754,8 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 	self.spec_vca.ksBrakeTime = nil 
 	local lastIdleThrottleTime = self.spec_vca.idleThrottleTime
 	self.spec_vca.idleThrottleTime = nil 
+	local lastAccAntiSlip = self.spec_vca.maxAccAntiSlip
+	self.spec_vca.maxAccAntiSlip = nil 
 	
 	if self:vcaIsVehicleControlledByPlayer() then
 		if self.spec_vca.ksIsOn then 
@@ -3856,6 +3870,39 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 					noAutoBrake   = true 
 				end 
 			end 
+
+			local hasSlippingWheel = false 
+			do --if self.lastSpeed > 0.0005 then 
+				local f = 1
+				if     self.rotatedTime == nil
+						or self.minRotTime  == nil
+						or self.maxRotTime  == nil then 
+				elseif self.rotatedTime < 0 and self.minRotTime < 0 then 
+					f = f + 4 * self.rotatedTime / self.minRotTime
+				elseif self.rotatedTime > 0 and self.maxRotTime > 0 then 
+					f = f + 4 * self.rotatedTime / self.maxRotTime
+				end 
+				local vehicleSpeed = self.lastSpeed * 1000 + math.max( f * self.lastSpeed * 100, 1 )
+				for _,w in pairs( self.spec_wheels.wheels ) do 
+					if      w.vcaSpeed   ~= nil 
+							and w.vcaNoPower ~= nil 
+							and w.vcaNoPower ~= true then 
+						local ws = w.vcaSpeed
+						if self:vcaGetShuttleCtrl() then 
+							if self.spec_motorized.motor.currentDirection < 0 then 
+								ws = -ws 
+							end 
+						else 
+							if self.movingDirection < 0 then 
+								ws = -ws 
+							end 
+						end 
+						if ws > vehicleSpeed then 
+							hasSlippingWheel = true 
+						end 
+					end 
+				end 
+			end 
 			
 			if      self:getIsMotorStarted()
 					and ( ( m > 0 and acceleration > -0.01 ) or ( m < 0 and acceleration < 0.01 ) )
@@ -3918,6 +3965,10 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 					acc        = minAcc
 					change     = true 
 				end 
+
+				if change and self.spec_wheels ~= nil and self.spec_wheels.wheels ~= nil and hasSlippingWheel then 
+					acc = math.min( acc, minAcc )
+				end 
 				
 				local speed = math.abs( self.lastSpeedReal )
 				if 0.01 < speed and speed <= motor.lowBrakeForceSpeedLimit and acc <= 0.0015 then 
@@ -3939,6 +3990,26 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 				local speed = math.abs( self.lastSpeedReal )
 				if 0.01 < speed and speed <= motor.lowBrakeForceSpeedLimit and math.abs( acceleration ) <= 0.0015 then 
 					acceleration = - math.max( 0.0015, motor.lowBrakeForceScale )
+				end 
+			end 
+			
+			if      self:getIsMotorStarted()
+					and ( ( m > 0 and acceleration > -0.01 ) or ( m < 0 and acceleration < 0.01 ) )
+					and self.spec_vca.antiSlip
+					and noAutoBrake then
+				if lastAccAntiSlip == nil then 
+					lastAccAntiSlip = 1
+				end 
+				--local lastAccAntiSlip = self.spec_vca.maxAccAntiSlip
+				if hasSlippingWheel then 
+					self.spec_vca.maxAccAntiSlip = math.max( 0.1, lastAccAntiSlip - 0.001 * dt )
+				else 
+					self.spec_vca.maxAccAntiSlip = math.min( 1.0, lastAccAntiSlip + 0.001 * dt )
+				end 
+				if m > 0 then 
+					acceleration = math.min( acceleration, self.spec_vca.maxAccAntiSlip )
+				else 
+					acceleration = math.min( acceleration, -self.spec_vca.maxAccAntiSlip )
 				end 
 			end 
 		end
