@@ -2942,7 +2942,7 @@ function vehicleControlAddon:onDraw()
 					end 
 					local r,g,b = 0.35,0.35,0.35
 					if ws ~= nil then 
-						if     ws <= vehicleSpeed then 
+						if     ws <= 1.05 * vehicleSpeed then 
 							r = 1
 							g = 1
 							b = 1
@@ -2960,6 +2960,10 @@ function vehicleControlAddon:onDraw()
 							g = 1 
 							b = 1 - 10 * ( ws / vehicleSpeed - 1.05 )
 						end 
+					elseif not self.spec_vca.diffHas2 then 
+						r = 1
+						g = 1
+						b = 1
 					end 
 					setOverlayColor( ov, r,g,b, 1 )
 				end 
