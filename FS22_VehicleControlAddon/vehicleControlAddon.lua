@@ -233,6 +233,7 @@ function vehicleControlAddon.createStates()
 	vehicleControlAddon.createState( "brakeForce"   , "brakeForceFactor"             , nil  , VCAValueType.float )
 	vehicleControlAddon.createState( "autoShift"    , nil                            , false, VCAValueType.bool  ) --, vehicleControlAddon.vcaOnSetAutoShift )
 	vehicleControlAddon.createState( "handbrake"    , nil                            , false, VCAValueType.bool  )
+	vehicleControlAddon.createState( "speedLimiter" , nil                            , false, VCAValueType.bool  )
 	vehicleControlAddon.createState( "ksIsOn"       , nil                            , false, VCAValueType.bool  , nil, false ) --, vehicleControlAddon.vcaOnSetKSIsOn )
 	vehicleControlAddon.createState( "keepSpeed"    , nil                            , 0    , VCAValueType.float , nil, false )
 	vehicleControlAddon.createState( "ksToggle"     , nil                            , false, VCAValueType.bool  )
@@ -851,6 +852,7 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
 																"vcaActivateF",
 																"vcaActivateB",
 																"vcaHandbrake",
+																"vcaLimitSpeed",
 																"vcaAutoShift",
 															}) do
 																
@@ -1029,6 +1031,8 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 		else 
 			self:vcaSetState( "ksIsOn", false )
 		end 
+	elseif actionName == "vcaLimitSpeed" then 
+		self:vcaSetState( "speedLimiter", not self.spec_vca.speedLimiter)
 		
 	elseif actionName == "vcaUP"
 			or actionName == "vcaDOWN"
@@ -3075,6 +3079,10 @@ function vehicleControlAddon:onDraw()
 			if self.spec_vca.ksIsOn then 
 				if text ~= "" then text = text ..", " end 
 				text = text .. "keep speed"
+			elseif  self.spec_vca.speedLimiter 
+					and self.spec_drivable.cruiseControl.state == Drivable.CRUISECONTROL_STATE_OFF then 
+				if text ~= "" then text = text ..", " end 
+				text = text .. "speed limiter"
 			end 
 			if self.spec_vca.inchingIsOn then 
 				if text ~= "" then text = text ..", " end 
@@ -4050,13 +4058,22 @@ WheelsUtil.getSmoothedAcceleratorAndBrakePedals = Utils.overwrittenFunction( Whe
 
 --******************************************************************************************************************************************
 function vehicleControlAddon.vcaMotorGetSpeedLimit( motor, superFunc, ... )
-	local self = motor.vehicle 
-	if      self                    ~= nil 
-			and self.spec_vca           ~= nil 
-			and self.spec_vca.wheelSlip ~= nil then 
-		return self.spec_vca.wheelSlip * superFunc( motor, ... )
+	local self  = motor.vehicle 
+	local limit = superFunc( motor, ... )
+	
+	
+	if self ~= nil and self.spec_vca ~= nil then 
+		if      self.spec_vca.speedLimiter 
+				and self:vcaIsVehicleControlledByPlayer()
+				and self.spec_drivable.cruiseControl.state == Drivable.CRUISECONTROL_STATE_OFF
+				and not self.spec_vca.ksIsOn then 
+			limit = math.min( limit, self.spec_drivable.cruiseControl.speed )
+		end
+		if self.spec_vca.wheelSlip ~= nil then 
+			limit = self.spec_vca.wheelSlip * limit
+		end 
 	end 
-	return superFunc( motor, ... )
+	return limit
 end 
 VehicleMotor.getSpeedLimit = Utils.overwrittenFunction( VehicleMotor.getSpeedLimit, vehicleControlAddon.vcaMotorGetSpeedLimit )
 

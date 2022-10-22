@@ -78,12 +78,12 @@ Změny ve verzi 1.1.0.0:
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>modIcon.dds</iconFilename>
-	<version>9.1.1.7</version>
+	<version>9.1.1.8</version>
 	<l10n filenamePrefix="l10n/modDesc_l10n">
 		<text name="vcaVERSION">          
-									<en>Vehicle Control Addon b117</en>
-			<de>Erweiterung Zur Fahrzeugkontrolle b117</de>
-			           <tr>Araç Kontrol Eklentisi b117</tr>
+									<en>Vehicle Control Addon b118</en>
+			<de>Erweiterung Zur Fahrzeugkontrolle b118</de>
+			           <tr>Araç Kontrol Eklentisi b118</tr>
 		</text>
 	</l10n>
 	
@@ -115,6 +115,7 @@ Změny ve verzi 1.1.0.0:
     <action name="vcaKSAXIS"     category="VEHICLE" axisType="FULL"                                                                     displayCategory="VEHICLE_DRIVING"/>
 		<action name="vcaSWAPSPEED"  category="VEHICLE" axisType="HALF"/>
 		<action name="vcaHandbrake"  category="VEHICLE" axisType="HALF"/>
+		<action name="vcaLimitSpeed" category="VEHICLE" axisType="HALF"/>
 		<action name="vcaAutoShift"  category="VEHICLE" axisType="HALF"/>
 		<action name="vcaDiffLockF"  category="VEHICLE" axisType="HALF"/>
 		<action name="vcaDiffLockM"  category="VEHICLE" axisType="HALF"/>
@@ -215,6 +216,9 @@ Změny ve verzi 1.1.0.0:
 		</actionBinding>	
 		<actionBinding action="vcaHandbrake">
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_semicolon"/>
+		</actionBinding>	
+		<actionBinding action="vcaLimitSpeed">
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_semicolon"/>
 		</actionBinding>	
 		<actionBinding action="vcaAutoShift">
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_leftbracket"/>

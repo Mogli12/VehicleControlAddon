@@ -134,6 +134,7 @@
 		<text name="input_vcaHandRpm_1"   text="VCA: mehr Handgas"/>
 		<text name="input_vcaHandRpm_2"   text="VCA: weniger Handgas"/>
 		<text name="input_vcaHandbrake"   text="VCA: Handbremse an/aus"/>
+		<text name="input_vcaLimitSpeed"  text="VCA: Geschwindigkeitsbegrenzer an/aus"/>
 		<text name="input_vcaAutoShift"   text="VCA: Automatische Schaltung an/aus"/>
 		<text name="input_vcaDiffLockF"   text="VCA: Differentialsperre vorne an/aus"/>
 		<text name="input_vcaDiffLockM"   text="VCA: Allrad an/aus"/>
