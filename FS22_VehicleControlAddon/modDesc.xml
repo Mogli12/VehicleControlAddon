@@ -24,7 +24,8 @@ Changelog version 1.1.0.0:
 Changelog version 1.2.0.0:
 - vehicle is too slow driving reverse
 - improved idle throttle and manual clutch
-- wheel slip and cruise control]]></en>
+- wheel slip and cruise control
+- speed limiter]]></en>
 		<de><![CDATA[Die Erweiterung zur Fahrzeugkontrolle (VCA) kombiniert viele Funktionen in einer Modifikation. Die meisten Funktionen sind standardmäßig ausgeschaltet. VCA kann die Kamerarichtung automatische dem Lenkwinkel und der Fahrtrichtung anpassen. So schaut man immer in die Richtung in die man fährt. Mit den Standardtastenkombinationen RShift und den Pfeiltasten kann man kurz in die entsprechende Richtung blicken. Die adaptive Lenkung ist gedacht für Tastaturspieler. VCA kann die Lenkgeschwindigkeit der Geschwindigkeit des Fahrzeugs anpassen.
 Die Erweiterung zur Fahrzeugkontrolle beinhaltet auch eine einfache Spurführung. Drückt man Strg Links zusammen mit W, dann richtet sich die Fahrtrichtung an festen Richtungen aus.
 Alle Funktionen lassen sich auch wieder ausschalten, und zwar mit folgenden Tasten:
@@ -42,7 +43,8 @@ Changelog version 1.1.0.0:
 Changelog version 1.2.0.0:
 - Fahrzeug fährt nur langsam zurück
 - Besserer Start mit manueller Kupplung
-- Reifenschlupf und Tempomat]]></de>
+- Reifenschlupf und Tempomat
+- Geschwindigkeitsbegrenzer]]></de>
 		<fr><![CDATA[Le Vehicle Control Addon (VCA) est un ensemble d'améliorations destiné à améliorer votre expérience de conduite des véhicules. Par défaut, la plupart des fonctions sont désactivées. Le VCA peut ajuster automatiquement l'orientation la caméra intérieure et extérieure en fonction de l'angle du volant afin de toujours voir où vous vous dirigez. Vous pouvez également paramétrer des raccourcis pour des coups d'oeil rapides (par défaut Shift droit + flèches de direction). Vous pouvez aussi bloquer l'accélérateur, le limiteur de vitesse et le régime moteur à 75% avec la touche Shift droit.
 Le Vehicle Control Addon intègre également un GPS très facilement utilisable. Il vous suffit de l'activer en appuyant sur Ctrl (gauche) + Z pour bloquer la direction du véhicule dans son couloir de travail.
 Les fonction du GPS sont accessibles via les raccourcis par défaut suivants :
@@ -78,12 +80,12 @@ Změny ve verzi 1.1.0.0:
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>modIcon.dds</iconFilename>
-	<version>9.1.1.8</version>
+	<version>9.1.1.9</version>
 	<l10n filenamePrefix="l10n/modDesc_l10n">
 		<text name="vcaVERSION">          
-									<en>Vehicle Control Addon b118</en>
-			<de>Erweiterung Zur Fahrzeugkontrolle b118</de>
-			           <tr>Araç Kontrol Eklentisi b118</tr>
+									<en>Vehicle Control Addon b119</en>
+			<de>Erweiterung Zur Fahrzeugkontrolle b119</de>
+			           <tr>Araç Kontrol Eklentisi b119</tr>
 		</text>
 	</l10n>
 	

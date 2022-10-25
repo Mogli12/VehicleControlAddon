@@ -608,6 +608,16 @@ function vehicleControlAddon:onPostLoad(savegame)
 		for k,differential in pairs(spec.differentials) do
 			local c1, c2, all = checkWheelsOfDiff( rootNode1, rootNode2, k-1, false )
 			if all and ( c1 or c2 ) then  
+
+				local lx1, lx2 = nil, nil 
+				if differential.diffIndex1IsWheel and differential.diffIndex2IsWheel then 
+					local wx, wy, wz
+					wx, wy, wz = getWorldTranslation( self:getWheelFromWheelIndex( differential.diffIndex1 ).node )
+					lx1,_,_ = worldToLocal(self:vcaGetSteeringNode(), wx, wy, wz)
+					wx, wy, wz = getWorldTranslation( self:getWheelFromWheelIndex( differential.diffIndex2 ).node )
+					lx2,_,_ = worldToLocal(self:vcaGetSteeringNode(), wx, wy, wz)
+				end 
+
 				if c1 and c2 then 
 					vcaDebugPrint("Diff. "..tostring(k-1).." is in the middle")
 					differential.vcaMode = 'M' 
@@ -615,10 +625,34 @@ function vehicleControlAddon:onPostLoad(savegame)
 				elseif c1 then 
 					vcaDebugPrint("Diff. "..tostring(k-1).." is at the front")
 					differential.vcaMode = 'F' 
+
+					if self.spec_vca.diffHasF or lx1 == nil or lx2 == nil then 
+						self.spec_vca.wheelIndexFL = -1
+						self.spec_vca.wheelIndexFR = -1
+					elseif lx1 > lx2 then 
+						self.spec_vca.wheelIndexFL = differential.diffIndex1
+						self.spec_vca.wheelIndexFR = differential.diffIndex2
+					else
+						self.spec_vca.wheelIndexFL = differential.diffIndex2
+						self.spec_vca.wheelIndexFR = differential.diffIndex1 
+					end 
+
 					self.spec_vca.diffHasF     = true 
 				else --if c2 then; is always true 
 					vcaDebugPrint("Diff. "..tostring(k-1).." is at the back")
 					differential.vcaMode = 'B' 
+
+					if self.spec_vca.diffHasB or lx1 == nil or lx2 == nil then 
+						self.spec_vca.wheelIndexRL = -1
+						self.spec_vca.wheelIndexRR = -1
+					elseif lx1 > lx2 then 
+						self.spec_vca.wheelIndexRL = differential.diffIndex1
+						self.spec_vca.wheelIndexRR = differential.diffIndex2
+					else
+						self.spec_vca.wheelIndexRL = differential.diffIndex2
+						self.spec_vca.wheelIndexRR = differential.diffIndex1 
+					end 
+
 					self.spec_vca.diffHasB     = true 
 				end 
 			else 
@@ -684,9 +718,8 @@ function vehicleControlAddon:onPostLoad(savegame)
 			
 			if    rMax1 < 0.1 then 
 				differential.vcaMode = 'B' -- back axle, no steering
-				self.spec_vca.diffHasB = true 
 
-				if lx1 == nil or lx2 == nil then 
+				if self.spec_vca.diffHasB or lx1 == nil or lx2 == nil then 
 					self.spec_vca.wheelIndexRL = -1
 					self.spec_vca.wheelIndexRR = -1
 				elseif lx1 > lx2 then 
@@ -697,11 +730,12 @@ function vehicleControlAddon:onPostLoad(savegame)
 					self.spec_vca.wheelIndexRR = differential.diffIndex1 
 				end 
 
+				self.spec_vca.diffHasB = true 
+
 			elseif rMin1 > 0.1 then 
 				differential.vcaMode = 'F' -- front axle, with steering
-				self.spec_vca.diffHasF = true 
 
-				if lx1 == nil or lx2 == nil then 
+				if self.spec_vca.diffHasF or lx1 == nil or lx2 == nil then 
 					self.spec_vca.wheelIndexFL = -1
 					self.spec_vca.wheelIndexFR = -1
 				elseif lx1 > lx2 then 
@@ -711,6 +745,8 @@ function vehicleControlAddon:onPostLoad(savegame)
 					self.spec_vca.wheelIndexFL = differential.diffIndex2
 					self.spec_vca.wheelIndexFR = differential.diffIndex1 
 				end 
+
+				self.spec_vca.diffHasF = true 
 
 			elseif not differential.diffIndex1IsWheel and not differential.diffIndex2IsWheel then 
 				differential.vcaMode = 'M' -- mid differential, between front and back
@@ -1974,6 +2010,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 		self.spec_vca.keepCamRot = false 
 		self:vcaSetState( "inchingIsOn", false )
 		self:vcaSetState( "ksIsOn", false )
+		self:vcaSetState( "keepSpeed", 0 )
 	end 
 
 	self.spec_vca.keepRotPressed   = false 
@@ -2965,9 +3002,9 @@ function vehicleControlAddon:onDraw()
 							b = 1 - 10 * ( ws / vehicleSpeed - 1.05 )
 						end 
 					elseif not self.spec_vca.diffHas2 then 
-						r = 1
-						g = 1
-						b = 1
+						r = 0.7
+						g = 0.7
+						b = 0.7
 					end 
 					setOverlayColor( ov, r,g,b, 1 )
 				end 
