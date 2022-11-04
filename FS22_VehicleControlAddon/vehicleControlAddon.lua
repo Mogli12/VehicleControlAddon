@@ -245,6 +245,7 @@ function vehicleControlAddon.createStates()
 	vehicleControlAddon.createState( "isEnteredMP"  , nil                            , false, VCAValueType.bool  , nil, false )
 	vehicleControlAddon.createState( "isBlocked"    , nil                            , false, VCAValueType.bool  , nil, false )
 	vehicleControlAddon.createState( "snapDraw"     , nil                            , 1    , VCAValueType.int16 )
+	vehicleControlAddon.createState( "workAreaDraw" , nil                            , 0    , VCAValueType.int16 )
 	vehicleControlAddon.createState( "snapFactor"   , nil                            , 0    , VCAValueType.float , nil, false )
 	vehicleControlAddon.createState( "hiredWorker2" , "hiredWorker2"                 , nil  , VCAValueType.bool  )
 	vehicleControlAddon.createState( "rotSpeedOut"  , "rotSpeedOut"                  , nil  , VCAValueType.float )
@@ -890,6 +891,7 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
 																"vcaHandbrake",
 																"vcaLimitSpeed",
 																"vcaAutoShift",
+--															"vcaWORKAREA",
 															}) do
 																
 			local addThis = InputAction[actionName] ~= nil   
@@ -1325,6 +1327,12 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 				self:vcaSetState( "warningText", string.format("%s: %4.0f %s", vehicleControlAddon.getText( "vcaHANDTHROTTLE", "" ), r, vehicleControlAddon.getText( "vcaValueRPM", "RPM"  ) ) )
 			end 
 		end 
+	elseif actionName == "vcaWORKAREA" then 
+		if self.spec_vca.workAreaDraw >= 2 then 
+			self:vcaSetState( "workAreaDraw", 0 )
+		else 
+			self:vcaSetState( "workAreaDraw", self.spec_vca.workAreaDraw + 1 )
+		end
   elseif actionName == "vcaLowerF" then 
 		self:vcaSetToolStateRec( true, false, true, false )
   elseif actionName == "vcaLowerB" then 
@@ -2029,20 +2037,10 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 	
 	local newRotCursorKey = self.spec_vca.newRotCursorKey
 	local i               = self.spec_enterable.camIndex
-	local requestedBack   = nil
 	local lastWorldRotation = self.spec_vca.camRotWorld
 			
 	self.spec_vca.newRotCursorKey = nil
 	self.spec_vca.camRotWorld     = nil
-
-	if newRotCursorKey ~= nil then
-		self.spec_enterable.cameras[i].rotY = vehicleControlAddon.normalizeAngleCam( self.spec_enterable.cameras[i].origRotY + newRotCursorKey )
-		if     math.abs( newRotCursorKey ) < 1e-4 then 
-			requestedBack = false 
-		elseif math.abs( newRotCursorKey - math.pi ) < 1e-4 then 
-			requestedBack = true 
-		end
-	end
 	
 	if self.spec_vca.inchingIsOn and self.spec_vca.isEntered and self.spec_drivable.cruiseControl.state == Drivable.CRUISECONTROL_STATE_ACTIVE then
 		local limitThrottleRatio     = 0.75
@@ -2344,7 +2342,8 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 		elseif rotIsOn > 0
 				or revIsOn
 				or self.spec_vca.keepCamRot
-				or lastWorldRotation ~= nil then 
+				or lastWorldRotation ~= nil
+				or newRotCursorKey   ~= nil then 
 
 			local pi2 = math.pi / 2
 			local eps = 1e-6
@@ -2440,10 +2439,21 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 				self.spec_vca.lastFactor = 0
 			end
 			
-			if self.spec_cabView ~= nil and camera.isInside then  
+			local spec_cabView = nil 
+			if self["spec_FS22_CabView.cabView"] ~= nil then 
+				spec_cabView = self["spec_FS22_CabView.cabView"]
+			elseif self.spec_cabView ~= nil then 
+				spec_cabView = self.spec_cabView 
+			end 
+			
+			if not ( type( spec_cabView ) == "table" and camera.isInside ) then  
+				camera.rotY = vehicleControlAddon.normalizeAngleCam( newRotY )	
+			elseif spec_cabView.rotationOffset == nil then 
 				camera.rotY = math.max( 0, math.min( newRotY, math.pi+math.pi ))
 			else 
-				camera.rotY = vehicleControlAddon.normalizeAngleCam( newRotY )	
+				local minRot = -0.1 * math.pi+spec_cabView.rotationOffset
+				local maxRot =  2.1 * math.pi+spec_cabView.rotationOffset
+				camera.rotY = math.max( minRot, math.min( newRotY, maxRot ))
 			end 
 		end
 		
