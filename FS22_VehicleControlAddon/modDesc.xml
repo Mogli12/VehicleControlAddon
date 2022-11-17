@@ -82,12 +82,12 @@ Změny ve verzi 1.1.0.0:
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>modIcon.dds</iconFilename>
-	<version>9.1.2.0</version>
+	<version>9.1.2.1</version>
 	<l10n filenamePrefix="l10n/modDesc_l10n">
 		<text name="vcaVERSION">          
-									<en>Vehicle Control Addon b120</en>
-			<de>Erweiterung Zur Fahrzeugkontrolle b120</de>
-			           <tr>Araç Kontrol Eklentisi b120</tr>
+									<en>Vehicle Control Addon b121</en>
+			<de>Erweiterung Zur Fahrzeugkontrolle b121</de>
+			           <tr>Araç Kontrol Eklentisi b121</tr>
 		</text>
 	</l10n>
 	

@@ -891,7 +891,7 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
 																"vcaHandbrake",
 																"vcaLimitSpeed",
 																"vcaAutoShift",
---															"vcaWORKAREA",
+																"vcaWORKAREA",
 															}) do
 																
 			local addThis = InputAction[actionName] ~= nil   
@@ -3315,6 +3315,58 @@ function vehicleControlAddon:onDraw()
 			if self.spec_vca.snapPosTimer < 0 then 
 				self.spec_vca.snapPosTimer = nil 
 			end 
+		end 
+		
+		if      self.spec_vca.workAreaDraw > 0
+				and not self.spec_vca.snapIsOn
+				and not snapDraw then 
+			local wx,wy,wz = getWorldTranslation( self:vcaGetSteeringNode() )
+			
+			local dx    = lx
+			local dz    = lz			
+			local angle = math.atan2( lx, lz )
+
+			local r, g, b, a = unpack(vehicleControlAddon.colorActive)
+			setTextColor(r,g,b, a) 
+			setTextAlignment( RenderText.ALIGN_CENTER ) 
+			setTextVerticalAlignment( RenderText.VERTICAL_ALIGN_BASELINE )
+				
+			local text = {'|','------------------'}
+
+			for x=-1,1 do 
+				for zi=0,1,0.2 do
+					local z = 0 
+					if self.spec_reverseDriving  ~= nil and self.spec_reverseDriving.isReverseDriving then			
+						z = z - 20 * zi 
+					else 
+						z = z + 20 * zi 
+
+					end 
+					local fx = 0
+					if x ~= 0 then 
+						fx = x * 0.5 * self.spec_vca.snapDistance + curSnapOffset1
+					end
+					local px = wx - fx * dz + z * dx 
+					local pz = wz + fx * dx + z * dz 
+					local py = getTerrainHeightAtWorldPos( g_currentMission.terrainRootNode, px, 0, pz ) 
+					
+					local a = 0
+					for _,t in pairs(text) do
+						renderText3D( px,py,pz, 0,angle-a,0, 0.52, t )
+						if self.spec_vca.workAreaDraw > 1 then 
+							renderText3D( px,py+0.5,pz, 0,angle-a,0, 0.52, t )
+							renderText3D( px,py+1.0,pz, 0,angle-a,0, 0.52, t )
+							renderText3D( px,py+1.5,pz, 0,angle-a,0, 0.52, t )
+						end 
+						if self.spec_reverseDriving  ~= nil and self.spec_reverseDriving.isReverseDriving then			
+							a = -0.5*math.pi 
+						else 
+							a =  0.5*math.pi 
+						end 
+					end 
+				end  
+			end 
+			dx, dz = -dz, dx
 		end 
 
 		setTextAlignment( RenderText.ALIGN_LEFT ) 
