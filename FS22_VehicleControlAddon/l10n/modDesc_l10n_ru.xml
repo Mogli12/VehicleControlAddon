@@ -102,6 +102,7 @@
 		<text name="input_vcaSNAPCONT"      text="Реактивировать маркер удержания направления"/>
 		<text name="input_vcaSNAPRESET"     text="Сбросить маркеры удержания направления"/>
 		<text name="input_vcaSNAPDIST"      text="Определить рабочую ширину"/>
+		<text name="input_vcaWORKAREA"      text="Маркер рабочей зоны"/>
 		<text name="input_vcaSnapUP"        text="Повернуть маркеры удержания направления левее"/>
 		<text name="input_vcaSnapDOWN"      text="Повернуть маркеры удержания направления правее"/>
 		<text name="input_vcaSnapLEFT"      text="Сместить маркеры удержания направления левее"/>
@@ -120,6 +121,7 @@
 		<text name="input_vcaHandRpm_1"     text="Увеличить ручной дроссель"/>
 		<text name="input_vcaHandRpm_2"     text="Уменьшить ручной дроссель"/>
 		<text name="input_vcaHandbrake"     text="Ручник вкл/выкл"/>
+		<text name="input_vcaLimitSpeed"    text="Ограничитель скорости ВКЛ/ВЫКЛ"/>			
 		<text name="input_vcaAutoShift"     text="Автоматическое переключение передач Вкл/Выкл"/>
 		<text name="input_vcaDiffLockF"     text="Передний дифференциал блок/разблок"/>
 		<text name="input_vcaDiffLockM"     text="Полный привод"/>
