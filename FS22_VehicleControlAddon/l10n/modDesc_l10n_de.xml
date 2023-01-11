@@ -116,6 +116,7 @@
 		<text name="input_vcaSNAPPREV"    text="VCA: Vorherige Rasterbahn"/>
 		<text name="input_vcaSNAPNEXT"    text="VCA: Nächste Rasterbahn"/>
 		<text name="input_vcaSNAPDIST"    text="VCA: Arbeitsbreite für Fahrtrichtung ermitteln"/>
+		<text name="input_vcaSNAPPATH"    text="VCA: Pfadaufzeichnung starten/stoppen"/>
 		<text name="input_vcaWORKAREA"    text="VCA: Markierungen für Arbeitsbreite"/>
 		<text name="input_vcaSnapUP"      text="VCA: Raster nach links drehen"/>
 		<text name="input_vcaSnapDOWN"    text="VCA: Raster nach rechts drehen"/>

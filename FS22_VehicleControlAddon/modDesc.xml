@@ -82,12 +82,12 @@ Změny ve verzi 1.1.0.0:
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>modIcon.dds</iconFilename>
-	<version>9.1.2.1</version>
+	<version>9.1.2.2</version>
 	<l10n filenamePrefix="l10n/modDesc_l10n">
 		<text name="vcaVERSION">          
-									<en>Vehicle Control Addon b121</en>
-			<de>Erweiterung Zur Fahrzeugkontrolle b121</de>
-			           <tr>Araç Kontrol Eklentisi b121</tr>
+									<en>Vehicle Control Addon b122</en>
+			<de>Erweiterung Zur Fahrzeugkontrolle b122</de>
+			           <tr>Araç Kontrol Eklentisi b122</tr>
 		</text>
 	</l10n>
 	
@@ -110,6 +110,7 @@ Změny ve verzi 1.1.0.0:
 		<action name="vcaSNAPNEXT"   category="VEHICLE" axisType="HALF"/>
 		<action name="vcaSNAPRESET"  category="VEHICLE" axisType="HALF"/>
 		<action name="vcaSNAPDIST"   category="VEHICLE" axisType="HALF"/>
+		<!--action name="vcaSNAPPATH"   category="VEHICLE" axisType="HALF"/-->
 		<action name="vcaWORKAREA"   category="VEHICLE" axisType="HALF"/>
 		<action name="vcaNO_ARB"     category="VEHICLE" axisType="HALF"/>
 		<action name="vcaINCHING"    category="VEHICLE" axisType="HALF"/>
@@ -186,6 +187,9 @@ Změny ve verzi 1.1.0.0:
 		<actionBinding action="vcaSNAPDIST">	
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_lalt KEY_w"/>
 		</actionBinding>	
+		<!--actionBinding action="vcaSNAPPATH">	
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_lalt KEY_e"/>
+		</actionBinding-->	
 		<actionBinding action="vcaWORKAREA">	
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_lalt KEY_s"/>
 		</actionBinding>	

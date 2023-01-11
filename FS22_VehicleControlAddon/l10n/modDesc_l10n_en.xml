@@ -104,6 +104,7 @@
 		<text name="input_vcaSNAPCONT"    text="VCA: reactivate guidance lane"/>
 		<text name="input_vcaSNAPRESET"   text="VCA: reset lane guidance direction"/>
 		<text name="input_vcaSNAPDIST"    text="VCA: determine working width of lane guidance"/>
+		<text name="input_vcaSNAPPATH"    text="VCA: start/stop path recording"/>
 		<text name="input_vcaWORKAREA"    text="VCA: work area marker"/>
 		<text name="input_vcaSnapUP"      text="VCA: rotate lane guidance direction left"/>
 		<text name="input_vcaSnapDOWN"    text="VCA: rotate lane guidance direction right"/>
