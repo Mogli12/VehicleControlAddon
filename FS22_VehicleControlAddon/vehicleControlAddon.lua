@@ -2163,6 +2163,9 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 		end 
 	end 	
 	
+	local keepSpeedTMS = self.spec_vca.keepSpeedTMS
+	self.spec_vca.keepSpeedTMS = nil 
+	
 	if doKeepSpeed or doTMS then	
 		local m
 		if self:vcaGetShuttleCtrl() then
@@ -2241,22 +2244,37 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 				t = t * limitThrottleRatio
 			end
 			
-			if self.spec_vca.keepSpeedTemp == nil then 
-				self.spec_vca.keepSpeedTemp = self.lastSpeedReal * 3600 * moveDir
+			if keepSpeedTMS == nil then 
+				keepSpeedTMS = self.lastSpeedReal * 3600 * moveDir
 			end 
 			
 			if     ( moveDir > 0 and m < 0 )
 					or ( moveDir < 0 and m > 0 ) then 
-				self.spec_vca.keepSpeedTemp = nil 
-				t = 1 
+				self.spec_vca.keepSpeedTMS = nil 
+				t = 0 
 			else 
-				local k  = math.min( sl, math.abs( self.spec_vca.keepSpeedTemp ) )
-				local s  = math.min( sl, self.lastSpeedReal * 3600 )
-				local kp = math.max( s, k + dt * 0.01 )
-				local km = math.min( s, k - dt * 0.0025 )
+				local s  = self.lastSpeedReal * 3600
+				local k = 0
+				if m < 0 then 
+					k  = math.max( 0, -keepSpeedTMS )
+				else
+					k  = math.max( 0, keepSpeedTMS )
+				end
+				local kp = math.max( s, k + dt * 0.010 )
+				local km = math.min( s, k - dt * 0.002 )
+				if km > sl then 
+					km = math.min( s, k - dt * 0.010 )
+					kp = math.max( sl, km )
+				elseif self.spec_motorized.motor.smoothedLoadPercentage > 0.8 then 
+					local f = 5 * self.spec_motorized.motor.smoothedLoadPercentage - 4 
+					kp = math.min( s + dt * 0.020 * ( 1 - f ), kp )
+				else 
+					kp = math.min( s + 2, kp )
+				end 
+				
 				t = vehicleControlAddon.mbClamp( t, km, kp )
+				self.spec_vca.keepSpeedTMS = m * t 
 			end 
-			self.spec_vca.keepSpeedTemp = m * t 
 			
 			if t < 0.5 then 
 				setKsIsActive = false 
@@ -3283,7 +3301,7 @@ function vehicleControlAddon:onDraw()
 			end 
 			
 			local i = 0
-			if self.spec_vca.ksIsOn and self.spec_drivable.cruiseControl.state == 0 then 
+			if ( self.spec_vca.ksIsOn or self.spec_vca.ksIsActive ) and self.spec_drivable.cruiseControl.state == 0 then 
 				i = i + 1 
 			end 
 			if self.spec_vca.snapPossible then 
@@ -3305,8 +3323,8 @@ function vehicleControlAddon:onDraw()
 			end
 			y = y + l * 0.9	
 			
-			if self.spec_vca.ksIsOn and self.spec_drivable.cruiseControl.state == 0 then 
-				renderText(x, y, l, self:vcaSpeedToString( Utils.getNoNil( self.spec_vca.keepSpeedTemp, self.spec_vca.keepSpeed ) / 3.6, "%5.1f" ))
+			if ( self.spec_vca.ksIsOn or self.spec_vca.ksIsActive ) and self.spec_drivable.cruiseControl.state == 0 then 
+				renderText(x, y, l, self:vcaSpeedToString( Utils.getNoNil( self.spec_vca.keepSpeedTMS, Utils.getNoNil( self.spec_vca.keepSpeedTemp, self.spec_vca.keepSpeed ) ) / 3.6, "%5.1f" ))
 				y = y + l * 1.2	
 			end
 		
@@ -4439,7 +4457,7 @@ function vehicleControlAddon.vcaMotorGetSpeedLimit( motor, superFunc, ... )
 		if      self.spec_vca.speedLimiter 
 				and self:vcaIsVehicleControlledByPlayer()
 				and self.spec_drivable.cruiseControl.state == Drivable.CRUISECONTROL_STATE_OFF
-				and not self.spec_vca.ksIsOn then 
+				and not self.spec_vca.ksIsActive then 
 			limit = math.min( limit, self.spec_drivable.cruiseControl.speed )
 		end
 		if self.spec_vca.wheelSlip ~= nil then 
