@@ -112,6 +112,8 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="input_vcaSNAPCONT"    text="Ponowne utrzymanie ścieżki jazdy"/>
 		<text name="input_vcaSNAPRESET"   text="Reset wyrównania kierunku jazdy"/>
 		<text name="input_vcaSNAPDIST"    text="Ustalenie szerokości roboczej wyrównania kierunku jazdy"/>
+        <text name="input_vcaSNAPPATH"    text="Rozpocznij/Zakończ nagrywanie ścieżki"/>
+        <text name="input_vcaWORKAREA"    text="Znaczniki obszaru roboczego"/>
 		<text name="input_vcaSnapUP"      text="Przesuń w przód"/>
 		<text name="input_vcaSnapDOWN"    text="Przesuń w tył"/>
 		<text name="input_vcaSnapLEFT"    text="Przesuń w lewo"/>
@@ -130,6 +132,7 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="input_vcaHandRpm_1"   text="Dodaj gazu ręcznie"/>
 		<text name="input_vcaHandRpm_2"   text="Odejmij gazu ręcznie"/>
 		<text name="input_vcaHandbrake"   text="Hamulec ręczny"/>
+		<text name="input_vcaLimitSpeed"  text="Włącz/Wyłącz tempomat"/>
 		<text name="input_vcaAutoShift"   text="Wł./Wył. automatyczną zmianę biegów"/>
 		<text name="input_vcaDiffLockF"   text="Ster. blokadą przedniego dyf."/>
 		<text name="input_vcaDiffLockM"   text="Ster. napędem na wszystkie koła"/>
