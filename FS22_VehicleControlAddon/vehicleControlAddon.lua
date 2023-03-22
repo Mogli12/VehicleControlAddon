@@ -1911,7 +1911,7 @@ function vehicleControlAddon:onPreUpdate(dt, isActiveForInput, isActiveForInputI
 					f = rsi * dt * 0.002 * math.min( 1, 0.25 + math.abs( self.spec_vca.lastAxisSteer ) * 2 )	
 				elseif not noARB then 
 					if lastAxisSteerTime1 == nil then 
-						self.spec_vca.lastAxisSteerTime1 = g_currentMission.time 
+						self.spec_vca.lastAxisSteerTime1 = g_currentMission.time
 					else 
 						self.spec_vca.lastAxisSteerTime1 = lastAxisSteerTime1
 					end 
@@ -2260,12 +2260,12 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 				else
 					k  = math.max( 0, keepSpeedTMS )
 				end
-				local kp = math.max( s, k + dt * 0.010 )
+				local kp = math.max( s, k + dt * 0.020 )
 				local km = math.min( s, k - dt * 0.002 )
 				if km > sl then 
-					km = math.min( s, k - dt * 0.010 )
+					km = math.min( s, k - dt * 0.020 )
 					kp = math.max( sl, km )
-				elseif self.spec_motorized.motor.smoothedLoadPercentage > 0.8 then 
+				elseif self.spec_motorized.motor.smoothedLoadPercentage > 0.8 and s > 5 then 
 					local f = 5 * self.spec_motorized.motor.smoothedLoadPercentage - 4 
 					kp = math.min( s + dt * 0.020 * ( 1 - f ), kp )
 				else 
