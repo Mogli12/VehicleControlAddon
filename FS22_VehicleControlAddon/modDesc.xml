@@ -82,12 +82,12 @@ Změny ve verzi 1.1.0.0:
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>modIcon.dds</iconFilename>
-	<version>9.1.2.4</version>
+	<version>9.1.2.5</version>
 	<l10n filenamePrefix="l10n/modDesc_l10n">
 		<text name="vcaVERSION">          
-									<en>Vehicle Control Addon b124</en>
-			<de>Erweiterung Zur Fahrzeugkontrolle b124</de>
-			           <tr>Araç Kontrol Eklentisi b124</tr>
+									<en>Vehicle Control Addon b125</en>
+			<de>Erweiterung Zur Fahrzeugkontrolle b125</de>
+			           <tr>Araç Kontrol Eklentisi b125</tr>
 		</text>
 	</l10n>
 	
@@ -131,6 +131,7 @@ Změny ve verzi 1.1.0.0:
 		<action name="vcaLowerB"     category="VEHICLE" axisType="HALF"/>
 		<action name="vcaActivateF"  category="VEHICLE" axisType="HALF"/>
 		<action name="vcaActivateB"  category="VEHICLE" axisType="HALF"/>
+		<action name="vcaGearSplit"  category="VEHICLE" axisType="HALF"/>
 	</actions>
 	<inputBinding>
 		<actionBinding action="vcaSETTINGS">	
@@ -250,6 +251,9 @@ Změny ve verzi 1.1.0.0:
 		</actionBinding>	
 		<actionBinding action="vcaActivateB">
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_ralt KEY_b"/>
+		</actionBinding>	
+		<actionBinding action="vcaGearSplit">
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_KP_8"/>
 		</actionBinding>	
 	</inputBinding>
 	

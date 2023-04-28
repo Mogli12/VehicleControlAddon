@@ -292,6 +292,33 @@
 					<GuiElement type="text"   profile="multiTextOptionSettingsTooltip" vcaTextID="vca_tip_DRAWHUD" text="drawHud"/>
 				</GuiElement>
 
+				<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="splitGears" onCreate="onCreateSubElement">
+					<GuiElement type="button" profile="multiTextOptionSettingsLeft" />
+					<GuiElement type="button" profile="multiTextOptionSettingsRight" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsText" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsTitle" vcaTextID="vcaSPLITGEARS" text="splitGears"/>
+					<GuiElement type="bitmap" profile="multiTextOptionSettingsBg" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsTooltip" vcaTextID="vca_tip_SPLITGEARS" text="splitGears"/>
+				</GuiElement>
+
+				<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="gearShiftTime" onCreate="onCreateSubElement" onCreateArgs="list0">
+					<GuiElement type="button" profile="multiTextOptionSettingsLeft" />
+					<GuiElement type="button" profile="multiTextOptionSettingsRight" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsText" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsTitle" vcaTextID="vcaGEARTIME" text="gearShiftTime"/>
+					<GuiElement type="bitmap" profile="multiTextOptionSettingsBg" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsTooltip" vcaTextID="vca_tip_GEARTIME" text="gearShiftTime"/>
+				</GuiElement>
+				
+				<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="grpShiftTime" onCreate="onCreateSubElement" onCreateArgs="list0">
+					<GuiElement type="button" profile="multiTextOptionSettingsLeft" />
+					<GuiElement type="button" profile="multiTextOptionSettingsRight" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsText" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsTitle" vcaTextID="vcaGRPTIME" text="grpShiftTime"/>
+					<GuiElement type="bitmap" profile="multiTextOptionSettingsBg" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsTooltip" vcaTextID="vca_tip_GRPTIME" text="grpShiftTime"/>
+				</GuiElement>
+				
 
 			</GuiElement>
 
