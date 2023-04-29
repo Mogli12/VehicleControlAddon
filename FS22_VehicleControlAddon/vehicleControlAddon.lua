@@ -2189,9 +2189,10 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 
 	--*******************************************************************
 	-- Keep Speed 
-	local doKeepSpeed = false 
-	local doTMS       = false 
 	if self.spec_vca.isEntered then 
+		local doKeepSpeed = false 
+		local doTMS       = false 
+
 		if self.spec_vca.ksIsOn then 
 			doKeepSpeed = true 
 		elseif  self.spec_vca.speedLimiter
@@ -2202,212 +2203,212 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 				then 
 			doTMS = true 
 		end 
-	end 	
 	
-	local keepSpeedTMS = self.spec_vca.keepSpeedTMS
-	self.spec_vca.keepSpeedTMS = nil 
-	
-	if doKeepSpeed or doTMS then	
-		local m
-		if self:vcaGetShuttleCtrl() then
-			m = self.spec_motorized.motor.currentDirection
-		elseif self.lastSpeedReal * 3600 < 0.5 then 
-			m = 0
-		elseif moveDir < 0 then 
-			m = -1 
-		else
-			m = 1
-		end
+		local keepSpeedTMS = self.spec_vca.keepSpeedTMS
+		self.spec_vca.keepSpeedTMS = nil 
 		
-		local sl  = self:getSpeedLimit(true)
-		local slf = -math.min( sl, self.spec_drivable.cruiseControl.maxSpeedReverse )
-		local slt =  math.min( sl, self.spec_drivable.cruiseControl.maxSpeed )
-		if self:vcaGetShuttleCtrl() then 
-			if m < 0 then 
-				slt = 0 
-			else 
-				slf = 0 
-			end 
-		end 
-		
-		if self.spec_vca.maxGearSpeed ~= 0 and not self.spec_motorized.motor:getUseAutomaticGearShifting() and math.abs( self.spec_vca.keepSpeed ) > 0.5 then 
-			if m < 0 then 
-				slf = math.max( slf,-3.6 * self.spec_vca.maxGearSpeed )
-				slt = math.min( slt,-3.6 * self.spec_vca.minGearSpeed )
-			else 
-				slf = math.max( slf, 3.6 * self.spec_vca.minGearSpeed )
-				slt = math.min( slt, 3.6 * self.spec_vca.maxGearSpeed )
-			end 
-		end 
-		
-		if     self.spec_drivable.cruiseControl.state == Drivable.CRUISECONTROL_STATE_FULL then 
-			if m < 0 then 
-				self.spec_vca.keepSpeedTemp = slf
+		if doKeepSpeed or doTMS then	
+			local m
+			if self:vcaGetShuttleCtrl() then
+				m = self.spec_motorized.motor.currentDirection
+			elseif self.lastSpeedReal * 3600 < 0.5 then 
+				m = 0
+			elseif moveDir < 0 then 
+				m = -1 
 			else
-				self.spec_vca.keepSpeedTemp = slt
-			end 
-			self:setCruiseControlState( Drivable.CRUISECONTROL_STATE_OFF )		
-		elseif self.spec_drivable.cruiseControl.state ~= Drivable.CRUISECONTROL_STATE_OFF then 		
-			if m < 0 then 
-				self.spec_vca.keepSpeedTemp = vehicleControlAddon.mbClamp( -self.spec_drivable.cruiseControl.speed, slf, slt )
-			else 
-				self.spec_vca.keepSpeedTemp = vehicleControlAddon.mbClamp(  self.spec_drivable.cruiseControl.speed, slf, slt )
-			end 
-			self:setCruiseControlState( Drivable.CRUISECONTROL_STATE_OFF )		
-		end 
-
-		local k = self.spec_vca.keepSpeed
-		
-		if self:vcaGetShuttleCtrl() then 
-			if m < 0 then 
-				k = -math.abs( k )
-			else 
-				k = math.abs( k )
-			end 
-		end 
-		
-		local setKsIsActive = true 
-		
-		if     doTMS then 
-			local t = vehicleControlAddon.mbClamp( math.abs( self.spec_drivable.axisForward ), 0, 1 ) * math.min( sl, self.spec_drivable.cruiseControl.speed )
-			
-			local limitThrottleRatio     = 0.75
-			local limitThrottleIfPressed = true
-			if self.spec_vca.limitThrottle < 11 then
-				limitThrottleIfPressed = false
-				limitThrottleRatio     = 0.45 + 0.05 * self.spec_vca.limitThrottle
-			else
-				limitThrottleIfPressed = true
-				limitThrottleRatio     = 1.5 - 0.05 * self.spec_vca.limitThrottle
-			end
-				
-			if self.spec_vca.inchingIsOn == limitThrottleIfPressed then
-				t = t * limitThrottleRatio
+				m = 1
 			end
 			
-			if keepSpeedTMS == nil then 
-				keepSpeedTMS = self.lastSpeedReal * 3600 * moveDir
-			end 
-			
-			if     ( moveDir > 0 and m < 0 )
-					or ( moveDir < 0 and m > 0 ) then 
-				self.spec_vca.keepSpeedTMS = nil 
-				t = 0 
-			else 
-				local s  = self.lastSpeedReal * 3600
-				local k = 0
+			local sl  = self:getSpeedLimit(true)
+			local slf = -math.min( sl, self.spec_drivable.cruiseControl.maxSpeedReverse )
+			local slt =  math.min( sl, self.spec_drivable.cruiseControl.maxSpeed )
+			if self:vcaGetShuttleCtrl() then 
 				if m < 0 then 
-					k  = math.max( 0, -keepSpeedTMS )
-				else
-					k  = math.max( 0, keepSpeedTMS )
-				end
-				local kp = math.max( s, k + dt * 0.020 )
-				local km = math.min( s, k - dt * 0.002 )
-				if km > sl then 
-					km = math.min( s, k - dt * 0.020 )
-					kp = math.max( sl, km )
-				elseif self.spec_motorized.motor.smoothedLoadPercentage > 0.8 and s > 5 then 
-					local f = 5 * self.spec_motorized.motor.smoothedLoadPercentage - 4 
-					kp = math.min( s + dt * 0.020 * ( 1 - f ), kp )
+					slt = 0 
 				else 
-					kp = math.min( s + 2, kp )
+					slf = 0 
+				end 
+			end 
+			
+			if self.spec_vca.maxGearSpeed ~= 0 and not self.spec_motorized.motor:getUseAutomaticGearShifting() and math.abs( self.spec_vca.keepSpeed ) > 0.5 then 
+				if m < 0 then 
+					slf = math.max( slf,-3.6 * self.spec_vca.maxGearSpeed )
+					slt = math.min( slt,-3.6 * self.spec_vca.minGearSpeed )
+				else 
+					slf = math.max( slf, 3.6 * self.spec_vca.minGearSpeed )
+					slt = math.min( slt, 3.6 * self.spec_vca.maxGearSpeed )
+				end 
+			end 
+			
+			if     self.spec_drivable.cruiseControl.state == Drivable.CRUISECONTROL_STATE_FULL then 
+				if m < 0 then 
+					self.spec_vca.keepSpeedTemp = slf
+				else
+					self.spec_vca.keepSpeedTemp = slt
+				end 
+				self:setCruiseControlState( Drivable.CRUISECONTROL_STATE_OFF )		
+			elseif self.spec_drivable.cruiseControl.state ~= Drivable.CRUISECONTROL_STATE_OFF then 		
+				if m < 0 then 
+					self.spec_vca.keepSpeedTemp = vehicleControlAddon.mbClamp( -self.spec_drivable.cruiseControl.speed, slf, slt )
+				else 
+					self.spec_vca.keepSpeedTemp = vehicleControlAddon.mbClamp(  self.spec_drivable.cruiseControl.speed, slf, slt )
+				end 
+				self:setCruiseControlState( Drivable.CRUISECONTROL_STATE_OFF )		
+			end 
+
+			local k = self.spec_vca.keepSpeed
+			
+			if self:vcaGetShuttleCtrl() then 
+				if m < 0 then 
+					k = -math.abs( k )
+				else 
+					k = math.abs( k )
+				end 
+			end 
+			
+			local setKsIsActive = true 
+			
+			if     doTMS then 
+				local t = vehicleControlAddon.mbClamp( math.abs( self.spec_drivable.axisForward ), 0, 1 ) * math.min( sl, self.spec_drivable.cruiseControl.speed )
+				
+				local limitThrottleRatio     = 0.75
+				local limitThrottleIfPressed = true
+				if self.spec_vca.limitThrottle < 11 then
+					limitThrottleIfPressed = false
+					limitThrottleRatio     = 0.45 + 0.05 * self.spec_vca.limitThrottle
+				else
+					limitThrottleIfPressed = true
+					limitThrottleRatio     = 1.5 - 0.05 * self.spec_vca.limitThrottle
+				end
+					
+				if self.spec_vca.inchingIsOn == limitThrottleIfPressed then
+					t = t * limitThrottleRatio
+				end
+				
+				if keepSpeedTMS == nil then 
+					keepSpeedTMS = self.lastSpeedReal * 3600 * moveDir
 				end 
 				
-				t = vehicleControlAddon.mbClamp( t, km, kp )
-				self.spec_vca.keepSpeedTMS = m * t 
-			end 
-			
-			if t < 0.5 then 
-				setKsIsActive = false 
-			end 
-			self:vcaSetState( "keepSpeed", m * t )
-		elseif math.abs( self.spec_drivable.axisForward ) > 0.01 then 
-			self.spec_vca.keepSpeedTemp = nil 
-		
-			local s = self.lastSpeedReal * 3600 * moveDir					
-			local f = slf
-			local t = slt
-			local a = self.spec_drivable.axisForward
-			local l = self.spec_motorized.motor:getSmoothLoadPercentage()
-			
-			-- joystick
-			if     self:vcaGetShuttleCtrl() then 
-				if not self.spec_vca.isForward then 
-					a = -a 
-				end 
-			-- w/o shuttle control
-			elseif self.spec_drivable.reverserDirection ~= nil then 
-				a = a * self.spec_drivable.reverserDirection
-			end 
-			if     m > 0 then 
-				if a > 0.01 then 
-					f = math.max( f, 0.5, s )
-					a = a * vehicleControlAddon.mbClamp( 1 - l, 0.2, 1 )
-					t = math.min( t, math.max( k, s + 1 ) )
-				else
-					f = 0 
-					t = math.min( t, s )
-				end 
-				if t < f then 
-					t = f 
-				end 
-				self.spec_vca.lastKSStopTimer = g_currentMission.time + 2000 
-			elseif m < 0 then
-				if a < -0.01 then 
-					t = math.min( t, -0.5, s )
-					a = a * vehicleControlAddon.mbClamp( 1 - l, 0.2, 1 )
-					f = math.max( f, math.min( k, s - 1 ) )
-				else 
+				if     ( moveDir > 0 and m < 0 )
+						or ( moveDir < 0 and m > 0 ) then 
+					self.spec_vca.keepSpeedTMS = nil 
 					t = 0 
-					f = math.max( f, s )
-				end 
-				if f > t then 
-					f = t 
-				end 
-				self.spec_vca.lastKSStopTimer = g_currentMission.time + 2000 
-			elseif self.spec_vca.lastKSStopTimer == nil then 
-				self.spec_vca.lastKSStopTimer = g_currentMission.time 
-			elseif g_currentMission.time < self.spec_vca.lastKSStopTimer then 
-				-- wait two seconds 
-				f = 0
-				t = 0
-			end 
-			
-			if f < -sl then 
-				f = -sl 
-			end 
-			if t > sl then	
-				t = sl 
-			end 
-			
-			self:vcaSetState( "keepSpeed", vehicleControlAddon.mbClamp( k + a * 0.01 * dt, f, t )  )
-			self.spec_drivable.axisForward = 0
-			
-		else
-			if self.spec_vca.keepSpeedTemp ~= nil then 		
-				if not self:vcaGetShuttleCtrl() then 
-					self.spec_vca.keepSpeedTemp = vehicleControlAddon.mbClamp( self.spec_vca.keepSpeedTemp, slf, slt )
-				elseif m < 0 then 	
-					self.spec_vca.keepSpeedTemp = vehicleControlAddon.mbClamp( -math.abs( self.spec_vca.keepSpeedTemp ), slf, slt )
 				else 
-					self.spec_vca.keepSpeedTemp = vehicleControlAddon.mbClamp( math.abs( self.spec_vca.keepSpeedTemp ), slf, slt )
+					local s  = self.lastSpeedReal * 3600
+					local k = 0
+					if m < 0 then 
+						k  = math.max( 0, -keepSpeedTMS )
+					else
+						k  = math.max( 0, keepSpeedTMS )
+					end
+					local kp = math.max( s, k + dt * 0.020 )
+					local km = math.min( s, k - dt * 0.002 )
+					if km > sl then 
+						km = math.min( s, k - dt * 0.020 )
+						kp = math.max( sl, km )
+					elseif self.spec_motorized.motor.smoothedLoadPercentage > 0.8 and s > 5 then 
+						local f = 5 * self.spec_motorized.motor.smoothedLoadPercentage - 4 
+						kp = math.min( s + dt * 0.020 * ( 1 - f ), kp )
+					else 
+						kp = math.min( s + 2, kp )
+					end 
+					
+					t = vehicleControlAddon.mbClamp( t, km, kp )
+					self.spec_vca.keepSpeedTMS = m * t 
 				end 
-				if math.abs( k - self.spec_vca.keepSpeedTemp ) < 0.1 then 
-					k = self.spec_vca.keepSpeedTemp
-					self.spec_vca.keepSpeedTemp = nil 
-				else 
-					local l = self.spec_motorized.motor:getSmoothLoadPercentage()
-					local a = vehicleControlAddon.mbClamp( 1 - l, 0.2, 1 )
-					k = k + vehicleControlAddon.mbClamp( self.spec_vca.keepSpeedTemp - k, -a * 0.01 * dt, a * 0.01 * dt )
+				
+				if t < 0.5 then 
+					setKsIsActive = false 
 				end 
-			end 
+				self:vcaSetState( "keepSpeed", m * t )
+			elseif math.abs( self.spec_drivable.axisForward ) > 0.01 then 
+				self.spec_vca.keepSpeedTemp = nil 
 			
-			self:vcaSetState( "keepSpeed", vehicleControlAddon.mbClamp( k, slf, slt ) )
+				local s = self.lastSpeedReal * 3600 * moveDir					
+				local f = slf
+				local t = slt
+				local a = self.spec_drivable.axisForward
+				local l = self.spec_motorized.motor:getSmoothLoadPercentage()
+				
+				-- joystick
+				if     self:vcaGetShuttleCtrl() then 
+					if not self.spec_vca.isForward then 
+						a = -a 
+					end 
+				-- w/o shuttle control
+				elseif self.spec_drivable.reverserDirection ~= nil then 
+					a = a * self.spec_drivable.reverserDirection
+				end 
+				if     m > 0 then 
+					if a > 0.01 then 
+						f = math.max( f, 0.5, s )
+						a = a * vehicleControlAddon.mbClamp( 1 - l, 0.2, 1 )
+						t = math.min( t, math.max( k, s + 1 ) )
+					else
+						f = 0 
+						t = math.min( t, s )
+					end 
+					if t < f then 
+						t = f 
+					end 
+					self.spec_vca.lastKSStopTimer = g_currentMission.time + 2000 
+				elseif m < 0 then
+					if a < -0.01 then 
+						t = math.min( t, -0.5, s )
+						a = a * vehicleControlAddon.mbClamp( 1 - l, 0.2, 1 )
+						f = math.max( f, math.min( k, s - 1 ) )
+					else 
+						t = 0 
+						f = math.max( f, s )
+					end 
+					if f > t then 
+						f = t 
+					end 
+					self.spec_vca.lastKSStopTimer = g_currentMission.time + 2000 
+				elseif self.spec_vca.lastKSStopTimer == nil then 
+					self.spec_vca.lastKSStopTimer = g_currentMission.time 
+				elseif g_currentMission.time < self.spec_vca.lastKSStopTimer then 
+					-- wait two seconds 
+					f = 0
+					t = 0
+				end 
+				
+				if f < -sl then 
+					f = -sl 
+				end 
+				if t > sl then	
+					t = sl 
+				end 
+				
+				self:vcaSetState( "keepSpeed", vehicleControlAddon.mbClamp( k + a * 0.01 * dt, f, t )  )
+				self.spec_drivable.axisForward = 0
+				
+			else
+				if self.spec_vca.keepSpeedTemp ~= nil then 		
+					if not self:vcaGetShuttleCtrl() then 
+						self.spec_vca.keepSpeedTemp = vehicleControlAddon.mbClamp( self.spec_vca.keepSpeedTemp, slf, slt )
+					elseif m < 0 then 	
+						self.spec_vca.keepSpeedTemp = vehicleControlAddon.mbClamp( -math.abs( self.spec_vca.keepSpeedTemp ), slf, slt )
+					else 
+						self.spec_vca.keepSpeedTemp = vehicleControlAddon.mbClamp( math.abs( self.spec_vca.keepSpeedTemp ), slf, slt )
+					end 
+					if math.abs( k - self.spec_vca.keepSpeedTemp ) < 0.1 then 
+						k = self.spec_vca.keepSpeedTemp
+						self.spec_vca.keepSpeedTemp = nil 
+					else 
+						local l = self.spec_motorized.motor:getSmoothLoadPercentage()
+						local a = vehicleControlAddon.mbClamp( 1 - l, 0.2, 1 )
+						k = k + vehicleControlAddon.mbClamp( self.spec_vca.keepSpeedTemp - k, -a * 0.01 * dt, a * 0.01 * dt )
+					end 
+				end 
+				
+				self:vcaSetState( "keepSpeed", vehicleControlAddon.mbClamp( k, slf, slt ) )
+			end 
+			self:vcaSetState( "ksIsActive", setKsIsActive )
+		else 
+			self.spec_vca.keepSpeedTemp = nil 
+			self:vcaSetState( "ksIsActive", false )
 		end 
-		self:vcaSetState( "ksIsActive", setKsIsActive )
-	else 
-		self.spec_vca.keepSpeedTemp = nil 
-		self:vcaSetState( "ksIsActive", false )
 	end 
 	
 	--*******************************************************************
