@@ -47,6 +47,11 @@
 		<text name="vcaANALOG"            text="Adaptive steering and analog controller"/>
 		<text name="vcaROTATEHT"          text="Camera and head tracking"/>
 		<text name="vcaDEBUG"             text="Debug"/>
+		<text name="vcaSPLITGEARS"        text="Number of powershift gears"/>
+		<text name="vcaSPLITGEARRATIO"    text="Ratio of powershift"/>
+		<text name="vcaGEARTIME"          text="Time for gear change"/>
+		<text name="vcaGRPTIME"           text="Time for gear group change"/>
+		<text name="vcaINPUTBINDING"      text="Display of input bindings"/>
 		
 		<text name="vca_tip_CAMERAI"      text="The interior camera rotates automatically according to the steering angle"/>
 		<text name="vca_tip_CAMERAO"      text="The exterior camera rotates automatically according to the steering angle"/>
@@ -89,7 +94,12 @@
 		<text name="vca_tip_ANALOG"       text="Support of adaptive steering for analog controllers"/>
 		<text name="vca_tip_ROTATEHT"     text="Rotate camera even if head tracking is enabled"/>
 		<text name="vca_tip_DEBUG"        text="Additional messages are written into the log"/>
-		                               
+		<text name="vca_tip_SPLITGEARS"   text="Number of powershift gears"/>
+		<text name="vca_tip_SPLITGEARRATIO" text="Ratio of powershift"/>
+		<text name="vca_tip_GEARTIME"     text="Time for gear change"/>
+		<text name="vca_tip_GRPTIME"      text="Time for gear group change"/>
+		<text name="vca_tip_INPUTBINDING" text="Display of input bindings"/>
+
 		<text name="input_vcaSETTINGS"    text="VCA: settings"/>
 		<text name="input_vcaGLOBALS"     text="VCA: global settings"/>
 		<text name="input_vcaUP"          text="VCA: toggle view direction / lock forwards"/>
@@ -133,6 +143,8 @@
 		<text name="input_vcaLowerB"      text="VCA: lower/raise back tools "/>
 		<text name="input_vcaActivateF"   text="VCA: (de-)activate front tools "/>
 		<text name="input_vcaActivateB"   text="VCA: (de-)activate back tools "/>
+		<text name="input_vcaGearSplitUp" text="VCA: Gear splitter +"/>
+		<text name="input_vcaGearSplitDwn" text="VCA: Gear splitter -"/>
 		
 		<text name="vcaValueOn"         text="On"/>
 		<text name="vcaValueOff"        text="Off"/>
@@ -158,6 +170,7 @@
 		<text name="vcaTitleGPS"        text="Track Guiding"/>
 		<text name="vcaTitleThrottle"   text="Throttle, Brakes, Transmission"/>
 		<text name="vcaTitleDiff"       text="AWD und Differentials"/>
+		<text name="vcaTitleGears"      text="Transmission"/>
 		<text name="vcaTitleMisc"       text="Misc. Settings"/>
 		
 		

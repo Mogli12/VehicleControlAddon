@@ -50,6 +50,11 @@
 		<text name="vcaANALOG"            text="Analoge Controller und Lenkung"/>
 		<text name="vcaROTATEHT"          text="Kamera und Head Tracking"/>
 		<text name="vcaDEBUG"             text="Debug"/>
+		<text name="vcaSPLITGEARS"        text="Anzahl Lastschaltstufen"/>
+		<text name="vcaSPLITGEARRATIO"    text="Untersetzung der Lastschaltstufen"/>
+		<text name="vcaGEARTIME"          text="Zeit für Gangwechsel"/>
+		<text name="vcaGRPTIME"           text="Zeit für Gruppenwechsel"/>
+		<text name="vcaINPUTBINDING"      text="Anzeige der Tastenbelegung"/>
 		
 		<text name="vca_tip_CAMERAI"      text="Die innere Kamera dreht sich passend zum Lenkeinschlag automatisch mit."/>
 		<text name="vca_tip_CAMERAO"      text="Die äußere Kamera dreht sich passend zum Lenkeinschlag automatisch mit."/>
@@ -98,6 +103,11 @@
 		<text name="vca_tip_ANALOG"       text="Unterstützung der adaptiven Lenkung in Kombination mit analogen Controllern"/>
 		<text name="vca_tip_ROTATEHT"     text="Die Kamera dreht sich auch wenn Head Tracking eingeschaltet ist"/>
 		<text name="vca_tip_DEBUG"        text="Es werden zusätzliche Meldungen ins Log geschrieben"/>
+		<text name="vca_tip_SPLITGEARS"   text="Anzahl Lastschaltstufen"/>
+		<text name="vca_tip_SPLITGEARRATIO" text="Untersetzung der Lastschaltstufen"/>
+		<text name="vca_tip_GEARTIME"     text="Zeit für Gangwechsel"/>
+		<text name="vca_tip_GRPTIME"      text="Zeit für Gruppenwechsel"/>
+		<text name="vca_tip_INPUTBINDING" text="Anzeige der Tastenbelegung"/>
 		
 		<text name="input_vcaSETTINGS"    text="VCA: Einstellungen"/>
 		<text name="input_vcaGLOBALS"     text="VCA: Globale Einstellungen"/>
@@ -149,6 +159,8 @@
 		<text name="input_vcaMenuAction2" text="VCA: Menu Button L"/>
 		<text name="input_vcaMenuAction3" text="VCA: Menu Button D"/>
 		<text name="input_vcaMenuAction4" text="VCA: Menu Button X"/>
+		<text name="input_vcaGearSplitUp" text="VCA: Getriebeuntersetzung +"/>
+		<text name="input_vcaGearSplitDwn" text="VCA: Getriebeuntersetzung -"/>
 		
 		<text name="vcaValueOn"         text="An"/>
 		<text name="vcaValueOff"        text="Aus"/>
@@ -176,6 +188,7 @@
 		<text name="vcaTitleGPS"        text="Spurführung"/>
 		<text name="vcaTitleThrottle"   text="Gaspedal, Bremse, Getriebe"/>
 		<text name="vcaTitleDiff"       text="Allrad und Differentialsperren"/>
+		<text name="vcaTitleGears"      text="Getriebe"/>
 		<text name="vcaTitleMisc"       text="Verschiedene Einstellungen"/>
 
 		<text name="vcaHelpIntro_1"       text="Die Erweiterung zur Fahrzeugkontrolle kombiniert viele Funktionen in einer Modifikation. Die meisten Funktionen sind standardmäßig ausgeschaltet." />

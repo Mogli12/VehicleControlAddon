@@ -158,6 +158,7 @@ end
 
 
 vehicleControlAddon.snapAngles = { 1, 5, 15, 22.5, 45, 90 }
+vehicleControlAddon.splitGearRatios = { 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95 }
 vehicleControlAddon.factor30pi = 30/math.pi  -- RPM = rotSpeed * vehicleControlAddon.factor30pi
 vehicleControlAddon.factorpi30 = math.pi/30  -- rotSpeed = RPM * vehicleControlAddon.factorpi30
 vehicleControlAddon.speedRatioOpen       = 1000
@@ -275,8 +276,9 @@ function vehicleControlAddon.createStates()
 	vehicleControlAddon.createState( "minGearSpeed" , nil                , 0    , VCAValueType.float , nil, false )
 	vehicleControlAddon.createState( "maxGearSpeed" , nil                , 0    , VCAValueType.float , nil, false )
 																																			 
-	vehicleControlAddon.createState( "splitGears"   , nil                , false, VCAValueType.bool  , vehicleControlAddon.vcaOnSetSplitGears )
-	vehicleControlAddon.createState( "gearSplitLow" , nil                , false, VCAValueType.bool  , vehicleControlAddon.vcaOnSetGearSplitter, false )
+	vehicleControlAddon.createState( "splitGears"   , nil                , 0    , VCAValueType.int16 , vehicleControlAddon.vcaOnSetSplitGears )
+	vehicleControlAddon.createState( "splitGearRatio",nil                , 7    , VCAValueType.int16 , vehicleControlAddon.vcaOnSetSplitGearRatio )
+	vehicleControlAddon.createState( "gearSplitGear", nil                , 1    , VCAValueType.int16 , vehicleControlAddon.vcaOnSetGearSplitGear, false )
 																																			 
 	vehicleControlAddon.createState( "gearShiftTime", nil                , vehicleControlAddon.shiftTimeDefault, VCAValueType.int16 )
 	vehicleControlAddon.createState( "grpShiftTime" , nil                , vehicleControlAddon.shiftTimeDefault, VCAValueType.int16 )
@@ -914,7 +916,8 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
 																"vcaAutoShift",
 																"vcaWORKAREA",
 																"vcaSNAPPATH",
-																"vcaGearSplit",
+																"vcaGearSplitUp",
+																"vcaGearSplitDown",
 															}) do
 																
 			local addThis = InputAction[actionName] ~= nil   
@@ -1367,8 +1370,10 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 		self:vcaSetToolStateRec( false, true, true, false )
   elseif actionName == "vcaActivateB" then 
 		self:vcaSetToolStateRec( false, true, false, true )
-  elseif actionName == "vcaGearSplit" and self.spec_vca.splitGears then  
-		self:vcaSetState( "gearSplitLow", not self.spec_vca.gearSplitLow )
+  elseif actionName == "vcaGearSplitDown" and self.spec_vca.gearSplitGear > 1 then  
+		self:vcaSetState( "gearSplitGear", self.spec_vca.gearSplitGear - 1 )
+  elseif actionName == "vcaGearSplitUp" and self.spec_vca.gearSplitGear <= self.spec_vca.splitGears then  
+		self:vcaSetState( "gearSplitGear", self.spec_vca.gearSplitGear + 1 )
 	end
 end
 
@@ -3080,7 +3085,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 	
 --******************************************************************************************************************************************
 -- time to shift 
-	if     self.spec_motorized.motor.gearChangeTimeOrig then 
+	if     self.spec_motorized.motor.gearChangeTimeOrig == nil then 
 		self.spec_vca.lastGearShiftTime = vehicleControlAddon.shiftTimeDefault
 
 	elseif self.spec_vca.lastGearShiftTime ~= self.spec_vca.gearShiftTime then 
@@ -3358,8 +3363,30 @@ function vehicleControlAddon:onDraw()
 				setTextBold(true)
 				
 				local suffix = ""
-				if self.spec_vca.gearSplitLow then suffix = " low" end 
-				
+				if     self.spec_vca.splitGears < 1 then 
+				elseif self.spec_vca.splitGears < 3 then 
+				-- 2 or 3 powershift gears 
+					if self.spec_vca.gearSplitGear <= 1 then 
+						suffix = " Lo"
+					elseif self.spec_vca.gearSplitGear > self.spec_vca.splitGears then 
+						suffix = " Hi"
+					else 
+						suffix = " Me"
+					end 
+				elseif self.spec_vca.splitGears < 4 then 
+					if     self.spec_vca.gearSplitGear <= 1 then 
+						suffix = " I"
+					elseif self.spec_vca.gearSplitGear <= 2 then 
+						suffix = " II"
+					elseif self.spec_vca.gearSplitGear <= 3 then 
+						suffix = " III"
+					else 
+						suffix = " IV"
+					end 
+				else 
+					suffix = string.format( " (%d)", self.spec_vca.gearSplitGear )
+				end 
+					
 				renderText( x, posY + 0.55 * height, height * 0.7142857,
 										self:vcaSpeedToString( self.spec_vca.minGearSpeed, "%5.1f", true ).." .. "..self:vcaSpeedToString( self.spec_vca.maxGearSpeed, "%5.1f" )..suffix)
 			elseif vehicleControlAddon.vcaUIShowautoShift( self ) then  
@@ -4433,7 +4460,7 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 					elseif delta < 1e-3 then 
 						return 1
 					else
-						return ( 1 - clutchRpm / minRpm ) / delta
+						return math.min( 1, ( 1 - clutchRpm / minRpm ) / delta )
 					end 
 				end 
 				local function getMotorMaxAcc()
@@ -5023,8 +5050,18 @@ function vehicleControlAddon:vcaGetGearRatioMultiplier( superFunc, ... )
 	if      self.vehicle          ~= nil	
 			and self.vehicle.spec_vca ~= nil 
 			and self.vehicle.spec_vca.isInitialized
-			and self.vehicle.spec_vca.gearSplitLow then 
-		return 1.25 * superFunc( self, ... )
+			and self.vehicle.spec_vca.splitGears > 0 
+			and self.vehicle.spec_vca.gearSplitGear <= self.vehicle.spec_vca.splitGears
+			then 
+		local r = superFunc( self, ... )
+		local g = self.vehicle.spec_vca.gearSplitGear
+		local q = vehicleControlAddon.splitGearRatios[self.vehicle.spec_vca.splitGearRatio]
+		if q == nil then q = 0.8 end 
+		while g <= self.vehicle.spec_vca.splitGears do 
+			r = r / q
+			g = g + 1 
+		end 
+		return r
 	end 
 	return superFunc( self, ... )
 end 
@@ -5085,26 +5122,53 @@ function vehicleControlAddon:vcaOnSetWarningText( old, new, noEventSend )
 end
 
 function vehicleControlAddon:vcaOnSetSplitGears( old, new, noEventSend )
-	self.spec_vca.splitGears = new 
-	if self.spec_vca.gearSplitLow and not self.spec_vca.splitGears then 
-		self:vcaSetState( "gearSplitLow", false )
+	if type( new ) == "number" and 0 <= new and new <= 3 then  
+		self.spec_vca.splitGears = new 
+	else 
+		self.spec_vca.splitGears = 0 
+	end 
+	
+	self:vcaSetState( "gearSplitGear", self.spec_vca.splitGears + 1, noEventSend )
+end 
+
+function vehicleControlAddon:vcaOnSetSplitGearRatio( old, new, noEventSend )
+	if type( new ) == "number" and vehicleControlAddon.splitGearRatios[new] ~= nil then 
+		self.spec_vca.splitGearRatio = new 
+	else 
+		self.spec_vca.splitGearRatio = 1 
+	end 
+
+	if      self.spec_vca.isInitialized 
+			and self.spec_vca.splitGears > 0
+			and self.spec_motorized       ~= nil 
+			and self.spec_motorized.motor ~= nil
+			and self.spec_motorized.motor.currentGears ~= nil then 
+		self.spec_motorized.motor:applyTargetGear()
 	end 
 end 
 
-function vehicleControlAddon:vcaOnSetGearSplitter( old, new, noEventSend )
-	self.spec_vca.gearSplitLow = new 
+function vehicleControlAddon:vcaOnSetGearSplitGear( old, new, noEventSend )
+	g = math.max( 1, Utils.getNoNil( self.spec_vca.splitGears, 0 ) + 1 )
+	if type( new ) ~= "number" or new < 1 then  
+		self.spec_vca.gearSplitGear = 1
+	elseif new > g then 
+		self.spec_vca.gearSplitGear = g
+	else 
+		self.spec_vca.gearSplitGear = new 
+	end 
+	
 	if      old ~= nil
 			and new ~= nil 
 			and old ~= new 
 			and self.spec_vca.isInitialized 
-			and self.spec_vca.splitGears 
+			and self.spec_vca.splitGears > 0
 			and self.spec_motorized       ~= nil 
 			and self.spec_motorized.motor ~= nil
 			and self.spec_motorized.motor.currentGears ~= nil then 
 			
 		self.spec_motorized.motor:applyTargetGear()
 		
-		if old and not new then 
+		if new > old then 
 			self.spec_motorized.motor.loadPercentageChangeCharge = 1
 		end 
 		
@@ -5262,6 +5326,13 @@ function vehicleControlAddon:vcaShowSettingsUI()
 			g_vehicleControlAddonMenu.vcaElements.diffLockSwap.element:setDisabled( disabled )
 		end 
 	end 
+	
+	self.spec_vcaUI.splitGears    = { vehicleControlAddon.getText("vcaValueOff", "OFF"), "Lo / HI", "Lo / Me / Hi", "I, II, III, IV" }
+	self.spec_vcaUI.splitGearRatio = {} 
+	for i,e in pairs( vehicleControlAddon.splitGearRatios ) do
+		self.spec_vcaUI.splitGearRatio[i] = string.format("%2.0f %%", 100 * e )
+	end
+
 	
 	self.spec_vcaUI.gearShiftTime = { string.format("%4d ms (d)",Utils.getNoNil( self.spec_vca.origGearShiftTime, Utils.getNoNil( self.spec_motorized.motor.gearChangeTimeOrig, 0 ) ) ),
 																		string.format("%4d ms",vehicleControlAddon.shiftTimes[1] ),
@@ -5462,6 +5533,16 @@ function vehicleControlAddon:vcaUIShowsplitGears()
 	return false
 end 
 
+function vehicleControlAddon:vcaUIShowsplitGearRatio()
+	if      self.spec_motorized       ~= nil 
+			and self.spec_motorized.motor ~= nil 	
+			and self.spec_motorized.motorizedNode ~= nil
+			and next(self.spec_motorized.differentials) ~= nil
+			then 
+		return self.spec_vca.splitGears > 0
+	end 
+	return false
+end 
 function vehicleControlAddon:vcaUIShowgearShiftTime()
 	if      self.spec_motorized       ~= nil 
 			and self.spec_motorized.motor ~= nil 	

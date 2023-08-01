@@ -281,24 +281,24 @@
 				
 				
 				
-				<GuiElement type="text" profile="settingsMenuSubtitle" vcaTextID="vcaTitleMisc" text="Misc"/> 
+				<GuiElement type="text" profile="settingsMenuSubtitle" vcaTextID="vcaTitleGears" text="Transmission"/>
 				
-				<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="drawHud" onCreate="onCreateSubElement">
-					<GuiElement type="button" profile="multiTextOptionSettingsLeft" />
-					<GuiElement type="button" profile="multiTextOptionSettingsRight" />
-					<GuiElement type="text"   profile="multiTextOptionSettingsText" />
-					<GuiElement type="text"   profile="multiTextOptionSettingsTitle" vcaTextID="vcaDRAWHUD" text="drawHud"/>
-					<GuiElement type="bitmap" profile="multiTextOptionSettingsBg" />
-					<GuiElement type="text"   profile="multiTextOptionSettingsTooltip" vcaTextID="vca_tip_DRAWHUD" text="drawHud"/>
-				</GuiElement>
-
-				<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="splitGears" onCreate="onCreateSubElement">
+				<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="splitGears" onCreate="onCreateSubElement" onCreateArgs="list0">
 					<GuiElement type="button" profile="multiTextOptionSettingsLeft" />
 					<GuiElement type="button" profile="multiTextOptionSettingsRight" />
 					<GuiElement type="text"   profile="multiTextOptionSettingsText" />
 					<GuiElement type="text"   profile="multiTextOptionSettingsTitle" vcaTextID="vcaSPLITGEARS" text="splitGears"/>
 					<GuiElement type="bitmap" profile="multiTextOptionSettingsBg" />
 					<GuiElement type="text"   profile="multiTextOptionSettingsTooltip" vcaTextID="vca_tip_SPLITGEARS" text="splitGears"/>
+				</GuiElement>
+
+				<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="splitGearRatio" onCreate="onCreateSubElement" onCreateArgs="list">
+					<GuiElement type="button" profile="multiTextOptionSettingsLeft" />
+					<GuiElement type="button" profile="multiTextOptionSettingsRight" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsText" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsTitle" vcaTextID="vcaSPLITGEARRATIO" text="splitGears"/>
+					<GuiElement type="bitmap" profile="multiTextOptionSettingsBg" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsTooltip" vcaTextID="vca_tip_SPLITGEARRATIO" text="splitGears"/>
 				</GuiElement>
 
 				<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="gearShiftTime" onCreate="onCreateSubElement" onCreateArgs="list0">
@@ -319,6 +319,18 @@
 					<GuiElement type="text"   profile="multiTextOptionSettingsTooltip" vcaTextID="vca_tip_GRPTIME" text="grpShiftTime"/>
 				</GuiElement>
 				
+
+				<GuiElement type="text" profile="settingsMenuSubtitle" vcaTextID="vcaTitleMisc" text="Misc"/> 
+				
+				<GuiElement type="checkedOption" profile="multiTextOptionSettings" id="drawHud" onCreate="onCreateSubElement">
+					<GuiElement type="button" profile="multiTextOptionSettingsLeft" />
+					<GuiElement type="button" profile="multiTextOptionSettingsRight" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsText" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsTitle" vcaTextID="vcaDRAWHUD" text="drawHud"/>
+					<GuiElement type="bitmap" profile="multiTextOptionSettingsBg" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsTooltip" vcaTextID="vca_tip_DRAWHUD" text="drawHud"/>
+				</GuiElement>
+
 
 			</GuiElement>
 
