@@ -55,6 +55,11 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vcaANALOG"            text="Sterowanie adaptacyjne i kontroler analogowy"/>
 		<text name="vcaROTATEHT"          text="Kamera i śledzenie głowy"/>
 		<text name="vcaDEBUG"             text="Debugowanie"/>
+        <text name="vcaSPLITGEARS"        text="Liczba biegów powershift"/>
+		<text name="vcaSPLITGEARRATIO"    text="Współczynnik dla powershift"/>
+		<text name="vcaGEARTIME"          text="Czas zmiany biegu"/>
+		<text name="vcaGRPTIME"           text="Czas zmiany zakresów"/>
+		<text name="vcaINPUTBINDING"      text="Wyświetl klawisze"/>
 
 		<text name="vca_tip_CAMERAI"      text="Kamera wewnętrzna obraca się automatycznie zgodnie z kątem skrętu"/>
 		<text name="vca_tip_CAMERAO"      text="Kamera zewnętrzna obraca się automatycznie zgodnie z kątem skrętu"/>
@@ -97,6 +102,11 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vca_tip_ANALOG"       text="Wsparcie dla sterowania adaptacyjnego z kontroleramia analogowymi"/>
 		<text name="vca_tip_ROTATEHT"     text="Obracanie kamery nawet, gdy śledzenie głowy jest włączone"/>
 		<text name="vca_tip_DEBUG"        text="Dodatkowe informacje zapisywane w pliku log"/>
+        <text name="vca_tip_SPLITGEARS"   text="Liczba biegów dla skrzyni powershift"/>
+		<text name="vca_tip_SPLITGEARRATIO" text="Współczynnik skrzyni biegów powershift"/>
+		<text name="vca_tip_GEARTIME"     text="Czas zmiany biegów"/>
+		<text name="vca_tip_GRPTIME"      text="Czas zmiany zakresów"/>
+		<text name="vca_tip_INPUTBINDING" text="Wyświetlanie przypisanych klawiszy"/>
 		
 		<text name="input_vcaSETTINGS"    text="Ustawienia VCA"/>
 		<text name="input_vcaGLOBALS"     text="Ustawienia globalne VCA"/>
@@ -141,6 +151,8 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="input_vcaLowerB"      text="Opuść/Podnieś tylne narzędzie"/>
 		<text name="input_vcaActivateF"   text="Włącz/Wyłącz przednie narzędzie"/>
 		<text name="input_vcaActivateB"   text="Włącz/Wyłącz tylne narzędzie"/>
+        <text name="input_vcaGearSplitUp" text="Rozdzielacz biegów +"/>
+		<text name="input_vcaGearSplitDwn" text="Rozdzielacz biegów -"/>
 		
 		<text name="vcaValueOn"           text="Włączone"/>
 		<text name="vcaValueOff"          text="Wyłączone"/>
@@ -166,6 +178,7 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vcaTitleGPS"          text="Naprowadzanie"/>
 		<text name="vcaTitleThrottle"     text="Gaz, Hamulce, Skrzynia biegów"/>
 		<text name="vcaTitleDiff"         text="Załączanie napędów i dyferencjałów"/>
+        <text name="vcaTitleGears"        text="Przełożenia"/>
 		<text name="vcaTitleMisc"         text="Różne ustawienia"/>
 		
 		<text name="vcaHelpIntro_1"       text="Vehicle Control Addon zawiera wiele funkcji w jednym modzie. Większość z nich jest domyślnie wyłączona." />
