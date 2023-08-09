@@ -3360,35 +3360,9 @@ function vehicleControlAddon:onDraw()
 					setTextColor(unpack(vehicleControlAddon.colorActive))
 				end 
 
-				setTextBold(true)
-				
-				local suffix = ""
-				if     self.spec_vca.splitGears < 1 then 
-				elseif self.spec_vca.splitGears < 3 then 
-				-- 2 or 3 powershift gears 
-					if self.spec_vca.gearSplitGear <= 1 then 
-						suffix = " Lo"
-					elseif self.spec_vca.gearSplitGear > self.spec_vca.splitGears then 
-						suffix = " Hi"
-					else 
-						suffix = " Me"
-					end 
-				elseif self.spec_vca.splitGears < 4 then 
-					if     self.spec_vca.gearSplitGear <= 1 then 
-						suffix = " I"
-					elseif self.spec_vca.gearSplitGear <= 2 then 
-						suffix = " II"
-					elseif self.spec_vca.gearSplitGear <= 3 then 
-						suffix = " III"
-					else 
-						suffix = " IV"
-					end 
-				else 
-					suffix = string.format( " (%d)", self.spec_vca.gearSplitGear )
-				end 
-					
+				setTextBold(true)					
 				renderText( x, posY + 0.55 * height, height * 0.7142857,
-										self:vcaSpeedToString( self.spec_vca.minGearSpeed, "%5.1f", true ).." .. "..self:vcaSpeedToString( self.spec_vca.maxGearSpeed, "%5.1f" )..suffix)
+										self:vcaSpeedToString( self.spec_vca.minGearSpeed, "%5.1f", true ).." .. "..self:vcaSpeedToString( self.spec_vca.maxGearSpeed, "%5.1f" ))
 			elseif vehicleControlAddon.vcaUIShowautoShift( self ) then  
 				renderOverlay( vehicleControlAddon.ovGearSpeedBg, x - 0.5 * width, posY, width, height )
 			end 			
@@ -5572,5 +5546,64 @@ function vehicleControlAddon:vcaUIShowgrpShiftTime()
 	end 
 	return false
 end 
+
+function vehicleControlAddon:beforeSpeedMeterDisplayDraw( )
+	if self.isVehicleDrawSafe and self:getVisible() 
+			and self.vehicle ~= nil 
+			and self.vehicle.spec_vca ~= nil 
+			and self.vehicle.spec_vca.splitGears ~= nil 
+			and self.vehicle.spec_vca.splitGears > 0 then 
+		self.vcaHideIcon = true 
+		self.gearIcon:setVisible(false) 
+		
+		setTextColor(unpack(vehicleControlAddon.colorActive))
+		setTextAlignment( RenderText.ALIGN_CENTER ) 
+		setTextVerticalAlignment( RenderText.VERTICAL_ALIGN_MIDDLE )
+		setTextBold(true)					
+		
+		local overlay = self.gearIcon.overlay 
+		local x = overlay.x + overlay.offsetX + 0.5 * overlay.width
+		local y = overlay.y + overlay.offsetY + 0.5 * overlay.height
+		
+		local vca = self.vehicle.spec_vca 
+		local suffix = ""
+		if     vca.splitGears < 1 then 
+		elseif vca.splitGears < 3 then 
+		-- 2 or 3 powershift gears 
+			if vca.gearSplitGear <= 1 then 
+				suffix = " Lo"
+			elseif vca.gearSplitGear > vca.splitGears then 
+				suffix = " Hi"
+			else 
+				suffix = " Me"
+			end 
+		elseif vca.splitGears < 4 then 
+			if     vca.gearSplitGear <= 1 then 
+				suffix = " I"
+			elseif vca.gearSplitGear <= 2 then 
+				suffix = " II"
+			elseif vca.gearSplitGear <= 3 then 
+				suffix = " III"
+			else 
+				suffix = " IV"
+			end 
+		else 
+			suffix = string.format( " (%d)", vca.gearSplitGear )
+		end 
+		
+		renderText( x, y, self.gearTextSize, suffix)
+		
+		setTextAlignment( RenderText.ALIGN_LEFT ) 
+		setTextVerticalAlignment( RenderText.VERTICAL_ALIGN_BASELINE )
+		setTextColor(1, 1, 1, 1) 
+		setTextBold(false)					
+		
+	elseif self.vcaHideIcon then 
+		self.gearIcon:setVisible(true)
+		self.vcaHideIcon = nil 
+	end 
+end 
+
+SpeedMeterDisplay.draw = Utils.prependedFunction( SpeedMeterDisplay.draw, vehicleControlAddon.beforeSpeedMeterDisplayDraw )
  
 vehicleControlAddon.createStates()

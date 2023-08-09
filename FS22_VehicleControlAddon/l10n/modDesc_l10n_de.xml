@@ -160,7 +160,7 @@
 		<text name="input_vcaMenuAction3" text="VCA: Menu Button D"/>
 		<text name="input_vcaMenuAction4" text="VCA: Menu Button X"/>
 		<text name="input_vcaGearSplitUp" text="VCA: Getriebeuntersetzung +"/>
-		<text name="input_vcaGearSplitDwn" text="VCA: Getriebeuntersetzung -"/>
+		<text name="input_vcaGearSplitDown" text="VCA: Getriebeuntersetzung -"/>
 		
 		<text name="vcaValueOn"         text="An"/>
 		<text name="vcaValueOff"        text="Aus"/>

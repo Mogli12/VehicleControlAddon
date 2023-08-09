@@ -144,7 +144,7 @@
 		<text name="input_vcaActivateF"   text="VCA: (de-)activate front tools "/>
 		<text name="input_vcaActivateB"   text="VCA: (de-)activate back tools "/>
 		<text name="input_vcaGearSplitUp" text="VCA: Gear splitter +"/>
-		<text name="input_vcaGearSplitDwn" text="VCA: Gear splitter -"/>
+		<text name="input_vcaGearSplitDown" text="VCA: Gear splitter -"/>
 		
 		<text name="vcaValueOn"         text="On"/>
 		<text name="vcaValueOff"        text="Off"/>
