@@ -152,7 +152,7 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="input_vcaActivateF"   text="Włącz/Wyłącz przednie narzędzie"/>
 		<text name="input_vcaActivateB"   text="Włącz/Wyłącz tylne narzędzie"/>
         <text name="input_vcaGearSplitUp" text="Rozdzielacz biegów +"/>
-		<text name="input_vcaGearSplitDwn" text="Rozdzielacz biegów -"/>
+		<text name="input_vcaGearSplitDown" text="Rozdzielacz biegów -"/>
 		
 		<text name="vcaValueOn"           text="Włączone"/>
 		<text name="vcaValueOff"          text="Wyłączone"/>
