@@ -82,12 +82,12 @@ Změny ve verzi 1.1.0.0:
 	</description>
 	<multiplayer supported="true"/>   
 	<iconFilename>modIcon.dds</iconFilename>
-	<version>9.1.3.0</version>
+	<version>9.1.3.1</version>
 	<l10n filenamePrefix="l10n/modDesc_l10n">
 		<text name="vcaVERSION">          
-									<en>Vehicle Control Addon b130</en>
-			<de>Erweiterung Zur Fahrzeugkontrolle b130</de>
-			           <tr>Araç Kontrol Eklentisi b130</tr>
+									<en>Vehicle Control Addon b131</en>
+			<de>Erweiterung Zur Fahrzeugkontrolle b131</de>
+			           <tr>Araç Kontrol Eklentisi b131</tr>
 		</text>
 	</l10n>
 	
@@ -111,6 +111,7 @@ Změny ve verzi 1.1.0.0:
 		<action name="vcaSNAPRESET"  category="VEHICLE" axisType="HALF"/>
 		<action name="vcaSNAPDIST"   category="VEHICLE" axisType="HALF"/>
 		<!--action name="vcaSNAPPATH"   category="VEHICLE" axisType="HALF"/-->
+		<action name="vcaSNAP_A_B"   category="VEHICLE" axisType="HALF"/>
 		<action name="vcaWORKAREA"   category="VEHICLE" axisType="HALF"/>
 		<action name="vcaNO_ARB"     category="VEHICLE" axisType="HALF"/>
 		<action name="vcaINCHING"    category="VEHICLE" axisType="HALF"/>
@@ -129,6 +130,8 @@ Změny ve verzi 1.1.0.0:
 		<action name="vcaHandRpm"    category="VEHICLE" axisType="FULL"/>
 		<action name="vcaLowerF"     category="VEHICLE" axisType="HALF"/>
 		<action name="vcaLowerB"     category="VEHICLE" axisType="HALF"/>
+		<action name="vcaFoldF"      category="VEHICLE" axisType="HALF"/>
+		<action name="vcaFoldB"      category="VEHICLE" axisType="HALF"/>
 		<action name="vcaActivateF"  category="VEHICLE" axisType="HALF"/>
 		<action name="vcaActivateB"  category="VEHICLE" axisType="HALF"/>
 		<action name="vcaGearSplitUp" category="VEHICLE" axisType="HALF"/>
@@ -190,10 +193,13 @@ Změny ve verzi 1.1.0.0:
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_lalt KEY_w"/>
 		</actionBinding>	
 		<!--actionBinding action="vcaSNAPPATH">	
-			<binding device="KB_MOUSE_DEFAULT" input="KEY_lalt KEY_e"/>
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_lalt KEY_e"/>
 		</actionBinding-->	
 		<actionBinding action="vcaWORKAREA">	
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_lalt KEY_s"/>
+		</actionBinding>	
+		<actionBinding action="vcaSNAP_A_B">	
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_lalt KEY_e"/>
 		</actionBinding>	
 		<actionBinding action="vcaINCHING">	
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_rshift"/>
@@ -246,6 +252,12 @@ Změny ve verzi 1.1.0.0:
 		</actionBinding>	
 		<actionBinding action="vcaLowerB">
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_ralt KEY_v"/>
+		</actionBinding>	
+		<actionBinding action="vcaLowerF">
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_lalt KEY_x"/>
+		</actionBinding>	
+		<actionBinding action="vcaLowerB">
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_ralt KEY_x"/>
 		</actionBinding>	
 		<actionBinding action="vcaActivateF">
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_lalt KEY_b"/>

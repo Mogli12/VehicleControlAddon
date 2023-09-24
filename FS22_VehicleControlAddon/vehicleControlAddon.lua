@@ -189,6 +189,10 @@ vehicleControlAddon.shiftTimeShort      = 2
 vehicleControlAddon.shiftTimeMedium     = 3
 vehicleControlAddon.shiftTimeLong       = 4
 
+vehicleControlAddon.toolStateLower      = 1
+vehicleControlAddon.toolStateActivate   = 2
+vehicleControlAddon.toolStateFold       = 3
+
 vehicleControlAddon.shiftTimes = { 0, 250, 500, 1000 } -- index like vehicleControlAddon.shiftTime...
 
 function vehicleControlAddon.prerequisitesPresent(specializations)
@@ -469,6 +473,7 @@ function vehicleControlAddon:onLoad(savegame)
 	self.vcaSetCruiseSpeed      = vehicleControlAddon.vcaSetCruiseSpeed
 	self.vcaSpeedToString       = vehicleControlAddon.vcaSpeedToString
 	self.vcaSetToolStateRec     = vehicleControlAddon.vcaSetToolStateRec
+	self.vcaSetToolStateNew     = vehicleControlAddon.vcaSetToolStateNew
 	
 -- called by FS22_HeadlandManagement
 	self.vcaSnapReverseLeft     = vehicleControlAddon.vcaSnapReverseLeft
@@ -896,6 +901,7 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
 																"vcaKSAXIS",
 																"vcaSWAPSPEED",
                                 "vcaSNAP",
+                                "vcaSNAP_A_B",
                                 "vcaSNAPPREV",
                                 "vcaSNAPCONT",
                                 "vcaSNAPNEXT",
@@ -909,6 +915,8 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
 																"vcaHandRpm",
 																"vcaLowerF",
 																"vcaLowerB",
+																"vcaFoldF",
+																"vcaFoldB",
 																"vcaActivateF",
 																"vcaActivateB",
 																"vcaHandbrake",
@@ -961,6 +969,7 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
 				end 
 				
 				if     actionName == "vcaSNAP"
+						or actionName == "vcaSNAP_A_B"
 						or actionName == "vcaSnapUP"     
 						or actionName == "vcaSnapDOWN"     
 						or actionName == "vcaSnapLEFT"    
@@ -989,12 +998,16 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
 				if      g_inputBinding                   ~= nil 
 						and g_inputBinding.events            ~= nil 
 						and g_inputBinding.events[eventName] ~= nil
-						and actionName == "vcaSETTINGS" then 
-					if isSelected then
-						g_inputBinding.events[eventName].displayPriority = 1
-					elseif  isOnActiveVehicle then
-						g_inputBinding.events[eventName].displayPriority = 4
-					end
+						then 
+					if     actionName == "vcaSETTINGS" then 
+						if isSelected then
+							g_inputBinding.events[eventName].displayPriority = 1
+						elseif  isOnActiveVehicle then
+							g_inputBinding.events[eventName].displayPriority = 4
+						end
+					elseif actionName == "vcaSNAP_A_B" then
+						g_inputBinding.events[eventName].displayPriority = 2
+					end 
 				end
 			end
 		end
@@ -1017,6 +1030,14 @@ function vehicleControlAddon:updateActionEvents()
 			local isActive = false 
 			if     actionName == "vcaSNAP" then 
 				isActive = not self.spec_vca.snapDisabled
+			elseif actionName == "vcaSNAP_A_B" then 
+				if not self.spec_vca.snapDisabled then 
+					if     self.spec_vca.lastSnapAngle == 10 then 
+						isActive = true 
+					elseif self.spec_vca.lastSnapAngle == 20 then 
+						isActive = true 
+					end 
+				end 
 			elseif actionName == "vcaSnapUP"     
 					or actionName == "vcaSnapDOWN"     
 					or actionName == "vcaSnapLEFT"    
@@ -1042,7 +1063,7 @@ function vehicleControlAddon:updateActionEvents()
 			
 			self.spec_vca.activeActionEvents[actionName] = isActive
 			
-			g_inputBinding:setActionEventActive(actionEvent.actionEventId, isActive)
+			g_inputBinding:setActionEventActive(actionEvent.actionEventId, isActive)						
 		end 
 	end 
 end 
@@ -1363,21 +1384,89 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 	elseif actionName == "vcaSNAPPATH" then 
 		self:vcaSetState( "pathRecording", not self.spec_vca.pathRecording )
   elseif actionName == "vcaLowerF" then 
-		self:vcaSetToolStateRec( true, false, true, false )
+		self:vcaSetToolStateNew( vehicleControlAddon.toolStateLower, true, false )
   elseif actionName == "vcaLowerB" then 
-		self:vcaSetToolStateRec( true, false, false, true )
+		self:vcaSetToolStateNew( vehicleControlAddon.toolStateLower, false, true )
+  elseif actionName == "vcaFoldF" then 
+		self:vcaSetToolStateNew( vehicleControlAddon.toolStateFold, true, false )
+  elseif actionName == "vcaFoldB" then 
+		self:vcaSetToolStateNew( vehicleControlAddon.toolStateFold, false, true )
   elseif actionName == "vcaActivateF" then 
-		self:vcaSetToolStateRec( false, true, true, false )
+		self:vcaSetToolStateNew( vehicleControlAddon.toolStateActivate, true, false )
   elseif actionName == "vcaActivateB" then 
-		self:vcaSetToolStateRec( false, true, false, true )
+		self:vcaSetToolStateNew( vehicleControlAddon.toolStateActivate, false, true )
   elseif actionName == "vcaGearSplitDown" and self.spec_vca.gearSplitGear > 1 then  
 		self:vcaSetState( "gearSplitGear", self.spec_vca.gearSplitGear - 1 )
   elseif actionName == "vcaGearSplitUp" and self.spec_vca.gearSplitGear <= self.spec_vca.splitGears then  
 		self:vcaSetState( "gearSplitGear", self.spec_vca.gearSplitGear + 1 )
+  elseif actionName == "vcaSNAP_A_B" then  
+		if     self.spec_vca.lastSnapAngle == 10 then 
+			vcaDebugPrint("Set point A")
+			local wx,_,wz = getWorldTranslation( self:vcaGetSteeringNode() )
+			self:vcaSetState( "lastSnapPosX", wx )
+			self:vcaSetState( "lastSnapPosZ", wz )
+			self:vcaSetState( "lastSnapAngle", 20 )
+			self:vcaSetState( "warningText", vehicleControlAddon.getText("vcaSnapSetA", "Set point B"))
+		elseif self.spec_vca.lastSnapAngle == 20 then 
+			local wx,_,wz = getWorldTranslation( self:vcaGetSteeringNode() )
+			local lx = wx - self.spec_vca.lastSnapPosX
+			local lz = wz - self.spec_vca.lastSnapPosZ
+			
+		
+			if lx*lx+lz*lz > 1 then 
+				vcaDebugPrint("Set point B: "..tostring(lx)..", "..tostring(lz))
+				
+				local rot    = math.atan2( lx, lz )
+				local d      = 1 --vehicleControlAddon.snapAngles[self.spec_vca.snapAngle]
+			
+				if self:getIsVehicleControlledByPlayer() then 
+					self.spec_vca.snapPosTimer = 20000
+				end 
+
+				local target = 0
+				local diff   = math.pi+math.pi
+				if d == nil then 
+					if self.spec_vca.snapAngle < 1 then 
+						d = vehicleControlAddon.snapAngles[1] 
+					else 
+						d = 90 
+					end 
+				end 
+				for i=0,360,d do 
+					local a = math.rad( i )
+					local b = math.abs( vehicleControlAddon.normalizeAngle( a - rot ) )
+					if b < diff then 
+						target = a 
+						diff   = b
+					end 
+				end 
+				
+				self:vcaSetState( "lastSnapAngle", vehicleControlAddon.normalizeAngle( target ) )
+				self:vcaSetState( "snapFactor", 0 )
+				
+			else 
+				vcaDebugPrint("Set point B failed")
+			end 
+		else 
+			vcaDebugPrint("Set point A-B failed")
+			self:vcaSetState( "warningText", vehicleControlAddon.getText("vcaSnapSetB", "Reset"))
+		end 
 	end
 end
 
 function vehicleControlAddon:vcaSetToolStateRec( lowered, active, front, back, forceState )
+	local state = 0
+	if     lowered then 
+		state = vehicleControlAddon.toolStateLower 
+	elseif active  then 
+		state = vehicleControlAddon.toolStateActivate 
+	else 
+		state = vehicleControlAddon.toolStateFold 
+	end 
+	self:vcaSetToolStateNew( state, front, back, forceState )
+end
+
+function vehicleControlAddon:vcaSetToolStateNew( state, front, back, forceState )
 
 -- AttacherJoints:handleLowerImplementByAttacherJointIndex(attacherJointIndex, direction)
 -- if direction == nil then direction = not attacherJoint.moveDown end
@@ -1389,7 +1478,7 @@ function vehicleControlAddon:vcaSetToolStateRec( lowered, active, front, back, f
 	local recursive = true 
 
 	if self.spec_attacherJoints ~= nil then 
-		vcaDebugPrint(tostring(self.configFileName)..": "..tostring(lowered)..", "..tostring(active)..", "..tostring(front)..", "..tostring(back)..", "..tostring(forceState))
+		vcaDebugPrint(tostring(self.configFileName)..": "..tostring(state)..", "..tostring(front)..", "..tostring(back)..", "..tostring(forceState))
 	
 		local spec = self.spec_attacherJoints
 		for _,attachedImplement in pairs( spec.attachedImplements ) do 
@@ -1412,7 +1501,7 @@ function vehicleControlAddon:vcaSetToolStateRec( lowered, active, front, back, f
 			if doit and attachedImplement.object ~= nil then 
 				local object = attachedImplement.object 
 				
-				if lowered then -- key V
+				if state == vehicleControlAddon.toolStateLower then 
 					if newState == nil then 
 						-- getIsLowered is overwritte by Pickup and Foldable 
 						-- but getAllowsLowering is not overwritten 
@@ -1429,9 +1518,8 @@ function vehicleControlAddon:vcaSetToolStateRec( lowered, active, front, back, f
 					if newState ~= nil and object.setLoweredAll ~= nil then 
 						object:setLoweredAll(newState, attachedImplement.jointDescIndex)
 					end 
-				end 
 				
-				if active then -- key B
+				elseif state == vehicleControlAddon.toolStateActivate then 
 					if object.spec_plow ~= nil then 
 						-- rotate plow
 						local spec = object.spec_plow
@@ -1451,10 +1539,47 @@ function vehicleControlAddon:vcaSetToolStateRec( lowered, active, front, back, f
 							object:setIsTurnedOn(newState)
 						end 
 					end 
+
+				elseif state == vehicleControlAddon.toolStateFold then 
+					if object.spec_foldable ~= nil then 
+						-- foldable 
+						local spec = object.spec_foldable
+						if #spec.foldingParts > 0 then
+							local toggleDirection = object:getToggledFoldDirection()
+							local allowed, warning = object:getIsFoldAllowed(toggleDirection, false)
+
+							if allowed then
+								if newState == nil then 
+									newState = toggleDirection == spec.turnOnFoldDirection 
+								end 
+								if newState then
+									object:setFoldState(toggleDirection, true)
+								else
+									object:setFoldState(toggleDirection, false)
+
+									if object:getIsFoldMiddleAllowed() and object.getAttacherVehicle ~= nil then
+										local attacherVehicle = object:getAttacherVehicle()
+										local attacherJointIndex = attacherVehicle:getAttacherJointIndexFromObject(object)
+
+										if attacherJointIndex ~= nil then
+											local moveDown = attacherVehicle:getJointMoveDown(attacherJointIndex)
+											local targetMoveDown = toggleDirection == spec.turnOnFoldDirection
+
+											if targetMoveDown ~= moveDown then
+												attacherVehicle:setJointMoveDown(attacherJointIndex, targetMoveDown)
+											end
+										end
+									end
+								end
+							elseif warning then 
+								g_currentMission:showBlinkingWarning(warning, 2000)
+							end 
+						end 
+					end 
 				end 
 				
 				if recursive then
-					vehicleControlAddon.vcaSetToolStateRec( object, lowered, active, true, true, newState )
+					vehicleControlAddon.vcaSetToolStateNew( object, state, true, true, newState )
 				end 
 			end 
 		end 
@@ -1543,14 +1668,14 @@ function vehicleControlAddon:onLeaveVehicle()
 		self:vcaSetState( "noAutoRotBack", false )
 		self.spec_vca.newRotCursorKey  = nil
 		self.spec_vca.prevRotCursorKey = nil
-		self:vcaSetState( "snapIsOn", false )
+	--self:vcaSetState( "snapIsOn", false )
 		self:vcaSetState( "inchingIsOn", false )
 		self:vcaSetState( "ksIsOn", false )
 		self:vcaSetState( "keepSpeed", 0 )
 		self:vcaSetState( "isEnteredMP", false )
 		self:vcaSetState( "isBlocked", false )
 		self:vcaSetState( "isForward", true )
-		self:vcaSetState( "handThrottle", 0 )
+	--self:vcaSetState( "handThrottle", 0 )
 		self.spec_vca.movingDir     = 1
 		self.spec_vca.keepCamRot    = false 
 	end 
@@ -3950,15 +4075,16 @@ function vehicleControlAddon:vcaUpdateVehiclePhysics( superFunc, axisForward, ax
 	self.spec_vca.lastPathIndex = nil
 	self.spec_vca.lastPathAngle = nil
 	
+	local snapIsOn = self.spec_vca.snapIsOn 
 	if self.spec_vca.snapIsOn then 
 		if not ( self.spec_vca.isEnteredMP ) then
-			self:vcaSetState( "snapIsOn", false )
+			snapIsOn = false
 		elseif self:getIsAIActive() then 
-			self:vcaSetState( "snapIsOn", false )
+			snapIsOn = false
 		end 
 	end 
 	
-	if self.spec_vca.snapIsOn then 
+	if snapIsOn then 
 		local lx,_,lz = localDirectionToWorld( self:vcaGetSteeringNode(), 0, 0, 1 )		
 		local wx,_,wz = getWorldTranslation( self:vcaGetSteeringNode() )
 		

@@ -127,6 +127,7 @@
 		<text name="input_vcaSNAPNEXT"    text="VCA: Nächste Rasterbahn"/>
 		<text name="input_vcaSNAPDIST"    text="VCA: Arbeitsbreite für Fahrtrichtung ermitteln"/>
 		<text name="input_vcaSNAPPATH"    text="VCA: Pfadaufzeichnung starten/stoppen"/>
+		<text name="input_vcaSNAP_A_B"    text="VCA: A-B-Linie"/>
 		<text name="input_vcaWORKAREA"    text="VCA: Markierungen für Arbeitsbreite"/>
 		<text name="input_vcaSnapUP"      text="VCA: Raster nach links drehen"/>
 		<text name="input_vcaSnapDOWN"    text="VCA: Raster nach rechts drehen"/>
@@ -153,6 +154,8 @@
 		<text name="input_vcaDiffLockB"   text="VCA: Differentialsperre hinten an/aus"/>
 		<text name="input_vcaLowerF"      text="VCA: vordere Geräte heben/senken"/>
 		<text name="input_vcaLowerB"      text="VCA: hintere Geräte heben/senken"/>
+		<text name="input_vcaFoldF"       text="VCA: vordere Geräte auf-/zuklappen"/>
+		<text name="input_vcaFoldB"       text="VCA: hintere Geräte auf-/zuklappen"/>
 		<text name="input_vcaActivateF"   text="VCA: vordere Geräte (de-)aktivieren"/>
 		<text name="input_vcaActivateB"   text="VCA: hintere Geräte (de-)aktivieren"/>
 		<text name="input_vcaMenuAction1" text="VCA: Menu Button S"/>
@@ -178,6 +181,8 @@
 		<text name="vcaPowerShift"      text="Lastschaltung"/>
 		
 		<text name="vcaSnapArtAxis"     text="Spurführung wird für Knicklenker nicht unterstützt"/>
+		<text name="vcaSnapSetA"        text="Setze Punkt B zum Start der Spurführung"/>
+		<text name="vcaSnapSetB"        text="Spurführung ist bereits initialisiert"/>
 		
 		<text name="vcaButtonSnapWidth" text="Breite ermitteln"/>
 		<text name="vcaButtonSnapOffset" text="Offset tauschen"/>		
