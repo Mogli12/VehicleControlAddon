@@ -123,6 +123,7 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="input_vcaSNAPRESET"   text="Reset wyrównania kierunku jazdy"/>
 		<text name="input_vcaSNAPDIST"    text="Ustalenie szerokości roboczej wyrównania kierunku jazdy"/>
         <text name="input_vcaSNAPPATH"    text="Rozpocznij/Zakończ nagrywanie ścieżki"/>
+		<text name="input_vcaSNAP_A_B"    text="Linia A-B"/>
         <text name="input_vcaWORKAREA"    text="Znaczniki obszaru roboczego"/>
 		<text name="input_vcaSnapUP"      text="Przesuń w przód"/>
 		<text name="input_vcaSnapDOWN"    text="Przesuń w tył"/>
@@ -149,6 +150,8 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="input_vcaDiffLockB"   text="Ster. blokadą tylnego dyf."/>
 		<text name="input_vcaLowerF"      text="Opuść/Podnieś przednie narzędzie"/>
 		<text name="input_vcaLowerB"      text="Opuść/Podnieś tylne narzędzie"/>
+        <text name="input_vcaFoldF"       text="Złóż/Rozłóż przednie narzędzia"/>
+		<text name="input_vcaFoldB"       text="Złóż/Rozłóż tylne narzędzia"/>
 		<text name="input_vcaActivateF"   text="Włącz/Wyłącz przednie narzędzie"/>
 		<text name="input_vcaActivateB"   text="Włącz/Wyłącz tylne narzędzie"/>
         <text name="input_vcaGearSplitUp" text="Rozdzielacz biegów +"/>
@@ -168,6 +171,8 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vcaValueRPM"          text="RPM"/>
 		
 		<text name="vcaSnapArtAxis"       text="Naprowadzanie na ścieżkę nie jest obsługiwane w pojazdach przegubowych"/>
+        <text name="vcaSnapSetA"          text="Ustaw pkt. B aby rozpocząć jazdę po linii"/>
+		<text name="vcaSnapSetB"          text="Jazda po linii została już zainicjalizowana"/>
 		
 		<text name="vcaButtonSnapWidth"   text="Wykryj szerokość"/>
 		<text name="vcaButtonSnapOffset"  text="Wyrównaj przesunięcie"/>
