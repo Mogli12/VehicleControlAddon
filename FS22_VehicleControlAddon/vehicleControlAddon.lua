@@ -1417,7 +1417,7 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 				vcaDebugPrint("Set point B: "..tostring(lx)..", "..tostring(lz))
 				
 				local rot    = math.atan2( lx, lz )
-				local d      = 1 --vehicleControlAddon.snapAngles[self.spec_vca.snapAngle]
+				local d      = 0.1
 			
 				if self:getIsVehicleControlledByPlayer() then 
 					self.spec_vca.snapPosTimer = 20000
@@ -1425,13 +1425,7 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 
 				local target = 0
 				local diff   = math.pi+math.pi
-				if d == nil then 
-					if self.spec_vca.snapAngle < 1 then 
-						d = vehicleControlAddon.snapAngles[1] 
-					else 
-						d = 90 
-					end 
-				end 
+
 				for i=0,360,d do 
 					local a = math.rad( i )
 					local b = math.abs( vehicleControlAddon.normalizeAngle( a - rot ) )
