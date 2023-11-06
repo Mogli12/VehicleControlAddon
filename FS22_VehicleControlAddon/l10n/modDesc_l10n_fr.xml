@@ -45,8 +45,8 @@
 		<text name="vcaIDLETHROTTLE"      text="Modification du régime moteur"/>
 		<text name="vcaMOUSEARB"          text="Direction à la souris et retour"/>
 		<text name="vcaANALOG"            text="Direction adaptative et contrôleurs"/>
-		<text name="vcaROTATEHT"          text="Caméra et suivi de la tête"/>																		  
-		<text name="vcaDEBUG"             text="Deboggage"/>
+		<text name="vcaROTATEHT"          text="Caméra et suivi de la tête"/>
+		<text name="vcaDEBUG"             text="Débogage"/>
 		
 		<text name="vca_tip_CAMERAI"      text="La caméra intérieure tourne automatiquement en fonction de l'angle de direction."/>
 		<text name="vca_tip_CAMERAO"      text="La caméra extérieure tourne automatiquement en fonction de l'angle de direction."/>
@@ -138,7 +138,7 @@
 		<text name="vcaValueAlwaysH"      text="toujours (haut)"/>
 		<text name="vcaValueNormal"       text="normal"/>
 		<text name="vcaValueLight"        text="léger"/> 
-		<text name="vcaValueStrong"       text="fort"/>														
+		<text name="vcaValueStrong"       text="fort"/>
 		<text name="vcaValueEntered"      text="si embarqué"/>
 		<text name="vcaValueInactive"     text="si inactif"/>
 		<text name="vcaValueInactiveH"    text="si inactif (haut)"/>
@@ -169,7 +169,7 @@
 		<text name="vcaHelpSteering_3"    text="La direction adapative est conçue pour le contrôle au clavier. Le retour de la direction dépend de la vitesse à laquelle vous avez relâché les touches Q et D. Ainsi, vous pouvez maintenir l'angle du volant en appuyant brièvement sur les touches Q et D sans risquer des mouvements trop grands. Vous pouvez accélérer le retour au point milieu du volant en restant appuyé sur la touche correspondante. Cela vous permet de plus rapidement ajuster l'angle du volant si vous avez par exemple trop braqué. Ce retour accéléré au point milieu ne s'effectue que jusqu'à avoir atteint celui-ci." />
 		<text name="vcaHelpGPS_1"         text="Le Vehicle Control Addon intègre un GPS." />
 		<text name="vcaHelpGPS_2"         text="Le GPS ne peut être utilisé que si la largeur de travail est d'au moins 0.5m. La détection de la largeur de travail peut se faire depuis les paramètres ou avec le raccourci par défaut CTRL(gauche) + ALT(gauche) + Z. Le GPS est activé par défaut à l'aide des touches CTRL(gauche) + Z. Il est automatiquement désactivé dès que vous touchez à la direction." />
-		<text name="vcaHelpGPS_3"         text="A bord du véhicule, vous pouvez déclaer ou tourner le couloir de travail du GPS avec les touches CTRL(gauche) + flèches directionnelles. Vous pouvez également choisir le prochain couloir de travail avec les touches ALT(gauche) + Q pour le couloir de gauche et ALT(gauche) + D pour le couloir de droite. Vous pouvez également choisir la quantité de couloir à ignorer lorsque vous passez au prochain couloir (pour vous permettre d'avoir plus d'espace pour mannoeuvrer et vous mettre en position). Si vous souhaitez par exemple travailler sur le champ à gauche, vous pouvez choisir un nombre plus élévé à gauche qu'à droite. A chaque fois que vous changerez de sens au bout du couloir, le VCA intervertira automatiquement les valeurs gauches et droites." />
+		<text name="vcaHelpGPS_3"         text="A bord du véhicule, vous pouvez décaler ou tourner le couloir de travail du GPS avec les touches CTRL(gauche) + flèches directionnelles. Vous pouvez également choisir le prochain couloir de travail avec les touches ALT(gauche) + Q pour le couloir de gauche et ALT(gauche) + D pour le couloir de droite. Vous pouvez également choisir la quantité de couloir à ignorer lorsque vous passez au prochain couloir (pour vous permettre d'avoir plus d'espace pour mannoeuvrer et vous mettre en position). Si vous souhaitez par exemple travailler sur le champ à gauche, vous pouvez choisir un nombre plus élévé à gauche qu'à droite. A chaque fois que vous changerez de sens au bout du couloir, le VCA intervertira automatiquement les valeurs gauches et droites." />
 		<text name="vcaHelpThrottle_1"    text="Le Vehicle Control Addon propose des améliorations sur le régime moteur et les freins. La plupart sont destinées au contrôle clavier." />
 		<text name="vcaHelpThrottle_2"    text="Le limiteur de vitesse est activé via le raccourci clavier. La première valeur est celle sans limiteur, la deuxième lorsque le limiteur est actif. Le pourcentage de réduction s'applique au régulateur de vitesse lorsque vous enclenchez le limiteur. Le frein moteur est le freinage appliqué lorsque vous ne touchez ni à l'accélérateur ni au frein. Un frein moteur faible aura pour conséquence de faire rouler le véhicule plus longtemps avant de s'arrêter." />
 		<text name="vcaHelpThrottle_3"    text="Le limiteur MAJ(gauche) s'applique sur l'accélérateur, le régulateur et le régime moteur à 75%. En appuyant sur SUPPR, le véhicule conservera sa vitesse. L'accélérateur et le frein déterminent la vitesse cible. Cela simule la conduite à l'aide d'un accélérateur à main (Joystick). Vous pouvez activer le passage des vitesses automatiques avec les touches CTRL(gauche) + (." />
