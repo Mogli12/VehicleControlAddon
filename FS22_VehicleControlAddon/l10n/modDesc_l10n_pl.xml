@@ -51,12 +51,12 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vcaSTSPEEDO"          text="Prędkość skrętu"/>
 		<text name="vcaSTSPEEDI"          text="Odwróć prędkość skrętu"/>
 		<text name="vcaIDLETHROTTLE"      text="Zmień obroty silnika"/>
-		<text name="vcaMOUSEARB"          text="Myszka i autocentrowanie"/>
+		<text name="vcaMOUSEARB"          text="Myszka i autom. centrowanie"/>
 		<text name="vcaANALOG"            text="Sterowanie adaptacyjne i kontroler analogowy"/>
 		<text name="vcaROTATEHT"          text="Kamera i śledzenie głowy"/>
 		<text name="vcaDEBUG"             text="Debugowanie"/>
-        <text name="vcaSPLITGEARS"        text="Liczba biegów powershift"/>
-		<text name="vcaSPLITGEARRATIO"    text="Współczynnik dla powershift"/>
+        <text name="vcaSPLITGEARS"        text="Liczba biegów Powershift"/>
+		<text name="vcaSPLITGEARRATIO"    text="Współczynnik dla Powershift"/>
 		<text name="vcaGEARTIME"          text="Czas zmiany biegu"/>
 		<text name="vcaGRPTIME"           text="Czas zmiany zakresów"/>
 		<text name="vcaINPUTBINDING"      text="Wyświetl klawisze"/>
@@ -99,11 +99,11 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vca_tip_STSPEEDI"     text="Odwraca prędkość skrętu"/>
 		<text name="vca_tip_IDLETHROTTLE" text="Silnik przyspiesza niezależnie, aby utrzymać obroty biegu jałowego, a skrzynia CVT dostosowuje RPM"/>
 		<text name="vca_tip_MOUSEARB"     text="Automatyczne centrowanie kół dla sterowania myszką"/>
-		<text name="vca_tip_ANALOG"       text="Wsparcie dla sterowania adaptacyjnego z kontroleramia analogowymi"/>
+		<text name="vca_tip_ANALOG"       text="Wsparcie dla sterowania adaptacyjnego z kontrolerami analogowymi"/>
 		<text name="vca_tip_ROTATEHT"     text="Obracanie kamery nawet, gdy śledzenie głowy jest włączone"/>
 		<text name="vca_tip_DEBUG"        text="Dodatkowe informacje zapisywane w pliku log"/>
-        <text name="vca_tip_SPLITGEARS"   text="Liczba biegów dla skrzyni powershift"/>
-		<text name="vca_tip_SPLITGEARRATIO" text="Współczynnik skrzyni biegów powershift"/>
+        <text name="vca_tip_SPLITGEARS"   text="Liczba biegów dla skrzyni Powershift"/>
+		<text name="vca_tip_SPLITGEARRATIO" text="Współczynnik skrzyni biegów Powershift"/>
 		<text name="vca_tip_GEARTIME"     text="Czas zmiany biegów"/>
 		<text name="vca_tip_GRPTIME"      text="Czas zmiany zakresów"/>
 		<text name="vca_tip_INPUTBINDING" text="Wyświetlanie przypisanych klawiszy"/>
@@ -121,12 +121,12 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="input_vcaSNAPNEXT"    text="Następna ścieżka"/>
 		<text name="input_vcaSNAPCONT"    text="Ponowne utrzymanie ścieżki jazdy"/>
 		<text name="input_vcaSNAPRESET"   text="Reset wyrównania kierunku jazdy"/>
-		<text name="input_vcaSNAPDIST"    text="Ustalenie szerokości roboczej wyrównania kierunku jazdy"/>
+		<text name="input_vcaSNAPDIST"    text="Ustalenie szer. roboczej wyrównania kierunku jazdy"/>
         <text name="input_vcaSNAPPATH"    text="Rozpocznij/Zakończ nagrywanie ścieżki"/>
 		<text name="input_vcaSNAP_A_B"    text="Linia A-B"/>
         <text name="input_vcaWORKAREA"    text="Znaczniki obszaru roboczego"/>
-		<text name="input_vcaSnapUP"      text="Przesuń w przód"/>
-		<text name="input_vcaSnapDOWN"    text="Przesuń w tył"/>
+		<text name="input_vcaSnapUP"      text="Przeskok kąta w prawo"/>
+		<text name="input_vcaSnapDOWN"    text="Przeskok kąta w lewo"/>
 		<text name="input_vcaSnapLEFT"    text="Przesuń w lewo"/>
 		<text name="input_vcaSnapRIGHT"   text="Przesuń w prawo"/>
 		<text name="input_vcaNO_ARB"      text="Wył. centrowanie kół"/>
@@ -138,12 +138,12 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="input_vcaKSAXIS"      text="Permanentne utrzymanie prędkości osi"/>
 		<text name="input_vcaKSAXIS_1"    text="Permanentne utrzymanie prędkości: Szybciej"/>
 		<text name="input_vcaKSAXIS_2"    text="Permanentne utrzymanie prędkości: Wolniej"/>
-		<text name="input_vcaSWAPSPEED"   text="Wyrównanie prędkości"/>
+		<text name="input_vcaSWAPSPEED"   text="Przełączanie tempomatów"/>
 		<text name="input_vcaHandRpm"     text="RPM gazu ręcznego"/>
 		<text name="input_vcaHandRpm_1"   text="Dodaj gazu ręcznie"/>
 		<text name="input_vcaHandRpm_2"   text="Odejmij gazu ręcznie"/>
 		<text name="input_vcaHandbrake"   text="Hamulec ręczny"/>
-		<text name="input_vcaLimitSpeed"  text="Włącz/Wyłącz tempomat"/>
+		<text name="input_vcaLimitSpeed"  text="Limiter prędkości"/>
 		<text name="input_vcaAutoShift"   text="Wł./Wył. automatyczną zmianę biegów"/>
 		<text name="input_vcaDiffLockF"   text="Ster. blokadą przedniego dyf."/>
 		<text name="input_vcaDiffLockM"   text="Ster. napędem na wszystkie koła"/>
