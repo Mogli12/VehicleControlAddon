@@ -42,7 +42,8 @@
 		<text name="vcaGEARRGMODE"        text="Swap gear and range keys"/>
 		<text name="vcaSTSPEEDO"          text="Steering speed"/>
 		<text name="vcaSTSPEEDI"          text="Inverse steering speed"/>
-		<text name="vcaIDLETHROTTLE"      text="Modify Motor RPM"/>
+		<text name="vcaIDLETHROTTLE"      text="Modify motor RPM"/>
+		<text name="vcaCLUTCHMODE"        text="Clutch mode"/>
 		<text name="vcaMOUSEARB"          text="Mouse and automatic back rotation"/>
 		<text name="vcaANALOG"            text="Adaptive steering and analog controller"/>
 		<text name="vcaROTATEHT"          text="Camera and head tracking"/>
@@ -90,6 +91,7 @@
 		<text name="vca_tip_STSPEEDO"     text="Steering speed"/>
 		<text name="vca_tip_STSPEEDI"     text="Inverse steering speed"/>
 		<text name="vca_tip_IDLETHROTTLE" text="The engine independently accelerates to maintain idle speed and the variable transmission adjusts the RPM"/>
+		<text name="vca_tip_CLUTCHMODE"   text="The vehicle opens the clutch automatically"/>
 		<text name="vca_tip_MOUSEARB"     text="Auto rotate back for mouse steering"/>
 		<text name="vca_tip_ANALOG"       text="Support of adaptive steering for analog controllers"/>
 		<text name="vca_tip_ROTATEHT"     text="Rotate camera even if head tracking is enabled"/>
@@ -165,6 +167,11 @@
 		<text name="vcaSnapArtAxis"     text="Lane guidance is not supported for vehicles with articulated axis"/>
 		<text name="vcaSnapSetA"        text="Set point B to start lane guidance"/>
 		<text name="vcaSnapSetB"        text="Lane guidance is already initialized"/>
+		
+		<text name="vcaClutchDefault"   text="default"/>
+		<text name="vcaClutchShuttle"   text="shuttle control"/>
+		<text name="vcaClutchAntiStall" text="anti stall"/>
+		<text name="vcaClutchTurbo"     text="turbo clutch"/>
 		
 		<text name="vcaButtonSnapWidth"  text="Detect width"/>
 		<text name="vcaButtonSnapOffset" text="Swap offset"/>

@@ -193,6 +193,11 @@ vehicleControlAddon.toolStateLower      = 1
 vehicleControlAddon.toolStateActivate   = 2
 vehicleControlAddon.toolStateFold       = 3
 
+vehicleControlAddon.DEFAULT_CLUTCH      = 0
+vehicleControlAddon.SHUTTLE_CLUTCH      = 1
+vehicleControlAddon.ANTI_STALL          = 2
+vehicleControlAddon.TURBO_CLUTCH        = 3
+
 vehicleControlAddon.shiftTimes = { 0, 250, 500, 1000 } -- index like vehicleControlAddon.shiftTime...
 
 function vehicleControlAddon.prerequisitesPresent(specializations)
@@ -274,11 +279,13 @@ function vehicleControlAddon.createStates()
 	vehicleControlAddon.createState( "diffLockSwap" , nil                , false, VCAValueType.bool  )
 	vehicleControlAddon.createState( "diffFrontAdv" , nil                , false, VCAValueType.bool  )
 	vehicleControlAddon.createState( "idleThrottle" , "idleThrottle"     , nil  , VCAValueType.bool  )
+	vehicleControlAddon.createState( "clutchMode"   , nil                , 0    , VCAValueType.int16 )
 	vehicleControlAddon.createState( "hasGearsAuto" , nil                , false, VCAValueType.bool  , nil, false )
 	vehicleControlAddon.createState( "hasGearsIdle" , nil                , false, VCAValueType.bool  , nil, false )
 	vehicleControlAddon.createState( "handThrottle" , nil                , 0    , VCAValueType.float , nil, false )
 	vehicleControlAddon.createState( "minGearSpeed" , nil                , 0    , VCAValueType.float , nil, false )
 	vehicleControlAddon.createState( "maxGearSpeed" , nil                , 0    , VCAValueType.float , nil, false )
+	vehicleControlAddon.createState( "gearRatio"    , nil                , 0    , VCAValueType.float , nil, false )
 																																			 
 	vehicleControlAddon.createState( "splitGears"   , nil                , 0    , VCAValueType.int16 , vehicleControlAddon.vcaOnSetSplitGears )
 	vehicleControlAddon.createState( "splitGearRatio",nil                , 7    , VCAValueType.int16 , vehicleControlAddon.vcaOnSetSplitGearRatio )
@@ -3263,7 +3270,7 @@ end
 
 function vehicleControlAddon:onPostUpdate( dt, isActiveForInput, isActiveForInputIgnoreSelection, isSelected ) 
 	if self.isServer then 
-		local minGearSpeed, maxGearSpeed = 0, 0
+		local gearRatio, minGearSpeed, maxGearSpeed = 0, 0, 0
 		if       self:getIsVehicleControlledByPlayer()
 				and self.spec_motorized                     ~= nil 
 				and self.spec_motorized.motor               ~= nil 	
@@ -3272,12 +3279,17 @@ function vehicleControlAddon:onPostUpdate( dt, isActiveForInput, isActiveForInpu
 				and self:getIsMotorStarted()
 				then 
 			local motor = self.spec_motorized.motor 
-			if (motor.backwardGears or motor.forwardGears) and motor.minGearRatio ~= 0 then
-				local factor = math.pi / ( math.abs( motor.minGearRatio ) * 30 ) 
+			if      motor.gear ~= nil
+					and motor.currentGears ~= nil
+					and motor.currentGears[motor.gear] ~= nil
+					then
+				gearRatio    = motor.currentGears[motor.gear].ratio * motor:getGearRatioMultiplier()
+				local factor = math.pi / ( math.abs( gearRatio ) * 30 ) 
 				minGearSpeed = motor.minRpm * factor
 				maxGearSpeed = motor.maxRpm * factor
 			end 
 		end 
+		self:vcaSetState( "gearRatio",    gearRatio )
 		self:vcaSetState( "minGearSpeed", minGearSpeed )
 		self:vcaSetState( "maxGearSpeed", maxGearSpeed )
 	end 
@@ -4477,6 +4489,12 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 				m = 1 
 			end 
 			
+			if     self.spec_vca.clutchMode >= vehicleControlAddon.ANTI_STALL then
+				motor.stallTimer = 0
+			elseif self.spec_vca.clutchMode >= vehicleControlAddon.SHUTTLE_CLUTCH and self.movingDirection * motor.currentDirection < 0 then 
+				motor.stallTimer = 0
+			end
+			
 			local noAutoBrake = false 
 			if      motor.gearShiftMode           == VehicleMotor.SHIFT_MODE_MANUAL_CLUTCH
 					and motor.manualClutchValue       <  0.9 then 
@@ -4530,7 +4548,7 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 					and ( ( m > 0 and acceleration > -0.01 ) or ( m < 0 and acceleration < 0.01 ) )
 					and (motor.backwardGears or motor.forwardGears) 
 					and motor.gearRatio ~= 0 
-					and motor.maxGearRatio ~= 0 
+					and self.spec_vca.gearRatio ~= 0 
 					and noAutoBrake then
 
 				self.spec_vca.useIdleThrottle  = true 
@@ -4543,11 +4561,11 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 					minRpm        = motor.minRpm + vehicleControlAddon.mbClamp( self.spec_vca.handThrottle, 0, 1 ) * rpmRange
 				end 													
 				local diffRpm   = motor.differentialRotSpeed * 30 / math.pi
-				local motorRpm  = math.abs( diffRpm * motor.gearRatio )
-				local clutchRpm = math.abs( diffRpm * motor.maxGearRatio )
+				local motorRpm  = motor.motorRotSpeed * 30 / math.pi --math.abs( diffRpm * motor.gearRatio )
+				local clutchRpm = math.abs( diffRpm * self.spec_vca.gearRatio )
 				local delta     = vehicleControlAddon.mbClamp( 1 - self.spec_vca.handThrottle, 0, 0.1 )
 				
-				-- accelerate
+			-- accelerate
 				local function getClutchMinAcc()
 					if     clutchRpm >= minRpm then 
 						return 0 
@@ -4558,7 +4576,7 @@ function vehicleControlAddon:vcaUpdateWheelsPhysics( superFunc, dt, currentSpeed
 					end 
 				end 
 				local function getMotorMaxAcc()
-					local maxRpm = 0.95 * minRpm + 0.05 * motor.maxRpm
+					local maxRpm = 0.96 * minRpm + 0.04 * motor.maxRpm
 					if     motorRpm >= maxRpm then 
 						return 0 
 					elseif motorRpm <= minRpm then 
@@ -4658,6 +4676,7 @@ function vehicleControlAddon:vcaGetSmoothedAccBrake( superFunc, acceleratorPedal
 			and next(self.spec_motorized.differentials) ~= nil
 			and ( self.spec_vca.handbrake 
 				or  self.spec_vca.isBlocked 
+				or  not self:getIsMotorStarted()
 				or  ( self.spec_vca.ksIsOn and math.abs( self.spec_vca.keepSpeed ) < 0.5 ) )
 			then 
 		return superFunc( self, 0, 1, dt )
@@ -4666,6 +4685,45 @@ function vehicleControlAddon:vcaGetSmoothedAccBrake( superFunc, acceleratorPedal
 end 
 WheelsUtil.getSmoothedAcceleratorAndBrakePedals = Utils.overwrittenFunction( WheelsUtil.getSmoothedAcceleratorAndBrakePedals, vehicleControlAddon.vcaGetSmoothedAccBrake )
 
+--******************************************************************************************************************************************
+function vehicleControlAddon.vcaMotorAfterUpdateGear( motor, superFunc, acceleratorPedal, brakePedal, dt, ... )
+	local self  = motor.vehicle 
+	
+	local adjAcceleratorPedal, brakePedal = superFunc( motor, acceleratorPedal, brakePedal, dt, ... )
+	
+	if 			self.spec_vca.clutchMode == vehicleControlAddon.TURBO_CLUTCH
+			and (motor.backwardGears or motor.forwardGears)
+			and motor.maxGearRatio ~= nil
+			and motor.maxGearRatio ~= 0
+			then 
+		local diffRpm   = motor.differentialRotSpeed * 30 / math.pi
+		local motorRpm  = motor.motorRotSpeed * 30 / math.pi --math.abs( diffRpm * motor.gearRatio )
+		local clutchRpm = math.abs( diffRpm * self.spec_vca.gearRatio )
+	
+	  local openRpm  = 0.9 * motor.minRpm + 0.1 * motor.maxRpm
+		local closeRpm = 0.7 * motor.minRpm + 0.3 * motor.maxRpm
+	
+		if self.spec_vca.tcOpen == nil then self.spec_vca.tcOpen = true end 
+		
+		if self.spec_vca.tcOpen then 
+			if clutchRpm > closeRpm then 
+				self.spec_vca.tcOpen = false 
+			end 
+		else 
+			if clutchRpm  < openRpm then 
+				self.spec_vca.tcOpen = true  
+			end 
+		end 
+		
+		if self.spec_vca.tcOpen then 
+			motor.maxGearRatio = motor.maxGearRatio * 3 
+		end 
+	end 
+	
+	return adjAcceleratorPedal, brakePedal
+end 
+VehicleMotor.updateGear = Utils.overwrittenFunction( VehicleMotor.updateGear, vehicleControlAddon.vcaMotorAfterUpdateGear )
+	
 --******************************************************************************************************************************************
 function vehicleControlAddon.vcaMotorGetSpeedLimit( motor, superFunc, ... )
 	local self  = motor.vehicle 
@@ -5438,6 +5496,11 @@ function vehicleControlAddon:vcaShowSettingsUI()
 																		string.format("%4d ms",vehicleControlAddon.shiftTimes[2] ),
 																		string.format("%4d ms",vehicleControlAddon.shiftTimes[3] ),
 																		string.format("%4d ms",vehicleControlAddon.shiftTimes[4] ) }
+																		
+	self.spec_vcaUI.clutchMode = {	vehicleControlAddon.getText("vcaClutchDefault",   "default" ), 
+																	vehicleControlAddon.getText("vcaClutchShuttle",   "shuttle" ), 
+																	vehicleControlAddon.getText("vcaClutchAntiStall", "anti stall" ), 
+																	vehicleControlAddon.getText("vcaClutchTurbo",     "turbo" ) }																	
 	
 	g_gui:showDialog( "vehicleControlAddonMenu", true )	
 end

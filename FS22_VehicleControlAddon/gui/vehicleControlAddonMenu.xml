@@ -229,6 +229,14 @@
 					<GuiElement type="text"   profile="multiTextOptionSettingsTooltip" vcaTextID="vca_tip_IDLETHROTTLE" text="idleThrottle"/>
 				</GuiElement>
 
+				<GuiElement type="multiTextOption" profile="multiTextOptionSettings" id="clutchMode" onCreate="onCreateSubElement" onCreateArgs="list0">
+					<GuiElement type="button" profile="multiTextOptionSettingsLeft" />
+					<GuiElement type="button" profile="multiTextOptionSettingsRight" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsText" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsTitle" vcaTextID="vcaCLUTCHMODE" text="Clutch Mode"/>
+					<GuiElement type="bitmap" profile="multiTextOptionSettingsBg" />
+					<GuiElement type="text"   profile="multiTextOptionSettingsTooltip" vcaTextID="vca_tip_CLUTCHMODE" text="Clutch Mode (tt)"/>
+				</GuiElement>	
 
 				<GuiElement type="text" profile="settingsMenuSubtitle" vcaTextID="vcaTitleDiff" text="Differentials"/> <!--vcaTextID="vcaSETTINGS" text="settings" /> -->
 
