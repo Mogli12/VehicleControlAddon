@@ -51,6 +51,7 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vcaSTSPEEDO"          text="Prędkość skrętu"/>
 		<text name="vcaSTSPEEDI"          text="Odwróć prędkość skrętu"/>
 		<text name="vcaIDLETHROTTLE"      text="Zmień obroty silnika"/>
+        <text name="vcaCLUTCHMODE"        text="Tryb sprzęgła"/>
 		<text name="vcaMOUSEARB"          text="Myszka i autom. centrowanie"/>
 		<text name="vcaANALOG"            text="Sterowanie adaptacyjne i kontroler analogowy"/>
 		<text name="vcaROTATEHT"          text="Kamera i śledzenie głowy"/>
@@ -98,6 +99,7 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vca_tip_STSPEEDO"     text="Prędkość skrętu"/>
 		<text name="vca_tip_STSPEEDI"     text="Odwraca prędkość skrętu"/>
 		<text name="vca_tip_IDLETHROTTLE" text="Silnik przyspiesza niezależnie, aby utrzymać obroty biegu jałowego, a skrzynia CVT dostosowuje RPM"/>
+        <text name="vca_tip_CLUTCHMODE"   text="Pojazd automatycznie rozłącza sprzęgło, jeśli prędkość obrotowa silnika jest zbyt niska"/>
 		<text name="vca_tip_MOUSEARB"     text="Automatyczne centrowanie kół dla sterowania myszką"/>
 		<text name="vca_tip_ANALOG"       text="Wsparcie dla sterowania adaptacyjnego z kontrolerami analogowymi"/>
 		<text name="vca_tip_ROTATEHT"     text="Obracanie kamery nawet, gdy śledzenie głowy jest włączone"/>
@@ -173,6 +175,11 @@ Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
 		<text name="vcaSnapArtAxis"       text="Naprowadzanie na ścieżkę nie jest obsługiwane w pojazdach przegubowych"/>
         <text name="vcaSnapSetA"          text="Ustaw pkt. B aby rozpocząć jazdę po linii"/>
 		<text name="vcaSnapSetB"          text="Jazda po linii została już zainicjalizowana"/>
+
+        <text name="vcaClutchDefault"     text="Domyślne"/>
+		<text name="vcaClutchShuttle"     text="Odwrotnie"/>
+		<text name="vcaClutchAntiStall"   text="Bez gaśnięcia"/>
+		<text name="vcaClutchTurbo"       text="Turbosprzęgło"/>
 		
 		<text name="vcaButtonSnapWidth"   text="Wykryj szerokość"/>
 		<text name="vcaButtonSnapOffset"  text="Wyrównaj przesunięcie"/>
