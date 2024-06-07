@@ -97,7 +97,7 @@
 		<text name="vca_tip_ROTATEHT"     text="Tourne la caméra même si le suivi de la tête est activé"/>
 		<text name="vca_tip_DEBUG"        text="Informations supplémentaires dans le fichier journal"/>
 		<text name="vca_tip_SPLITGEARS"   text="Nombre de rapports powershift"/>
-		<text name="vca_tip_SPLITGEARRATIO" text="apport de powershift"/>
+		<text name="vca_tip_SPLITGEARRATIO" text="rapport de powershift"/>
 		<text name="vca_tip_GEARTIME"     text="Temps de changement de vitesse"/>
 		<text name="vca_tip_GRPTIME"      text="Temps de changement de groupe"/>
 		<text name="vca_tip_INPUTBINDING" text="Affichage des configuration de touches"/>
