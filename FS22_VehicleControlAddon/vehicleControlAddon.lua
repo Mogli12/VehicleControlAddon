@@ -4700,8 +4700,8 @@ function vehicleControlAddon.vcaMotorAfterUpdateGear( motor, superFunc, accelera
 		local motorRpm  = motor.motorRotSpeed * 30 / math.pi --math.abs( diffRpm * motor.gearRatio )
 		local clutchRpm = math.abs( diffRpm * self.spec_vca.gearRatio )
 	
-	  local openRpm  = 0.9 * motor.minRpm + 0.1 * motor.maxRpm
-		local closeRpm = 0.7 * motor.minRpm + 0.3 * motor.maxRpm
+	  local openRpm  = 0.95 * motor.minRpm + 0.05 * motor.maxRpm
+		local closeRpm = 0.75 * motor.minRpm + 0.25  * motor.maxRpm
 	
 		if self.spec_vca.tcOpen == nil then self.spec_vca.tcOpen = true end 
 		
@@ -4710,13 +4710,19 @@ function vehicleControlAddon.vcaMotorAfterUpdateGear( motor, superFunc, accelera
 				self.spec_vca.tcOpen = false 
 			end 
 		else 
-			if clutchRpm  < openRpm then 
+			if clutchRpm < openRpm then 
 				self.spec_vca.tcOpen = true  
 			end 
 		end 
 		
 		if self.spec_vca.tcOpen then 
-			motor.maxGearRatio = motor.maxGearRatio * 3 
+			local factor = 1.25
+			if motorRpm  <= openRpm then 
+				factor = factor + 2
+			elseif motorRpm < closeRpm then 
+				factor = factor + 2 * ( closeRpm - motorRpm ) / ( closeRpm - openRpm )
+			end 
+			motor.maxGearRatio = motor.maxGearRatio * factor
 		end 
 	end 
 	
