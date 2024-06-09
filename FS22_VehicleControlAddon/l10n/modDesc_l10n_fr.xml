@@ -43,10 +43,16 @@
 		<text name="vcaSTSPEEDO"          text="Vitesse de la direction"/>
 		<text name="vcaSTSPEEDI"          text="Vitesse de retour de la direction"/>
 		<text name="vcaIDLETHROTTLE"      text="Modification du régime moteur"/>
+		<text name="vcaCLUTCHMODE"        text="Mode d'embrayage"/>
 		<text name="vcaMOUSEARB"          text="Direction à la souris et retour"/>
 		<text name="vcaANALOG"            text="Direction adaptative et contrôleurs"/>
 		<text name="vcaROTATEHT"          text="Caméra et suivi de la tête"/>
 		<text name="vcaDEBUG"             text="Débogage"/>
+		<text name="vcaSPLITGEARS"        text="Nombre de rapports powershift"/>
+		<text name="vcaSPLITGEARRATIO"    text="Rapport de powershift"/>
+		<text name="vcaGEARTIME"          text="Temps de changement de vitesse"/>
+		<text name="vcaGRPTIME"           text="Temps de changement de groupe"/>
+		<text name="vcaINPUTBINDING"      text="Affichage des configuration de touches"/>
 		
 		<text name="vca_tip_CAMERAI"      text="La caméra intérieure tourne automatiquement en fonction de l'angle de direction."/>
 		<text name="vca_tip_CAMERAO"      text="La caméra extérieure tourne automatiquement en fonction de l'angle de direction."/>
@@ -85,10 +91,16 @@
 		<text name="vca_tip_STSPEEDO"     text="Vitesse de la direction"/>
 		<text name="vca_tip_STSPEEDI"     text="Vitesse de retour de la direction"/>
 		<text name="vca_tip_IDLETHROTTLE" text="Le moteur maintient le régime moteur indépendamment de la vitesse"/>
+		<text name="vca_tip_CLUTCHMODE"   text="Le véhicule débraye automatiquement"/>
 		<text name="vca_tip_MOUSEARB"     text="Retour automatique de la direction lors du contrôle de celle-ci par la souris"/>
 		<text name="vca_tip_ANALOG"       text="Gestion de la direction adaptative pour les contrôleurs de jeu (manettes)"/>
 		<text name="vca_tip_ROTATEHT"     text="Tourne la caméra même si le suivi de la tête est activé"/>
 		<text name="vca_tip_DEBUG"        text="Informations supplémentaires dans le fichier journal"/>
+		<text name="vca_tip_SPLITGEARS"   text="Nombre de rapports powershift"/>
+		<text name="vca_tip_SPLITGEARRATIO" text="rapport de powershift"/>
+		<text name="vca_tip_GEARTIME"     text="Temps de changement de vitesse"/>
+		<text name="vca_tip_GRPTIME"      text="Temps de changement de groupe"/>
+		<text name="vca_tip_INPUTBINDING" text="Affichage des configuration de touches"/>
 								 
 		<text name="input_vcaSETTINGS"    text="VCA: Paramètres"/>
 		<text name="input_vcaGLOBALS"     text="VCA: Paramètres globaux"/>
@@ -104,6 +116,9 @@
 		<text name="input_vcaSNAPCONT"    text="VCA: Reprise du guidage auto"/>
 		<text name="input_vcaSNAPRESET"   text="VCA: RAZ du guidage auto"/>
 		<text name="input_vcaSNAPDIST"    text="VCA: Détection automatique de la largeur de travail"/>
+		<text name="input_vcaSNAPPATH"    text="VCA: démarrer/arrêter l'enregistrement de la trace"/>
+		<text name="input_vcaSNAP_A_B"    text="VCA: ligne A-B line"/>
+		<text name="input_vcaWORKAREA"    text="VCA: marqueur de zone de travail"/>
 		<text name="input_vcaSnapUP"      text="VCA: Faire pivoter les lignes GPS vers la gauche"/>
 		<text name="input_vcaSnapDOWN"    text="VCA: Faire pivoter les lignes GPS vers la droite"/>
 		<text name="input_vcaSnapLEFT"    text="VCA: Décaler les lignes GPS vers la gauche"/>
@@ -122,14 +137,19 @@
 		<text name="input_vcaHandRpm_1"   text="VCA: Augmenter l'accélérateur à main"/>
 		<text name="input_vcaHandRpm_2"   text="VCA: Diminuer l'accélérateur à main"/>
 		<text name="input_vcaHandbrake"   text="VCA: Frein à main on/off"/>
-		<text name="input_vcaAutoShift"   text="VCA: Shifting automatique on/off "/>
+		<text name="input_vcaLimitSpeed"  text="VCA: limiteur de vitesse on/off"/>
+		<text name="input_vcaAutoShift"   text="VCA: changement automatique des vitesses/groupes on/off "/>
 		<text name="input_vcaDiffLockF"   text="VCA: Blocage différentiel avant on/off"/>
 		<text name="input_vcaDiffLockM"   text="VCA: Transmission intégrale on/off"/>
 		<text name="input_vcaDiffLockB"   text="VCA: Blocage différentiel arrière on/off"/>
 		<text name="input_vcaLowerF"      text="VCA: Lever/baisser les outils avant"/>
 		<text name="input_vcaLowerB"      text="VCA: Lever/baisser les outils arrière"/>
+		<text name="input_vcaFoldF"       text="VCA: (dé-)plier les outils avant "/>
+		<text name="input_vcaFoldB"       text="VCA: (dé-)plier les outils arrière "/>
 		<text name="input_vcaActivateF"   text="VCA: (Dés-)activer les outils avant"/>
 		<text name="input_vcaActivateB"   text="VCA: (Dés-)activer les outils arrière"/>
+		<text name="input_vcaGearSplitUp" text="VCA: Vitesses +"/>
+		<text name="input_vcaGearSplitDown" text="VCA: Vitesses -"/>
 		
 		<text name="vcaValueOn"           text="on"/>
 		<text name="vcaValueOff"          text="off"/>
@@ -145,6 +165,14 @@
 		<text name="vcaValueRPM"          text="RPM"/>
 
 		<text name="vcaSnapArtAxis"       text="Le GPS n'est pas compatible avec les véhicules articulés"/>		
+		<text name="vcaSnapSetA"        text="Régler le point B pour démarrer le guidage par ligne"/>
+		<text name="vcaSnapSetB"        text="Le guidage par ligne est déjà initialisé
+"/>
+		
+		<text name="vcaClutchDefault"   text="embrayage default"/>
+		<text name="vcaClutchShuttle"   text="embrayage shuttle control"/>
+		<text name="vcaClutchAntiStall" text="embrayage anti stall"/>
+		<text name="vcaClutchTurbo"     text="embrayage turbo"/>
 			
 		<text name="vcaButtonSnapWidth"   text="Détection de la largeur de travail"/>
 		<text name="vcaButtonSnapOffset"  text="Inversion du décalage de l'outil"/>
@@ -155,6 +183,7 @@
 		<text name="vcaTitleGPS"          text="Guidage automatique (GPS)"/>
 		<text name="vcaTitleThrottle"     text="Accélérateurs, Freins, Transmissions"/>
 		<text name="vcaTitleDiff"         text="Motricité et blocage de ponts"/>
+		<text name="vcaTitleGears"      text="Transmission"/>
 		<text name="vcaTitleMisc"         text="Paramètres divers"/>  	
 	
 
