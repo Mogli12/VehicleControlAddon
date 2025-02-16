@@ -1,0 +1,180 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<l10n>
+	<texts>
+	
+		<text name="vcaCAMERAI"           text="İç Kamera Dönüş Hareketi"/>
+		<text name="vcaCAMERAO"           text="Dış Kamera Dönüş Hareketi"/>
+		<text name="vcaEXPONENT"          text="Hassasiyet"/>
+		<text name="vcaSTEERING"          text="Adaptif Direksiyon"/>
+		<text name="vcaSHUTTLE"           text="Şürüş Yönü"/>
+		<text name="vcaREVERSE"           text="Geri Bakma"/>
+		<text name="vcaREVERSEI"          text="Geri Bakma (içerideyken)"/>
+		<text name="vcaREVERSEO"          text="Geri Bakma (dışarıdayken)"/>
+		<text name="vcaLIMIT"             text="Gaz Sınırlayıcı"/>
+		<text name="vcaPEEKLR"            text="Yanlara Bakış"/>
+		<text name="vcaANGLE"             text="Kılavuz Açısı"/>
+		<text name="vcaBRAKE"             text="Düşük Fren Gücü"/>
+		<text name="vcaAUTOSHIFT"         text="Otomatik Vites"/>
+		<text name="vcaKEEPSPEED"         text="Kalıcı Hız"/>
+		<text name="vcaNO_ARB"            text="Direksiyon Merkeziyetsizliği"/>
+		<text name="vcaHANDTHROTTLE"      text="Manuel Gaz"/>
+		<text name="vcaSETTINGS"          text="Genel Ayarlar"/>
+		<text name="vcaDRAWHUD"           text="Vites Arayüzü"/>
+		
+		<text name="vcaDISTANCE"          text="Çalışma genişliği"/>
+		<text name="vcaOFFSET1"           text="Sapma miktarı"/>
+		<text name="vcaOFFSET2"           text="Sapmayı ters çevir"/>
+		<text name="vcaSNAP90"            text="Kılavuz çizgiyi 90° ve katlarına hizala"/>
+		<text name="vcaDRAWMARKER"        text="Kılavuz çizgileri göster"/>
+		<text name="vcaSNAPLEFT"          text="Sol geriye otomatik dönüş"/>
+		<text name="vcaSNAPRIGHT"         text="Sağ geriye otomatik dönüş"/>
+
+		<text name="vcaAntiSlip"          text="Çekiş kontrolü"/>
+		<text name="vcaDiffManual"        text="Manuel dört-çeker ve diferansiyel"/>
+		<text name="vcaDiffFrontAdv"      text="Ön tekerlerin hızını arttır"/>
+		<text name="vcaDiffLockSwap"      text="Ön yerine arka aks"/>
+		<text name="vcaHudX"              text="Arayüz x konumu"/>
+		<text name="vcaHudY"              text="Arayüz y konumu"/>
+		<text name="vcaHIREDWORKER2"      text="İşçiler için diferansiyel"/>
+		
+		<text name="vcaGEARRGMODE"        text="Vites ve vites grubu tuşları arasında geçiş yap"/>
+		<text name="vcaSTSPEEDO"          text="Direksiyon hassasiyeti"/>
+		<text name="vcaSTSPEEDI"          text="Direksiyon geri toplama hızı"/>
+		<text name="vcaIDLETHROTTLE"      text="Motor devrini ayarla"/>
+		<text name="vcaMOUSEARB"          text="Mouse ve otomatik geri dönme"/>
+		<text name="vcaANALOG"            text="Adaptif direksiyon ve analog joystick"/>
+		<text name="vcaROTATEHT"          text="Kamera ve kafa takibi"/>
+		<text name="vcaDEBUG"             text="Hata Ayıklama"/>
+		
+		<text name="vca_tip_CAMERAI"      text="İç kamera direksiyon açısına göre otomatik olarak döner"/>
+		<text name="vca_tip_CAMERAO"      text="Dış kamera direksiyon açısına göre otomatik olarak döner"/>
+		<text name="vca_tip_EXPONENT"     text="Araç hızına göre adaptif direksiyon hassasiyeti"/>
+		<text name="vca_tip_STEERING"     text="Adaptif direksiyon otomatik direksiyon geri toplamasını ve maksimum direksiyon açısını ayarlar"/>
+		<text name="vca_tip_SHUTTLE"      text="Sürüş yönünü &lt;space&gt; tuşuyla değiştirir"/>
+		<text name="vca_tip_REVERSEI"     text="Aracın gittiği yön değişirse içerideyken kamera 180° döner"/>
+		<text name="vca_tip_REVERSEO"     text="Aracın gittiği yön değişirse dışarıdayken kamera 180° döner"/>
+		<text name="vca_tip_LIMIT"        text="Sol SHIFT tuşu basılıyken veya basılı değilken gaz sınırlayıcı"/>
+		<text name="vca_tip_PEEKLR"       text="Sağ SHIFT + Sağ/Sol yön tuşu kombinasyonu ile hızlı bir bakış atın"/>
+		<text name="vca_tip_ANGLE"        text="Aracı kılavuz açısına hizalamak için döndür"/>
+		<text name="vca_tip_BRAKE"        text="Düşük fren gücü yüzdesi, diğer bir deyişle gaz bırakılınca aracın sürüklenme direnci"/>
+		<text name="vca_tip_AUTOSHIFT"    text="Otomatik vites ve vites grubu değiştirme"/>
+		<text name="vca_tip_KEEPSPEED"    text="Kalıcı hız açıksa gaz tuşu joystick gibi davranır. Bu, aracı hız sabitleyici ile sürmeye benzer."/>
+		<text name="vca_tip_NO_ARB"       text="Direksiyon merkeziyetsiliği açıksa direksiyon otomatik olarak geri toplamaz"/>
+		<text name="vca_tip_HANDTHROTTLE" text="Motor ayarlanan motor devrine kadar otomatik çıkar"/>
+		<text name="vca_tip_DRAWHUD"      text="Vites arayüzünü göster veya gizle"/>
+		
+		<text name="vca_tip_DISTANCE"     text="İki kılavuz şerit arasındaki mesafe"/>
+		<text name="vca_tip_OFFSET1"      text="Kılavuz çizginin sapma miktarı"/>
+		<text name="vca_tip_OFFSET2"      text="Kılavuz çizginin sapma miktarını tersine çevir"/>
+		<text name="vca_tip_SNAP90"       text="Kılavuz çizgiyi 90°'ar derece otomatik döndür"/>
+		<text name="vca_tip_DRAWMARKER"   text="Kılavuz çizgileri göster"/>
+		<text name="vca_tip_SNAPLEFT"     text="Sola geri dönerken kaçıncı kılavuz çizgiye dönüleceği"/>
+		<text name="vca_tip_SNAPRIGHT"    text="Sağa geri dönerken kaçıncı kılavuz çizgiye dönüleceği"/>
+		
+		<text name="vca_tip_AntiSlip"     text="Çekiş kontrolü patinaj yapan tekerlekleri frenler"/>
+		<text name="vca_tip_DiffManual"   text="Manuel dört çeker ve ön-arka diferansiyel"/>
+		<text name="vca_tip_DiffFrontAdv" text="Dört çeker açıksa ön tekerlerin hızını arttır"/>
+		<text name="vca_tip_DiffLockSwap" text="Ön yerine arka aks hızını arttır"/>
+		<text name="vca_tip_HudX"         text="Arayüzün yatay eksendeki konumu"/>
+		<text name="vca_tip_HudY"         text="Arayüzün dikey eksendeki konumu"/>
+		<text name="vca_tip_HIREDWORKER2" text="İşçilerin varsayılan veya düzenlenmiş diferansiyel kullanmasını kontrol eder"/>
+	
+		<text name="vca_tip_GEARRGMODE"   text="Bu ayarlar vites ve vites grubu kontrollerini birbiriyle değiştirir"/>
+		<text name="vca_tip_STSPEEDO"     text="Direksiyon hassasiyeti"/>
+		<text name="vca_tip_STSPEEDI"     text="Direksiyon geri toplama hızı"/>
+		<text name="vca_tip_IDLETHROTTLE" text="Motor rölanti devrini korumak için kullanıcıdan bağımsız şekilde gaza basar ve değişken viteslere göre devrini ayarlar"/>
+		<text name="vca_tip_MOUSEARB"     text="Mouse ile direksiyon kontrolü için otomatik geri dönme"/>
+		<text name="vca_tip_ANALOG"       text="Analog joystickler için adaptif direksiyon desteği"/>
+		<text name="vca_tip_ROTATEHT"     text="Kafa takibi aktifse bile kamerayı döndür"/>
+		<text name="vca_tip_DEBUG"        text="Log dosyalarıa ekstra bilgiler yazılır"/>
+		                               
+		<text name="input_vcaSETTINGS"    text="VCA: ayarlar"/>
+		<text name="input_vcaGLOBALS"     text="VCA: genel ayarlar"/>
+		<text name="input_vcaUP"          text="VCA: kamera açıları arasında geçiş yap/ön kameraya geç"/>
+		<text name="input_vcaDOWN"        text="VCA: diğer tarafa bak/arka kameraya geç"/>
+		<text name="input_vcaLEFT"        text="VCA: sola bak"/>
+		<text name="input_vcaRIGHT"       text="VCA: sağa bak"/>
+		<text name="input_vcaSNAP"        text="VCA: aracı kılavuza hizala"/>
+		<text name="input_vcaSNAPLEFT"    text="VCA: soldaki şeride geri hizala"/>
+		<text name="input_vcaSNAPRIGHT"   text="VCA: sağdaki şeride geri hizala"/>
+		<text name="input_vcaSNAPPREV"    text="VCA: önceki kılavuz çizgiye hizala"/>
+		<text name="input_vcaSNAPNEXT"    text="VCA: sonraki kılavuz çizgiye hizala"/>
+		<text name="input_vcaSNAPCONT"    text="VCA: kılavuzu tekrar aktif et"/>
+		<text name="input_vcaSNAPRESET"   text="VCA: kılavuz çizgiyi sıfırla"/>
+		<text name="input_vcaSNAPDIST"    text="VCA: çalışma genişliğini belirle"/>
+		<text name="input_vcaSnapUP"      text="VCA: kılavuz çizgiyi sola döndür"/>
+		<text name="input_vcaSnapDOWN"    text="VCA: kılavuz çizgiyi sağa döndür"/>
+		<text name="input_vcaSnapLEFT"    text="VCA: kılavuz çizgiyi sola kaydır"/>
+		<text name="input_vcaSnapRIGHT"   text="VCA: kılavuz çizgiyi sağa kaydır"/>
+		<text name="input_vcaNO_ARB"      text="VCA: otomatik geri dönmeyi kapat"/>
+		<text name="input_vcaINCHING"     text="VCA: yavaşlatma"/>
+		<text name="input_vcaKEEPROT"     text="VCA: genel kamera açısını koru"/>
+		<text name="input_vcaKEEPROT2"    text="VCA: kalıcı hız kamera yönü"/>
+		<text name="input_vcaKEEPSPEED"   text="VCA: hızı koru"/>
+		<text name="input_vcaKEEPSPEED2"  text="VCA: kalıcı hız"/>
+		<text name="input_vcaKSAXIS"      text="VCA: kalıcı hız ekseni"/>
+		<text name="input_vcaKSAXIS_1"    text="VCA: kalıcı hız: hızlan"/>
+		<text name="input_vcaKSAXIS_2"    text="VCA: kalıcı hız: yavaşla"/>
+		<text name="input_vcaSWAPSPEED"   text="VCA: hız sabitleyici ön ayarlı hızı değiştir"/>
+		<text name="input_vcaHandRpm"     text="VCA: manuel gaz motor devri"/>
+		<text name="input_vcaHandRpm_1"   text="VCA: manuel gazı arttır"/>
+		<text name="input_vcaHandRpm_2"   text="VCA: manuel gazı düşür"/>
+		<text name="input_vcaHandbrake"   text="VCA: el freni aç/kapat"/>
+		<text name="input_vcaAutoShift"   text="VCA: otomatik vites aç/kapat"/>
+		<text name="input_vcaDiffLockF"   text="VCA: ön diferansiyeli aç/kapat"/>
+		<text name="input_vcaDiffLockM"   text="VCA: dört çeker/önden çekiş"/>
+		<text name="input_vcaDiffLockB"   text="VCA: arka diferansiyeli aç/kapat"/>
+		<text name="input_vcaLowerF"      text="VCA: öndeki aleti indir/kaldır"/>
+		<text name="input_vcaLowerB"      text="VCA: arkadaki aleti indir/kaldır"/>
+		<text name="input_vcaActivateF"   text="VCA: öndeki aleti aç/kapat"/>
+		<text name="input_vcaActivateB"   text="VCA: arkadaki aleti aç/kapat"/>
+		
+		<text name="vcaValueOn"           text="Açık"/>
+		<text name="vcaValueOff"          text="Kapalı"/>
+		<text name="vcaValueNever"        text="Asla"/>
+		<text name="vcaValueAlways"       text="Her Zaman"/>
+		<text name="vcaValueAlwaysH"      text="Her Zaman (Yüksek)"/>
+		<text name="vcaValueNormal"       text="Normal"/>
+		<text name="vcaValueLight"        text="Düşük"/> 
+		<text name="vcaValueStrong"       text="Yüksek"/>
+		<text name="vcaValueEntered"      text="Girilmişse"/>
+		<text name="vcaValueInactive"     text="Aktif değilse"/>
+		<text name="vcaValueInactiveH"    text="Aktif değilse (yüksek)"/>
+		<text name="vcaValueRPM"          text="Motor Devri"/>
+		
+		<text name="vcaSnapArtAxis"       text="Kılavuz çizgileri belden kırmalı araçlarda kullanılamamaktadır."/>
+		
+		<text name="vcaButtonSnapWidth"   text="Genişliği algıla"/>
+		<text name="vcaButtonSnapOffset"  text="Sapmayı ters çevir | Swap offset"/>
+
+		<text name="vcaTitleIntro"        text="Giriş"/>
+		<text name="vcaTitleCam"          text="Kamera"/>
+		<text name="vcaTitleSteering"     text="Direksiyon"/>
+		<text name="vcaTitleGPS"          text="Kılavuz Çizgi"/>
+		<text name="vcaTitleThrottle"     text="Gaz, Fren, Vites"/>
+		<text name="vcaTitleDiff"         text="Dört Çeker ve Diferansiyel"/>
+		<text name="vcaTitleMisc"         text="Diğer Ayarlar"/>
+		
+		
+		<text name="vcaHelpIntro_1"       text="Araç Kontrol Eklentisi birçok özelliği tek çatı altında toplayan bir moddur. Çoğu özellik varsayılan olarak kapalı ayarlanmıştır." />
+		<text name="vcaHelpIntro_2"       text="Mod menüsünü açan varsayılan kısayol tuşu Sol CTRL + C'dir. Fakat oyun içi ayarlardan bu tuş kombinasyonunu kontrol etmeniz önerilmektedir." />
+		<text name="vcaHelpIntro_3"       text="Sol CTRL + Sol ALT + C ise modun genel ayarlarını açmaktadır. Bu menüden varsayılan ayarları değiştirebilir, bundan sonraki kullanacağnız araçlarınızda bu ayarları kullanabilirsiniz." />
+		<text name="vcaHelpCam_1"         text="Araç Kontrol Eklentisi direksiyon açısına ve yönüne göre kamerayı çevirebilir. Böylece her zaman aracın gittiği yöne bakmış olursunuz." />
+		<text name="vcaHelpCam_2"         text="Kamera dönüşünü ayarlardan aktif edebilirsiniz. &quot;off&quot;, &quot;light&quot;, &quot;normal&quot; and &quot;strong&quot; ayarları arasında seçim yapabilirsiniz. İç ve dış kamera için ayarlar ayrılmıştır. Ayrıca kameranın aracın gittiği yöne göre değişmesini de açıp kapatabilirsiniz." />
+		<text name="vcaHelpCam_3"         text="Sağ SHIFT + Yön Tuşları ile ileri, geri, sağa, sola bakabilirsiniz. İki mod bulunmaktadır. Yanlara bakış açıksa kamera yönü tuşu bıraktığınız zaman varsayılan açıya geçer. Yanlara bakış kapalı ise kamera kalıcı olarak değişir." />
+		<text name="vcaHelpSteering_1"    text="Araç Kontrol Eklentisi direksiyon hızını aracın hızına göre ayarlar." />
+		<text name="vcaHelpSteering_2"    text="Ayarlardan direksiyon ayarlarını değiştirebilirsiniz. Adaptif direksiyon kapalıysa Araç Kontrol Eklentisi direksiyonun davranışına etki etmez. Direksiyon hızı ayarı sadece adaptif direksiyon açıksa etkilidir. Direksiyon merkeziyetsizliği direksiyonun geri toplanmasını devre dışı bırakır." />
+		<text name="vcaHelpSteering_3"    text="Adaptif direksiyon klavye kullanıcıları için tasarlanmıştır. Otomatik direksiyon geri toplama hızı A veya D tuşlarını ne kadar bıraktığınızla ilgilidir. Direksiyonu sabit tutmak istiyorsanız kısaca A veya D tuşlarına basıp bırakabilirsiniz. Eğer dönülen yönün tersi tuşa basılırsa direksiyonun tekrardan merkeze toplanması daha da hızlanacaktır. Bu bir acil durum gibidir. Direksiyonu çok döndürdüyseniz diğer yönde döndürerek normal hale getirebilirsiniz. Direksiyon tekrar merkezlenene kadar çok hızlı dönecektir." />
+		<text name="vcaHelpGPS_1"         text="Araç Kontrol Eklentisi basit bir kılavuz sistemi içermektedir." />
+		<text name="vcaHelpGPS_2"         text="Eğer 0.5 metreden daha büyük bir şerit varsa kılavuz sistemi aktif olur. O anki alet genişliğini otomatik olarak algılamak için ayarlar menüsünü veya varsayılan kombinasyon olan Sol CRTL + Sol ALT + W tuşlarını kullanabilirsiniz. Aracı kılavuz çizgiye oturtmak için varsayılan kombinasyon olan Sol CTRL + W tuşlarını kullanabilirsiniz. Aracı sağa veya sola döndürmeye çalışırsanız kılavuz sistemi otomatik olarak devre dışı kalacaktır." />
+		<text name="vcaHelpGPS_3"         text="Kılavuz çizgiyi varsayılan kombinasyon olan Sol CRTL + Yön Tuşlarını kullanarak taşıyabilir veya döndürebilirsiniz. Varsayılan olarak Sol ALT + A veya Sol ALT + D tuş kombinasyonlarını kullanarak sağdan veya soldan geri dönebilirsiniz. Sağa veya sola geri dönerken aracın kaçıncı kılavuz çizgiye oturacağını ayarlar menüsünden ayarlabilirsiniz. Tarlada sola doğru çalışmak istiyorsanız sola dönüş sayısını sağa dönüşten büyük ayarlayabilirsiniz. Her geri döndüğünüzde Araç Kontrol Eklentisi sağ ve sol değerlerini birbiriyle değiştirir." />
+		<text name="vcaHelpThrottle_1"    text="Araç Kontrol Eklentisi gaz ve fren konusunda da birtakım iyileştirmeler sunuyor. Bu iyileştirmelerin birçoğu klavye kullanan kullanıcılara yönelik olarak geliştirilmiştir." />
+		<text name="vcaHelpThrottle_2"    text="Gaz sınırlayıcı değerleri yavaşlatma tuşunun işlevi için kullanılır. İlk değer yavaşlatmaya basılmadan, ikinci değer ise yavaşlatma tuşuna basılınca verilen gazın yüzdesidir. Yavaşlatma tuşuna basılırsa hız sabitleyici de düşük değer oranında etkilenir. Düşük fren gücü, gaza veya frene basılmazken aracı otomatik olarak durduran güçtür. Düşük fren gücünü azaltmak aracın hızının düşmeden daha uzağa sürüklenmesini sağlar." />
+		<text name="vcaHelpThrottle_3"    text="Sol SHIFT tuşu gazı sınırlayarak hız sabitleyici ve maksimum motor devrini 75%'e limitler. DELETE tuşuna basarsanız araç hızını koruyacaktır. Gaz ve fren hızı arttırıp azaltır. Araç joystickli modern bir traktör gibi sürülür. Otomatik ve manuel vites arasında varsayılan tuş olan Sol CTRL + Ğ ile geçiş yapabilirsiniz." />
+		<text name="vcaHelpThrottle_4"    text="Motor değişiklikleri için vekil" />
+		<text name="vcaHelpDiff_1"        text="Eğer Araç Kontrol Eklentisi aracın diferansiyellerini tanıyabiliyorsa, diferansiyelleri manuel olarak kontrol etme şansına sahip olursunuz." />
+		<text name="vcaHelpDiff_2"        text="Diferansiyel ayarları varsayılan kapalı olarak gelir. Dört çeker ayarını açarsanız standart traktörlerin ön tekerler arka tekerlerden daha hızlı dönecektir. Bu özelliği gelişmiş hız ayarlarından değiştirebilirsiniz. Bu durumda Araç Kontrol Eklentisi otomatik olarak dört çekeri 30 km/h üstü hızlarda devre dışı bırakır." />
+		<text name="vcaHelpDiff_3"        text="Diferansiyel için varsayılan tuş kombinasyonları Sol CTRL + Ü, Sol CTRL + , ve Sol CTRL + I'dır." />
+	
+	</texts>
+</l10n>

@@ -1,0 +1,210 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<l10n>
+	<!-- Note that 'description' is only here for easier translations. It needs to be manually copied to ModDesc.XML later. -->
+	<description><![CDATA[Adds the specialization for adaptive keyboard steering]]></description>
+
+	<texts>
+		<text name="vcaCAMERAI"           text="Interior Camera Rotation"/>
+		<text name="vcaCAMERAO"           text="Exterior Camera Rotation"/>
+		<text name="vcaEXPONENT"          text="Sensitivity"/>
+		<text name="vcaSTEERING"          text="Adaptive Steering"/>
+		<text name="vcaSHUTTLE"           text="Shuttle"/>
+		<text name="vcaREVERSE"           text="Look Backwards"/>
+		<text name="vcaREVERSEI"          text="Look Backwards (inside)"/>
+		<text name="vcaREVERSEO"          text="Look Backwards (outside)"/>
+		<text name="vcaLIMIT"             text="Throttle Limiter"/>
+		<text name="vcaPEEKLR"            text="Peek Sideways"/>
+		<text name="vcaANGLE"             text="Snap Angle"/>
+		<text name="vcaBRAKE"             text="Low Brake Force"/>
+		<text name="vcaAUTOSHIFT"         text="Automatic"/>
+		<text name="vcaKEEPSPEED"         text="Permanent keep speed"/>
+		<text name="vcaNO_ARB"            text="Free steering"/>
+		<text name="vcaHANDTHROTTLE"      text="Hand throttle"/>
+		<text name="vcaSETTINGS"          text="Global Settings"/>
+		<text name="vcaDRAWHUD"           text="Transmission HUD"/>
+		
+		<text name="vcaDISTANCE"          text="Working width"/>
+		<text name="vcaOFFSET1"           text="Offset of tool"/>
+		<text name="vcaOFFSET2"           text="Invert offset"/>
+		<text name="vcaSNAP90"            text="Lane guidance every 90°"/>
+		<text name="vcaDRAWMARKER"        text="Draw marker of lane guidance"/>
+		<text name="vcaSNAPLEFT"          text="Left reverse guidance lanes"/>
+		<text name="vcaSNAPRIGHT"         text="Right reverse guidance lanes"/>
+
+		<text name="vcaAntiSlip"          text="Traction control"/>
+		<text name="vcaDiffManual"        text="Manual AWD and differentials"/>
+		<text name="vcaDiffFrontAdv"      text="Advance speed of front axle"/>
+		<text name="vcaDiffLockSwap"      text="Swap front and rear axle"/>
+		<text name="vcaHudX"              text="Hud position x"/>
+		<text name="vcaHudY"              text="Hud position y"/>
+		<text name="vcaHIREDWORKER2"      text="Differentials and hired worker"/>
+		
+		<text name="vcaGEARRGMODE"        text="Swap gear and range keys"/>
+		<text name="vcaSTSPEEDO"          text="Steering speed"/>
+		<text name="vcaSTSPEEDI"          text="Inverse steering speed"/>
+		<text name="vcaIDLETHROTTLE"      text="Modify motor RPM"/>
+		<text name="vcaCLUTCHMODE"        text="Clutch mode"/>
+		<text name="vcaMOUSEARB"          text="Mouse and automatic back rotation"/>
+		<text name="vcaANALOG"            text="Adaptive steering and analog controller"/>
+		<text name="vcaROTATEHT"          text="Camera and head tracking"/>
+		<text name="vcaDEBUG"             text="Debug"/>
+		<text name="vcaSPLITGEARS"        text="Number of powershift gears"/>
+		<text name="vcaSPLITGEARRATIO"    text="Ratio of powershift"/>
+		<text name="vcaGEARTIME"          text="Time for gear change"/>
+		<text name="vcaGRPTIME"           text="Time for gear group change"/>
+		<text name="vcaINPUTBINDING"      text="Display of input bindings"/>
+		
+		<text name="vca_tip_CAMERAI"      text="The interior camera rotates automatically according to the steering angle"/>
+		<text name="vca_tip_CAMERAO"      text="The exterior camera rotates automatically according to the steering angle"/>
+		<text name="vca_tip_EXPONENT"     text="Sensitivity of the adaptive steering with respect to ground speed"/>
+		<text name="vca_tip_STEERING"     text="The adaptive steering adjusts the automatic back rotation and the maximum steering angle"/>
+		<text name="vca_tip_SHUTTLE"      text="Change driving direction with &lt;space&gt; key"/>
+		<text name="vca_tip_REVERSEI"     text="If the vehicle changes direction the interior camera is rotated by 180°"/>
+		<text name="vca_tip_REVERSEO"     text="If the vehicle changes direction the exterior camera is rotated by 180°"/>
+		<text name="vca_tip_LIMIT"        text="Limiter of the throttle without and with left shift key"/>
+		<text name="vca_tip_PEEKLR"       text="Take a quick look with Shift-Right and the left/right arrow keys"/>
+		<text name="vca_tip_ANGLE"        text="Steer automatically to follow snap angle"/>
+		<text name="vca_tip_BRAKE"        text="Low brake force percentage, aka rolling resistance"/>
+		<text name="vca_tip_AUTOSHIFT"    text="Automatic shifting of gears and ranges"/>
+		<text name="vca_tip_KEEPSPEED"    text="If permanent keep speed is enabled then the acceleration pedal behaves like a joystick. This is like driving with cruise control."/>
+		<text name="vca_tip_NO_ARB"       text="If free steering is enabled then the steering will not automatically rotate back"/>
+		<text name="vca_tip_HANDTHROTTLE" text="The engine automatically accelerates to reach hand throttle RPM"/>
+		<text name="vca_tip_DRAWHUD"      text="Show or hide transmission HUD"/>
+		
+		<text name="vca_tip_DISTANCE"     text="Distance between two guidance lanes"/>
+		<text name="vca_tip_OFFSET1"      text="Offset of lane guidance"/>
+		<text name="vca_tip_OFFSET2"      text="Invert offset of lane guidance"/>
+		<text name="vca_tip_SNAP90"       text="Automatic rotation of lane guidance direction by 90°"/>
+		<text name="vca_tip_DRAWMARKER"   text="Draw marker of lane guidance"/>
+		<text name="vca_tip_SNAPLEFT"     text="Number of guidance lanes when turning left"/>
+		<text name="vca_tip_SNAPRIGHT"    text="Number of guidance lanes when turning right"/>
+		
+		<text name="vca_tip_AntiSlip"     text="Traction control brakes individual wheels in case of slip"/>
+		<text name="vca_tip_DiffManual"   text="Manual control of all wheel drive and front and back differentials"/>
+		<text name="vca_tip_DiffFrontAdv" text="Advance speed of front axle if all wheel drive is engaged"/>
+		<text name="vca_tip_DiffLockSwap" text="Swap front and rear axle"/>
+		<text name="vca_tip_HudX"         text="Hud position x"/>
+		<text name="vca_tip_HudY"         text="Hud position y"/>
+		<text name="vca_tip_HIREDWORKER2" text="Controls if the hired worked operates the vehicle with vanilla or modified differentials"/>
+	
+		<text name="vca_tip_GEARRGMODE"   text="This settings swaps the up/down inputs of gears and ranges"/>
+		<text name="vca_tip_STSPEEDO"     text="Steering speed"/>
+		<text name="vca_tip_STSPEEDI"     text="Inverse steering speed"/>
+		<text name="vca_tip_IDLETHROTTLE" text="The engine independently accelerates to maintain idle speed and the variable transmission adjusts the RPM"/>
+		<text name="vca_tip_CLUTCHMODE"   text="The vehicle opens the clutch automatically"/>
+		<text name="vca_tip_MOUSEARB"     text="Auto rotate back for mouse steering"/>
+		<text name="vca_tip_ANALOG"       text="Support of adaptive steering for analog controllers"/>
+		<text name="vca_tip_ROTATEHT"     text="Rotate camera even if head tracking is enabled"/>
+		<text name="vca_tip_DEBUG"        text="Additional messages are written into the log"/>
+		<text name="vca_tip_SPLITGEARS"   text="Number of powershift gears"/>
+		<text name="vca_tip_SPLITGEARRATIO" text="Ratio of powershift"/>
+		<text name="vca_tip_GEARTIME"     text="Time for gear change"/>
+		<text name="vca_tip_GRPTIME"      text="Time for gear group change"/>
+		<text name="vca_tip_INPUTBINDING" text="Display of input bindings"/>
+
+		<text name="input_vcaSETTINGS"    text="VCA: settings"/>
+		<text name="input_vcaGLOBALS"     text="VCA: global settings"/>
+		<text name="input_vcaUP"          text="VCA: toggle view direction / lock forwards"/>
+		<text name="input_vcaDOWN"        text="VCA: peek into other view direction / lock backwards"/>
+		<text name="input_vcaLEFT"        text="VCA: look left"/>
+		<text name="input_vcaRIGHT"       text="VCA: look right"/>
+		<text name="input_vcaSNAP"        text="VCA: lane guidance"/>
+		<text name="input_vcaSNAPLEFT"    text="VCA: left reverse guidance lane"/>
+		<text name="input_vcaSNAPRIGHT"   text="VCA: right reverse guidance lane"/>
+		<text name="input_vcaSNAPPREV"    text="VCA: previous guidance lane"/>
+		<text name="input_vcaSNAPNEXT"    text="VCA: next guidance lane"/>
+		<text name="input_vcaSNAPCONT"    text="VCA: reactivate guidance lane"/>
+		<text name="input_vcaSNAPRESET"   text="VCA: reset lane guidance direction"/>
+		<text name="input_vcaSNAPDIST"    text="VCA: determine working width of lane guidance"/>
+		<text name="input_vcaSNAPPATH"    text="VCA: start/stop path recording"/>
+		<text name="input_vcaSNAP_A_B"    text="VCA: A-B line"/>
+		<text name="input_vcaWORKAREA"    text="VCA: work area marker"/>
+		<text name="input_vcaSnapUP"      text="VCA: rotate lane guidance direction left"/>
+		<text name="input_vcaSnapDOWN"    text="VCA: rotate lane guidance direction right"/>
+		<text name="input_vcaSnapLEFT"    text="VCA: shift lane guidance left"/>
+		<text name="input_vcaSnapRIGHT"   text="VCA: shift lane guidance right"/>
+		<text name="input_vcaNO_ARB"      text="VCA: no auto rotate back"/>
+		<text name="input_vcaINCHING"     text="VCA: inching"/>
+		<text name="input_vcaKEEPROT"     text="VCA: keep global camera direction"/>
+		<text name="input_vcaKEEPROT2"    text="VCA: permanent keep camera direction"/>
+		<text name="input_vcaKEEPSPEED"   text="VCA: keep speed"/>
+		<text name="input_vcaKEEPSPEED2"  text="VCA: permanent keep speed"/>
+		<text name="input_vcaKSAXIS"      text="VCA: permanent keep speed axis"/>
+		<text name="input_vcaKSAXIS_1"    text="VCA: permanent keep speed: faster"/>
+		<text name="input_vcaKSAXIS_2"    text="VCA: permanent keep speed: slower"/>
+		<text name="input_vcaSWAPSPEED"   text="VCA: swap speed"/>
+		<text name="input_vcaHandRpm"     text="VCA: hand throttle RPM"/>
+		<text name="input_vcaHandRpm_1"   text="VCA: more hand throttle"/>
+		<text name="input_vcaHandRpm_2"   text="VCA: less hand throttle"/>
+		<text name="input_vcaHandbrake"   text="VCA: handbrake on/off"/>
+		<text name="input_vcaLimitSpeed"  text="VCA: speed limiter on/off"/>
+		<text name="input_vcaAutoShift"   text="VCA: automatic shifting on/off"/>
+		<text name="input_vcaDiffLockF"   text="VCA: front differential (un)lock"/>
+		<text name="input_vcaDiffLockM"   text="VCA: all/front wheel drive"/>
+		<text name="input_vcaDiffLockB"   text="VCA: back differential (un)lock"/>
+		<text name="input_vcaLowerF"      text="VCA: lower/raise front tools "/>
+		<text name="input_vcaLowerB"      text="VCA: lower/raise back tools "/>
+		<text name="input_vcaFoldF"       text="VCA: (un-)fold front tools "/>
+		<text name="input_vcaFoldB"       text="VCA: (un-)fold back tools "/>
+		<text name="input_vcaActivateF"   text="VCA: (de-)activate front tools "/>
+		<text name="input_vcaActivateB"   text="VCA: (de-)activate back tools "/>
+		<text name="input_vcaGearSplitUp" text="VCA: Gear splitter +"/>
+		<text name="input_vcaGearSplitDown" text="VCA: Gear splitter -"/>
+		
+		<text name="vcaValueOn"         text="On"/>
+		<text name="vcaValueOff"        text="Off"/>
+		<text name="vcaValueNever"      text="Never"/>
+		<text name="vcaValueAlways"     text="Always"/>
+		<text name="vcaValueAlwaysH"    text="Always (high)"/>
+		<text name="vcaValueNormal"     text="Normal"/>
+		<text name="vcaValueLight"      text="Light"/> 
+		<text name="vcaValueStrong"     text="Strong"/>
+		<text name="vcaValueEntered"    text="If entered"/>
+		<text name="vcaValueInactive"   text="If inactive"/>
+		<text name="vcaValueInactiveH"  text="If inactive (high)"/>
+		<text name="vcaValueRPM"        text="RPM"/>
+		
+		<text name="vcaSnapArtAxis"     text="Lane guidance is not supported for vehicles with articulated axis"/>
+		<text name="vcaSnapSetA"        text="Set point B to start lane guidance"/>
+		<text name="vcaSnapSetB"        text="Lane guidance is already initialized"/>
+		
+		<text name="vcaClutchDefault"   text="default"/>
+		<text name="vcaClutchShuttle"   text="shuttle control"/>
+		<text name="vcaClutchAntiStall" text="anti stall"/>
+		<text name="vcaClutchTurbo"     text="turbo clutch"/>
+		
+		<text name="vcaButtonSnapWidth"  text="Detect width"/>
+		<text name="vcaButtonSnapOffset" text="Swap offset"/>
+
+		<text name="vcaTitleIntro"      text="Introduction"/>
+		<text name="vcaTitleCam"        text="Camera"/>
+		<text name="vcaTitleSteering"   text="Steering"/>
+		<text name="vcaTitleGPS"        text="Track Guiding"/>
+		<text name="vcaTitleThrottle"   text="Throttle, Brakes, Transmission"/>
+		<text name="vcaTitleDiff"       text="AWD und Differentials"/>
+		<text name="vcaTitleGears"      text="Transmission"/>
+		<text name="vcaTitleMisc"       text="Misc. Settings"/>
+		
+		
+		<text name="vcaHelpIntro_1"       text="Vehicle Control Addon combines several functions in one modification. Most functions are turned off per default." />
+		<text name="vcaHelpIntro_2"       text="The standard key combination to open the settings menu is LCtrl C. I propose to check the key binding of Vehicle Control Addon in the game settings menu." />
+		<text name="vcaHelpIntro_3"       text="The key combination LCtrl LAlt C opens the global settings menu. Here, you can adjust the default settings, which are used in all (future) vehicles." />
+		<text name="vcaHelpCam_1"         text="Vehicle Control Addon can rotate the camera to match the steering angle and direction. This way you always look into the direction your are driving to." />
+		<text name="vcaHelpCam_2"         text="You can enable camera rotation in the settings menu. You can choose between values &quot;off&quot;, &quot;light&quot;, &quot;normal&quot; and &quot;strong&quot;. There are separate settings for inside and outside cameras. Additionally, you can turn on/off the automatical reveral of the camera." />
+		<text name="vcaHelpCam_3"         text="With Shift-right and the cursor keys you can look into the corresponding direction. There are two modes. If peed is on the camera direction is switched back to the previous view as soon as you release the key. If peek is turned off, the the same key change the camera direction without switching back." />
+		<text name="vcaHelpSteering_1"    text="Vehicle Control Addon varies the steering speed depending on the speed you are driving." />
+		<text name="vcaHelpSteering_2"    text="The settings menu gives you the opportunity to adjust steeering. If adaptive steering is turned off, then Vehicle Control Addon does not change the steering behaviour. The steering speed settings are only relevant is adaptive steering is on. Free steering completely disables the automatic back rotation." />
+		<text name="vcaHelpSteering_3"    text="The adaptive steering was designed for keyboard users. The automatic back rotation speed depends on how long you released the A or D keys. This way, you can keep the current rotation of the steering wheel by shortly tapping of either A or D keys. The back rotation to center position is faster if you press the corresponding key. This is like an emergency mode. If you steered too much, then you try to steer into the other direction. This goes much faster but only until the steering wheel reached center position. There is a light version of adaptive steering that reduces the rotation speed only." />
+		<text name="vcaHelpGPS_1"         text="Vehicle Control Addon includes a simple lane guidance." />
+		<text name="vcaHelpGPS_2"         text="Lane guidance can only be started if there is a lane width larger than 0.5m. You can detect the current tool width in the settings menu or with the default key binding LCtrl LAlt W. If lane guidance was disabled then you can enable it again on the last lane with default key binding LAlt S. Lane guidance is started with default key binding LCtrl W. It is automatically disabled if you use the steering buttons or wheel." />
+		<text name="vcaHelpGPS_3"         text="In the vehicle you can move or rotate the guidance lanes with default key bindings LCtrl + cursor key. With default key bindings LAlt A and LAlt D you can switch to the left or right reversal lane. You can specify the number of lanes to switch in the settings menu. If you want to work on the field to the left, than you can specify the left lane numbers one larger than the right lane numbers. With every lane reversal action Vehicle Control Addon swaps the left and right lane numbers." />
+		<text name="vcaHelpThrottle_1"    text="Vehicle Control Addon offers some small improvements to throttle and braking. Most of them are intended for players using the keyboard." />
+		<text name="vcaHelpThrottle_2"    text="The throttle limiter values are used with the inching key binding. The 1st value is used without inching, the 2nd value is used when inching is pressed. The lower percentage value applies to cruise control speed if inching is pressed. Low brake force is the brake force the vehicle automatically applies if neither acceleration nor brake pedal are pressed. Reducing the brake force let's the vehicle roll longer without reducing speed." />
+		<text name="vcaHelpThrottle_3"    text="Shift-Left limits throttle, cruise control and maximum rounds per minute to 75%. If you press delete then the vehicle will keep its speed. Acceleration and brake pedal increase and descrease the speed. The vehicle drives like a modern tractor with joystick. You can toggle automatic shifting with default key binding LCtrl (." />
+		<text name="vcaHelpThrottle_4"    text="Placeholder for motor modifications" />
+		<text name="vcaHelpDiff_1"        text="If Vehicle Control Addon can identify the differentials, then you have the possibility to operate them manually." />
+		<text name="vcaHelpDiff_2"        text="Per default Vehicle Control Addon does not change the differentials. When all wheel drive is activated, then the front wheels of standard tractors turn faster than the back wheels. You can enable this with the advance speed settings. In this case Vehicle Control Addon will automatically deactivate all wheel drive above 30 km/h." />
+		<text name="vcaHelpDiff_3"        text="The default key bindings to operate differentials are LCtrl ), LCtrl ' and LCtrl \." />
+		
+	</texts>
+</l10n>

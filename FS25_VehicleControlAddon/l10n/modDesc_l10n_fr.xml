@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<l10n>
+	<!-- Note that 'description' is only here for easier translations. It needs to be manually copied to ModDesc.XML later. -->
+	<description><![CDATA[Ajoute la spécialisation pour la conduite adaptative au clavier]]></description>
+
+	<texts>
+		<text name="vcaCAMERAI"           text="Mouvements de caméra interne"/>
+		<text name="vcaCAMERAO"           text="Mouvements de caméra externe"/>
+		<text name="vcaEXPONENT"          text="Adaptation à la vitesse"/>
+		<text name="vcaSTEERING"          text="Direction adaptative"/>
+		<text name="vcaSHUTTLE"           text="Inverseur"/>
+		<text name="vcaREVERSE"           text="Coup d'oeil arrière"/>
+		<text name="vcaREVERSEI"          text="Coup d'oeil arrière depuis la cabine"/>
+		<text name="vcaREVERSEO"          text="Coup d'oeil arrière depuis l'extérieur"/>
+		<text name="vcaLIMIT"             text="Limiteur de vitesse"/>
+		<text name="vcaPEEKLR"            text="Coup d'oeil latéral"/>
+		<text name="vcaANGLE"             text="Angle de calage du guidage auto"/>
+		<text name="vcaBRAKE"             text="Frein moteur"/>
+		<text name="vcaAUTOSHIFT"         text="Automatique"/>
+		<text name="vcaKEEPSPEED"         text="Conserver la vitesse d'avancement"/>
+		<text name="vcaNO_ARB"            text="Direction libre"/>
+		<text name="vcaHANDTHROTTLE"      text="Accélérateur à main"/>
+		<text name="vcaSETTINGS"          text="Paramètres globaux du VCA"/>
+		<text name="vcaDRAWHUD"           text="Transmission visible sur l'ATH"/>
+		
+		<text name="vcaDISTANCE"          text="Largeur de travail"/>
+		<text name="vcaOFFSET1"           text="Décalage de l'outil"/>
+		<text name="vcaOFFSET2"           text="Inversion du décalage"/>
+		<text name="vcaSNAP90"            text="Guidage auto tous les 90°"/>
+		<text name="vcaDRAWMARKER"        text="Affichage des lignes GPS"/>
+		<text name="vcaSNAPLEFT"          text="Guidage auto pour rangée gauche"/>
+		<text name="vcaSNAPRIGHT"         text="Guidage auto pour rangée droite"/>
+		
+		<text name="vcaAntiSlip"          text="Contrôle de traction"/>
+		<text name="vcaDiffManual"        text="Quatre roues motrices manuelles et blocage de différentiel"/>
+		<text name="vcaDiffFrontAdv"      text="Vitesse d'avancement de l'essieu avant"/>
+		<text name="vcaDiffLockSwap"      text="Basculement des différentiels"/>
+		<text name="vcaHudX"              text="Position x ATH "/>
+		<text name="vcaHudY"              text="Position y ATH"/>
+		<text name="vcaHIREDWORKER2"      text="Utilisation des différentiels par les ouvriers"/>
+		
+		<text name="vcaGEARRGMODE"        text="Echange des touches vitesse/groupe"/>
+		<text name="vcaSTSPEEDO"          text="Vitesse de la direction"/>
+		<text name="vcaSTSPEEDI"          text="Vitesse de retour de la direction"/>
+		<text name="vcaIDLETHROTTLE"      text="Modification du régime moteur"/>
+		<text name="vcaCLUTCHMODE"        text="Mode d'embrayage"/>
+		<text name="vcaMOUSEARB"          text="Direction à la souris et retour"/>
+		<text name="vcaANALOG"            text="Direction adaptative et contrôleurs"/>
+		<text name="vcaROTATEHT"          text="Caméra et suivi de la tête"/>
+		<text name="vcaDEBUG"             text="Débogage"/>
+		<text name="vcaSPLITGEARS"        text="Nombre de rapports powershift"/>
+		<text name="vcaSPLITGEARRATIO"    text="Rapport de powershift"/>
+		<text name="vcaGEARTIME"          text="Temps de changement de vitesse"/>
+		<text name="vcaGRPTIME"           text="Temps de changement de groupe"/>
+		<text name="vcaINPUTBINDING"      text="Affichage des configuration de touches"/>
+		
+		<text name="vca_tip_CAMERAI"      text="La caméra intérieure tourne automatiquement en fonction de l'angle de direction."/>
+		<text name="vca_tip_CAMERAO"      text="La caméra extérieure tourne automatiquement en fonction de l'angle de direction."/>
+		<text name="vca_tip_EXPONENT"     text="Adaptation de la direction en fonction de la vitesse."/>
+		<text name="vca_tip_STEERING"     text="La direction adaptative modifie l'angle et la vitesse de retour de la direction en fonction de la vitesse d'avancement."/>
+		<text name="vca_tip_SHUTTLE"      text="Modifier le sens d'avancement avec la touche 'Espace'."/>
+		<text name="vca_tip_REVERSEI"     text="La caméra intérieure tourne automatiquement en fonction du sens d'avancement."/>
+		<text name="vca_tip_REVERSEO"     text="La caméra extérieure tourne automatiquement en fonction du sens d'avancement."/>
+		<text name="vca_tip_LIMIT"        text="Limiteur de vitesse d'avancement avec la touche 'Shift' gauche."/>
+		<text name="vca_tip_PEEKLR"       text="'Shift' droit et les flèches de direction permettent de jeter un coup d'oeil dans la direction choisie."/>
+		<text name="vca_tip_ANGLE"        text="Verrouille la direction dans la position actuelle (en fonction du pas sélectionné)."/>
+		<text name="vca_tip_BRAKE"        text="Freinage en décélération en % / Résistance au roulement"/>
+		<text name="vca_tip_AUTOSHIFT"    text="Passage automatique des vitesses et des groupes"/>
+		<text name="vca_tip_KEEPSPEED"	  text="La pédale d'accélérateur se comporte comme un joystick, comme avec un régulateur de vitesse"/>
+		<text name="vca_tip_NO_ARB"       text="Si activée, le volant ne reviendra pas à son point milieu"/>
+		<text name="vca_tip_HANDTHROTTLE" text="Le moteur accélère automatiquement pour atteindre les RPM demandés par le joystick"/>
+		<text name="vca_tip_DRAWHUD"      text="Afficher/masquer l'ATH de la transmission"/>
+		
+		<text name="vca_tip_DISTANCE"     text="Distance entre deux lignes du GPS"/>
+		<text name="vca_tip_OFFSET1"      text="Décalage latéral des lignes du GPS"/>
+		<text name="vca_tip_OFFSET2"      text="Inversion du décalage des lignes du GPS"/>
+		<text name="vca_tip_SNAP90"       text="Guidage auto par pas de 90°"/>
+		<text name="vca_tip_DRAWMARKER"   text="Affichage des lignes du GPS"/>
+		<text name="vca_tip_SNAPLEFT"     text="Nombre de rangées à passer au demi-tour gauche"/>
+		<text name="vca_tip_SNAPRIGHT"    text="Nombre de rangées à passer au demi-tour droite"/>
+		
+		<text name="vca_tip_AntiSlip"     text="Le contrôle de traction freine les roues individuelles lorsqu'elles patinent"/>
+		<text name="vca_tip_DiffManual"   text="Commande manuelle de la transmission intégrale et des blocages de différentiel avant et arrière"/>
+		<text name="vca_tip_DiffFrontAdv" text="Avance de l'essieu avant avec la transmission intégrale activée"/>
+		<text name="vca_tip_DiffLockSwap" text="Basculement du blocage de différentiel avant et arrière"/>
+		<text name="vca_tip_HudX"         text="Position horizontale de l'ATH"/>
+		<text name="vca_tip_HudY"         text="Position verticale de l'ATH"/>
+		<text name="vca_tip_HIREDWORKER2" text="Indique si l'ouvrier utilise le differentiel de base ou le modifié"/>
+
+		<text name="vca_tip_GEARRGMODE"   text="Permet d'inverser la commande de montée/descente des vitesses/groupes"/>
+		<text name="vca_tip_STSPEEDO"     text="Vitesse de la direction"/>
+		<text name="vca_tip_STSPEEDI"     text="Vitesse de retour de la direction"/>
+		<text name="vca_tip_IDLETHROTTLE" text="Le moteur maintient le régime moteur indépendamment de la vitesse"/>
+		<text name="vca_tip_CLUTCHMODE"   text="Le véhicule débraye automatiquement"/>
+		<text name="vca_tip_MOUSEARB"     text="Retour automatique de la direction lors du contrôle de celle-ci par la souris"/>
+		<text name="vca_tip_ANALOG"       text="Gestion de la direction adaptative pour les contrôleurs de jeu (manettes)"/>
+		<text name="vca_tip_ROTATEHT"     text="Tourne la caméra même si le suivi de la tête est activé"/>
+		<text name="vca_tip_DEBUG"        text="Informations supplémentaires dans le fichier journal"/>
+		<text name="vca_tip_SPLITGEARS"   text="Nombre de rapports powershift"/>
+		<text name="vca_tip_SPLITGEARRATIO" text="rapport de powershift"/>
+		<text name="vca_tip_GEARTIME"     text="Temps de changement de vitesse"/>
+		<text name="vca_tip_GRPTIME"      text="Temps de changement de groupe"/>
+		<text name="vca_tip_INPUTBINDING" text="Affichage des configuration de touches"/>
+								 
+		<text name="input_vcaSETTINGS"    text="VCA: Paramètres"/>
+		<text name="input_vcaGLOBALS"     text="VCA: Paramètres globaux"/>
+		<text name="input_vcaUP"          text="VCA: Basculer entre vue avant et arrière"/>
+		<text name="input_vcaDOWN"        text="VCA: Regarder vers l'arrière"/>
+		<text name="input_vcaLEFT"        text="VCA: Regarder vers la gauche"/>
+		<text name="input_vcaRIGHT"       text="VCA: Regarder vers la droite"/>
+		<text name="input_vcaSNAP"        text="VCA: Guidage automatique (GPS)"/>
+		<text name="input_vcaSNAPLEFT"    text="VCA: Guidage auto vers prochaine rangée de gauche"/>
+		<text name="input_vcaSNAPRIGHT"   text="VCA: Guidage auto vers prochaine rangée de droite"/>"/>
+		<text name="input_vcaSNAPPREV"    text="VCA: Guidage auto rangée précèdente"/>"/>
+		<text name="input_vcaSNAPNEXT"    text="VCA: Guidage auto rangée suivante"/>
+		<text name="input_vcaSNAPCONT"    text="VCA: Reprise du guidage auto"/>
+		<text name="input_vcaSNAPRESET"   text="VCA: RAZ du guidage auto"/>
+		<text name="input_vcaSNAPDIST"    text="VCA: Détection automatique de la largeur de travail"/>
+		<text name="input_vcaSNAPPATH"    text="VCA: démarrer/arrêter l'enregistrement de la trace"/>
+		<text name="input_vcaSNAP_A_B"    text="VCA: ligne A-B line"/>
+		<text name="input_vcaWORKAREA"    text="VCA: marqueur de zone de travail"/>
+		<text name="input_vcaSnapUP"      text="VCA: Faire pivoter les lignes GPS vers la gauche"/>
+		<text name="input_vcaSnapDOWN"    text="VCA: Faire pivoter les lignes GPS vers la droite"/>
+		<text name="input_vcaSnapLEFT"    text="VCA: Décaler les lignes GPS vers la gauche"/>
+		<text name="input_vcaSnapRIGHT"   text="VCA: Décaler les lignes GPS vers la droite"/>
+		<text name="input_vcaNO_ARB"      text="VCA: Pas de retour auto de la direction"/>
+		<text name="input_vcaINCHING"     text="VCA: Limiteur de vitesse"/>
+		<text name="input_vcaKEEPROT"     text="VCA: Fixer la direction de la caméra globalement"/>
+		<text name="input_vcaKEEPROT2"    text="VCA: Fixer définitivement la direction de la caméra"/>
+		<text name="input_vcaKEEPSPEED"   text="VCA: Régulateur de vitesse"/>
+		<text name="input_vcaKEEPSPEED2"  text="VCA: Maintenir la vitesse en permanence"/>
+		<text name="input_vcaKSAXIS"      text="VCA: Axe de la vitesse d'avancement"/>
+		<text name="input_vcaKSAXIS_1"    text="VCA: Augmenter la vitesse d'avancement"/>
+		<text name="input_vcaKSAXIS_2"    text="VCA: Diminuer la vitesse d'avancement"/>
+		<text name="input_vcaSWAPSPEED"   text="VCA: Basculer la gestion de la vitesse"/>
+		<text name="input_vcaHandRpm"     text="VCA: Accélérateur à main"/>
+		<text name="input_vcaHandRpm_1"   text="VCA: Augmenter l'accélérateur à main"/>
+		<text name="input_vcaHandRpm_2"   text="VCA: Diminuer l'accélérateur à main"/>
+		<text name="input_vcaHandbrake"   text="VCA: Frein à main on/off"/>
+		<text name="input_vcaLimitSpeed"  text="VCA: limiteur de vitesse on/off"/>
+		<text name="input_vcaAutoShift"   text="VCA: changement automatique des vitesses/groupes on/off "/>
+		<text name="input_vcaDiffLockF"   text="VCA: Blocage différentiel avant on/off"/>
+		<text name="input_vcaDiffLockM"   text="VCA: Transmission intégrale on/off"/>
+		<text name="input_vcaDiffLockB"   text="VCA: Blocage différentiel arrière on/off"/>
+		<text name="input_vcaLowerF"      text="VCA: Lever/baisser les outils avant"/>
+		<text name="input_vcaLowerB"      text="VCA: Lever/baisser les outils arrière"/>
+		<text name="input_vcaFoldF"       text="VCA: (dé-)plier les outils avant "/>
+		<text name="input_vcaFoldB"       text="VCA: (dé-)plier les outils arrière "/>
+		<text name="input_vcaActivateF"   text="VCA: (Dés-)activer les outils avant"/>
+		<text name="input_vcaActivateB"   text="VCA: (Dés-)activer les outils arrière"/>
+		<text name="input_vcaGearSplitUp" text="VCA: Vitesses +"/>
+		<text name="input_vcaGearSplitDown" text="VCA: Vitesses -"/>
+		
+		<text name="vcaValueOn"           text="on"/>
+		<text name="vcaValueOff"          text="off"/>
+		<text name="vcaValueNever"        text="jamais"/>
+		<text name="vcaValueAlways"       text="toujours"/>
+		<text name="vcaValueAlwaysH"      text="toujours (haut)"/>
+		<text name="vcaValueNormal"       text="normal"/>
+		<text name="vcaValueLight"        text="léger"/> 
+		<text name="vcaValueStrong"       text="fort"/>
+		<text name="vcaValueEntered"      text="si embarqué"/>
+		<text name="vcaValueInactive"     text="si inactif"/>
+		<text name="vcaValueInactiveH"    text="si inactif (haut)"/>
+		<text name="vcaValueRPM"          text="RPM"/>
+
+		<text name="vcaSnapArtAxis"       text="Le GPS n'est pas compatible avec les véhicules articulés"/>		
+		<text name="vcaSnapSetA"        text="Régler le point B pour démarrer le guidage par ligne"/>
+		<text name="vcaSnapSetB"        text="Le guidage par ligne est déjà initialisé
+"/>
+		
+		<text name="vcaClutchDefault"   text="embrayage default"/>
+		<text name="vcaClutchShuttle"   text="embrayage shuttle control"/>
+		<text name="vcaClutchAntiStall" text="embrayage anti stall"/>
+		<text name="vcaClutchTurbo"     text="embrayage turbo"/>
+			
+		<text name="vcaButtonSnapWidth"   text="Détection de la largeur de travail"/>
+		<text name="vcaButtonSnapOffset"  text="Inversion du décalage de l'outil"/>
+		
+		<text name="vcaTitleIntro"        text="Introduction"/>										  
+		<text name="vcaTitleCam"          text="Caméra"/>
+		<text name="vcaTitleSteering"     text="Direction"/>
+		<text name="vcaTitleGPS"          text="Guidage automatique (GPS)"/>
+		<text name="vcaTitleThrottle"     text="Accélérateurs, Freins, Transmissions"/>
+		<text name="vcaTitleDiff"         text="Motricité et blocage de ponts"/>
+		<text name="vcaTitleGears"      text="Transmission"/>
+		<text name="vcaTitleMisc"         text="Paramètres divers"/>  	
+	
+
+		<text name="vcaHelpIntro_1"       text="Le Vehicle Control Addon (VCA) intègre plusieurs fonctionnalités pour améliorer votre expérience de conduite. La plupart sont désactivé par défaut." />
+		<text name="vcaHelpIntro_2"       text="Utilisez le raccourci par défaut CTRL (gauche) + C pour afficher les réglages. Le contrôle du raccourci clavier pour appeler le VCA est rappelé dans le menu des réglages." />
+		<text name="vcaHelpIntro_3"       text="Utilisez le raccourci par défaut CTRL (gauche) + ALT (gauche) + C pour afficher les réglages globaux. Ces réglages seront appliqués pour tous les nouveaux véhicules." />
+		<text name="vcaHelpCam_1"         text="Le Vehicle Control Addon oriente la caméra dans le même sens que votre direction et l'angle du volant. Ainsi vous pouvez toujours régarder dans le sens de la marche." />
+		<text name="vcaHelpCam_2"         text="Vous pouvez activer la roation automatique de la caméra dans les paramètres. Les différents choix sont &quot;éteint&quot;, &quot;léger&quot;, &quot;normal&quot; and &quot;fort&quot;. Il existe un réglage pour chaque caméra intérieure et extérieure. Vous pouvez également tourner automatiquement la caméra lors de marches arrières." />
+		<text name="vcaHelpCam_3"         text="Regardez dans la direction souhaitée à l'aide de MAJ (droite) + flèches directionnelles. Selon l'activation du mode coup d'oeil, la caméra reviendra à sa position initiale lorsque vous relacherez les touches ou non." />
+		<text name="vcaHelpSteering_1"    text="Le Vehicle Control Addon fait varier la sensibilité de la direction en fonction de votre vitesse." />
+		<text name="vcaHelpSteering_2"    text="Les paramètres vous permettent d'ajuster le comportement de la direction. Si la direction adaptative n'est pas activée, le VCA ne modifie pas la gestion de la direction. La direction libre supprime totalement le retour automatique de la direction vers son point milieu." />
+		<text name="vcaHelpSteering_3"    text="La direction adapative est conçue pour le contrôle au clavier. Le retour de la direction dépend de la vitesse à laquelle vous avez relâché les touches Q et D. Ainsi, vous pouvez maintenir l'angle du volant en appuyant brièvement sur les touches Q et D sans risquer des mouvements trop grands. Vous pouvez accélérer le retour au point milieu du volant en restant appuyé sur la touche correspondante. Cela vous permet de plus rapidement ajuster l'angle du volant si vous avez par exemple trop braqué. Ce retour accéléré au point milieu ne s'effectue que jusqu'à avoir atteint celui-ci." />
+		<text name="vcaHelpGPS_1"         text="Le Vehicle Control Addon intègre un GPS." />
+		<text name="vcaHelpGPS_2"         text="Le GPS ne peut être utilisé que si la largeur de travail est d'au moins 0.5m. La détection de la largeur de travail peut se faire depuis les paramètres ou avec le raccourci par défaut CTRL(gauche) + ALT(gauche) + Z. Le GPS est activé par défaut à l'aide des touches CTRL(gauche) + Z. Il est automatiquement désactivé dès que vous touchez à la direction." />
+		<text name="vcaHelpGPS_3"         text="A bord du véhicule, vous pouvez décaler ou tourner le couloir de travail du GPS avec les touches CTRL(gauche) + flèches directionnelles. Vous pouvez également choisir le prochain couloir de travail avec les touches ALT(gauche) + Q pour le couloir de gauche et ALT(gauche) + D pour le couloir de droite. Vous pouvez également choisir la quantité de couloir à ignorer lorsque vous passez au prochain couloir (pour vous permettre d'avoir plus d'espace pour mannoeuvrer et vous mettre en position). Si vous souhaitez par exemple travailler sur le champ à gauche, vous pouvez choisir un nombre plus élévé à gauche qu'à droite. A chaque fois que vous changerez de sens au bout du couloir, le VCA intervertira automatiquement les valeurs gauches et droites." />
+		<text name="vcaHelpThrottle_1"    text="Le Vehicle Control Addon propose des améliorations sur le régime moteur et les freins. La plupart sont destinées au contrôle clavier." />
+		<text name="vcaHelpThrottle_2"    text="Le limiteur de vitesse est activé via le raccourci clavier. La première valeur est celle sans limiteur, la deuxième lorsque le limiteur est actif. Le pourcentage de réduction s'applique au régulateur de vitesse lorsque vous enclenchez le limiteur. Le frein moteur est le freinage appliqué lorsque vous ne touchez ni à l'accélérateur ni au frein. Un frein moteur faible aura pour conséquence de faire rouler le véhicule plus longtemps avant de s'arrêter." />
+		<text name="vcaHelpThrottle_3"    text="Le limiteur MAJ(gauche) s'applique sur l'accélérateur, le régulateur et le régime moteur à 75%. En appuyant sur SUPPR, le véhicule conservera sa vitesse. L'accélérateur et le frein déterminent la vitesse cible. Cela simule la conduite à l'aide d'un accélérateur à main (Joystick). Vous pouvez activer le passage des vitesses automatiques avec les touches CTRL(gauche) + (." />
+		<text name="vcaHelpThrottle_4"    text="Textes à définir pour les modifications moteurs" />
+		<text name="vcaHelpDiff_1"        text="Si le Vehicle Control Addon détecte la présence de différentiels, vous pouvez les gérer individuellement." />
+		<text name="vcaHelpDiff_2"        text="Par défaut, le Vehicle Control Addon n'affecte pas les différentiels. Lorsque les 4 roues motrices sont actives, les roues avants des tracteurs classiques tournent plus vite que les roues arrières. Vous pouvez activer ce comportement dans les paramètres. Dans ce cas, le Vehicle Control Addon désactivera automatiquement les 4 roues motrices au-dessus de 30 km/h." />
+		<text name="vcaHelpDiff_3"        text="Les raccourcis par défaut des différentiels sont CTRL(gauche) +  ), CTRL(gauche) + ' and CTRL(gauche) + \." />
+		
+	</texts>
+</l10n>

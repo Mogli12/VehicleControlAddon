@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<l10n>
+	<texts>
+		<text name="vcaCAMERAI"             text="Подруливание внутренней камеры"/>
+		<text name="vcaCAMERAO"             text="Подруливание внешней камеры"/>
+		<text name="vcaEXPONENT"            text="Чувствительность к скорости"/>
+		<text name="vcaSTEERING"            text="Адаптивное рулевое управление"/>
+		<text name="vcaSHUTTLE"             text="Изменение направления"/>
+		<text name="vcaREVERSE"             text="Автооборачивание"/>
+		<text name="vcaREVERSEI"            text="Автооборачивание (внутренняя)"/>
+		<text name="vcaREVERSEO"            text="Автооборачивание (внешняя)"/>
+		<text name="vcaLIMIT"               text="Ограничитель газа"/>
+		<text name="vcaPEEKLR"              text="Быстрый взгляд в сторону"/>
+		<text name="vcaANGLE"               text="Привязка к сетке"/>
+		<text name="vcaBRAKE"               text="Сопротивление качению"/>
+		<text name="vcaAUTOSHIFT"           text="Автомат"/>
+		<text name="vcaLAUNCH"              text="Начальная скорость"/>
+		<text name="vcaKEEPSPEED"           text="Удерживать скорость"/>
+		<text name="vcaNO_ARB"              text="Свободное руление"/>
+		<text name="vcaHANDTHROTTLE"        text="Ручной дроссель"/>
+		<text name="vcaSETTINGS"            text="Глобальные настройки"/>
+		<text name="vcaDRAWHUD"             text="HUD трансмиссии"/>
+
+		<text name="vcaDISTANCE"            text="Рабочая ширина"/>
+		<text name="vcaOFFSET1"             text="Смещение оборудования"/>
+		<text name="vcaOFFSET2"             text="Инвертировать смещение"/>
+		<text name="vcaSNAP90"              text="Вращать направления на 90°"/>
+		<text name="vcaDRAWMARKER"          text="Маркеры удержания направления"/>
+		<text name="vcaSNAPLEFT"            text="Число левых реверсивных проходов"/>
+		<text name="vcaSNAPRIGHT"           text="Число правых реверсивных проходов"/>
+
+		<text name="vcaAntiSlip"            text="Контроль тяги"/>
+		<text name="vcaDiffManual"          text="Ручной AWD и дифференциалы"/>
+		<text name="vcaDiffFrontAdv"        text="Ведущий передний мост"/>
+		<text name="vcaDiffLockSwap"        text="Поменять перед и зад"/>
+		<text name="vcaHudX"                text="Координата 'х' HUD"/>
+		<text name="vcaHudY"                text="Координата 'y' HUD"/>
+		<text name="vcaHIREDWORKER2"        text="Дифференциалы и наёмный рабочий"/>
+		
+		<text name="vcaGEARRGMODE"          text="Сменить клавиши переключения передач и диапазонов"/>
+		<text name="vcaSTSPEEDO"            text="Скорость поворота колёс"/>
+		<text name="vcaSTSPEEDI"            text="Скорость автовозврата колёс"/>
+		<text name="vcaIDLETHROTTLE"        text="Поддержание холостого хода"/>
+		<text name="vcaMOUSEARB"            text="Мышь и автовозврат"/>
+		<text name="vcaANALOG"              text="Адаптивне руление и аналоговый контроллер"/>
+		<text name="vcaROTATEHT"            text="Камера и отслеживание головы"/>
+		<text name="vcaDEBUG"               text="Отладка"/>
+
+		<text name="vca_tip_CAMERAI"        text="Внутренняя камера автоматически поворачивается в соответствии с углом поворота колёс."/>
+		<text name="vca_tip_CAMERAO"        text="Внешняя камера автоматически поворачивается в соответствии с углом поворота колёс."/>
+		<text name="vca_tip_EXPONENT"       text="Зависимость скорости рулевого управления от скорости движения."/>
+		<text name="vca_tip_STEERING"       text="Адаптивное рулевое управление изменяет скорость автовозврата колёс и максимальный угол поворота в зависимости от скорости."/>
+		<text name="vca_tip_SHUTTLE"        text="Изменять направление вперёд/назад при помощи клавиши Пробел."/>
+		<text name="vca_tip_REVERSEI"       text="При изменении направления движения вперёд/назад внутренняя камера автоматически разворачивается на 180°."/>
+		<text name="vca_tip_REVERSEO"       text="При изменении направления движения вперёд/назад внешняя камера автоматически разворачивается на 180°."/>
+		<text name="vca_tip_LIMIT"          text="Ограничивает педаль газа при нажатии LShift."/>
+		<text name="vca_tip_PEEKLR"         text="Взглянуть по клавише RShift + стрелка в сторону."/>
+		<text name="vca_tip_ANGLE"          text="Выравнивание угла привязки направления движения к углам кратным заданному в настройке."/>
+		<text name="vca_tip_BRAKE"          text="Изменение уровня сопротивления качению (%)."/>
+		<text name="vca_tip_AUTOSHIFT"      text="Автоматическое переключение передач и диапазонов."/>
+		<text name="vca_tip_KEEPSPEED"      text="Если активировано удержание постоянной скорости, то автомобиль почти всегда движется на круиз-контроле. Это соответствует приводному рычагу в современных тракторах."/>
+		<text name="vca_tip_NO_ARB"         text="Если включить свободное руление, тогда отключится автовозврат руля."/>
+		<text name="vca_tip_HANDTHROTTLE"   text="Двигатель автоматически ускоряется, чтобы достичь оборотов ручного дросселя."/>
+		<text name="vca_tip_DRAWHUD"        text="Отобразить или скрыть HUD трансмиссии."/>
+
+		<text name="vca_tip_DISTANCE"       text="Расстояние между двумя маркерами удержания направления."/>
+		<text name="vca_tip_OFFSET1"        text="Смещение маркеров удержания направления от центральной оси."/>
+		<text name="vca_tip_OFFSET2"        text="Инвертировать смещение маркеров удержания направления."/>
+		<text name="vca_tip_SNAP90"         text="При повороте, автоматически вращать удержанное направление движения на 90°."/>
+		<text name="vca_tip_DRAWMARKER"     text="Отрисовка маркеров маркеров удержания направления."/>
+		<text name="vca_tip_SNAPLEFT"       text="Пропускать количество проходов при повороте налево по LAlt+A или LAlt+D."/>
+		<text name="vca_tip_SNAPRIGHT"      text="Пропускать количество проходов при повороте направо по LAlt+A или LAlt+D."/>
+		
+		<text name="vca_tip_AntiSlip"       text="Антипробуксовочная система притормаживает отдельные колеса в случае их пробуксовки."/>
+		<text name="vca_tip_DiffManual"     text="Ручное управление полным приводом и передним и задним дифференциалом."/>
+		<text name="vca_tip_DiffFrontAdv"   text="Ведущий передний мост, когда полный привод включен."/>
+		<text name="vca_tip_DiffLockSwap"   text="Поменять местами передний и задний дифференциал."/>
+		<text name="vca_tip_HudX"           text="Координата 'х' HUD трансмиссии."/>
+		<text name="vca_tip_HudY"           text="Координата 'y' HUD трансмиссии."/>
+		<text name="vca_tip_HIREDWORKER2"   text="Если техникой управляет наёмный работник, использовать ванильный или модифицированный дифференциал."/>
+		
+		<text name="vca_tip_GEARRGMODE"     text="Эта настройка меняет местами клавиши для передач вверх / вниз и диапазонов."/>
+		<text name="vca_tip_STSPEEDO"       text="Скорость рулевого управления."/>
+		<text name="vca_tip_STSPEEDI"       text="Скорость автоматического возврата руля."/>
+		<text name="vca_tip_IDLETHROTTLE"   text="Двигатель самостоятельно ускоряется для поддержания скорости холостого хода."/>
+		<text name="vca_tip_MOUSEARB"       text="Автовозврат при руление мышью."/>
+		<text name="vca_tip_ANALOG"         text="Поддержка адаптивного рулевого управления для аналоговых контроллеров."/>
+		<text name="vca_tip_ROTATEHT"       text="Вращать камеру, если включено отслеживание головы."/>
+		<text name="vca_tip_DEBUG"          text="В log записываются дополнительные сообщения."/>
+		
+		<text name="input_vcaSETTINGS"      text="Настройки VCA"/>
+		<text name="input_vcaGLOBALS"       text="Глобальные настройки"/>
+		<text name="input_vcaUP"            text="Посмотреть вперед"/>
+		<text name="input_vcaDOWN"          text="Посмотреть назад"/>
+		<text name="input_vcaLEFT"          text="Посмотреть налево"/>
+		<text name="input_vcaRIGHT"         text="Посмотреть направо"/>
+		<text name="input_vcaSNAP"          text="Маркеры удержания направления"/>
+		<text name="input_vcaSNAPLEFT"      text="Левый обратный проход"/>
+		<text name="input_vcaSNAPRIGHT"     text="Правый обратный проход"/>
+		<text name="input_vcaSNAPPREV"      text="Предыдущий маркер удержания направления"/>
+		<text name="input_vcaSNAPNEXT"      text="Следующий маркер удержания направления"/>
+		<text name="input_vcaSNAPCONT"      text="Реактивировать маркер удержания направления"/>
+		<text name="input_vcaSNAPRESET"     text="Сбросить маркеры удержания направления"/>
+		<text name="input_vcaSNAPDIST"      text="Определить рабочую ширину"/>
+		<text name="input_vcaWORKAREA"      text="Маркер рабочей зоны"/>
+		<text name="input_vcaSnapUP"        text="Повернуть маркеры удержания направления левее"/>
+		<text name="input_vcaSnapDOWN"      text="Повернуть маркеры удержания направления правее"/>
+		<text name="input_vcaSnapLEFT"      text="Сместить маркеры удержания направления левее"/>
+		<text name="input_vcaSnapRIGHT"     text="Сместить маркеры удержания направления правее"/>
+		<text name="input_vcaNO_ARB"        text="Без автоповорота камеры назад"/>
+		<text name="input_vcaINCHING"       text="Сцепление"/>
+		<text name="input_vcaKEEPROT"       text="Сохранить глобальное напр. камеры"/>
+		<text name="input_vcaKEEPROT2"      text="Постоянно держать направление камеры"/>
+		<text name="input_vcaKEEPSPEED"     text="Удерживать постоянную скорость"/>
+		<text name="input_vcaKEEPSPEED2"    text="Всегда удерживать постоянную скорость"/>
+		<text name="input_vcaKSAXIS"        text="Постоянно сохранять скорость"/>
+		<text name="input_vcaKSAXIS_1"      text="Постоянно сохранять скорость: быстрее"/>
+		<text name="input_vcaKSAXIS_2"      text="Постоянно сохранять скорость: медленее"/>
+		<text name="input_vcaSWAPSPEED"     text="Изменить скорость круиз-контроля"/>
+		<text name="input_vcaHandRpm"       text="Обороты ручного дросселя"/>
+		<text name="input_vcaHandRpm_1"     text="Увеличить ручной дроссель"/>
+		<text name="input_vcaHandRpm_2"     text="Уменьшить ручной дроссель"/>
+		<text name="input_vcaHandbrake"     text="Ручник вкл/выкл"/>
+		<text name="input_vcaLimitSpeed"    text="Ограничитель скорости ВКЛ/ВЫКЛ"/>			
+		<text name="input_vcaAutoShift"     text="Автоматическое переключение передач Вкл/Выкл"/>
+		<text name="input_vcaDiffLockF"     text="Передний дифференциал блок/разблок"/>
+		<text name="input_vcaDiffLockM"     text="Полный привод"/>
+		<text name="input_vcaDiffLockB"     text="Задний дифференциал блок/разблок"/>
+		<text name="input_vcaLowerF"        text="Опустить/поднять переднее оборудование"/>
+		<text name="input_vcaLowerB"        text="Опустить/поднять заднее оборудование"/>
+		<text name="input_vcaActivateF"     text="(Де-)активировать переднее оборудование"/>
+		<text name="input_vcaActivateB"     text="(Де-)активировать заднее оборудование"/>
+		
+		<text name="vcaValueOn"             text="Вкл"/>
+		<text name="vcaValueOff"            text="Выкл"/>
+		<text name="vcaValueNever"          text="никогда"/>
+		<text name="vcaValueAlways"         text="всегда"/>
+		<text name="vcaValueAlwaysH"        text="всегда (высокий)"/>
+		<text name="vcaValueNormal"         text="обычное"/>
+		<text name="vcaValueLight"          text="слабое"/> 
+		<text name="vcaValueStrong"         text="сильное"/>
+		<text name="vcaValueEntered"        text="если внутри"/>
+		<text name="vcaValueInactive"       text="если неактивен"/>
+		<text name="vcaValueInactiveH"      text="если неактивен (высокий)"/>
+		<text name="vcaValueRPM"            text="RPM"/>
+		
+		<text name="vcaSnapArtAxis"         text="Автоматическое руление не поддерживается на технике из шарнирно-сочлененной рамой."/>
+		
+		<text name="vcaButtonSnapWidth"     text="Определить ширину"/>
+		<text name="vcaButtonSnapOffset"    text="Сменить смещение"/>
+
+		<text name="vcaTitleIntro"          text="Вступление"/>
+		<text name="vcaTitleCam"            text="Камера"/>
+		<text name="vcaTitleSteering"       text="Рулевое управление"/>
+		<text name="vcaTitleGPS"            text="Авторуление"/>
+		<text name="vcaTitleThrottle"       text="Акселератор, Тормоза, Трансмиссия"/>
+		<text name="vcaTitleDiff"           text="Полный привод и дифференциалы"/>
+		<text name="vcaTitleMisc"           text="Разные настройки"/>
+	
+		<text name="vcaHelpIntro_1"         text="Vehicle Control Addon сочетает в себе несколько функций в одном моде. По умолчанию большинство функций отключены." />
+		<text name="vcaHelpIntro_2"         text="Стандартная комбинация клавиш чтобы открыть меню настроек - LCtrl+C. Предлагаю проверить комбинации клавиш для Vehicle Control Addon в меню настроек игры." />
+		<text name="vcaHelpIntro_3"         text="Комбинация клавиш LCtrl+LAlt+C открывает меню глобальных настроек. Здесь вы можете установить настройки по умолчанию, которые используются во всех (даже в будущих) транспортных средствах." />
+		<text name="vcaHelpCam_1"           text="Vehicle Control Addon может поворачивать камеру, чтобы соответствовать углу поворота рулевого колеса и направлению движения. Таким образом, вы всегда смотрите в направлении, в котором вы едете." />
+		<text name="vcaHelpCam_2"           text="Вы можете включить вращение камеры в меню настроек. Выбрать можно между значениями &quot;Выкл&quot;, &quot;слабое&quot;, &quot;обычное&quot; или &quot;сильное&quot;. Внутренние и внешние камеры настраиваются отдельно. Кроме того, вы можете включить / выключить автоматическое оборачивание камеры при смене направления." />
+		<text name="vcaHelpCam_3"           text="С комбинациями клавиш по умолчанию RShift и клавиши со стрелками вы можете мельком посмотреть в соответствующее направлении. Есть два режима. Если 'быстрый взгляд' включён, направление камеры, вернётся обратно на предыдущий вид, как только вы отпустите клавиши. Если 'быстрый взгляд' выключить, теми же клавишами можно изменять направление камеры, но она не будет автоматически возвращаться назад." />
+		<text name="vcaHelpSteering_1"      text="Vehicle Control Addon может настроить скорость реакции рулевого колеса в зависимости от скорости вождения." />
+		<text name="vcaHelpSteering_2"      text="Настроить рулевое управление вы можете тоже в меню настроек. Если адаптивное рулевое управление выключено, тогда Vehicle Control Addon не меняет поведение рулевого управления. Настройки скорости рулевого колеса работают, только если адаптивное рулевое управление включено. Свободное рулевое управление полностью отключает автоматический возврат колёс." />
+		<text name="vcaHelpSteering_3"      text="Адаптивное рулевое управление было разработано для играющих на клавиатуре. Скорость автовозврата зависит от того, как долго вы держали клавиши A или D. Таким образом, вы можете сохранять текущее положение рулевого колеса, краткосрочно нажимая либо клавишу A либо D. Скорость автовозврата к центральной позиции ускорится, если вы нажмёте соответствующую клавишу. Это как экстренный режим. Если вы повернули колёса слишком сильно, и вы пытаетесь вырулить их в другое направление, то это будет быстрее, но только до тех пор, пока колёса не достигнут центрального положения." />
+		<text name="vcaHelpGPS_1"           text="Vehicle Control Addon включает в себя упрощённую систему автоподруливания." />
+		<text name="vcaHelpGPS_2"           text="Систему автоподруливания можно запустить только в том случае, если ширина полосы движения больше 0,5 м. Вы можете определить текущую ширину инструмента в меню настроек или с помощью сочетания клавиш по умолчанию LCtrl+LAlt+W. Систему автоподруливания можно активизировать через LCtrl+W. Если система автоподруливания была отключена, её можно снова активизировать на последнем проходе через LCtrl+S. Она автоматически отключится, если вы нажмёте одну из кнопок рулевого управления." />
+		<text name="vcaHelpGPS_3"           text="Находясь в транспортном средстве вы можете смещать или поворачивать линии навигации, используя клавиши по умолчанию LCtrl + Cursor. Нажав LAlt+A и LAlt+D вы можете переключиться на следующий левый или правый обратный проход. В меню настроек вы можете указать количество проходов, которые необходимо пропускать, при повороте. Если вы хотите работать на поле влево, вы можете указать количество для левой полосы на одну больше, чем для правой полосы. С каждой сменой проходов Vehicle Control Addon меняет левые и правые номера полос движения. Если маркеры направление выключается из-за взаимодействия на рулевое управление, тогда можно активизировать последний проход по LCtrl+S." />
+		<text name="vcaHelpThrottle_1"      text="Vehicle Control Addon также предлагает несколько небольших улучшений для акселератора и тормоза. Большинство из них предназначены для игроков, использующих клавиатуру." />
+		<text name="vcaHelpThrottle_2"      text="Уровень акселератора ограничивается нажатием клавиши отвечающей за сцепление. 1-е значение применяется если не выжато сцепление, 2-е - если выжато. Низкое процентное значение применяется к скорости круизконтроля если выжато сцепление. Низкая тормозная сила - это тормозная сила, которую  автоматически применяется к автомобилю, если не нажаты ни педаль газа, ни педаль тормоза. Уменьшение тормозной силы, придаёт автомобилю больший накат (или выбег)." />
+		<text name="vcaHelpThrottle_3"      text="LShift ограничивает педаль акселератора, круиз-контроль и максимальные обороты до 75%. Если вы нажмете DEL, то транспортное средство будет сохранять скорость, которую можно устанавливать с помощью клавиш ускорения и торможения. Таким образом, вождение будет подобно до вождения современного трактора с джойстиком. Вы можете включить автоматическое удержание с помощью кнопки по умолчанию LCtrl+Del." />
+		<text name="vcaHelpDiff_1"          text="Если Vehicle Control Addon сможет определить дифференциалы, тогда вам предоставится возможность управлять ими вручную." />
+		<text name="vcaHelpDiff_2"          text="Vehicle Control Addon не вносит изменений в дифференциалы. Когда включён полный привод, тогда у стандартного трактора передние колёса крутятся быстрее чем задние. Если вы включите эту функцию, тогда Vehicle Control Addon будет автоматически отключать полный привод при скорости выше 30 км/ч." />
+		<text name="vcaHelpDiff_3"          text="По умолчанию клавиши для управления дифференциалами LCtrl ), LCtrl ' и LCtrl \." />	
+	</texts>
+</l10n>

@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<l10n>
+	<description>
+<![CDATA[Skrypt ten zmienia prędkość skrętu, centrowania kół i maksymalny kąt skrętu w zależności od aktualnej prędkości pojazdu.
+Obraca również kamerę, aby dopasować ją do kierunku jazdy.
+Wszystkie funkcje mogą zostać wyłączone za pomocą tych klawiszy:
+
+[Lewy Ctrl + C]: Ustawienia
+[Lewy Shift]: Kontrola prędkości tempomatu
+[Prawy Shift + Strzałki]: Widok w przód, tył, prawo, lewo
+[Spacja]: Zmiana kierunku jazdy (rewers)]]>
+	</description>
+
+	<texts>
+		<text name="vcaCAMERAI"           text="Obrót kamery wewnętrznej"/>
+		<text name="vcaCAMERAO"           text="Obrót kamery zewnętrznej"/>
+		<text name="vcaEXPONENT"          text="Czułość"/>
+		<text name="vcaSTEERING"          text="Sterowanie adaptacyjne"/>
+		<text name="vcaSHUTTLE"           text="Rewers"/>
+		<text name="vcaREVERSE"           text="Widok do tyłu"/>
+		<text name="vcaREVERSEI"          text="Widok do tyłu (wewnątrz)"/>
+		<text name="vcaREVERSEO"          text="Widok do tyłu (na zewnątrz)"/>
+		<text name="vcaLIMIT"             text="Tempomat"/>
+		<text name="vcaPEEKLR"            text="Zerknięcie w bok"/>
+		<text name="vcaANGLE"             text="Przeskok kątu wyrównania"/>
+		<text name="vcaBRAKE"             text="Niska siła hamowania"/>
+		<text name="vcaAUTOSHIFT"         text="Automat"/>
+		<text name="vcaKEEPSPEED"         text="Stała prędkość tempomatu"/>
+		<text name="vcaNO_ARB"            text="Brak centrowania"/>
+		<text name="vcaHANDTHROTTLE"      text="Gaz ręczny"/>
+		<text name="vcaSETTINGS"          text="Ustawienia"/>
+		<text name="vcaDRAWHUD"           text="HUD skrzyni"/>
+				
+		<text name="vcaDISTANCE"          text="Szerokość robocza"/>
+		<text name="vcaOFFSET1"           text="Przesunięcie narzędzia"/>
+		<text name="vcaOFFSET2"           text="Odwróć przesunięcie"/>
+		<text name="vcaSNAP90"            text="Zmień wyrównanie kierunku co 90°"/>
+		<text name="vcaDRAWMARKER"        text="Pokaż linie kierunku jazdy"/>
+		<text name="vcaSNAPLEFT"          text="Zawrót na ścieżkę w lewo"/>
+		<text name="vcaSNAPRIGHT"         text="Zawrót na ścieżkę w prawo"/>
+		
+		<text name="vcaAntiSlip"          text="Kontrola trakcji"/>
+		<text name="vcaDiffManual"        text="Ręczne ustawianie napędów i blokad"/>
+		<text name="vcaDiffFrontAdv"      text="Zwiększanie prędkości przedniej osi"/>
+		<text name="vcaDiffLockSwap"      text="Zamiana blokady dyf. pomiędzy osiami"/>
+		<text name="vcaHudX"              text="Pozycja HUDa X"/>
+		<text name="vcaHudY"              text="Pozycja HUDa Y"/>
+		<text name="vcaHIREDWORKER2"      text="Pracownik i dyferencjały"/>
+		
+		<text name="vcaGEARRGMODE"        text="Zamień klawisze biegów i zakresów"/>
+		<text name="vcaSTSPEEDO"          text="Prędkość skrętu"/>
+		<text name="vcaSTSPEEDI"          text="Odwróć prędkość skrętu"/>
+		<text name="vcaIDLETHROTTLE"      text="Zmień obroty silnika"/>
+        <text name="vcaCLUTCHMODE"        text="Tryb sprzęgła"/>
+		<text name="vcaMOUSEARB"          text="Myszka i autom. centrowanie"/>
+		<text name="vcaANALOG"            text="Sterowanie adaptacyjne i kontroler analogowy"/>
+		<text name="vcaROTATEHT"          text="Kamera i śledzenie głowy"/>
+		<text name="vcaDEBUG"             text="Debugowanie"/>
+        <text name="vcaSPLITGEARS"        text="Liczba biegów Powershift"/>
+		<text name="vcaSPLITGEARRATIO"    text="Współczynnik dla Powershift"/>
+		<text name="vcaGEARTIME"          text="Czas zmiany biegu"/>
+		<text name="vcaGRPTIME"           text="Czas zmiany zakresów"/>
+		<text name="vcaINPUTBINDING"      text="Wyświetl klawisze"/>
+
+		<text name="vca_tip_CAMERAI"      text="Kamera wewnętrzna obraca się automatycznie zgodnie z kątem skrętu"/>
+		<text name="vca_tip_CAMERAO"      text="Kamera zewnętrzna obraca się automatycznie zgodnie z kątem skrętu"/>
+		<text name="vca_tip_EXPONENT"     text="Czułość sterowania adaptacyjnego w odniesieniu do prędkości jazdy"/>
+		<text name="vca_tip_STEERING"     text="Sterowanie adaptacyjne automatycznie dostosowuje centrowanie kół i maksymalny kąt skrętu"/>
+		<text name="vca_tip_SHUTTLE"      text="Zmiana kierunku jazdy (Spacja)"/>
+		<text name="vca_tip_REVERSEI"     text="Przy zmianie kierunku jazdy do tyłu, kamera wewnętrzna zostaje obrócona o 180°"/>
+		<text name="vca_tip_REVERSEO"     text="Przy zmianie kierunku jazdy do tyłu, kamera zewnętrzna zostaje obrócona o 180°"/>
+		<text name="vca_tip_LIMIT"        text="Kontrola prędkości tempomatu (bez/z Lewy Shift)"/>
+		<text name="vca_tip_PEEKLR"       text="Zerknij szybko w bok (Prawy Shift + strzałki w bok)"/>
+		<text name="vca_tip_ANGLE"        text="Najnowsza funkcja"/>
+		<text name="vca_tip_BRAKE"        text="Procentowo najniższa siła hamowania, czyli opór toczenia"/>
+		<text name="vca_tip_AUTOSHIFT"    text="Automatyczna zmiana biegów i zakresów"/>
+		<text name="vca_tip_KEEPSPEED"    text="Jeśli włączona jest stała prędkość tempomatu, pedał przyspieszenia zachowuje się jak joystick. Podobnie jak jazda z tempomatem."/>
+		<text name="vca_tip_NO_ARB"       text="Jeśli włączone, koła nie będą powracały do pozycji prostej."/>
+		<text name="vca_tip_HANDTHROTTLE" text="Silnik automatycznie osiąga ustalone obroty."/>
+		<text name="vca_tip_DRAWHUD"      text="Pokazuje lub ukrywa HUD skrzyni"/>
+		
+		<text name="vca_tip_DISTANCE"     text="Odległość pomiędzy kolejnymi ścieżkami"/>
+		<text name="vca_tip_OFFSET1"      text="Przesunięcie względem obecnej ścieżki"/>
+		<text name="vca_tip_OFFSET2"      text="Odwraca przesunięcie na obecnej ścieżce"/>
+		<text name="vca_tip_SNAP90"       text="Automatycznie obraca wyrównanie kierunku jazdy co 90°"/>
+		<text name="vca_tip_DRAWMARKER"   text="Pokazuje ścieżkę jazdy"/>
+		<text name="vca_tip_SNAPLEFT"     text="Numer ścieżki podczas skrętu w lewo"/>
+		<text name="vca_tip_SNAPRIGHT"    text="Numer ścieżki podczas skrętu w prawo"/>
+
+		<text name="vca_tip_AntiSlip"     text="Kontrola trakcji automatycznie blokuje koła obracające się bez oporów"/>
+		<text name="vca_tip_DiffManual"   text="Ręczne przełączanie napędów i blokad dyferencjałów"/>
+		<text name="vca_tip_DiffFrontAdv" text="Zwiększa prędkość przedniej osi, jeśli włączony jest napęd na wszystkie koła"/>
+		<text name="vca_tip_DiffLockSwap" text="Zamienia blokady dyferencjału pomiędzy przednią a tylną osią"/>
+		<text name="vca_tip_HudX"         text="Pozycja HUDa w osi poziomej"/>
+		<text name="vca_tip_HudY"         text="Pozycja HUDa w osi pionowej"/>
+		<text name="vca_tip_HIREDWORKER2" text="Ustala, czy wynajęty pracownik używa domyślnych czy zmodyfikowanych dyferencjałów"/>
+
+		<text name="vca_tip_GEARRGMODE"   text="Zamienia klawisze pomiędzy biegami a zakresami"/>
+		<text name="vca_tip_STSPEEDO"     text="Prędkość skrętu"/>
+		<text name="vca_tip_STSPEEDI"     text="Odwraca prędkość skrętu"/>
+		<text name="vca_tip_IDLETHROTTLE" text="Silnik przyspiesza niezależnie, aby utrzymać obroty biegu jałowego, a skrzynia CVT dostosowuje RPM"/>
+        <text name="vca_tip_CLUTCHMODE"   text="Pojazd automatycznie rozłącza sprzęgło, jeśli prędkość obrotowa silnika jest zbyt niska"/>
+		<text name="vca_tip_MOUSEARB"     text="Automatyczne centrowanie kół dla sterowania myszką"/>
+		<text name="vca_tip_ANALOG"       text="Wsparcie dla sterowania adaptacyjnego z kontrolerami analogowymi"/>
+		<text name="vca_tip_ROTATEHT"     text="Obracanie kamery nawet, gdy śledzenie głowy jest włączone"/>
+		<text name="vca_tip_DEBUG"        text="Dodatkowe informacje zapisywane w pliku log"/>
+        <text name="vca_tip_SPLITGEARS"   text="Liczba biegów dla skrzyni Powershift"/>
+		<text name="vca_tip_SPLITGEARRATIO" text="Współczynnik skrzyni biegów Powershift"/>
+		<text name="vca_tip_GEARTIME"     text="Czas zmiany biegów"/>
+		<text name="vca_tip_GRPTIME"      text="Czas zmiany zakresów"/>
+		<text name="vca_tip_INPUTBINDING" text="Wyświetlanie przypisanych klawiszy"/>
+		
+		<text name="input_vcaSETTINGS"    text="Ustawienia VCA"/>
+		<text name="input_vcaGLOBALS"     text="Ustawienia globalne VCA"/>
+		<text name="input_vcaUP"          text="Zmiana widok / Widok w przód"/>
+		<text name="input_vcaDOWN"        text="Zmiana zerknięcia / Widok w tył"/>
+		<text name="input_vcaLEFT"        text="Widok w lewo"/>
+		<text name="input_vcaRIGHT"       text="Widok w prawo"/>
+		<text name="input_vcaSNAP"        text="Wyrównanie kierunku jazdy"/>
+		<text name="input_vcaSNAPLEFT"    text="Zawróć na ścieżkę po lewej"/>
+		<text name="input_vcaSNAPRIGHT"   text="Zawróć na ścieżkę po prawej"/>
+		<text name="input_vcaSNAPPREV"    text="Poprzednia ścieżka"/>
+		<text name="input_vcaSNAPNEXT"    text="Następna ścieżka"/>
+		<text name="input_vcaSNAPCONT"    text="Ponowne utrzymanie ścieżki jazdy"/>
+		<text name="input_vcaSNAPRESET"   text="Reset wyrównania kierunku jazdy"/>
+		<text name="input_vcaSNAPDIST"    text="Ustalenie szer. roboczej wyrównania kierunku jazdy"/>
+        <text name="input_vcaSNAPPATH"    text="Rozpocznij/Zakończ nagrywanie ścieżki"/>
+		<text name="input_vcaSNAP_A_B"    text="Linia A-B"/>
+        <text name="input_vcaWORKAREA"    text="Znaczniki obszaru roboczego"/>
+		<text name="input_vcaSnapUP"      text="Przeskok kąta w prawo"/>
+		<text name="input_vcaSnapDOWN"    text="Przeskok kąta w lewo"/>
+		<text name="input_vcaSnapLEFT"    text="Przesuń w lewo"/>
+		<text name="input_vcaSnapRIGHT"   text="Przesuń w prawo"/>
+		<text name="input_vcaNO_ARB"      text="Wył. centrowanie kół"/>
+		<text name="input_vcaINCHING"     text="Kontroler tempomatu"/>
+		<text name="input_vcaKEEPROT"     text="Utrzymywanie globalnego kierunku kamery"/>
+		<text name="input_vcaKEEPROT2"    text="Permanentne utrzymywanie kierunku kamery"/>
+		<text name="input_vcaKEEPSPEED"   text="Utrzymywanie prędkości"/>
+		<text name="input_vcaKEEPSPEED2"  text="Permanentne utrzymanie prędkości"/>
+		<text name="input_vcaKSAXIS"      text="Permanentne utrzymanie prędkości osi"/>
+		<text name="input_vcaKSAXIS_1"    text="Permanentne utrzymanie prędkości: Szybciej"/>
+		<text name="input_vcaKSAXIS_2"    text="Permanentne utrzymanie prędkości: Wolniej"/>
+		<text name="input_vcaSWAPSPEED"   text="Przełączanie tempomatów"/>
+		<text name="input_vcaHandRpm"     text="RPM gazu ręcznego"/>
+		<text name="input_vcaHandRpm_1"   text="Dodaj gazu ręcznie"/>
+		<text name="input_vcaHandRpm_2"   text="Odejmij gazu ręcznie"/>
+		<text name="input_vcaHandbrake"   text="Hamulec ręczny"/>
+		<text name="input_vcaLimitSpeed"  text="Limiter prędkości"/>
+		<text name="input_vcaAutoShift"   text="Wł./Wył. automatyczną zmianę biegów"/>
+		<text name="input_vcaDiffLockF"   text="Ster. blokadą przedniego dyf."/>
+		<text name="input_vcaDiffLockM"   text="Ster. napędem na wszystkie koła"/>
+		<text name="input_vcaDiffLockB"   text="Ster. blokadą tylnego dyf."/>
+		<text name="input_vcaLowerF"      text="Opuść/Podnieś przednie narzędzie"/>
+		<text name="input_vcaLowerB"      text="Opuść/Podnieś tylne narzędzie"/>
+        <text name="input_vcaFoldF"       text="Złóż/Rozłóż przednie narzędzia"/>
+		<text name="input_vcaFoldB"       text="Złóż/Rozłóż tylne narzędzia"/>
+		<text name="input_vcaActivateF"   text="Włącz/Wyłącz przednie narzędzie"/>
+		<text name="input_vcaActivateB"   text="Włącz/Wyłącz tylne narzędzie"/>
+        <text name="input_vcaGearSplitUp" text="Rozdzielacz biegów +"/>
+		<text name="input_vcaGearSplitDown" text="Rozdzielacz biegów -"/>
+		
+		<text name="vcaValueOn"           text="Włączone"/>
+		<text name="vcaValueOff"          text="Wyłączone"/>
+		<text name="vcaValueNever"        text="Nigdy"/>
+		<text name="vcaValueAlways"       text="Zawsze"/>
+		<text name="vcaValueAlwaysH"      text="Zawsze (wysoko)"/>
+		<text name="vcaValueNormal"       text="Normalny"/>
+		<text name="vcaValueLight"        text="Słaby"/>
+		<text name="vcaValueStrong"       text="Mocny"/>
+		<text name="vcaValueEntered"      text="Jeśli w środku"/>
+		<text name="vcaValueInactive"     text="Jeśli nieaktywny"/>
+		<text name="vcaValueInactiveH"    text="Jeśli nieaktywny (wysoko)"/>
+		<text name="vcaValueRPM"          text="RPM"/>
+		
+		<text name="vcaSnapArtAxis"       text="Naprowadzanie na ścieżkę nie jest obsługiwane w pojazdach przegubowych"/>
+        <text name="vcaSnapSetA"          text="Ustaw pkt. B aby rozpocząć jazdę po linii"/>
+		<text name="vcaSnapSetB"          text="Jazda po linii została już zainicjalizowana"/>
+
+        <text name="vcaClutchDefault"     text="Domyślne"/>
+		<text name="vcaClutchShuttle"     text="Odwrotnie"/>
+		<text name="vcaClutchAntiStall"   text="Bez gaśnięcia"/>
+		<text name="vcaClutchTurbo"       text="Turbosprzęgło"/>
+		
+		<text name="vcaButtonSnapWidth"   text="Wykryj szerokość"/>
+		<text name="vcaButtonSnapOffset"  text="Wyrównaj przesunięcie"/>
+
+		<text name="vcaTitleIntro"        text="Wstęp"/>
+		<text name="vcaTitleCam"          text="Kamera"/>
+		<text name="vcaTitleSteering"     text="Sterowanie"/>
+		<text name="vcaTitleGPS"          text="Naprowadzanie"/>
+		<text name="vcaTitleThrottle"     text="Gaz, Hamulce, Skrzynia biegów"/>
+		<text name="vcaTitleDiff"         text="Załączanie napędów i dyferencjałów"/>
+        <text name="vcaTitleGears"        text="Przełożenia"/>
+		<text name="vcaTitleMisc"         text="Różne ustawienia"/>
+		
+		<text name="vcaHelpIntro_1"       text="Vehicle Control Addon zawiera wiele funkcji w jednym modzie. Większość z nich jest domyślnie wyłączona." />
+		<text name="vcaHelpIntro_2"       text="Domyślny skrót klawiszowy otwierający menu ustawień to Lewy Ctrl + C. Proponuję sprawdzić skróty klawiszowe dla Vehicle Control Addon w menu klawiszy w ustawieniach gry." />
+		<text name="vcaHelpIntro_3"       text="Skrót klawiszowy Lewy Ctrl + Lewy Alt + C otwiera menu ustawień globalnych. Tutaj możesz dostosować ustawienia domyślne, które są używane we wszystkich (przyszłych) pojazdach." />
+		<text name="vcaHelpCam_1"         text="Vehicle Control Addon może obracać kamerę, aby dopasować kąt skrętu i kierunek. W ten sposób zawsze patrzysz w kierunku, w którym jedziesz." />
+		<text name="vcaHelpCam_2"         text="Możesz włączyć obrót kamery w menu ustawień. Możesz wybierać pomiędzy wartościami &quot;Wyłączone&quot;, &quot;Słaby&quot;, &quot;Normalny&quot; i &quot;Mocny&quot;.Istnieją osobne ustawienia dla kamer wewnętrznych i zewnętrznych. Dodatkowo możesz włączyć/wyłączyć automatyczne cofanie kamery." />
+		<text name="vcaHelpCam_3"         text="Za pomocą prawego Shift i klawiszy strzałek możesz spojrzeć w odpowiednim kierunku. Istnieją dwa tryby. Jeśli zerknięcie jest włączone, kierunek kamery jest przełączany z powrotem do poprzedniego widoku zaraz po puszczeniu klawisza. Jeśli zerknięcie jest wyłączone, ten sam klawisz zmienia kierunek kamery bez przełączania z powrotem." />
+		<text name="vcaHelpSteering_1"    text="Vehicle Control Addon zmienia prędkość kierowania w zależności od prędkości, którą jedziesz." />
+		<text name="vcaHelpSteering_2"    text="Menu ustawień daje możliwość dostosowania układu kierowniczego. Jeśli adaptacyjne kierowanie jest wyłączone, Vehicle Control Addon nie zmienia zachowania układu kierowniczego. Ustawienia prędkości kierowania mają znaczenie tylko wtedy, gdy włączone jest adaptacyjne kierowanie. Swobodne kierowanie całkowicie wyłącza automatyczną rotację wsteczną." />
+		<text name="vcaHelpSteering_3"    text="Adaptacyjne sterowanie zostało zaprojektowane z myślą o użytkownikach klawiatury. Prędkość automatycznego centrowania zależy od tego, jak dawno puściłeś klawisz A lub D. W ten sposób możesz zachować aktualny obrót kierownicy, naciskając krótko klawisz A lub D. Powrót do pozycji środkowej jest szybszy, jeśli naciśniesz odpowiedni klawisz. To jest jak tryb awaryjny. Jeśli sterowałeś za bardzo, próbujesz skierować się w przeciwnym kierunku. Idzie to znacznie szybciej, ale tylko do momentu, gdy kierownica znajdzie się w pozycji środkowej. Dostępna jest uproszczona wersja adaptacyjnego sterowania, która ogranicza tylko prędkość skrętu." />
+		<text name="vcaHelpGPS_1"         text="Vehicle Control Addon zawiera uproszczonego GPSa." />
+		<text name="vcaHelpGPS_2"         text="Naprowadzanie na ścieżkę można uruchomić tylko wtedy, gdy szerokość ścieżki jest większa niż 0,5 m. Bieżącą szerokość narzędzia można odczytać w menu ustawień lub za pomocą domyślnego skrótu klawiszowego Lewy Ctrl + Lewy Alt + W. Jeśli naprowadzanie zostało wyłączone, możesz włączyć je ponownie na przedniej ścieżce domyślnym skrótem klawiszowym Lewy Alt + S. Prowadzenie po ścieżce jest uruchamiane z domyślnym skrótem klawiszowym Lewy Ctrl + W. Jest ono automatycznie wyłączane, jeśli użyjesz przycisków skrętu lub kontrolera." />
+		<text name="vcaHelpGPS_3"         text="W pojeździe możesz przesuwać lub obracać ścieżki za pomocą domyślnych skrótów klawiszowych Lewy Ctrl + klawisz strzałki. Dzięki domyślnym skrótom klawiszowym Lewy Alt + A i Lewy Alt + D możesz skręcić na lewa lub prawą ścieżkę przy zawracaniu. Możesz określić liczbę ścieżki, na którą wjechać po zawróceniu w menu ustawień. Jeśli chcesz pracować na polu po lewej stronie, możesz określić numer ścieżki po lewej stronie o jeden większy niż numery ścieżki po prawej stronie. Z każdą zmianą ścieżki Vehicle Control Addon zamienia numery lewej i prawej ścieżki." />
+		<text name="vcaHelpThrottle_1"    text="Vehicle Control Addon oferuje kilka drobnych ulepszeń gazu ręcznego i hamowania. Większość z nich przeznaczona jest dla graczy korzystających z klawiatury." />
+		<text name="vcaHelpThrottle_2"    text="Wartości gazu ręcznego są używane z dodatkowym klawiszem. Pierwsza wartość jest używana bez klawisza, druga wartość jest używana po naciśnięciu klawisza. Niższa wartość procentowa dotyczy prędkości tempomatu, jeśli naciśnięty jest przycisk. Niska siła hamowania to siła hamowania, którą pojazd stosuje automatycznie, jeśli nie zostanie wciśnięty pedał przyspieszenia ani hamulca. Zmniejszenie siły hamowania pozwala na dłuższe toczenie się pojazdu bez zmniejszania prędkości." />
+		<text name="vcaHelpThrottle_3"    text="Lewy Shift ogranicza tempomat i gaz ręczny do 75%. Jeśli naciśniesz Delete, pojazd utrzyma swoją prędkość. Pedał przyspieszenia i hamulca zwiększa i zmniejsza prędkość. Pojazd prowadzi się jak nowoczesny traktor z joystickiem. Możesz przełączać automatyczną skrzynię domyślnym skrótem klawiszowym Lewy Ctrl + (." />
+		<text name="vcaHelpThrottle_4"    text="Miejsce na modyfikacje silnika" />
+        <text name="vcaHelpDiff_1"        text="Jeśli Vehicle Control Addon może zidentyfikować dyferencjały, masz możliwość ręcznego sterowania nimi." />
+		<text name="vcaHelpDiff_2"        text="Domyślnie Vehicle Control Addon nie zmienia dyferencjałów. Gdy napęd na wszystkie koła jest włączony, przednie koła standardowych ciągników obracają się szybciej niż tylne koła. Możesz to włączyć za pomocą zaawansowanych ustawień prędkości. W takim przypadku Vehicle Control Addon automatycznie dezaktywuje napęd na wszystkie koła powyżej 30 km/h." />
+		<text name="vcaHelpDiff_3"        text="Domyślne skróty klawiszowe do obsługi dyferencjałów to Lewy Ctrl + ), Lewy Ctrl + ' i Lewy Ctrl + \." />
+	</texts>
+</l10n>

@@ -1,8 +1,8 @@
-# VehicleControlAddon for Farming Simulator 2022
+# VehicleControlAddon for Farming Simulator 2025
 
 ## Status
 
-I moved several issues to the new discussion forum. Please use the disucssion forum for questions and ideas. 
+First FS25 version...
 
 ## Developer version
 Please be aware you're using a developer version, which may and will contain errors, bugs, mistakes and unfinished code. 
