@@ -2350,23 +2350,23 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 	--*******************************************************************
 	
 	-- reduce automatic brake force above 1 m/s^2
-	if self.spec_motorized ~= nil and self.spec_motorized.motor ~= nil and self.spec_motorized.motor.lowBrakeForceScale ~= nil then
-		if self:getIsVehicleControlledByPlayer() and not ( 0.99 < self.spec_vca.brakeForce and self.spec_vca.brakeForce < 1.01 ) then      
-			if self.spec_vca.origLowBrakeForceScale == nil then 
-				self.spec_vca.origLowBrakeForceScale      = self.spec_motorized.motor.lowBrakeForceScale
-				self.spec_vca.origLowBrakeForceSpeedLimit = self.spec_motorized.motor.lowBrakeForceSpeedLimit
-			end 			
-			self.spec_motorized.motor.lowBrakeForceScale = self.spec_vca.origLowBrakeForceScale * self.spec_vca.brakeForce
-			if self.spec_vca.brakeForce < 1 then 
-				self.spec_motorized.motor.lowBrakeForceSpeedLimit = math.min( 1, self.spec_vca.origLowBrakeForceSpeedLimit )
-			end 
-		elseif self.spec_vca.origLowBrakeForceScale ~= nil then 
-			self.spec_motorized.motor.lowBrakeForceScale      = self.spec_vca.origLowBrakeForceScale
-			self.spec_motorized.motor.lowBrakeForceSpeedLimit = self.spec_vca.origLowBrakeForceSpeedLimit
-			self.spec_vca.origLowBrakeForceScale              = nil 
-			self.spec_vca.origLowBrakeForceSpeedLimit         = nil 
-		end 
-	end 
+	-- if self.spec_motorized ~= nil and self.spec_motorized.motor ~= nil and self.spec_motorized.motor.lowBrakeForceScale ~= nil then
+		-- if self:getIsVehicleControlledByPlayer() and not ( 0.99 < self.spec_vca.brakeForce and self.spec_vca.brakeForce < 1.01 ) then      
+			-- if self.spec_vca.origLowBrakeForceScale == nil then 
+				-- self.spec_vca.origLowBrakeForceScale      = self.spec_motorized.motor.lowBrakeForceScale
+				-- self.spec_vca.origLowBrakeForceSpeedLimit = self.spec_motorized.motor.lowBrakeForceSpeedLimit
+			-- end 			
+			-- self.spec_motorized.motor.lowBrakeForceScale = self.spec_vca.origLowBrakeForceScale * self.spec_vca.brakeForce
+			-- if self.spec_vca.brakeForce < 1 then 
+				-- self.spec_motorized.motor.lowBrakeForceSpeedLimit = math.min( 1, self.spec_vca.origLowBrakeForceSpeedLimit )
+			-- end 
+		-- elseif self.spec_vca.origLowBrakeForceScale ~= nil then 
+			-- self.spec_motorized.motor.lowBrakeForceScale      = self.spec_vca.origLowBrakeForceScale
+			-- self.spec_motorized.motor.lowBrakeForceSpeedLimit = self.spec_vca.origLowBrakeForceSpeedLimit
+			-- self.spec_vca.origLowBrakeForceScale              = nil 
+			-- self.spec_vca.origLowBrakeForceSpeedLimit         = nil 
+		-- end 
+	-- end 
 	
 	--*******************************************************************
 	-- moving direction
