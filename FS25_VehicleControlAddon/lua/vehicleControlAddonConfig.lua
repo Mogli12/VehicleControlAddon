@@ -26,7 +26,7 @@ local function addConfigItem( name, configType, value )
 end 
 
 local function init()
-	addConfigItem( "debugPrint"          , VCAValueType.bool  , false )
+	addConfigItem( "debugPrint"          , VCAValueType.bool  , true  )
 	
 	addConfigItem( "cameraRotFactor"     , VCAValueType.float , 0.5   )
 	addConfigItem( "cameraRotFactorRev"  , VCAValueType.float , 0.3   )

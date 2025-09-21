@@ -64,6 +64,7 @@ Všechny funkce lze přepínat pomocí následujících výchozích kombinací k
 		<action name="vcaCamera"     category="VEHICLE" axisType="HALF"/>
 		<action name="vcaDiffManual" category="VEHICLE" axisType="HALF"/>
 		<action name="vcaMotorMod"   category="VEHICLE" axisType="HALF"/>
+		<action name="vcaClutchMod"  category="VEHICLE" axisType="HALF"/>
 		<action name="vcaGearSplit"  category="VEHICLE" axisType="HALF"/>
 		<action name="vcaSNAPWIDTH"  category="VEHICLE" axisType="HALF"/>
 	
@@ -118,6 +119,9 @@ Všechny funkce lze přepínat pomocí následujících výchozích kombinací k
 		</actionBinding>	
 		<actionBinding action="vcaMotorMod">	
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_lalt KEY_semicolon"/>
+		</actionBinding>	
+		<actionBinding action="vcaClutchMod">
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_lalt KEY_leftbracket"/>
 		</actionBinding>	
 		<actionBinding action="vcaGearSplit">	
 			<binding device="KB_MOUSE_DEFAULT" input="KEY_lalt KEY_backslash"/>

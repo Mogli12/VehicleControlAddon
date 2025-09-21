@@ -894,6 +894,7 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
 		for _,actionName in pairs({ "vcaCamera",
 																"vcaDiffManual",
 																"vcaMotorMod",
+																"vcaClutchMod",
                             --	"vcaGearSplit", 
                                 "vcaSNAPWIDTH",  
                                 
@@ -1016,6 +1017,7 @@ function vehicleControlAddon:onRegisterActionEvents(isSelected, isOnActiveVehicl
 					if     actionName == "vcaCamera"
 							or actionName == "vcaDiffManual"
 							or actionName == "vcaMotorMod"
+							or actionName == "vcaClutchMod"
 							or actionName == "vcaGearSplit" 
 							or actionName == "vcaAutoShift"
 							then 
@@ -1074,6 +1076,8 @@ function vehicleControlAddon:updateActionEvents()
 				isActive = self.spec_vca.ksIsOn 
 			elseif actionName == "vcaMotorMod" then 
 				isActive = vehicleControlAddon.vcaUIShowidleThrottle( self )
+			elseif actionName == "vcaClutchMod" then 
+				isActive = vehicleControlAddon.vcaUIShowautoShift( self )
 			elseif actionName == "vcaAutoShift" then 
 				isActive = vehicleControlAddon.vcaUIShowautoShift( self )
 			elseif actionName == "vcaDiffManual" then
@@ -1145,6 +1149,24 @@ function vehicleControlAddon:actionCallback(actionName, keyStatus, callbackState
 	elseif actionName == "vcaMotorMod" then 
 		self:vcaSetState( "idleThrottle", not self.spec_vca.idleThrottle )
 		self:vcaSetState( "warningText", "Motor modifications: "..tostring( self.spec_vca.idleThrottle ) )
+		
+	elseif actionName == "vcaClutchMod" then 
+		local clutchText = vehicleControlAddon.getText("vcaClutchDefault", "default" )
+		
+		if     self.spec_vca.clutchMode == vehicleControlAddon.DEFAULT_CLUTCH then      
+	  	self:vcaSetState( "clutchMode", vehicleControlAddon.SHUTTLE_CLUTCH )
+			clutchText = vehicleControlAddon.getText("vcaClutchShuttle", "shuttle" ) 
+	  elseif self.spec_vca.clutchMode == vehicleControlAddon.SHUTTLE_CLUTCH then 
+	  	self:vcaSetState( "clutchMode", vehicleControlAddon.ANTI_STALL )
+			clutchText = vehicleControlAddon.getText("vcaClutchAntiStall", "anti stall" ) 
+	  elseif self.spec_vca.clutchMode == vehicleControlAddon.ANTI_STALL     then 
+	  	self:vcaSetState( "clutchMode", vehicleControlAddon.TURBO_CLUTCH )
+			clutchText = vehicleControlAddon.getText("vcaClutchTurbo", "turbo" ) 
+	  else --if self.spec_vca.clutchMode == vehicleControlAddon.TURBO_CLUTCH   then  
+			self:vcaSetState( "clutchMode", vehicleControlAddon.DEFAULT_CLUTCH )
+		end 
+	
+		self:vcaSetState( "warningText", "Clutch modifications: "..clutchText )
 		
 	elseif actionName == "vcaCamera" then 
 	
@@ -2629,7 +2651,7 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 		if camera.isInside then 
 			self.spec_vca.camIsInside = true 
 
-			if      g_gameSettings:getValue("isHeadTrackingEnabled") 
+			if      g_gameSettings:getValue(GameSettings.SETTING.IS_HEAD_TRACKING_ENABLED)
 					and isHeadTrackingAvailable() 
 					and camera.headTrackingNode ~= nil
 					and not VCAGlobals.rotateHeadTracking then 
@@ -3200,26 +3222,26 @@ function vehicleControlAddon:onUpdate(dt, isActiveForInput, isActiveForInputIgno
 		end 
 		
 		self.spec_vca.debugD = nil
-		if VCAGlobals.debugPrint then 
-			for i, differential in pairs(spec.differentials) do
-				if self.spec_vca.debugD == nil then 
-					self.spec_vca.debugD = ""
-				else 
-					self.spec_vca.debugD = self.spec_vca.debugD .. string.format("\n")
-				end 
-
-				local s1,s2 = getDiffSpeed(i)
-				
-				self.spec_vca.debugD = self.spec_vca.debugD .. string.format( "%d: (%d, %d, %s), speed: %6.3f, %6.3f => tr: %6.3f sr: %6.1f",
-																													i, 
-																													Utils.getNoNil( differential.vcaEnabled, -1 ),
-																													Utils.getNoNil( differential.vcaIndex, -1 ),
-																													Utils.getNoNil( differential.vcaMode, '?' ),
-																													s1, s2,
-																													differential.torqueRatio,
-																													differential.maxSpeedRatio )
-			end 
-		end 
+	--if VCAGlobals.debugPrint then 
+	--	for i, differential in pairs(spec.differentials) do
+	--		if self.spec_vca.debugD == nil then 
+	--			self.spec_vca.debugD = ""
+	--		else 
+	--			self.spec_vca.debugD = self.spec_vca.debugD .. string.format("\n")
+	--		end 
+	--
+	--		local s1,s2 = getDiffSpeed(i)
+	--		
+	--		self.spec_vca.debugD = self.spec_vca.debugD .. string.format( "%d: (%d, %d, %s), speed: %6.3f, %6.3f => tr: %6.3f sr: %6.1f",
+	--																											i, 
+	--																											Utils.getNoNil( differential.vcaEnabled, -1 ),
+	--																											Utils.getNoNil( differential.vcaIndex, -1 ),
+	--																											Utils.getNoNil( differential.vcaMode, '?' ),
+	--																											s1, s2,
+	--																											differential.torqueRatio,
+	--																											differential.maxSpeedRatio )
+	--	end 
+	--end 
 	end 
 	
 --******************************************************************************************************************************************
