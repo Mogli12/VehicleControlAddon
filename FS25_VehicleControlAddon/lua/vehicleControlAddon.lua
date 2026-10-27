@@ -3379,9 +3379,12 @@ function vehicleControlAddon:onPostUpdate( dt, isActiveForInput, isActiveForInpu
 					and motor.currentGears[motor.gear] ~= nil
 					then
 				gearRatio    = motor.currentGears[motor.gear].ratio * motor:getGearRatioMultiplier()
-				local factor = math.pi / ( math.abs( gearRatio ) * 30 ) 
-				minGearSpeed = motor.minRpm * factor
-				maxGearSpeed = motor.maxRpm * factor
+				-- gear ratio is 0 while the gear group is in neutral (activeGearGroupIndex == 0), e.g. after the game lost focus
+				if gearRatio ~= 0 then
+					local factor = math.pi / ( math.abs( gearRatio ) * 30 )
+					minGearSpeed = motor.minRpm * factor
+					maxGearSpeed = motor.maxRpm * factor
+				end
 			end 
 		end 
 		self:vcaSetState( "gearRatio",    gearRatio )
